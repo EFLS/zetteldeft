@@ -1,0 +1,531 @@
+#+title: Zetteldeft
+#+author: EFLS
+#+date: July 2018
+:headers:
+# By default, each block of code should tangle & evaluate silently
+#+PROPERTY: header-args:emacs-lisp :results silent :tangle zetteldeft.el
+:end:
+:statuses:
+# Different statuses
+#+TODO: FIX(f) NEW(n) DEV(o) | DONE(d)
+# FIX: Fix needed
+# NEW: New feature, awaiting implementation
+# DEV: In development
+:end:
+:export:
+#+OPTIONS: date:nil
+#+EXPORT_FILE_NAME: ./doc/zetteldeft
+#+LATEX_HEADER: \usepackage[]{efls-doc}
+#+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
+:end:
+
+* What?
+
+*Short*: this document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+
+Want to read this file in a more pleasing format? Check the =doc/= directory.
+
+** A Zettelkasten system for =emacs= based on =deft=
+
+This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package. I call it *zetteldeft*.
+It is inspired by the /The Archive/ app. For this and more on Zettelkasten, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on all kinds of apps.
+
+What's here is intended for personal use. I hope it an be of use to someone, and let me know if you exand upon it.
+
+It is very much WIP, and I'm fairly new to =elisp=, so it might contain some stupid code.
+
+Anyway, here we go.
+
+** Basic concepts
+
+*Notes* reside in the =deft-directory=.
+Notes are written in =org-mode= (although this can be changed easily).
+
+The name of a note starts with a unique *id* based on the time and the date, for example: =2018-07-09-2115 This is a note.org=.
+
+This unique id can be used to *link* notes together.
+A link is indicated by a =§= character, followed by the id.
+For example: =§2018-07-08-2115= should link to the file above.
+A link can appear anywhere in the text.
+
+When searching deft with the *id* as a filter, you'll find both the original note (with the id as its name) and all the notes that link to this note (with the id in its body).
+
+Notes can contain *tags*, prepended with a =#=.
+This is a tag: =#tag=.
+Tags make it easy to retrieve notes.
+
+** Basic functions
+
+Some functions to get started.
+I created some more, but these are the ones I use most often.
+Default keybindings are set at the bottom -- and meant for spacemacs.
+
+| Function               | Use                               | Keybinding |
+|------------------------+-----------------------------------+------------|
+| =zd-search-at-point=     | Deft search on thing at point     | =SPC d s=    |
+| =zd-search-current-id=   | Deft search on id of current file | =SPC d c=    |
+| =zd-avy-file-search=     | Jump to =§= id and open linked file | =SPC d f=    |
+| =zd-avy-link-search=     | Jump to =§= id and search deft      | =SPC d l=    |
+| =zd-avy-tag-search=      | Jump to =#= tag and search deft     | =SPC d t=    |
+| =zd-new-file=            | Create new note and open          | =SPC d n=    |
+| =zd-new-file-and-link=   | Create new note and insert =§= id   | =SPC d N=    |
+| =zd-find-file-id-insert= | Pick a note and insert its =§= id   | =SPC d i=    |
+
+More details documented below.
+
+** How to use this source
+
+This set of commands requires:
+ - =deft=, obviously
+ - =avy= comes in handy to jump & search (see the final set of functions)
+
+Either download this =org-file= and =org-tangle= it yourself.
+It should contain everything.
+
+Or download the included =.el= file.
+
+Whichever way you go, load the =.el= file and you're good to go.
+
+* =deft= setup
+
+The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
+
+** Set =deft-directory=
+
+Search the deft directory recursively, to include subdirectories.
+
+#+BEGIN_SRC emacs-lisp
+(setq deft-directory (concat org-directory "/notes/zetteldeft"))
+(setq deft-recursive t)
+#+END_SRC
+
+** Notes & extensions
+
+Note extensions are =md=, =txt= and =org=.
+First of this list is the default for new notes.
+
+#+BEGIN_SRC emacs-lisp
+(setq deft-extensions '("org" "md" "txt"))
+#+END_SRC
+
+Configure deft to create new files with the =zd-id-format= defined below.
+
+#+BEGIN_SRC emacs-lisp
+(setq deft-new-file-format zd-id-format)
+#+END_SRC
+
+* zetteldeft functions
+** Search functions
+*** =zd-get-thing-at-point= returns string
+
+Returns the thing at point as string.
+
+Tries to get, in the following order:
+ - links between =[[=
+ - hashtags: =§=, =#= or =@=
+ - words
+
+Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-get-thing-at-point ()
+"Return the thing at point, which can be a link, tag or word."
+  (require 'thingatpt)
+  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
+         (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
+   (cond
+    ((thing-at-point-looking-at link-re)
+      (match-string-no-properties 1))
+     ((thing-at-point-looking-at htag-re)
+      (match-string-no-properties 1))
+     (t (thing-at-point 'word t)))
+  ))
+#+END_SRC
+
+*** =zd-search-at-point= thing at point
+
+Search the thing at point.
+
+Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-at-point ()
+"Search deft with thing-at-point as filter.
+Thing can be a double-bracketed link, a hashtag, or a word.
+Open if there is only one result"
+  (interactive)
+  (let ((string (zd-get-thing-at-point)))
+   (if string
+       (zd-search-global string)
+     (user-error "No search term at point")))
+  )
+#+END_SRC
+
+*** =zd-search-global= for string
+
+Search with deft for given string.
+If there is only one result, that file is opened, unless additional argument is true.
+
+Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-global (str &optional dntOpn)
+"Search deft with STR as filter.
+If there is only one result, open that file (unless DNTOPN is true)."
+  ;; Sanitize the filter string
+  (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  ;; Call deft search on the filter string
+  (let ((deft-incremental-search t))
+   (deft)
+   (deft-filter str t))
+  ;; If there is a single match, open the file
+  (unless dntOpn
+   (when (eq (length deft-current-files) 1)
+     (deft-open-file (car deft-current-files)))))
+#+END_SRC
+
+*** =zd-search-filename= for string
+
+Deft search on filename.
+If there is only one result, open that file.
+
+Incremental search is turned off, and the filter is set to filenames only.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-filename (str)
+"Search for deft files with string STR in filename.
+Open if there is only one result."
+  ;; Sanitize the filter string
+  (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  ;; Call deft search on the filter string
+  (let ((deft-filter-only-filenames t))
+   (deft)
+   (deft-filter str t))
+  ;; If there is a single match, open the file
+  (when (eq (length deft-current-files) 1)
+    (deft-open-file (car deft-current-files))))
+#+END_SRC
+
+*** =zd-search-current-id= searches current id
+
+Deft search on the id of the current file.
+
+Result is not opened automaticaly.
+
+This function is useful to easily see which notes link to the current file.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-current-id ()
+"Search deft with the id of the current file as filter.
+Open if there is only one result."
+ (interactive)
+ (zd-search-global (zd-id-current-file) t)
+)
+#+END_SRC
+
+** IDs
+*** Basics for IDs
+
+String format when generating ids.
+
+#+BEGIN_SRC emacs-lisp
+(defvar zd-id-format "%Y-%m-%d-%H%M"
+"Format used when generating zetteldeft IDs."
+)
+#+END_SRC
+
+Generate id string.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-generate-id ()
+ "Generates an id in `zd-id-format'."
+ (format-time-string zd-id-format)
+)
+#+END_SRC
+
+*** FIX =zd-id-sanitized= cleans ids
+
+Returns the string stripped from everything that is not a number or a =-=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-id-sanitized (str)
+"Strip STRING from everything that is not a number or a dash."
+ (replace-regexp-in-string "[^(0-9)-]+" "" str)
+)
+#+END_SRC
+
+Potential shortcomming: any numbers /after/ the id are not stripped.
+Problematic when stripping the id from a filename, for example.
+
+The following regular expression should work better: =[0-9-]\\{2,\\}-[0-9-]+= (but cannot be used with =replace-regexp-in-string= function). Something to fix.
+
+*** =zd-file-id-stripped= strips file id from string
+
+Attempts to strip the file id from a string.
+
+First, take only 15 first characters from the input string.
+Next, ommit anything that is not a digit or a dash.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-file-id-stripped (file)
+"Returns file id stripped from given filename FILE."
+ (let ((file (substring file 0 15)))
+   (zd-id-sanitized file)
+))
+#+END_SRC
+
+
+*** =zd-id-current-file= returns id in filename
+
+Return the id from the filename the buffer is currently visiting.
+
+Requires *fix*: filenames with numbers in it are not fully stripped.
+
+Steps:
+ 1. Get the filename from the buffer
+ 2. Strip the ID from it.
+ 3. Result can be empty string when no id is detected in the filename.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-id-current-file ()
+"Return the id from the filename the buffer is currently visiting."
+ (zd-file-id-stripped (file-name-base (buffer-file-name)))
+)
+#+END_SRC
+
+*** =zd-copy-id-current-file= copies id in filename
+
+Add the ID from the current file to the kill ring.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-copy-id-current-file ()
+"Add the id from the filename the buffer is currently visiting to the kill ring."
+(interactive)
+ (kill-new (zd-id-current-file))
+)
+#+END_SRC
+
+** Finding files
+*** =zd-find-file= opens file from minibuffer
+
+Select file from the deft folder from the minibuffer.
+
+Based on =deft-find-file=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-find-file (file)
+"Open deft file FILE."
+ (interactive
+  (list (completing-read "Deft find file: "
+        (deft-find-all-files-no-prefix))))
+ (deft-find-file file)
+)
+#+END_SRC
+
+*** =zd-find-file-id-copy= copies file id from minibuffer
+
+Select file from minibuffer and add its link id to kill ring.
+
+Based on =deft-find-file=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-find-file-id-copy (file)
+"Find deft file FILE and add its id to the kill ring."
+ (interactive (list
+        (completing-read "File to copy id from: "
+        (deft-find-all-files-no-prefix))))
+  (kill-new (concat "§" (zd-file-id-stripped file)))
+)
+#+END_SRC
+
+*** =zd-find-file-id-insert= inserts file id from minibuffer
+
+Select file from minibuffer and insert its link, prepended by =§=.
+
+Based on =deft-find-file=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-find-file-id-insert (file)
+"Find deft file FILE and insert its link id, prepended by §."
+ (interactive (list
+        (completing-read "File to insert id from: "
+        (deft-find-all-files-no-prefix))))
+  (insert (concat "§" (zd-file-id-stripped file)))
+)
+#+END_SRC
+
+** New file
+*** =zd-new-file= creates new file
+
+Create new file with filename as =zd-id-format= and a string.
+
+Either provide a name as argument, or enter one in the mini-buffer.
+The full name is added to the kill ring.
+File is only created upon save.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-new-file (str)
+"Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed."
+ (interactive (list (read-string "name: ")))
+ (let* ((zdId (zd-generate-id))
+        (zdName (concat zdId " " str)))
+ (deft-new-file-named zdName)
+ (kill-new zdName)
+))
+#+END_SRC
+
+*** =zd-new-link-and-file= inserts generated id
+
+Generate an id, append a name, and generate a new file based on id and link.
+
+Either provide a name as argument, or enter one in the mini-buffer.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-new-link-and-file (str)
+"Inserts generated id with `zd-id-format' appended with STR.
+Creates new deft file with id and STR as name."
+ (interactive (list (read-string "name: ")))
+ (insert "§" (zd-generate-id) " " str)
+ (zd-new-file str)
+)
+#+END_SRC
+
+** Functions with =avy=
+*** =zd-avy-tag-search=
+
+Use avy to jump to a tag and search for it.
+
+The search term should include the =#= as tag identifier, so it's as easy as jumping to the =#= and running =zd-search-at-point=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-tag-search ()
+"Call on avy to jump and search tags indicated with #."
+ (interactive)
+ (save-excursion
+  (avy-goto-char ?#)
+  (zd-search-at-point)
+))
+#+END_SRC
+
+*** =zd-avy-link-search=
+
+Use avy to jump to an id and search for it.
+
+Jumps to the =§= identifier and searches for the thing at point -- excluding the =§= character.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-link-search ()
+"Call on avy to jump and search link ids indicated with §."
+ (interactive)
+ (save-excursion
+  (avy-goto-char ?§)
+  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))
+))
+#+END_SRC
+
+*** =zd-avy-file-search=
+
+Use avy to jump to an id and find the corresponding file.
+There should be only one result, as the id should be unique.
+
+Jump to a =§= with =avy=, get the thing at point.
+If it is non-nil, search it after sanitizing.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-file-search ()
+"Call on avy to jump to link ids indicated with § and use it to search for filenames."
+ (interactive)
+ (save-excursion
+  (avy-goto-char ?§)
+  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
+))
+#+END_SRC
+
+* Keybindings
+
+Note: This setup is for =spacemacs=.
+
+** Additional =deft= keybindings
+
+Deft specific keybindings behind the =,= prefix.
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'deft
+  (define-key spacemacs-deft-mode-map-prefix
+    "o" 'efls/deft-open)
+ )
+#+END_SRC
+
+
+A small function to open a file in the other window and shifting focus to it.
+That final part is what the =t= argument does.
+
+#+BEGIN_SRC emacs-lisp
+(defun efls/deft-open ()
+ (interactive)
+ (deft-open-file-other-window t)
+)
+#+END_SRC
+
+
+To select results from the item list without leaving the =insert= state, I add the following keys.
+
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'deft
+  (define-key deft-mode-map
+    (kbd "s-j") 'evil-next-line)
+  (define-key deft-mode-map
+    (kbd "s-k") 'evil-previous-line)
+  (define-key deft-mode-map
+    (kbd "s-i") 'efls/deft-open)
+)
+#+END_SRC
+
+
+** Some =zetteldeft= specifics
+
+Can be called from any mode.
+
+#+BEGIN_SRC emacs-lisp
+;; Prefix
+(spacemacs/declare-prefix "d" "deft")
+;; Launch deft
+(spacemacs/set-leader-keys "dd" 'deft)
+;; SEARCH
+ ; Search thing at point
+   (spacemacs/set-leader-keys "ds" 'zd-search-at-point)
+ ; Search current file id
+   (spacemacs/set-leader-keys "dc" 'zd-search-current-id)
+ ; Jump & search with avy 
+ ;  search link as filename
+    (spacemacs/set-leader-keys "df" 'zd-avy-file-search)
+ ;  search link as contents
+    (spacemacs/set-leader-keys "dl" 'zd-avy-link-search)
+ ;  search tag as contents
+    (spacemacs/set-leader-keys "dt" 'zd-avy-tag-search)
+;; LINKS
+ ; Insert link from filename
+   (spacemacs/set-leader-keys "di" 'zd-find-file-id-insert)
+;; FILES
+ ; Create new file
+   (spacemacs/set-leader-keys "dn" 'zd-new-file)
+   (spacemacs/set-leader-keys "dN" 'zd-new-file-and-link)
+;; UTILITIES
+(spacemacs/set-leader-keys "dR" 'deft-refresh)
+#+END_SRC
+
+
+* Brainstorm
+
+Some ideas for the future.
+
+** Saved searches
+
+Create a list of saved searches, somewhere easily accessible.
+
+** Generate list of tags
+
+Auto-generate a list of tags.
+
+Might exceed my elisp-fu.
+
