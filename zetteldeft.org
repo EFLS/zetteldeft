@@ -48,11 +48,15 @@ A link is indicated by a =§= character, followed by the id.
 For example: =§2018-07-08-2115= should link to the file above.
 A link can appear anywhere in the text.
 
-When searching deft with the *id* as a filter, you'll find both the original note (with the id as its name) and all the notes that link to this note (with the id in its body).
+When searching deft with the *id* as a filter, you'll find both the original note (with the id as its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search=.
 
 Notes can contain *tags*, prepended with a =#=.
 This is a tag: =#tag=.
 Tags make it easy to retrieve notes.
+
+Search both tags and links with =zd-search-at-point=.
+To jump to a tag or link and search it, use =zd-avy-tag-search= and =zd-avy-link-search= respectively.
+To open a note from a link, use =zd-avy-file-search=.
 
 ** Basic functions
 
@@ -60,16 +64,16 @@ Some functions to get started.
 I created some more, but these are the ones I use most often.
 Default keybindings are set at the bottom -- and meant for spacemacs.
 
-| Function               | Use                               | Keybinding |
-|------------------------+-----------------------------------+------------|
-| =zd-search-at-point=     | Deft search on thing at point     | =SPC d s=    |
-| =zd-search-current-id=   | Deft search on id of current file | =SPC d c=    |
-| =zd-avy-file-search=     | Jump to =§= id and open linked file | =SPC d f=    |
-| =zd-avy-link-search=     | Jump to =§= id and search deft      | =SPC d l=    |
-| =zd-avy-tag-search=      | Jump to =#= tag and search deft     | =SPC d t=    |
-| =zd-new-file=            | Create new note and open          | =SPC d n=    |
-| =zd-new-file-and-link=   | Create new note and insert =§= id   | =SPC d N=    |
-| =zd-find-file-id-insert= | Pick a note and insert its =§= id   | =SPC d i=    |
+| Function               | Use                              | Keybinding |
+|------------------------+----------------------------------+------------|
+| =zd-search-at-point=     | Search for thing at point        | =SPC d s=    |
+| =zd-search-current-id=   | Search for id of current file    | =SPC d c=    |
+| =zd-avy-file-search=     | Select =§= id and open linked file | =SPC d f=    |
+| =zd-avy-link-search=     | Select =§= id and search for it    | =SPC d l=    |
+| =zd-avy-tag-search=      | Select =#= tag and search for it   | =SPC d t=    |
+| =zd-new-file=            | Create new note and open         | =SPC d n=    |
+| =zd-new-file-and-link=   | Create new note and insert =§= id  | =SPC d N=    |
+| =zd-find-file-id-insert= | Pick a note and insert its =§= id  | =SPC d i=    |
 
 More details documented below.
 
@@ -114,7 +118,7 @@ Configure deft to create new files with the =zd-id-format= defined below.
 (setq deft-new-file-format zd-id-format)
 #+END_SRC
 
-* zetteldeft functions
+* =zetteldeft= functions
 ** Search functions
 *** =zd-get-thing-at-point= returns string
 
