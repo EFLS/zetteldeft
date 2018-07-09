@@ -1,0 +1,303 @@
+/*
+ --------------------------------
+ This style borrows heavily from Kungsgeten's personal page,
+ and a little from Hugo theme 'one'.
+ --------------------------------
+ */
+
+/* Importing fonts
+   Alegreay, Alegreya Sans, Alegreya Sans SC, Cousine */
+@import url("https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Alegreya+Sans+SC|Cousine");
+
+html {
+  padding: 0;
+  margin: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Alegreya", serif;
+  font-size: 18px;
+  color: #21211a;
+  background-color: #f3f3e7;
+}
+@media screen and (min-width: 530px) {
+  body {
+    font-size: 21px;
+  }
+}
+section {
+  margin-top: 1em;
+}
+section p {
+  margin: 0.15em 0;
+}
+section p + p {
+  text-indent: 1.5em;
+}
+
+/* Quotes */
+blockquote {
+	  border-left: 3px solid #0594cb;
+	  margin-left: 20px;
+	  padding-left: 20px;
+}
+
+/* Heading 1 - Title */
+h1 {
+    font-family: 'Alegreya SC';
+    text-transform: lowercase;
+    font-size: 200%;
+    line-height: 1.1;
+	  text-align: left;
+ /* Margins & padding */
+    margin-top: 2.5rem;
+    margin-bottom: 1em;
+    padding-top: 1.5em;
+}
+
+/* Heading 2 */
+h2 {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-size: 130%;
+    line-height: 1.1;
+    hyphens: none;
+ /* Margins & padding */
+    margin-top: 2.5rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.02em;
+ /* With small border */
+    border-bottom: 2px solid #d7d7cd;
+    margin-bottom: 0.5em;
+}
+
+/* Other headings */
+h3,
+h4 {
+   font-family: 'Alegreya Sans', sans-serif;
+}
+h3 {
+   margin-top: 1.5em;
+   margin-bottom: 0.2rem;
+}
+h2.footnotes {
+  font-family: "Alegreya SC";
+  font-size: 100%;
+  border-bottom: none;
+  border-top: 2px solid #d7d7cd;
+  padding: 0.5rem 0
+}
+.blogcategory h2 {
+  border-bottom: 2px solid #d7d7cd;
+  margin-bottom: 0.5em;
+}
+.blogcategory ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 2.5em;
+  text-indent: -2.5em;
+}
+.blogcategory h3 {
+  font-size: 1em;
+  padding: 0;
+  margin: 0;
+}
+.todo,
+.done {
+  margin-right: 0.3em;
+  border: 1px solid #b0b09a;
+  padding: 2px;
+}
+.todo {
+  color: #00f;
+}
+.timestamp {
+  color: #b0b09a;
+}
+header {
+  margin: 10px;
+}
+a {
+  color: #21211a;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+a:hover {
+  background-color: #d3d3a8;
+}
+#content,
+#postamble {
+  margin: auto;
+  margin-bottom: 1.5em;
+  padding: 0 0.5em;
+}
+@media screen and (min-width: 460px) {
+  #content,
+  #postamble {
+    padding: 0 2em;
+  }
+}
+@media screen and (min-width: 530px) {
+  #content,
+  #postamble {
+    max-width: 750px;
+  }
+}
+/* TOC */
+#table-of-contents a {
+  text-decoration: none;
+  font-family: "Alegreya", serif;
+}
+#table-of-contents ul {
+  font-family: "Alegreya SC";
+  list-style-type: none;
+  padding-left: 1em;
+}
+pre,
+code {
+  font-family: "Cousine", monospace;
+}
+pre {
+  font-size: 60%;
+  background-color: #fff;
+  padding: 3pt;
+  margin: 1.2em 0em;
+}
+@media screen and (min-width: 460px) {
+  pre {
+    margin: 1.2em -2.3em;
+  }
+}
+code {
+  font-size: 85%;
+  background-color: #e6e6da;
+  border: 1px solid #ccc;
+}
+table {
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+table + table {
+  margin-top: 2em;
+}
+th,
+td {
+  padding: 0 0.25em;
+}
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+th {
+  background-color: #dadada;
+  padding: 0.3em 0;
+  border-bottom: 2px solid;
+  border-top: 2px solid;
+}
+.underline {
+  font-family: "Alegreya SC", sans-serif;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+}
+.title {
+  margin: 0px;
+}
+.subtitle {
+  font-family: 'Alegreya';
+  text-transform: initial;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 70%;
+  margin: 0;
+}
+#preamble {
+  background-color: #e3e3c7;
+}
+#head {
+  margin: auto;
+}
+#head a {
+  text-decoration: none;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+@media screen and (min-width: 530px) {
+  #head {
+    max-width: 750px;
+  }
+}
+#head >h1 {
+  font-size: 120%;
+  font-weight: normal;
+  display: inline;
+}
+#head >ul {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#head >ul li {
+  display: inline;
+}
+sup {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+
+/* Footnotes */
+.footref::before,
+.footnum::before {
+  content: "[";
+}
+.footref::after,
+.footnum::after {
+  content: "]";
+}
+
+/* Sidenotes (currently not in use) */
+.sidenote {
+  display: none;
+  position: absolute;
+  left: calc(50% + 560px / 2 + 30px);
+  width: 238px;
+  text-indent: 0;
+  font-size: 85%;
+}
+.sidenote figure {
+  padding: 0;
+  margin: 0;
+}
+.sidenote img {
+  max-width: sidenote-width;
+  width: 100%;
+  height: auto;
+}
+.sidenote p.footpara:not(:first-child) {
+  display: block;
+}
+@media screen and (min-width: 900px) {
+  #content.has-sidenotes #footnotes {
+    display: none;
+  }
+  #content.has-sidenotes .sidenote {
+    display: inline;
+  }
+  #content.has-sidenotes {
+    position: relative;
+    left: -13%;
+  }
+}
+@media screen and (min-width: 1150px) {
+  #content.has-sidenotes {
+    left: 0;
+  }
+}
+.figure-number {
+  display: none;
+}
