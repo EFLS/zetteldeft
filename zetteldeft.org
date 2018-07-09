@@ -23,7 +23,7 @@
 
 *Short*: this document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
-Want to read this file in a more pleasing format? Check the =doc/= directory.
+Want to read this file in a more pleasing format? Check the [[https://rawgit.com/EFLS/zetteldeft/master/doc/zetteldeft.html][html version]].
 
 ** A Zettelkasten system for =emacs= based on =deft=
 
