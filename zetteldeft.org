@@ -243,7 +243,6 @@ Here is a function to generate an id string in said format.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
- (interactive)
  "Generates an id in `zd-id-format'."
  (format-time-string zd-id-format)
 )
@@ -484,8 +483,6 @@ To select results from the item list without leaving the =insert= state, I add t
     (kbd "s-k") 'evil-previous-line)
   (define-key deft-mode-map
     (kbd "s-i") 'efls/deft-open)
-  (define-key deft-mode-map
-    (kbd "s-u") 'zd-generate-id)
 )
 #+END_SRC
 
