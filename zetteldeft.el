@@ -3,8 +3,6 @@
 
 (setq deft-extensions '("org" "md" "txt"))
 
-(setq deft-new-file-format zd-id-format)
-
 (defun zd-get-thing-at-point ()
 "Return the thing at point, which can be a link, tag or word."
   (require 'thingatpt)
@@ -66,6 +64,8 @@ Open if there is only one result."
 (defvar zd-id-format "%Y-%m-%d-%H%M"
 "Format used when generating zetteldeft IDs."
 )
+
+(setq deft-new-file-format zd-id-format)
 
 (defun zd-generate-id ()
  "Generates an id in `zd-id-format'."

@@ -112,12 +112,6 @@ First of this list is the default for new notes.
 (setq deft-extensions '("org" "md" "txt"))
 #+END_SRC
 
-Configure deft to create new files with the =zd-id-format= defined below.
-
-#+BEGIN_SRC emacs-lisp
-(setq deft-new-file-format zd-id-format)
-#+END_SRC
-
 * =zetteldeft= functions
 ** Search functions
 *** =zd-get-thing-at-point= returns string
@@ -238,7 +232,14 @@ String format when generating ids.
 )
 #+END_SRC
 
-Generate id string.
+While we're at it, lets tell deft to create new files with this new format.
+For good measure: I'd advise creating new notes in the =zetteldeft= system with =zd-new-file= or =zd-new-file-and-link=. See below.
+
+#+BEGIN_SRC emacs-lisp
+(setq deft-new-file-format zd-id-format)
+#+END_SRC
+
+Here is a function to generate an id string in said format.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
