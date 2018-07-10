@@ -68,6 +68,7 @@ Open if there is only one result."
 (setq deft-new-file-format zd-id-format)
 
 (defun zd-generate-id ()
+ (interactive)
  "Generates an id in `zd-id-format'."
  (format-time-string zd-id-format)
 )
@@ -176,6 +177,8 @@ Creates new deft file with id and STR as name."
     (kbd "s-k") 'evil-previous-line)
   (define-key deft-mode-map
     (kbd "s-i") 'efls/deft-open)
+  (define-key deft-mode-map
+    (kbd "s-u") 'zd-generate-id)
 )
 
 ;; Prefix
