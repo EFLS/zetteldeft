@@ -379,14 +379,14 @@ File is only created upon save.
 ))
 #+END_SRC
 
-*** =zd-new-link-and-file= inserts generated id
+*** =zd-new-file-and-link= inserts generated id
 
 Generate an id, append a name, and generate a new file based on id and link.
 
 Either provide a name as argument, or enter one in the mini-buffer.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-new-link-and-file (str)
+(defun zd-new-file-and-link (str)
 "Inserts generated id with `zd-id-format' appended with STR.
 Creates new deft file with id and STR as name."
  (interactive (list (read-string "name: ")))

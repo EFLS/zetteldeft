@@ -127,7 +127,7 @@ Open if there is only one result."
  (kill-new zdName)
 ))
 
-(defun zd-new-link-and-file (str)
+(defun zd-new-file-and-link (str)
 "Inserts generated id with `zd-id-format' appended with STR.
 Creates new deft file with id and STR as name."
  (interactive (list (read-string "name: ")))
