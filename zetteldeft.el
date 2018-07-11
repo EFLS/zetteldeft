@@ -198,6 +198,8 @@ Creates new deft file with id and STR as name."
  ; Insert link from filename
    (spacemacs/set-leader-keys "di" 'zd-find-file-id-insert)
 ;; FILES
+ ; Open file
+   (spacemacs/set-leader-keys "do" 'zd-find-file)
  ; Create new file
    (spacemacs/set-leader-keys "dn" 'zd-new-file)
    (spacemacs/set-leader-keys "dN" 'zd-new-file-and-link)
