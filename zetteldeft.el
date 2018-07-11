@@ -118,6 +118,14 @@ Open if there is only one result."
   (insert (concat "§" (zd-file-id-stripped file)))
 )
 
+(defun zd-find-file-full-title-insert (file)
+"Find deft file FILE and insert its link id with title, prepended by §."
+ (interactive (list
+        (completing-read "File to insert id from: "
+        (deft-find-all-files-no-prefix))))
+  (insert (concat "§" (file-name-base file)))
+)
+
 (defun zd-new-file (str)
 "Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed."
  (interactive (list (read-string "name: ")))
@@ -197,6 +205,8 @@ Creates new deft file with id and STR as name."
 ;; LINKS
  ; Insert link from filename
    (spacemacs/set-leader-keys "di" 'zd-find-file-id-insert)
+ ; Insert link with full filename
+   (spacemacs/set-leader-keys "dI" 'zd-find-file-full-title-insert)
 ;; FILES
  ; Open file
    (spacemacs/set-leader-keys "do" 'zd-find-file)

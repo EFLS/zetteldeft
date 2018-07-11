@@ -359,6 +359,22 @@ Based on =deft-find-file=.
 )
 #+END_SRC
 
+*** =zd-find-file-full-title-insert= inserts file id from minibuffer
+
+Select file from minibuffer and insert its link, prepended by =§=.
+
+Based on =deft-find-file=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-find-file-full-title-insert (file)
+"Find deft file FILE and insert its link id with title, prepended by §."
+ (interactive (list
+        (completing-read "File to insert id from: "
+        (deft-find-all-files-no-prefix))))
+  (insert (concat "§" (file-name-base file)))
+)
+#+END_SRC
+
 ** New file
 *** =zd-new-file= creates new file
 
@@ -511,6 +527,8 @@ Can be called from any mode.
 ;; LINKS
  ; Insert link from filename
    (spacemacs/set-leader-keys "di" 'zd-find-file-id-insert)
+ ; Insert link with full filename
+   (spacemacs/set-leader-keys "dI" 'zd-find-file-full-title-insert)
 ;; FILES
  ; Open file
    (spacemacs/set-leader-keys "do" 'zd-find-file)
