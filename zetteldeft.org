@@ -554,3 +554,20 @@ Auto-generate a list of tags.
 
 Might exceed my elisp-fu.
 
+** HTML export
+
+Export HTML pages with clickeable links between notes.
+
+** Markdown export
+
+Export markdown through =pandoc=.
+
+** Templates
+
+A system for note templates.
+
+** Minor mode
+
+Create a minor mode on top of org-mode with some niceties:
+ - higlight links & tags
+ - clickeable links
