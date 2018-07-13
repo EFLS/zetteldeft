@@ -14,9 +14,11 @@
 :end:
 :export:
 #+OPTIONS: date:nil
-#+EXPORT_FILE_NAME: ./doc/zetteldeft
-#+LATEX_HEADER: \usepackage[]{efls-doc}
+#+EXPORT_FILE_NAME: ./docs/index
+# CSS
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
+# PDF
+#+LATEX_HEADER: \usepackage[]{efls-doc}
 :end:
 
 * What?
