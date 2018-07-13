@@ -50,7 +50,7 @@ A link is indicated by a =§= character, followed by the id.
 For example: =§2018-07-08-2115= should link to the file above.
 A link can appear anywhere in the text.
 
-When searching deft with the *id* as a filter, you'll find both the original note (with the id as its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search=.
+When searching deft with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
 
 Notes can contain *tags*, prepended with a =#=.
 This is a tag: =#tag=.
@@ -63,7 +63,7 @@ To open a note from a link, use =zd-avy-file-search=.
 ** Basic functions
 
 Some functions to get started.
-I created some more, but these are the ones I use most often.
+I created more, but these should be enough to get you started.
 Default keybindings are set at the bottom -- and meant for spacemacs.
 
 | Function               | Use                              | Keybinding |
@@ -130,7 +130,7 @@ Tries to get, in the following order:
  - hashtags: =§=, =#= or =@=
  - words
 
-Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-get-thing-at-point ()
@@ -151,7 +151,7 @@ Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issue
 
 Search the thing at point.
 
-Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-at-point ()
@@ -171,7 +171,7 @@ Open if there is only one result"
 Search with deft for given string.
 If there is only one result, that file is opened, unless additional argument is true.
 
-Based on user =saf-dmitry= on [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-global (str &optional dntOpn)
