@@ -490,6 +490,109 @@ The following function launches deft, clears the filter and enters =evil-insert-
 #+END_SRC
 
 
+* Compiling =org-file= from =tags=
+** Idea: compiling & exporting from a tag
+
+Use the =#+INCLUDE= feature of =org-mode= to add documents with a specific tag to a single document that can be easily exported.
+
+Steps:
+ 1. Get list of files with =#tag=
+    - Search deft for =#tag=
+    - Get list of files after filter: =deft-current-files=
+    - Sort list on filename, which is also link id and thus sorts on creation time.
+ 2. Include files in =.org= document. Use =dolist= on =deft-current-files=.
+    For each element, add:
+    - a heading with the stripped filename.
+    - a line with =#+INCLUDE: "filename.org"=.
+
+** =zd-avy-tag-org-include= inserts inclusion of selected tag
+
+One issue: includes the file from which the tag is selected...
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-tag-org-include ()
+"Inserts at point org-mode code to include all files with the selected tag."
+ (interactive)
+ (let (thingPoint)
+  (save-excursion
+   (avy-goto-char ?#)
+   (setq thingPoint (zd-get-thing-at-point)))
+  (zd-org-include-tagged-files thingPoint)
+))
+#+END_SRC
+
+** =zd-org-include-tagged-files= includes files with search results
+
+Inserts =org-mode= code at point to include the notes with a specific search item.
+
+For example
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(zd-org-include-tagged-files "#test")
+#+END_SRC
+
+inserts necessary code to include all files containing the tag =#test=.
+
+The results look like the following:
+
+#+BEGIN_SRC org
+\** File title
+
+#+INCLUDE: "/path/to/2018-07-13-2210 File title.org"
+#+END_SRC
+
+
+The code first gets a list of files that contain the search item, and inserts the necessary code for each file in that list.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-org-include-tagged-files (srch)
+"Inserts files with contain SRCH."
+ (dolist (zdFile (zd-get-file-list srch))
+  (zd-org-include-file zdFile)
+ ))
+#+END_SRC
+
+** =zd-get-file-list= returns file list on search
+
+Get a list of the files with =#tag=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-get-file-list (srch)
+"Returns a list of files with the search item SRCH."
+  ;; Sanitize the srch string
+  (setq srch (replace-regexp-in-string "[[:space:]\n]+" " " srch))
+  ;; Call deft search on the filter string
+  (deft-filter srch t)
+  deft-current-files
+)
+#+END_SRC
+
+** =zd-lift-file-title= returns file title from path
+
+Returns only the file title from a file, removing path, extension, and link ID.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-lift-file-title (zdFile)
+ (let ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+    "" baseName)
+))
+#+END_SRC
+
+** =zd-org-include-file= includes a file
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-org-include-file (zdFile)
+"Insert code to include org-file zdFile."
+ (insert
+   ;; Insert org-mode title
+   "\n** " (zd-lift-file-title zdFile) "\n"
+   ;; Insert #+INCLUDE: "file.org"
+   "#+INCLUDE: \"" zdFile "\"\n"
+ ))
+#+END_SRC
+
 * Keybindings
 
 Note: This setup is for =spacemacs=.
@@ -582,20 +685,6 @@ Create a list of saved searches, somewhere easily accessible.
 Auto-generate a list of tags.
 
 Might exceed my elisp-fu.
-
-** Generate export document for tag
-
-Use the =#+INCLUDE= feature of =org-mode= to add documents with a specific tag to a single document that can be easily exported.
-
-Steps:
- 1. Get list of files with =#tag=
-    - Search deft for =#tag=
-    - Get list of files after filter: =deft-current-files=
-    - Sort list on filename, which is also link id and thus sorts on creation time.
- 2. Include files in =.org= document. Use =dolist= on =deft-current-files=.
-    For each element, add:
-    - a heading with the stripped filename.
-    - a line with =#+INCLUDE: "filename.org"=.
 
 ** HTML export
 
