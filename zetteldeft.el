@@ -167,6 +167,15 @@ Creates new deft file with id and STR as name."
   (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
 ))
 
+(defun zd-deft-new-search ()
+"Launch deft, clear filter and enter insert state."
+ (interactive)
+ (deft)
+ (deft-filter-clear)
+ (require 'evil)
+ (evil-insert-state)
+)
+
 (with-eval-after-load 'deft
   (define-key spacemacs-deft-mode-map-prefix
     "o" 'efls/deft-open)
@@ -190,6 +199,7 @@ Creates new deft file with id and STR as name."
 (spacemacs/declare-prefix "d" "deft")
 ;; Launch deft
 (spacemacs/set-leader-keys "dd" 'deft)
+(spacemacs/set-leader-keys "dD" 'zd-deft-new-search)
 ;; SEARCH
  ; Search thing at point
    (spacemacs/set-leader-keys "ds" 'zd-search-at-point)
