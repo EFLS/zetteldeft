@@ -617,6 +617,20 @@ Auto-generate a list of tags.
 
 Might exceed my elisp-fu.
 
+** Generate export document for tag
+
+Use the =#+INCLUDE= feature of =org-mode= to add documents with a specific tag to a single document that can be easily exported.
+
+Steps:
+ 1. Get list of files with =#tag=
+    - Search deft for =#tag=
+    - Get list of files after filter: =deft-current-files=
+    - Sort list on filename, which is also link id and thus sorts on creation time.
+ 2. Include files in =.org= document. Use =dolist= on =deft-current-files=.
+    For each element, add:
+    - a heading with the stripped filename.
+    - a line with =#+INCLUDE: "filename.org"=.
+
 ** HTML export
 
 Export HTML pages with clickeable links between notes.
