@@ -469,6 +469,23 @@ If it is non-nil, search it after sanitizing.
 ))
 #+END_SRC
 
+** Utility functions
+*** Deft new search
+
+The following function launches deft, clears the filter and enters =evil-insert-state= (applicable to emacs only).
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-deft-new-search ()
+"Launch deft, clear filter and enter insert state."
+ (interactive)
+ (deft)
+ (deft-filter-clear)
+ (require 'evil)
+ (evil-insert-state)
+)
+#+END_SRC
+
+
 * Keybindings
 
 Note: This setup is for =spacemacs=.
@@ -519,6 +536,7 @@ Can be called from any mode.
 (spacemacs/declare-prefix "d" "deft")
 ;; Launch deft
 (spacemacs/set-leader-keys "dd" 'deft)
+(spacemacs/set-leader-keys "dD" 'zd-deft-new-search)
 ;; SEARCH
  ; Search thing at point
    (spacemacs/set-leader-keys "ds" 'zd-search-at-point)
