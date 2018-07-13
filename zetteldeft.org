@@ -493,19 +493,30 @@ The following function launches deft, clears the filter and enters =evil-insert-
 * Compiling =org-file= from =tags=
 ** Idea: compiling & exporting from a tag
 
-Use the =#+INCLUDE= feature of =org-mode= to add documents with a specific tag to a single document that can be easily exported.
+The following functions generate =orge= code to include files with a specific =#tag= (or search word in general).
+To do so, it inserts a heading, and a line with =#+INCLUDE= and the full path to the relevant notes.
 
-Steps:
- 1. Get list of files with =#tag=
-    - Search deft for =#tag=
-    - Get list of files after filter: =deft-current-files=
-    - Sort list on filename, which is also link id and thus sorts on creation time.
- 2. Include files in =.org= document. Use =dolist= on =deft-current-files=.
-    For each element, add:
-    - a heading with the stripped filename.
-    - a line with =#+INCLUDE: "filename.org"=.
+For example,
 
-** =zd-avy-tag-org-include= inserts inclusion of selected tag
+#+BEGIN_SRC emacs-lisp :tangle no
+(zd-org-include-tagged-files "#test")
+#+END_SRC
+
+inserts necessary code to include all files containing the tag =#test=.
+The results could look like the following:
+
+#+BEGIN_SRC org
+\* First file title
+#+INCLUDE: "/path/to/2018-07-13-2210 First file title.org"
+
+\* File two
+#+INCLUDE: "/path/to/2018-07-13-2223 File two.org"
+#+END_SRC
+
+The only function meant for use on the users end, is =zd-avy-tag-org-include=.
+All functions are documented below.
+
+** FIX =zd-avy-tag-org-include= inserts inclusion of selected tag
 
 One issue: includes the file from which the tag is selected...
 
@@ -524,23 +535,6 @@ One issue: includes the file from which the tag is selected...
 ** =zd-org-include-tagged-files= includes files with search results
 
 Inserts =org-mode= code at point to include the notes with a specific search item.
-
-For example
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(zd-org-include-tagged-files "#test")
-#+END_SRC
-
-inserts necessary code to include all files containing the tag =#test=.
-
-The results look like the following:
-
-#+BEGIN_SRC org
-\** File title
-
-#+INCLUDE: "/path/to/2018-07-13-2210 File title.org"
-#+END_SRC
-
 
 The code first gets a list of files that contain the search item, and inserts the necessary code for each file in that list.
 
