@@ -13,7 +13,7 @@
 # DEV: In development
 :end:
 :export:
-#+OPTIONS: date:nil
+#+OPTIONS: date:nil toc:nil
 #+EXPORT_FILE_NAME: ./docs/index
 # CSS
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
@@ -21,12 +21,14 @@
 #+LATEX_HEADER: \usepackage[]{efls-doc}
 :end:
 
-* What?
-
-*Short*: this document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+This document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
 Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
 
+#+TOC: headlines 2
+
+
+* What?
 ** A Zettelkasten system for =emacs= based on =deft=
 
 This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package in =emacs=.[fn:deft] I call it *zetteldeft*.
