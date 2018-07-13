@@ -513,8 +513,14 @@ The results could look like the following:
 #+INCLUDE: "/path/to/2018-07-13-2223 File two.org"
 #+END_SRC
 
-The only function meant for use on the users end, is =zd-avy-tag-org-include=.
+The only function meant for use on the users end, is =zd-org-include-tag=.
 All functions are documented below.
+
+** NEW =zd-org-include-tag= generates inclusion
+
+Asks for a =#tag= name and inserst headers and =#+INCLUDE= code for all files with said tag.
+Can be used on general search item as well.
+When used on =#tags=, make sure to include the =#= manually.
 
 ** FIX =zd-avy-tag-org-include= inserts inclusion of selected tag
 
