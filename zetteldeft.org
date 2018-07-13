@@ -25,7 +25,7 @@
 
 *Short*: this document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
-Want to read this file in a more pleasing format? Check the [[https://rawgit.com/EFLS/zetteldeft/master/doc/zetteldeft.html][html version]].
+Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
 
 ** A Zettelkasten system for =emacs= based on =deft=
 
@@ -85,12 +85,17 @@ This set of commands requires:
  - =deft=, obviously
  - =avy= comes in handy to jump & search (see the final set of functions)
 
-Either download this =org-file= and =org-tangle= it yourself.
-It should contain everything.
+From the github repository, either
+ - download the =org-file= and =org-tangle= it yourself. It should contain everything.
+ - or download the =zetteldeft.el= file.
 
-Or download the included =.el= file.
+Whichever way you go, load the =.el= file in emacs with
 
-Whichever way you go, load the =.el= file and you're good to go.
+#+BEGIN_SRC emacs-lisp
+(load "/path/to/zetteldeft.el")
+#+END_SRC
+
+and you're good to go!
 
 * =deft= setup
 
