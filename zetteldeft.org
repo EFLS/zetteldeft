@@ -29,14 +29,18 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 
 ** A Zettelkasten system for =emacs= based on =deft=
 
-This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package. I call it *zetteldeft*.
-It is inspired by the /The Archive/ app. For this and more on Zettelkasten, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on all kinds of apps.
+This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package in =emacs=.[fn:deft] I call it *zetteldeft*.
+It is inspired by the /The Archive/ app. For this and more on the Zettelkasten way of taking notes, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on all kinds of apps.
 
 What's here is intended for personal use. I hope it an be of use to someone, and let me know if you exand upon it.
 
 It is very much WIP, and I'm fairly new to =elisp=, so it might contain some stupid code.
 
 Anyway, here we go.
+
+[fn:deft] For those not yet familiar: *deft* is a note manager within =emacs=, for easily searching and retreiving plain text notes.
+It is inspired by the popular Notational Velocity.
+Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] and [[http://notational.net][notational.net]].
 
 ** Basic concepts
 
@@ -54,9 +58,9 @@ When searching deft with the *id* as a filter, you'll find both the original not
 
 Notes can contain *tags*, prepended with a =#=.
 This is a tag: =#tag=.
-Tags make it easy to retrieve notes.
+Tags make it easy to retrieve notes. They can appear anywhere in the note, but I'd suggest putting them somewhere at the top.
 
-Search both tags and links with =zd-search-at-point=.
+Call up a =deft= search on both tags and links with =zd-search-at-point=.
 To jump to a tag or link and search it, use =zd-avy-tag-search= and =zd-avy-link-search= respectively.
 To open a note from a link, use =zd-avy-file-search=.
 
