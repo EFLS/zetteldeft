@@ -95,7 +95,7 @@ From the github repository, either
 
 Whichever way you go, load the =.el= file in emacs with
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (load "/path/to/zetteldeft.el")
 #+END_SRC
 
