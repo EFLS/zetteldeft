@@ -537,6 +537,16 @@ The results could look like the following:
 The only function meant for use on the users end, is =zd-org-include-tag=.
 All functions are documented below.
 
+** Issues
+
+Sometimes, a tag appears in a file without the need for it to be included.
+
+For example, a file with a list of all tags will also include the tag one wants.
+
+Solution: filter the file list for specific tags.
+
+See, for example http://ergoemacs.org/emacs/elisp_filter_list.html
+
 ** NEW =zd-org-include-tag= generates inclusion
 
 Asks for a =#tag= name and inserst headers and =#+INCLUDE= code for all files with said tag.
