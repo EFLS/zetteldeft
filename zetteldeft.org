@@ -117,7 +117,7 @@ The following assumes =deft= is loaded manually in your dotfile, it merely confi
 Search the deft directory recursively, to include subdirectories.
 
 #+BEGIN_SRC emacs-lisp
-(setq deft-directory (concat org-directory "/notes/zetteldeft"))
+(setq deft-directory (concat org-directory "notes/zetteldeft/"))
 (setq deft-recursive t)
 #+END_SRC
 
