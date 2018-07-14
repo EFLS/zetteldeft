@@ -605,6 +605,9 @@ Returns only the file title from a file, removing path, extension, and link ID.
 
 ** =zd-org-include-file= includes a file
 
+Inserts the title as a new header, with the =#+INCLUDE= line below.
+Includes only from the second line onward, so that any title lines are omitted.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-include-file (zdFile)
 "Insert code to include org-file zdFile."
@@ -612,7 +615,7 @@ Returns only the file title from a file, removing path, extension, and link ID.
    ;; Insert org-mode title
    "\n* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org"
-   "#+INCLUDE: \"" zdFile "\"\n"
+   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
  ))
 #+END_SRC
 
