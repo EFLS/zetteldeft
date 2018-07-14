@@ -547,15 +547,24 @@ Solution: filter the file list for specific tags.
 
 See, for example http://ergoemacs.org/emacs/elisp_filter_list.html
 
-** NEW =zd-org-include-tag= generates inclusion
+** =zd-org-include-tag= generates inclusion
 
 Asks for a =#tag= name and inserst headers and =#+INCLUDE= code for all files with said tag.
 Can be used on general search item as well.
 When used on =#tags=, make sure to include the =#= manually.
 
-** FIX =zd-avy-tag-org-include= inserts inclusion of selected tag
+#+BEGIN_SRC emacs-lisp
+(defun zd-org-include-tag (zdTag)
+"Inserts at point org-mode code to include all files with the selected tag."
+ (interactive (list (read-string "tag (include the #): ")))
+ (zd-org-include-tagged-files zdTag)
+)
+#+END_SRC
 
-One issue: includes the file from which the tag is selected...
+
+** =zd-avy-tag-org-include= inserts inclusion of selected tag
+
+Select a tag through =avy= and include links to all files with the selected tag.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-tag-org-include ()
@@ -569,7 +578,9 @@ One issue: includes the file from which the tag is selected...
 ))
 #+END_SRC
 
-** =zd-org-include-tagged-files= includes files with search results
+** FIX =zd-org-include-tagged-files= includes files with search results
+
+*Fix* sorting of the list. Currently sorted by with newest on top. Should be reversed?
 
 Inserts =org-mode= code at point to include the notes with a specific search item.
 
@@ -586,6 +597,7 @@ The code first gets a list of files that contain the search item, and inserts th
 ** =zd-get-file-list= returns file list on search
 
 Get a list of the files with =#tag=.
+List is sorted by title of file, i.e. by link id with newest on top.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-get-file-list (srch)
@@ -593,9 +605,10 @@ Get a list of the files with =#tag=.
   ;; Sanitize the srch string
   (setq srch (replace-regexp-in-string "[[:space:]\n]+" " " srch))
   ;; Call deft search on the filter string
-  (deft-filter srch t)
-  deft-current-files
-)
+  (let ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files
+))
 #+END_SRC
 
 ** =zd-lift-file-title= returns file title from path
@@ -618,7 +631,7 @@ Returns only the file title from a file, removing path, extension, and link ID.
 "Insert code to include org-file zdFile."
  (insert
    ;; Insert org-mode title
-   "\n** " (zd-lift-file-title zdFile) "\n"
+   "\n* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org"
    "#+INCLUDE: \"" zdFile "\"\n"
  ))
