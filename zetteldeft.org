@@ -261,6 +261,18 @@ Here is a function to generate an id string in said format.
 )
 #+END_SRC
 
+*** =zd-id-insert= inserts id
+
+A helper function to insert a generated id.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-id-insert ()
+ (interactive)
+ "Inserts an id in `zd-id-format'."
+ (insert (zd-generate-id) " ")
+)
+#+END_SRC
+
 *** FIX =zd-id-sanitized= cleans ids
 
 Returns the string stripped from everything that is not a number or a =-=.
