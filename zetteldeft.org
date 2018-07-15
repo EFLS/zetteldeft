@@ -516,6 +516,8 @@ Deft specific keybindings behind the =,= prefix.
 (with-eval-after-load 'deft
   (define-key spacemacs-deft-mode-map-prefix
     "o" 'efls/deft-open)
+  (define-key spacemacs-deft-mode-map-prefix
+    [?\t] 'efls/deft-open-preview)
  )
 #+END_SRC
 
@@ -530,11 +532,22 @@ That final part is what the =t= argument does.
 )
 #+END_SRC
 
+Let's add another function, to simply preview in the other window, i.e. not switch focus to it.
+
+#+BEGIN_SRC emacs-lisp
+(defun efls/deft-open-preview ()
+ (interactive)
+ (deft-open-file-other-window)
+)
+#+END_SRC
+
 
 To select results from the item list without leaving the =insert= state, I add the following keys.
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'deft
+  (define-key deft-mode-map
+    (kbd "<tab>") 'efls/deft-open-preview)
   (define-key deft-mode-map
     (kbd "s-j") 'evil-next-line)
   (define-key deft-mode-map
