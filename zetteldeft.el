@@ -205,6 +205,14 @@ Opens immediately if there is only one result."
       (deft-update-visiting-buffers old-filename new-filename)
       (deft-refresh))))
 
+(defun zd-insert-org-title ()
+ (interactive)
+ (insert
+   "#+title: "
+   (zd-lift-file-title (file-name-base (buffer-file-name)))
+   "\n"
+   ))
+
 (defun zd-org-include-tag (zdTag)
 "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the promt."
  (interactive (list (read-string "tag (include the #): ")))

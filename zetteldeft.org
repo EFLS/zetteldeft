@@ -554,6 +554,23 @@ Anyway, best to use this only when visiting a file in the deft directory.
       (deft-refresh))))
 #+END_SRC
 
+*** =zd-insert-org-title= inserts file title in org-mode
+
+Easily insert the title of the current file in =org-mode= syntax, i.e. as a =#+title:= line.
+
+The code gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-insert-org-title ()
+ (interactive)
+ (insert
+   "#+title: "
+   (zd-lift-file-title (file-name-base (buffer-file-name)))
+   "\n"
+   ))
+#+END_SRC
+
+
 * Compiling a single =org= from =tags=
 ** Idea: including notes with given tag
 
