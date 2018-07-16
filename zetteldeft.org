@@ -169,12 +169,11 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-at-point ()
 "Search deft with thing-at-point as filter.
-Thing can be a double-bracketed link, a hashtag, or a word.
-Open if there is only one result"
+Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
   (let ((string (zd-get-thing-at-point)))
    (if string
-       (zd-search-global string)
+       (zd-search-global string t)
      (user-error "No search term at point")))
   )
 #+END_SRC
