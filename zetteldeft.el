@@ -188,6 +188,23 @@ Opens immediately if there is only one result."
  (evil-insert-state)
 )
 
+(defun zd-file-rename ()
+"Rename the current file via the deft function. Use this on files in the deft-directory."
+ (interactive)
+  (let ((old-filename (buffer-file-name))
+        (deft-dir (file-name-as-directory deft-directory))
+        new-filename old-name new-name)
+    (when old-filename
+      (setq old-name (deft-base-filename old-filename))
+      (setq new-name (read-string
+                      (concat "Rename " old-name " to (without extension): ")
+                      old-name))
+      (setq new-filename
+            (concat deft-dir new-name "." deft-default-extension))
+      (rename-file old-filename new-filename)
+      (deft-update-visiting-buffers old-filename new-filename)
+      (deft-refresh))))
+
 (defun zd-org-include-tag (zdTag)
 "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the promt."
  (interactive (list (read-string "tag (include the #): ")))
@@ -285,5 +302,7 @@ Opens immediately if there is only one result."
  ; Create new file
    (spacemacs/set-leader-keys "dn" 'zd-new-file)
    (spacemacs/set-leader-keys "dN" 'zd-new-file-and-link)
+ ; Rename file
+   (spacemacs/set-leader-keys "dr" 'zd-file-rename)
 ;; UTILITIES
 (spacemacs/set-leader-keys "dR" 'deft-refresh)

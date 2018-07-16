@@ -527,6 +527,32 @@ The following function launches deft, clears the filter and enters =evil-insert-
 )
 #+END_SRC
 
+*** =zd-file-rename= renames visited file
+
+Rename the current file.
+Based on the function =deft-rename-file= with only minor changes in the way =old-filename= is set: from current buffer rather than from =deft= search buffer.
+
+Probably requires some more testing.
+Anyway, best to use this only when visiting a file in the deft directory.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-file-rename ()
+"Rename the current file via the deft function. Use this on files in the deft-directory."
+ (interactive)
+  (let ((old-filename (buffer-file-name))
+        (deft-dir (file-name-as-directory deft-directory))
+        new-filename old-name new-name)
+    (when old-filename
+      (setq old-name (deft-base-filename old-filename))
+      (setq new-name (read-string
+                      (concat "Rename " old-name " to (without extension): ")
+                      old-name))
+      (setq new-filename
+            (concat deft-dir new-name "." deft-default-extension))
+      (rename-file old-filename new-filename)
+      (deft-update-visiting-buffers old-filename new-filename)
+      (deft-refresh))))
+#+END_SRC
 
 * Compiling a single =org= from =tags=
 ** Idea: including notes with given tag
@@ -758,6 +784,8 @@ Can be called from any mode.
  ; Create new file
    (spacemacs/set-leader-keys "dn" 'zd-new-file)
    (spacemacs/set-leader-keys "dN" 'zd-new-file-and-link)
+ ; Rename file
+   (spacemacs/set-leader-keys "dr" 'zd-file-rename)
 ;; UTILITIES
 (spacemacs/set-leader-keys "dR" 'deft-refresh)
 #+END_SRC
