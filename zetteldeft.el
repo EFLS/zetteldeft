@@ -188,6 +188,45 @@ Opens immediately if there is only one result."
  (evil-insert-state)
 )
 
+(defun zd-org-include-tag (zdTag)
+"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the promt."
+ (interactive (list (read-string "tag (include the #): ")))
+ (zd-org-include-tagged-files zdTag)
+)
+
+(defun zd-org-include-tagged-files (srch)
+"Inserts files with contain SRCH."
+ (dolist (zdFile (zd-get-file-list srch))
+  (zd-org-include-file zdFile)
+ ))
+
+(defun zd-get-file-list (srch)
+"Returns a list of files with the search item SRCH."
+  (let ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files
+))
+
+(defun zd-lift-file-title (zdFile)
+ (let ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+    "" baseName)
+))
+
+(defun zd-org-include-file (zdFile)
+"Insert code to include org-file zdFile."
+ (insert
+   ;; Insert org-mode title
+   "\n* " (zd-lift-file-title zdFile) "\n"
+   ;; Insert #+INCLUDE: "file.org" :lines 2-
+   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
+ ))
+
+(font-lock-add-keywords 'org-mode '(
+  ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)
+  ))
+
 (with-eval-after-load 'deft
   (define-key spacemacs-deft-mode-map-prefix
     "o" 'efls/deft-open)
