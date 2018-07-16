@@ -3,6 +3,12 @@
 
 (setq deft-extensions '("org" "md" "txt"))
 
+(setq deft-strip-summary-regexp
+ (concat "\\("
+         "[\n\t]" ;; blank
+         "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+         "\\)"))
+
 (defun zd-get-thing-at-point ()
 "Return the thing at point, which can be a link, tag or word."
   (require 'thingatpt)
@@ -18,12 +24,11 @@
 
 (defun zd-search-at-point ()
 "Search deft with thing-at-point as filter.
-Thing can be a double-bracketed link, a hashtag, or a word.
-Open if there is only one result"
+Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
   (let ((string (zd-get-thing-at-point)))
    (if string
-       (zd-search-global string)
+       (zd-search-global string t)
      (user-error "No search term at point")))
   )
 
@@ -70,6 +75,12 @@ Open if there is only one result."
 (defun zd-generate-id ()
  "Generates an id in `zd-id-format'."
  (format-time-string zd-id-format)
+)
+
+(defun zd-id-insert ()
+ (interactive)
+ "Inserts an id in `zd-id-format'."
+ (insert (zd-generate-id) " ")
 )
 
 (defun zd-id-sanitized (str)
@@ -152,7 +163,8 @@ Creates new deft file with id and STR as name."
 ))
 
 (defun zd-avy-link-search ()
-"Call on avy to jump and search link ids indicated with §."
+"Call on avy to jump and search link ids indicated with §.
+Opens immediately if there is only one result."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
@@ -179,20 +191,31 @@ Creates new deft file with id and STR as name."
 (with-eval-after-load 'deft
   (define-key spacemacs-deft-mode-map-prefix
     "o" 'efls/deft-open)
+  (define-key spacemacs-deft-mode-map-prefix
+    [?\t] 'efls/deft-open-preview)
  )
 
-(defun efls/deft-open ()
+(defun efls/deft-open-other ()
  (interactive)
  (deft-open-file-other-window t)
 )
 
+(defun efls/deft-open-preview ()
+ (interactive)
+ (deft-open-file-other-window)
+)
+
 (with-eval-after-load 'deft
+  (define-key deft-mode-map
+    (kbd "<tab>") 'efls/deft-open-preview)
+  (define-key deft-mode-map
+    (kbd "<s-return>") 'efls/deft-open-other)
   (define-key deft-mode-map
     (kbd "s-j") 'evil-next-line)
   (define-key deft-mode-map
     (kbd "s-k") 'evil-previous-line)
   (define-key deft-mode-map
-    (kbd "s-i") 'efls/deft-open)
+    (kbd "s-i") 'efls/deft-open-other)
 )
 
 ;; Prefix
