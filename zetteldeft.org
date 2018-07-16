@@ -21,22 +21,27 @@
 #+LATEX_HEADER: \usepackage[]{efls-doc}
 :end:
 
-This document contains all the source code to a set of functions for emacs, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+* Introduction                                 :ignore:
+
+This document contains all the source code to a set of functions for =emacs= which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
 Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
+Read on for an introduction and some documentation.
 
+# Table of Contents
 #+TOC: headlines 2
-
 
 * What?
 ** A Zettelkasten system for =emacs= based on =deft=
 
-This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package in =emacs=.[fn:deft] I call it *zetteldeft*.
-It is inspired by the /The Archive/ app. For this and more on the Zettelkasten way of taking notes, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on all kinds of apps.
+This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package in =emacs=.[fn:deft]
+I call it *zetteldeft*.
+It is inspired by the /The Archive/ app. For this and more on the Zettelkasten way of taking notes, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on both software and the specifics of the Zettelkasten philosophy.
 
-What's here is intended for personal use. I hope it an be of use to someone, and let me know if you exand upon it.
+The code that follows is created and maintained for my personal use, shared here in hope that it can benefit others as well.
+I'd be happy to learn how you use it and expand upon it.
 
-It is very much WIP, and I'm fairly new to =elisp=, so it might contain some stupid code.
+It is very much WIP and I'm fairly new to =elisp=, so it might contain some stupid code.
 
 Anyway, here we go.
 
@@ -49,14 +54,14 @@ Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] a
 *Notes* reside in the =deft-directory=.
 Notes are written in =org-mode= (although this can be changed easily).
 
-The name of a note starts with a unique *id* based on the time and the date, for example: =2018-07-09-2115 This is a note.org=.
+The filename of a note starts with a unique *id* based on the time and the date, for example: =2018-07-09-2115 This is a note.org=.
 
 This unique id can be used to *link* notes together.
 A link is indicated by a =§= character, followed by the id.
 For example: =§2018-07-08-2115= should link to the file above.
 A link can appear anywhere in the text.
 
-When searching deft with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
+When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
 
 Notes can contain *tags*, prepended with a =#=.
 This is a tag: =#tag=.
@@ -156,6 +161,8 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 *** =zd-search-at-point= thing at point
 
 Search the thing at point.
+Note that calling =zd-search-at-point= on a =§= link includes =§= in the filter string.
+
 
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
@@ -461,7 +468,8 @@ Jumps to the =§= identifier and searches for the thing at point -- excluding th
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-link-search ()
-"Call on avy to jump and search link ids indicated with §."
+"Call on avy to jump and search link ids indicated with §.
+Opens immediately if there is only one result."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
