@@ -550,7 +550,7 @@ A small function to open a file in the other window and shifting focus to it.
 That final part is what the =t= argument does.
 
 #+BEGIN_SRC emacs-lisp
-(defun efls/deft-open ()
+(defun efls/deft-open-other ()
  (interactive)
  (deft-open-file-other-window t)
 )
@@ -573,11 +573,13 @@ To select results from the item list without leaving the =insert= state, I add t
   (define-key deft-mode-map
     (kbd "<tab>") 'efls/deft-open-preview)
   (define-key deft-mode-map
+    (kbd "<s-return>") 'efls/deft-open-other)
+  (define-key deft-mode-map
     (kbd "s-j") 'evil-next-line)
   (define-key deft-mode-map
     (kbd "s-k") 'evil-previous-line)
   (define-key deft-mode-map
-    (kbd "s-i") 'efls/deft-open)
+    (kbd "s-i") 'efls/deft-open-other)
 )
 #+END_SRC
 
