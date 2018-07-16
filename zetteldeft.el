@@ -90,7 +90,7 @@ Open if there is only one result."
 
 (defun zd-file-id-stripped (file)
 "Returns file id stripped from given filename FILE."
- (let ((file (substring file 0 15)))
+ (let ((file (substring file 0 16)))
    (zd-id-sanitized file)
 ))
 
