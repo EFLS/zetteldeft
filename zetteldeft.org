@@ -528,6 +528,21 @@ The following function launches deft, clears the filter and enters =evil-insert-
 #+END_SRC
 
 
+* Aesthetics
+** Highlighting zetteldeft links
+
+To highlight zetteldeft links, let's add a =font-lock= keyword to =org-mode=.
+
+Currently, the regexp to find links is hardcoded.
+
+Highlighting not working in comments.
+
+#+BEGIN_SRC emacs-lisp
+(font-lock-add-keywords 'org-mode '(
+  ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)
+  ))
+#+END_SRC
+
 * Keybindings
 
 Note: This setup is for =spacemacs=.
