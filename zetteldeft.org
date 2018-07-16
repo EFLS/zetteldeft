@@ -130,6 +130,23 @@ First of this list is the default for new notes.
 (setq deft-extensions '("org" "md" "txt"))
 #+END_SRC
 
+** Ignore more =org-mode= metadata
+
+I tend to write =org-mode= titles with =#+title:= (i.e., uncapitalized). Also other =org-mode= code at the beginning is written in lower case.
+
+In order to filter these from the deft summary, let's alter the regular expression:
+
+#+BEGIN_SRC emacs-lisp
+(setq deft-strip-summary-regexp
+ (concat "\\("
+         "[\n\t]" ;; blank
+         "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+         "\\)"))
+#+END_SRC
+
+Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
+
+
 * =zetteldeft= functions
 ** Search functions
 *** =zd-get-thing-at-point= returns string
