@@ -28,6 +28,11 @@ This document contains all the source code to a set of functions for =emacs= whi
 Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
 Read on for an introduction and some documentation.
 
+Latest additions:
+ - *16 July*: Compile a single =org= that includes files with a chosen tag.
+ - *16 July*: Highlight zetteldeft links in =org-mode=.
+
+
 # Table of Contents
 #+TOC: headlines 2
 
@@ -312,12 +317,14 @@ Problematic when stripping the id from a filename, for example.
 
 The following regular expression should work better: =[0-9-]\\{2,\\}-[0-9-]+= (but cannot be used with =replace-regexp-in-string= function). Something to fix.
 
-*** =zd-file-id-stripped= strips file id from string
+*** FIX =zd-file-id-stripped= strips file id from string
 
 Attempts to strip the file id from a string.
 
+This requires a *fix*, or better yet, a reimplementation. Too crude at the moment.
+
 First, take only 17 first characters from the input string.
-Next, ommit anything that is not a digit or a dash.
+Next, omit anything that is not a digit or a dash.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-file-id-stripped (file)
@@ -358,7 +365,7 @@ Add the ID from the current file to the kill ring.
 )
 #+END_SRC
 
-** Finding files
+** Finding & linking files from minibuffer
 *** =zd-find-file= opens file from minibuffer
 
 Select file from the deft folder from the minibuffer.
@@ -375,7 +382,7 @@ Based on =deft-find-file=.
 )
 #+END_SRC
 
-*** =zd-find-file-id-copy= copies file id from minibuffer
+*** =zd-find-file-id-copy= copies file id
 
 Select file from minibuffer and add its link id to kill ring.
 
@@ -391,7 +398,7 @@ Based on =deft-find-file=.
 )
 #+END_SRC
 
-*** =zd-find-file-id-insert= inserts file id from minibuffer
+*** =zd-find-file-id-insert= inserts file id
 
 Select file from minibuffer and insert its link, prepended by =§=.
 
@@ -407,7 +414,7 @@ Based on =deft-find-file=.
 )
 #+END_SRC
 
-*** =zd-find-file-full-title-insert= inserts file id from minibuffer
+*** =zd-find-file-full-title-insert= inserts full file title
 
 Select file from minibuffer and insert its link, prepended by =§=.
 
@@ -423,7 +430,7 @@ Based on =deft-find-file=.
 )
 #+END_SRC
 
-** New file
+** New file creation
 *** =zd-new-file= creates new file
 
 Create new file with filename as =zd-id-format= and a string.
@@ -626,19 +633,21 @@ To change this, edit the inserted strings in the =zd-org-include-file= function.
 
 *** Sorting
 
-Currently unsorted, or rather: sorted as =deft= provides the results.
+The files included are unsorted, or rather: sorted as =deft= provides the results.
 
 Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
 
+As a solution, use =org-sort= manually after running =zd-org-include-tag=.
+
 ** =zd-org-include-tag= generates =#+INCLUDE= code
 
-Asks for a =#tag= name and inserts headers and =#+INCLUDE= code for all files with said tag.
+Asks user for a =#tag= name and inserts headers and =#+INCLUDE= code for all files with said tag.
 Can be used on general search item as well.
 When used on =#tag=, make sure to include the =#= manually.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-include-tag (zdTag)
-"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the promt."
+"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
  (interactive (list (read-string "tag (include the #): ")))
  (zd-org-include-tagged-files zdTag)
 )
@@ -686,7 +695,7 @@ Returns only the file title from a file, removing path, extension, and link ID.
 ))
 #+END_SRC
 
-** =zd-org-include-file= includes a file
+** =zd-org-include-file= includes a file in =org= format
 
 Inserts the title as a new header, with the =#+INCLUDE= line below.
 Includes only from the second line onward, so that any =#+TITLE= lines are omitted.
