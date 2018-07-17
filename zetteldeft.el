@@ -137,13 +137,17 @@ Open if there is only one result."
   (insert (concat "§" (file-name-base file)))
 )
 
-(defun zd-new-file (str)
-"Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed."
+(defun zd-new-file (str &optional empty)
+"Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
+
+After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."
  (interactive (list (read-string "name: ")))
  (let* ((zdId (zd-generate-id))
         (zdName (concat zdId " " str)))
  (deft-new-file-named zdName)
  (kill-new zdName)
+ (unless empty (zd-insert-org-title))
+ (when (featurep 'evil) (evil-insert-state))
 ))
 
 (defun zd-new-file-and-link (str)
@@ -184,8 +188,7 @@ Opens immediately if there is only one result."
  (interactive)
  (deft)
  (deft-filter-clear)
- (require 'evil)
- (evil-insert-state)
+ (when (featurep 'evil) (evil-insert-state))
 )
 
 (defun zd-file-rename ()
@@ -214,7 +217,7 @@ Opens immediately if there is only one result."
    ))
 
 (defun zd-org-include-tag (zdTag)
-"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the promt."
+"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
  (interactive (list (read-string "tag (include the #): ")))
  (zd-org-include-tagged-files zdTag)
 )
