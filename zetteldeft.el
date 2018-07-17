@@ -66,8 +66,10 @@ Open if there is only one result."
  (zd-search-global (zd-id-current-file) t)
 )
 
-(defvar zd-id-format "%Y-%m-%d-%H%M"
-"Format used when generating zetteldeft IDs."
+(defcustom zd-id-format "%Y-%m-%d-%H%M"
+  "Format used when generating zetteldeft IDs."
+  :type 'string
+  :group 'zetteldeft
 )
 
 (setq deft-new-file-format zd-id-format)
@@ -214,7 +216,14 @@ Opens immediately if there is only one result."
    "#+title: "
    (zd-lift-file-title (file-name-base (buffer-file-name)))
    "\n"
+   zd-string-below-title
    ))
+
+(defcustom zd-string-below-title ""
+  "String inserted below title when `zd-insert-org-title' is called. Empty by default."
+  :type 'string
+  :group 'zetteldeft
+)
 
 (defun zd-org-include-tag (zdTag)
 "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."

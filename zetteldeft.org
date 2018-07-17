@@ -29,7 +29,8 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *16 July*: Compile a single =org= that includes files with a chosen tag.
+ - *17 July*: Insert note title with =zd-insert-org-title=.
+ - *16 July*: Compile a single =org= that includes tagged files with =zd-org-include-tag=.
  - *16 July*: Highlight zetteldeft links in =org-mode=.
 
 
