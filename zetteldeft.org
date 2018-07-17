@@ -268,8 +268,10 @@ Open if there is only one result."
 String format when generating ids.
 
 #+BEGIN_SRC emacs-lisp
-(defvar zd-id-format "%Y-%m-%d-%H%M"
-"Format used when generating zetteldeft IDs."
+(defcustom zd-id-format "%Y-%m-%d-%H%M"
+  "Format used when generating zetteldeft IDs."
+  :type 'string
+  :group 'zetteldeft
 )
 #+END_SRC
 
