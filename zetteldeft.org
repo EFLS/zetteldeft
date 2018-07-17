@@ -514,7 +514,7 @@ If it is non-nil, search it after sanitizing.
 ** Utility functions
 *** Deft new search
 
-The following function launches deft, clears the filter and enters =evil-insert-state= (applicable to emacs only).
+The following function launches deft, clears the filter and enters =evil-insert-state= (when evil is used).
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-deft-new-search ()
@@ -522,8 +522,7 @@ The following function launches deft, clears the filter and enters =evil-insert-
  (interactive)
  (deft)
  (deft-filter-clear)
- (require 'evil)
- (evil-insert-state)
+ (when (featurep 'evil) (evil-insert-state))
 )
 #+END_SRC
 
