@@ -793,8 +793,6 @@ To select results from the item list without leaving the =insert= state, I add t
     (kbd "s-j") 'evil-next-line)
   (define-key deft-mode-map
     (kbd "s-k") 'evil-previous-line)
-  (define-key deft-mode-map
-    (kbd "s-i") 'efls/deft-open-other)
 )
 #+END_SRC
 
