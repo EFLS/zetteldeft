@@ -29,8 +29,8 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *18 July*: Include a list of links with =zd-insert-list-links=, or a list of files with =zd-org-include-search=.
  - *17 July*: Insert note title with =zd-insert-org-title=.
- - *16 July*: Compile a single =org= that includes tagged files with =zd-org-include-tag=.
  - *16 July*: Highlight zetteldeft links in =org-mode=.
 
 
@@ -599,21 +599,90 @@ Customize the string to be inserted below the title.
 )
 #+END_SRC
 
-* Compiling a single =org= from =tags=
-** Idea and example
-*** Including notes with given tag
+* Gathering notes
+** Idea
 
-The following functions generate =org= code to include files with a specific =#tag= (or search word in general).
+Sometimes you want to easily gather all notes with a certain tag or search term.
+Say you want to quickly generate a list of links to all files including the tag =#zetteldeft=.
+
+The following functions automate that process:
+ - =zd-insert-list-links= promts for a search string and inserts a list of notes
+ - =zd-org-include-search= generates =#+INCLUDE= code for =org-mode= for these files.
+
+** Helper functions
+*** =zd-get-file-list= returns file list on search
+
+Get a list of the files with given search string.
+
+To *fix*: sorting of results.
+
+The code searches for the given string and returns =deft-current-files=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-get-file-list (srch)
+"Returns a list of files with the search item SRCH."
+  (let ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files
+))
+#+END_SRC
+
+
+*** =zd-lift-file-title= returns file title from path
+
+Returns only the file title from a file, removing path, extension, and link ID.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-lift-file-title (zdFile)
+ (let ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+    "" baseName)
+))
+#+END_SRC
+
+** List of links
+*** =zd-insert-list-links= generates list with tagged files
+
+Creates and inserts a list with links to all files with selected search term.
+
+The code gets a list of files that contain the search string, runs through said list and inserts a link for each entry.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-insert-list-links (zdSrch)
+"Inserts at point a list of links to all deft files with a search string ZDSRCH.
+When searching for a tag, include # manually in the prompt."
+ (interactive (list (read-string "search string: ")))
+ (dolist (zdFile (zd-get-file-list zdSrch))
+  (zd-list-entry-file-link zdFile)
+))
+#+END_SRC
+
+*** =zd-list-entry-file-link= includes a file link as list entry
+
+Inserts for given file a link id and title as a list entry.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-list-entry-file-link (zdFile)
+"Insert ZDFILE as list entry."
+ (insert " - " (concat "§" (file-name-base zdFile)) "\n")
+)
+#+END_SRC
+
+
+** Compiling a single =org=
+*** Idea and example
+**** Including notes with given tag
 
 For each of the notes with the =#tag=, it inserts a heading, a line with =#+INCLUDE= and the full path to the relevant notes.
 This results in a single file that can be easily exported.
 
-The only function meant for use on the users end, is =zd-org-include-tag=.
+The only function meant for use on the users end, is =zd-org-include-search=.
 
 For example,
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(zd-org-include-tagged-files "#export")
+(zd-org-include-files "#export")
 #+END_SRC
 
 inserts necessary code to include all files containing the tag =#export=.
@@ -629,7 +698,7 @@ The results could look like the following:
 
 All functions are documented below.
 
-*** Usage example
+**** Semi-automated example
 
 You could, for example, add the following code to a document and execute (or evaluate) it from within =org-mode=.
 Add it under a "comment" type heading to prevent it from being exported itself, like so: =* COMMENT Code=.
@@ -643,7 +712,7 @@ Add it under a "comment" type heading to prevent it from being exported itself, 
     ;; Delete everything after
     (delete-region frst (point-max))
     ;; Include the files
-    (zd-org-include-tag "#tag")
+    (zd-org-include-search "#tag")
     ; Sort these entries alphabetically (set mark to use a region)
 ;   (goto-char frst) (set-mark (point-max))
 ;   (org-sort-entries nil ?a)
@@ -656,90 +725,40 @@ In order to also sort the entries alphabetically, uncomment the last two lines.
 
 Don't put the file with the above code in you =deft= folder, or it will attempt to include itself (since it has =#tag= in it).
 
-*** Issues & things to note
+**** Issues & things to note
 
 Before we look at the functions, a note on limitations of the current implementation.
 
-**** Over-enthousiastic inclusion
+1. *Over-enthousiastic inclusion*
+   Sometimes, a tag appears in a file without the need for it to be included.
+   For example, a file with a list of all tags will also include the tag one wants.
+   In the future, this might be resolved by filtering, for example with http://ergoemacs.org/emacs/elisp_filter_list.html.
 
-Sometimes, a tag appears in a file without the need for it to be included.
-For example, a file with a list of all tags will also include the tag one wants.
+2. *Inclusion from second line onwards*
+   Currently, the =#+INCLUDE= lines only include from the second line onwards.
+   This is a work-around to prevent =#+TITLE= lines from being included (and messing up the title on =org-export=.
+   To change this, edit the inserted strings in the =zd-org-include-file= function.
 
-In the future, this might be resolved by filtering, for example with http://ergoemacs.org/emacs/elisp_filter_list.html.
+3. *Sorting*
+   The files included are unsorted, or rather: sorted as =deft= provides the results.
+   Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
+   As a solution, use =org-sort= manually after running =zd-org-include-search=.
 
-**** Inclusion from second line onwards
+*** =zd-org-include-search= generates =#+INCLUDE= code
 
-Currently, the =#+INCLUDE= lines only include from the second line onwards.
-
-This is a work-around to prevent =#+TITLE= lines from being included (and messing up the title on =org-export=.
-
-To change this, edit the inserted strings in the =zd-org-include-file= function.
-
-**** Sorting
-
-The files included are unsorted, or rather: sorted as =deft= provides the results.
-
-Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
-
-As a solution, use =org-sort= manually after running =zd-org-include-tag=.
-
-** =zd-org-include-tag= generates =#+INCLUDE= code
-
-Asks user for a =#tag= name and inserts headers and =#+INCLUDE= code for all files with said tag.
-Can be used on general search item as well.
+Asks user for a search string and inserts headers and =#+INCLUDE= code for all files with said tag.
 When used on =#tag=, make sure to include the =#= manually.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-org-include-tag (zdTag)
+(defun zd-org-include-search (zdSrch)
 "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
  (interactive (list (read-string "tag (include the #): ")))
- (zd-org-include-tagged-files zdTag)
-)
-#+END_SRC
-
-** =zd-org-include-tagged-files= includes files with tag
-
-Inserts =org-mode= code at point to include the notes with a specific search item.
-
-The code first gets a list of files that contain the search item, and inserts the necessary code for each file in that list.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-org-include-tagged-files (srch)
-"Inserts files with contain SRCH."
- (dolist (zdFile (zd-get-file-list srch))
+ (dolist (zdFile (zd-get-file-list zdSrch))
   (zd-org-include-file zdFile)
- ))
-#+END_SRC
-
-** =zd-get-file-list= returns file list on search
-
-Get a list of the files with given search string.
-
-List should be sorted by title of file, i.e. by link id with newest on top.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-get-file-list (srch)
-"Returns a list of files with the search item SRCH."
-  (let ((deft-current-sort-method 'title))
-   (deft-filter srch t)
-   deft-current-files
 ))
 #+END_SRC
 
-** =zd-lift-file-title= returns file title from path
-
-Returns only the file title from a file, removing path, extension, and link ID.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-lift-file-title (zdFile)
- (let ((baseName (file-name-base zdFile)))
-   (replace-regexp-in-string
-    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-    "" baseName)
-))
-#+END_SRC
-
-** =zd-org-include-file= includes a file in =org= format
+*** =zd-org-include-file= includes a file in =org= format
 
 Inserts the title as a new header, with the =#+INCLUDE= line below.
 Includes only from the second line onward, so that any =#+TITLE= lines are omitted.
