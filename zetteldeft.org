@@ -13,7 +13,7 @@
 # DEV: In development
 :end:
 :export:
-#+OPTIONS: date:nil toc:nil
+#+OPTIONS: date:nil toc:nil H:4
 #+EXPORT_FILE_NAME: ./docs/index
 # CSS
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
@@ -427,7 +427,7 @@ Based on =deft-find-file=.
 (defun zd-find-file-full-title-insert (file)
 "Find deft file FILE and insert its link id with title, prepended by §."
  (interactive (list
-        (completing-read "File to insert id from: "
+        (completing-read "File to insert full title from: "
         (deft-find-all-files-no-prefix))))
   (insert (concat "§" (file-name-base file)))
 )
