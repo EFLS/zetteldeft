@@ -134,7 +134,7 @@ Open if there is only one result."
 (defun zd-find-file-full-title-insert (file)
 "Find deft file FILE and insert its link id with title, prepended by §."
  (interactive (list
-        (completing-read "File to insert id from: "
+        (completing-read "File to insert full title from: "
         (deft-find-all-files-no-prefix))))
   (insert (concat "§" (file-name-base file)))
 )
@@ -225,18 +225,6 @@ Opens immediately if there is only one result."
   :group 'zetteldeft
 )
 
-(defun zd-org-include-tag (zdTag)
-"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
- (interactive (list (read-string "tag (include the #): ")))
- (zd-org-include-tagged-files zdTag)
-)
-
-(defun zd-org-include-tagged-files (srch)
-"Inserts files with contain SRCH."
- (dolist (zdFile (zd-get-file-list srch))
-  (zd-org-include-file zdFile)
- ))
-
 (defun zd-get-file-list (srch)
 "Returns a list of files with the search item SRCH."
   (let ((deft-current-sort-method 'title))
@@ -249,6 +237,26 @@ Opens immediately if there is only one result."
    (replace-regexp-in-string
     "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
     "" baseName)
+))
+
+(defun zd-insert-list-links (zdSrch)
+"Inserts at point a list of links to all deft files with a search string ZDSRCH.
+When searching for a tag, include # manually in the prompt."
+ (interactive (list (read-string "search string: ")))
+ (dolist (zdFile (zd-get-file-list zdSrch))
+  (zd-list-entry-file-link zdFile)
+))
+
+(defun zd-list-entry-file-link (zdFile)
+"Insert ZDFILE as list entry."
+ (insert " - " (concat "§" (file-name-base zdFile)) "\n")
+)
+
+(defun zd-org-include-search (zdSrch)
+"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
+ (interactive (list (read-string "tag (include the #): ")))
+ (dolist (zdFile (zd-get-file-list zdSrch))
+  (zd-org-include-file zdFile)
 ))
 
 (defun zd-org-include-file (zdFile)
@@ -290,8 +298,6 @@ Opens immediately if there is only one result."
     (kbd "s-j") 'evil-next-line)
   (define-key deft-mode-map
     (kbd "s-k") 'evil-previous-line)
-  (define-key deft-mode-map
-    (kbd "s-i") 'efls/deft-open-other)
 )
 
 ;; Prefix
