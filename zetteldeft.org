@@ -599,9 +599,9 @@ Customize the string to be inserted below the title.
 )
 #+END_SRC
 
-
 * Compiling a single =org= from =tags=
-** Idea: including notes with given tag
+** Idea and example
+*** Including notes with given tag
 
 The following functions generate =org= code to include files with a specific =#tag= (or search word in general).
 
@@ -629,18 +629,45 @@ The results could look like the following:
 
 All functions are documented below.
 
-** Issues & things to note
+*** Usage example
 
-But first, a note on limitations of the current implementation.
+You could, for example, add the following code to a document and execute (or evaluate) it from within =org-mode=.
+Add it under a "comment" type heading to prevent it from being exported itself, like so: =* COMMENT Code=.
 
-*** Over-enthousiastic inclusion
+#+BEGIN_SRC emacs-lisp :tangle no
+(let (frst)
+  (save-excursion
+    ;; Move to next heading
+    (outline-next-heading)
+    (setq frst (point))
+    ;; Delete everything after
+    (delete-region frst (point-max))
+    ;; Include the files
+    (zd-org-include-tag "#tag")
+    ; Sort these entries alphabetically (set mark to use a region)
+;   (goto-char frst) (set-mark (point-max))
+;   (org-sort-entries nil ?a)
+  ))
+#+END_SRC
+
+The code deletes everything after the current header and inserts all notes with =#tag= in them.
+
+In order to also sort the entries alphabetically, uncomment the last two lines.
+
+Don't put the file with the above code in you =deft= folder, or it will attempt to include itself (since it has =#tag= in it).
+
+*** Issues & things to note
+
+Before we look at the functions, a note on limitations of the current implementation.
+
+**** Over-enthousiastic inclusion
 
 Sometimes, a tag appears in a file without the need for it to be included.
 For example, a file with a list of all tags will also include the tag one wants.
 
 In the future, this might be resolved by filtering, for example with http://ergoemacs.org/emacs/elisp_filter_list.html.
 
-*** Inclusion from second line onwards
+**** Inclusion from second line onwards
 
 Currently, the =#+INCLUDE= lines only include from the second line onwards.
 
@@ -648,7 +675,7 @@ This is a work-around to prevent =#+TITLE= lines from being included (and messin
 
 To change this, edit the inserted strings in the =zd-org-include-file= function.
 
-*** Sorting
+**** Sorting
 
 The files included are unsorted, or rather: sorted as =deft= provides the results.
 
