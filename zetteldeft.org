@@ -576,7 +576,7 @@ Easily insert the title of the current file in =org-mode= syntax, i.e. as a =#+
 The code gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
 
 Below the title, an additional template string is inserted automatically.
-This string, variable =zd-string-below-title=, can be customized and is empty by default.
+This string, variable =zd-string-after-title=, can be customized and is empty by default.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-org-title ()
@@ -584,19 +584,18 @@ This string, variable =zd-string-below-title=, can be customized and is empty by
  (insert
    "#+title: "
    (zd-lift-file-title (file-name-base (buffer-file-name)))
-   "\n"
-   zd-string-below-title
-   ))
+   zd-string-after-title))
 #+END_SRC
 
 Customize the string to be inserted below the title.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zd-string-below-title ""
-  "String inserted below title when `zd-insert-org-title' is called. Empty by default."
+(defcustom zd-string-after-title ""
+  "String inserted below title when `zd-insert-org-title' is called.
+Empty by default.
+Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
-  :group 'zetteldeft
-)
+  :group 'zetteldeft)
 #+END_SRC
 
 * Gathering notes
