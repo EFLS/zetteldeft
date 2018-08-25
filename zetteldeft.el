@@ -208,22 +208,31 @@ Opens immediately if there is only one result."
             (concat deft-dir new-name "." deft-default-extension))
       (rename-file old-filename new-filename)
       (deft-update-visiting-buffers old-filename new-filename)
+      (zd-update-title-in-file)
       (deft-refresh))))
+
+(defun zd-update-title-in-file ()
+"Update the #+TITLE in the current file, if present."
+  (save-excursion
+    (let ((zd-string-after-title ""))
+      (goto-char (point-min))
+      (when (search-forward "#+title:" nil t)
+        (delete-region (line-beginning-position) (line-end-position))
+        (zd-insert-org-title)))))
 
 (defun zd-insert-org-title ()
  (interactive)
  (insert
    "#+title: "
    (zd-lift-file-title (file-name-base (buffer-file-name)))
-   "\n"
-   zd-string-below-title
-   ))
+   zd-string-after-title))
 
-(defcustom zd-string-below-title ""
-  "String inserted below title when `zd-insert-org-title' is called. Empty by default."
+(defcustom zd-string-after-title ""
+  "String inserted below title when `zd-insert-org-title' is called.
+Empty by default.
+Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
-  :group 'zetteldeft
-)
+  :group 'zetteldeft)
 
 (defun zd-get-file-list (srch)
 "Returns a list of files with the search item SRCH."
