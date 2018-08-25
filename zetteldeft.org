@@ -550,6 +550,8 @@ Based on the function =deft-rename-file= with only minor changes in the way =old
 Probably requires some more testing.
 Anyway, best to use this only when visiting a file in the deft directory.
 
+The function also updates the =#+title:= at the top of the buffer, if any is present.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-file-rename ()
 "Rename the current file via the deft function. Use this on files in the deft-directory."
@@ -566,7 +568,21 @@ Anyway, best to use this only when visiting a file in the deft directory.
             (concat deft-dir new-name "." deft-default-extension))
       (rename-file old-filename new-filename)
       (deft-update-visiting-buffers old-filename new-filename)
+      (zd-update-title-in-file)
       (deft-refresh))))
+#+END_SRC
+
+To update the title of the currently visited file, the following function is used.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-update-title-in-file ()
+"Update the #+TITLE in the current file, if present."
+  (save-excursion
+    (let ((zd-string-after-title ""))
+      (goto-char (point-min))
+      (when (search-forward "#+title:" nil t)
+        (delete-region (line-beginning-position) (line-end-position))
+        (zd-insert-org-title)))))
 #+END_SRC
 
 *** =zd-insert-org-title= inserts file title in org-mode
