@@ -29,6 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
  - *25 Aug*: Renaming a file with =zd-file-rename= now also updates filename within the org-file. Also altered =zd-after-title=.
  - *18 July*: Include a list of links with =zd-insert-list-links=, or a list of files with =zd-org-include-search=.
  - *17 July*: Insert note title with =zd-insert-org-title=.
@@ -617,7 +618,8 @@ Don't forget to add `\\n' at the beginning to start a new line."
 
 *** =zd-count-words= counts total number of words
 
-To count the total number of words, lets loop over all the files and count words in each. The total is printed in the minibuffer.
+To count the total number of words, lets loop over all the files and count words in each.
+The total is printed in the minibuffer.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-count-words ()
@@ -628,7 +630,7 @@ To count the total number of words, lets loop over all the files and count words
       (with-temp-buffer
         (insert-file-contents deftFile)
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
-    (message "total words: %s" numWords)))
+    (message "Total words accross all notes: %s" numWords)))
 #+END_SRC
 
 * Gathering notes
