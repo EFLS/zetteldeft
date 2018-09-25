@@ -1,9 +1,9 @@
 #+title: Zetteldeft
 #+author: EFLS
 
-*Short*: this document contains all the source code to a set of functions for =emacs=, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
 Introduction, documentation, and code can be found in this single =.org= file [[https://github.com/EFLS/zetteldeft/blob/master/zetteldeft.org][here]].
 Or simply get the =zetteldeft.el= file and you're [[https://github.com/EFLS/zetteldeft/blob/master/zetteldeft.el][good to go]].
 
-Want to read that in a more convenient format? Get it on [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
+Want to read that in a more convenient format? Check it out on [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
