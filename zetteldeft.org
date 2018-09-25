@@ -615,6 +615,22 @@ Don't forget to add `\\n' at the beginning to start a new line."
   :group 'zetteldeft)
 #+END_SRC
 
+*** =zd-count-words= counts total number of words
+
+To count the total number of words, lets loop over all the files and count words in each. The total is printed in the minibuffer.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-count-words ()
+  "Prints total number of words in all deft files in the minibuffer."
+  (interactive)
+  (let ((numWords 0))
+    (dolist (deftFile deft-all-files)
+      (with-temp-buffer
+        (insert-file-contents deftFile)
+        (setq numWords (+ numWords (count-words (point-min) (point-max))))))
+    (message "total words: %s" numWords)))
+#+END_SRC
+
 * Gathering notes
 ** Idea
 
