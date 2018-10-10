@@ -677,6 +677,24 @@ ZDFILE should be a full path to a note."
 ))
 #+END_SRC
 
+*** =zd-insert-file-contents= returns the contents of a file
+
+Returns the contents of a file.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-file-contents (zdFile &optional removeLines)
+  "Inserts file contents of a zetteldeft note.
+ZDFILE should be a full path to a note.
+
+Optional: leave out first REMOVELINES"
+  (with-temp-buffer
+    (insert-file-contents zdFile)
+    (when removeLines
+      (kill-whole-line removeLines))
+    (buffer-string)))
+)
+#+END_SRC
+
 ** List of links
 *** =zd-insert-list-links= generates list with tagged files
 
@@ -807,6 +825,34 @@ Includes only from the second line onward, so that any =#+TITLE= lines are omitt
    "\n* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org" :lines 2-
    "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
+ ))
+#+END_SRC
+
+*** =zd-org-search-insert= generates titles & file content
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-org-search-insert (zdSrch)
+"Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
+ (interactive (list (read-string "Search term: ")))
+ (dolist (zdFile (zd-get-file-list zdSrch))
+   (zd-org-insert-file zdFile)
+))
+#+END_SRC
+
+*** =zd-org-insert-file= yanks a files content
+
+For a file, insert its title and contents (without first 3 lines).
+
+Even better would be: without any of the lines starting with =#= at the beginning of the file.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-org-insert-file (zdFile)
+"Insert title and contents of ZDFILE."
+  (insert
+    ;; Insert org-mode title
+    "\n* " (zd-lift-file-title zdFile) "\n\n"
+    ;; Insert file contents (without the first 3 lines)
+    (zd-file-contents zdFile 3))
  ))
 #+END_SRC
 
