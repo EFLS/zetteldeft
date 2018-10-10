@@ -31,7 +31,7 @@ Read on for an introduction and some documentation.
 Latest additions:
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
  - *25 Aug*: Renaming a file with =zd-file-rename= now also updates filename within the org-file. Also altered =zd-after-title=.
- - *18 July*: Include a list of links with =zd-insert-list-links=, or a list of files with =zd-org-include-search=.
+ - *18 July*: Include a list of links with =zd-insert-list-links=, or =#+INCLUDE= the files with =zd-org-include-files=
  - *17 July*: Insert note title with =zd-insert-org-title=.
  - *16 July*: Highlight zetteldeft links in =org-mode=.
 
@@ -641,7 +641,7 @@ Say you want to quickly generate a list of links to all files including the tag 
 
 The following functions automate that process:
  - =zd-insert-list-links= promts for a search string and inserts a list of notes
- - =zd-org-include-search= generates =#+INCLUDE= code for =org-mode= for these files.
+ - =zd-org-include-files= generates =#+INCLUDE= code for =org-mode= for these files.
 
 ** Helper functions
 *** =zd-get-file-list= returns file list on search
@@ -711,7 +711,7 @@ Inserts for given file a link id and title as a list entry.
 For each of the notes with the =#tag=, it inserts a heading, a line with =#+INCLUDE= and the full path to the relevant notes.
 This results in a single file that can be easily exported.
 
-The only function meant for use on the users end, is =zd-org-include-search=.
+The only function meant for use on the users end, is =zd-org-include-files=.
 
 For example,
 
@@ -746,7 +746,7 @@ Add it under a "comment" type heading to prevent it from being exported itself, 
     ;; Delete everything after
     (delete-region frst (point-max))
     ;; Include the files
-    (zd-org-include-search "#tag")
+    (zd-org-include-files "#tag")
     ; Sort these entries alphabetically (set mark to use a region)
 ;   (goto-char frst) (set-mark (point-max))
 ;   (org-sort-entries nil ?a)
@@ -776,16 +776,16 @@ Before we look at the functions, a note on limitations of the current implementa
 3. *Sorting*
    The files included are unsorted, or rather: sorted as =deft= provides the results.
    Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
-   As a solution, use =org-sort= manually after running =zd-org-include-search=.
+   As a solution, use =org-sort= manually after running =zd-org-include-files=.
 
-*** =zd-org-include-search= generates =#+INCLUDE= code
+*** =zd-org-include-files= generates =#+INCLUDE= code
 
-Asks user for a search string and inserts headers and =#+INCLUDE= code for all files with said tag.
+Asks user for a search string and inserts headers and =#+INCLUDE:= code for all files with said tag.
 When used on =#tag=, make sure to include the =#= manually.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-org-include-search (zdSrch)
-"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
+(defun zd-org-include-files (zdSrch)
+"Inserts at point org-mode syntax to include all files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
  (interactive (list (read-string "tag (include the #): ")))
  (dolist (zdFile (zd-get-file-list zdSrch))
   (zd-org-include-file zdFile)
