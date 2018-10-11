@@ -179,8 +179,7 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
       (match-string-no-properties 1))
      ((thing-at-point-looking-at htag-re)
       (match-string-no-properties 1))
-     (t (thing-at-point 'word t)))
-  ))
+     (t (thing-at-point 'word t)))))
 #+END_SRC
 
 *** =zd-search-at-point= thing at point
@@ -199,8 +198,7 @@ Thing can be a double-bracketed link, a hashtag, or a word."
   (let ((string (zd-get-thing-at-point)))
    (if string
        (zd-search-global string t)
-     (user-error "No search term at point")))
-  )
+     (user-error "No search term at point"))))
 #+END_SRC
 
 *** =zd-search-global= for string
@@ -261,8 +259,7 @@ This function is useful to easily see which notes link to the current file.
 "Search deft with the id of the current file as filter.
 Open if there is only one result."
  (interactive)
- (zd-search-global (zd-id-current-file) t)
-)
+ (zd-search-global (zd-id-current-file) t))
 #+END_SRC
 
 ** IDs
@@ -274,8 +271,7 @@ String format when generating ids.
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs."
   :type 'string
-  :group 'zetteldeft
-)
+  :group 'zetteldeft)
 #+END_SRC
 
 While we're at it, lets tell deft to create new files with this new format.
@@ -290,8 +286,7 @@ Here is a function to generate an id string in said format.
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
  "Generates an id in `zd-id-format'."
- (format-time-string zd-id-format)
-)
+ (format-time-string zd-id-format))
 #+END_SRC
 
 *** =zd-id-insert= inserts id
@@ -302,8 +297,7 @@ A helper function to insert a generated id.
 (defun zd-id-insert ()
  (interactive)
  "Inserts an id in `zd-id-format'."
- (insert (zd-generate-id) " ")
-)
+ (insert (zd-generate-id) " "))
 #+END_SRC
 
 *** FIX =zd-id-sanitized= cleans ids
@@ -313,8 +307,7 @@ Returns the string stripped from everything that is not a number or a =-=.
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-sanitized (str)
 "Strip STRING from everything that is not a number or a dash."
- (replace-regexp-in-string "[^(0-9)-]+" "" str)
-)
+ (replace-regexp-in-string "[^(0-9)-]+" "" str))
 #+END_SRC
 
 Potential shortcomming: any numbers /after/ the id are not stripped.
@@ -335,8 +328,7 @@ Next, omit anything that is not a digit or a dash.
 (defun zd-file-id-stripped (file)
 "Returns file id stripped from given filename FILE."
  (let ((file (substring file 0 16)))
-   (zd-id-sanitized file)
-))
+   (zd-id-sanitized file)))
 #+END_SRC
 
 
@@ -354,8 +346,7 @@ Steps:
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-current-file ()
 "Return the id from the filename the buffer is currently visiting."
- (zd-file-id-stripped (file-name-base (buffer-file-name)))
-)
+ (zd-file-id-stripped (file-name-base (buffer-file-name))))
 #+END_SRC
 
 *** =zd-copy-id-current-file= copies id in filename
@@ -366,8 +357,7 @@ Add the ID from the current file to the kill ring.
 (defun zd-copy-id-current-file ()
 "Add the id from the filename the buffer is currently visiting to the kill ring."
 (interactive)
- (kill-new (zd-id-current-file))
-)
+ (kill-new (zd-id-current-file)))
 #+END_SRC
 
 ** Finding & linking files from minibuffer
@@ -383,8 +373,7 @@ Based on =deft-find-file=.
  (interactive
   (list (completing-read "Deft find file: "
         (deft-find-all-files-no-prefix))))
- (deft-find-file file)
-)
+ (deft-find-file file))
 #+END_SRC
 
 *** =zd-find-file-id-copy= copies file id
@@ -399,8 +388,7 @@ Based on =deft-find-file=.
  (interactive (list
         (completing-read "File to copy id from: "
         (deft-find-all-files-no-prefix))))
-  (kill-new (concat "§" (zd-file-id-stripped file)))
-)
+  (kill-new (concat "§" (zd-file-id-stripped file))))
 #+END_SRC
 
 *** =zd-find-file-id-insert= inserts file id
@@ -415,8 +403,7 @@ Based on =deft-find-file=.
  (interactive (list
         (completing-read "File to insert id from: "
         (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (zd-file-id-stripped file)))
-)
+  (insert (concat "§" (zd-file-id-stripped file))))
 #+END_SRC
 
 *** =zd-find-file-full-title-insert= inserts full file title
@@ -431,8 +418,7 @@ Based on =deft-find-file=.
  (interactive (list
         (completing-read "File to insert full title from: "
         (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (file-name-base file)))
-)
+  (insert (concat "§" (file-name-base file))))
 #+END_SRC
 
 ** New file creation
@@ -457,8 +443,7 @@ After creating, the title is inserted in org-mode format (unless EMPTY is true) 
  (deft-new-file-named zdName)
  (kill-new zdName)
  (unless empty (zd-insert-org-title))
- (when (featurep 'evil) (evil-insert-state))
-))
+ (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
 
 *** =zd-new-file-and-link= inserts generated id
@@ -473,8 +458,7 @@ Either provide a name as argument, or enter one in the mini-buffer.
 Creates new deft file with id and STR as name."
  (interactive (list (read-string "name: ")))
  (insert "§" (zd-generate-id) " " str)
- (zd-new-file str)
-)
+ (zd-new-file str))
 #+END_SRC
 
 ** Functions with =avy=
@@ -490,8 +474,7 @@ The search term should include the =#= as tag identifier, so it's as easy as jum
  (interactive)
  (save-excursion
   (avy-goto-char ?#)
-  (zd-search-at-point)
-))
+  (zd-search-at-point)))
 #+END_SRC
 
 *** =zd-avy-link-search=
@@ -507,8 +490,7 @@ Opens immediately if there is only one result."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))
-))
+  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
 #+END_SRC
 
 *** =zd-avy-file-search=
@@ -525,8 +507,7 @@ If it is non-nil, search it after sanitizing.
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
-))
+  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))))
 #+END_SRC
 
 ** Utility functions
@@ -540,8 +521,7 @@ The following function launches deft, clears the filter and enters =evil-insert-
  (interactive)
  (deft)
  (deft-filter-clear)
- (when (featurep 'evil) (evil-insert-state))
-)
+ (when (featurep 'evil) (evil-insert-state)))
 #+END_SRC
 
 *** =zd-file-rename= renames visited file
@@ -660,8 +640,7 @@ The code gets a list of files that contain the search string, runs through said 
 When searching for a tag, include # manually in the search."
  (interactive (list (read-string "search string: ")))
  (dolist (zdFile (zd-get-file-list zdSrch))
-  (zd-list-entry-file-link zdFile)
-))
+  (zd-list-entry-file-link zdFile)))
 #+END_SRC
 
 *** =zd-list-entry-file-link= includes a file link as list entry
@@ -671,8 +650,7 @@ Inserts for given file a link id and title as a list entry.
 #+BEGIN_SRC emacs-lisp
 (defun zd-list-entry-file-link (zdFile)
 "Insert ZDFILE as list entry."
- (insert " - " (concat "§" (file-name-base zdFile)) "\n")
-)
+ (insert " - " (concat "§" (file-name-base zdFile)) "\n"))
 #+END_SRC
 
 
@@ -762,8 +740,7 @@ When used on =#tag=, make sure to include the =#= manually.
 "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
  (interactive (list (read-string "tag (include the #): ")))
  (dolist (zdFile (zd-get-file-list zdSrch))
-  (zd-org-include-file zdFile)
-))
+  (zd-org-include-file zdFile)))
 #+END_SRC
 
 *** =zd-org-search-insert= generates titles & file content
@@ -773,8 +750,7 @@ When used on =#tag=, make sure to include the =#= manually.
 "Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
  (interactive (list (read-string "Search term: ")))
  (dolist (zdFile (zd-get-file-list zdSrch))
-   (zd-org-insert-file zdFile)
-))
+   (zd-org-insert-file zdFile)))
 #+END_SRC
 
 ** Helper functions
@@ -807,8 +783,7 @@ ZDFILE should be a full path to a note."
  (let ((baseName (file-name-base zdFile)))
    (replace-regexp-in-string
     "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-    "" baseName)
-))
+    "" baseName)))
 #+END_SRC
 
 *** =zd-insert-file-contents= returns the contents of a file
@@ -840,8 +815,7 @@ Includes only from the second line onward, so that any =#+TITLE= lines are omitt
    ;; Insert org-mode title
    "\n* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org" :lines 2-
-   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
- ))
+   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"))
 #+END_SRC
 
 *** =zd-org-insert-file= inserts a files content
@@ -857,8 +831,7 @@ Even better would be: without any of the lines starting with =#= at the beginnin
     ;; Insert org-mode title
     "\n* " (zd-lift-file-title zdFile) "\n\n"
     ;; Insert file contents (without the first 3 lines)
-    (zd-file-contents zdFile 3))
- ))
+    (zd-file-contents zdFile 3)))
 #+END_SRC
 
 * Aesthetics
@@ -872,8 +845,7 @@ Highlighting not working in comments.
 
 #+BEGIN_SRC emacs-lisp
 (font-lock-add-keywords 'org-mode '(
-  ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)
-  ))
+  ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)))
 #+END_SRC
 
 * Keybindings
@@ -922,8 +894,7 @@ Deft specific keybindings behind the =,= prefix.
   (define-key spacemacs-deft-mode-map-prefix
     "o" 'efls/deft-open)
   (define-key spacemacs-deft-mode-map-prefix
-    [?\t] 'efls/deft-open-preview)
- )
+    [?\t] 'efls/deft-open-preview))
 #+END_SRC
 
 
