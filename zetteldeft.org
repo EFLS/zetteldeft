@@ -826,7 +826,6 @@ Optional: leave out first REMOVELINES"
     (when removeLines
       (kill-whole-line removeLines))
     (buffer-string)))
-)
 #+END_SRC
 
 *** =zd-org-include-file= includes a file in =org= format
