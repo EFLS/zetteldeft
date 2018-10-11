@@ -877,22 +877,9 @@ Highlighting not working in comments.
 #+END_SRC
 
 * Keybindings
+** Additional =deft= functions
 
-Note: This setup is for =spacemacs=.
-
-** Additional =deft= keybindings
-
-Deft specific keybindings behind the =,= prefix.
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'deft
-  (define-key spacemacs-deft-mode-map-prefix
-    "o" 'efls/deft-open)
-  (define-key spacemacs-deft-mode-map-prefix
-    [?\t] 'efls/deft-open-preview)
- )
-#+END_SRC
-
+Some personal additions.
 
 A small function to open a file in the other window and shifting focus to it.
 That final part is what the =t= argument does.
@@ -900,8 +887,7 @@ That final part is what the =t= argument does.
 #+BEGIN_SRC emacs-lisp
 (defun efls/deft-open-other ()
  (interactive)
- (deft-open-file-other-window t)
-)
+ (deft-open-file-other-window t))
 #+END_SRC
 
 Let's add another function, to simply preview in the other window, i.e. not switch focus to it.
@@ -909,8 +895,7 @@ Let's add another function, to simply preview in the other window, i.e. not swi
 #+BEGIN_SRC emacs-lisp
 (defun efls/deft-open-preview ()
  (interactive)
- (deft-open-file-other-window)
-)
+ (deft-open-file-other-window))
 #+END_SRC
 
 
@@ -924,17 +909,29 @@ To select results from the item list without leaving the =insert= state, I add t
     (kbd "<s-return>") 'efls/deft-open-other)
   (define-key deft-mode-map
     (kbd "s-j") 'evil-next-line)
-  (define-key deft-mode-map
-    (kbd "s-k") 'evil-previous-line)
-)
+  (define-key deft-mode-map (kbd "s-k") 'evil-previous-line))
+#+END_SRC
+
+** Suggested keys for =spacemacs=
+*** Additional =deft= keybindings
+
+Deft specific keybindings behind the =,= prefix.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(with-eval-after-load 'deft
+  (define-key spacemacs-deft-mode-map-prefix
+    "o" 'efls/deft-open)
+  (define-key spacemacs-deft-mode-map-prefix
+    [?\t] 'efls/deft-open-preview)
+ )
 #+END_SRC
 
 
-** Some =zetteldeft= specifics
+*** Some =zetteldeft= specifics
 
 Can be called from any mode.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 ;; Prefix
 (spacemacs/declare-prefix "d" "deft")
 ;; Launch deft
