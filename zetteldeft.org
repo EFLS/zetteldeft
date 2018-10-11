@@ -116,45 +116,6 @@ Whichever way you go, load the =.el= file in emacs with
 
 and you're good to go!
 
-* =deft= setup
-
-The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
-
-** Set =deft-directory=
-
-Search the deft directory recursively, to include subdirectories.
-
-#+BEGIN_SRC emacs-lisp
-(setq deft-directory (concat org-directory "/notes/zetteldeft"))
-(setq deft-recursive t)
-#+END_SRC
-
-** Notes & extensions
-
-Note extensions are =md=, =txt= and =org=.
-First of this list is the default for new notes.
-
-#+BEGIN_SRC emacs-lisp
-(setq deft-extensions '("org" "md" "txt"))
-#+END_SRC
-
-** Ignore more =org-mode= metadata
-
-I tend to write =org-mode= titles with =#+title:= (i.e., uncapitalized). Also other =org-mode= code at the beginning is written in lower case.
-
-In order to filter these from the deft summary, let's alter the regular expression:
-
-#+BEGIN_SRC emacs-lisp
-(setq deft-strip-summary-regexp
- (concat "\\("
-         "[\n\t]" ;; blank
-         "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
-         "\\)"))
-#+END_SRC
-
-Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
-
-
 * =zetteldeft= functions
 ** Search functions
 *** =zd-get-thing-at-point= returns string
@@ -848,59 +809,17 @@ Highlighting not working in comments.
   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)))
 #+END_SRC
 
-* Keybindings
-** Additional =deft= functions
+* Suggested setup
 
-Some personal additions.
+The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
 
-A small function to open a file in the other window and shifting focus to it.
-That final part is what the =t= argument does.
+None of these code blocks are tangled into the =.el= file, they are here merely as a guide.
 
-#+BEGIN_SRC emacs-lisp
-(defun efls/deft-open-other ()
- (interactive)
- (deft-open-file-other-window t))
-#+END_SRC
+** Suggested =zeteldeft= keybindings
 
-Let's add another function, to simply preview in the other window, i.e. not switch focus to it.
+Suggested keybindings for =spacemacs=.
 
-#+BEGIN_SRC emacs-lisp
-(defun efls/deft-open-preview ()
- (interactive)
- (deft-open-file-other-window))
-#+END_SRC
-
-
-To select results from the item list without leaving the =insert= state, I add the following keys.
-
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'deft
-  (define-key deft-mode-map
-    (kbd "<tab>") 'efls/deft-open-preview)
-  (define-key deft-mode-map
-    (kbd "<s-return>") 'efls/deft-open-other)
-  (define-key deft-mode-map
-    (kbd "s-j") 'evil-next-line)
-  (define-key deft-mode-map (kbd "s-k") 'evil-previous-line))
-#+END_SRC
-
-** Suggested keys for =spacemacs=
-*** Additional =deft= keybindings
-
-Deft specific keybindings behind the =,= prefix.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(with-eval-after-load 'deft
-  (define-key spacemacs-deft-mode-map-prefix
-    "o" 'efls/deft-open)
-  (define-key spacemacs-deft-mode-map-prefix
-    [?\t] 'efls/deft-open-preview))
-#+END_SRC
-
-
-*** Some =zetteldeft= specifics
-
-Can be called from any mode.
+These can be called from anywhere behind =SPC d=.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; Prefix
@@ -937,6 +856,75 @@ Can be called from any mode.
 (spacemacs/set-leader-keys "dR" 'deft-refresh)
 #+END_SRC
 
+** Suggested =deft= setup
+*** Notes & extensions
+
+Note extensions are =md=, =txt= and =org=.
+First of this list is the default for new notes.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq deft-extensions '("org" "md" "txt"))
+#+END_SRC
+
+*** Set =deft-directory=
+
+Search the deft directory recursively, to include subdirectories.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq deft-directory (concat org-directory "/notes/zetteldeft"))
+(setq deft-recursive t)
+#+END_SRC
+
+*** Additional =deft= functions
+
+Some personal additions.
+
+A small function to open a file in the other window and shifting focus to it.
+That final part is what the =t= argument does.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun efls/deft-open-other ()
+ (interactive)
+ (deft-open-file-other-window t))
+#+END_SRC
+
+Let's add another function, to simply preview in the other window, i.e. not switch focus to it.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun efls/deft-open-preview ()
+ (interactive)
+ (deft-open-file-other-window))
+#+END_SRC
+
+
+To select results from the item list without leaving the =insert= state, I add the following keys.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(with-eval-after-load 'deft
+  (define-key deft-mode-map
+    (kbd "<tab>") 'efls/deft-open-preview)
+  (define-key deft-mode-map
+    (kbd "<s-return>") 'efls/deft-open-other)
+  (define-key deft-mode-map
+    (kbd "s-j") 'evil-next-line)
+  (define-key deft-mode-map (kbd "s-k") 'evil-previous-line))
+#+END_SRC
+
+*** Ignore more =org-mode= metadata
+
+I tend to write =org-mode= titles with =#+title:= (i.e., uncapitalized). Also other =org-mode= code at the beginning is written in lower case.
+
+In order to filter these from the deft summary, let's alter the regular expression:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq deft-strip-summary-regexp
+ (concat "\\("
+         "[\n\t]" ;; blank
+         "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+         "\\)"))
+#+END_SRC
+
+Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 * Brainstorm
 
