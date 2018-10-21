@@ -216,7 +216,6 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 Search the thing at point.
 Note that calling =zd-search-at-point= on a =§= link includes =§= in the filter string.
 
-
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
@@ -315,8 +314,8 @@ Here is a function to generate an id string in said format.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
- "Generates an id in `zd-id-format'."
- (format-time-string zd-id-format))
+  "Generates an id in `zd-id-format'."
+  (format-time-string zd-id-format))
 #+END_SRC
 
 **** =zd-id-insert= inserts id
@@ -360,7 +359,6 @@ Next, omit anything that is not a digit or a dash.
  (let ((file (substring file 0 16)))
    (zd-id-sanitized file)))
 #+END_SRC
-
 
 **** =zd-id-current-file= returns id in filename
 
@@ -608,6 +606,7 @@ This string, variable =zd-string-after-title=, can be customized and is empty by
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-org-title ()
+ "Insert filename of current file as org syntax."
  (interactive)
  (insert
    "#+title: "
@@ -616,6 +615,7 @@ This string, variable =zd-string-after-title=, can be customized and is empty by
 #+END_SRC
 
 Customize the string to be inserted below the title.
+Used when generating a new file.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-string-after-title ""
@@ -682,7 +682,6 @@ Inserts for given file a link id and title as a list entry.
 "Insert ZDFILE as list entry."
  (insert " - " (concat "§" (file-name-base zdFile)) "\n"))
 #+END_SRC
-
 
 *** Compiling a single =org=
 **** Idea and example
@@ -775,6 +774,8 @@ When used on =#tag=, make sure to include the =#= manually.
 
 **** =zd-org-search-insert= generates titles & file content
 
+Very similar to the previous function, but rather than writing syntax to include files, insert their contents directly.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-search-insert (zdSrch)
 "Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
@@ -797,10 +798,8 @@ The code searches for the given string and returns =deft-current-files=.
 "Returns a list of files with the search item SRCH."
   (let ((deft-current-sort-method 'title))
    (deft-filter srch t)
-   deft-current-files
-))
+   deft-current-files))
 #+END_SRC
-
 
 **** =zd-lift-file-title= returns file title from path
 
@@ -825,7 +824,7 @@ Returns the contents of a file.
   "Inserts file contents of a zetteldeft note.
 ZDFILE should be a full path to a note.
 
-Optional: leave out first REMOVELINES"
+Optional: leave out first REMOVELINES lines."
   (with-temp-buffer
     (insert-file-contents zdFile)
     (when removeLines
