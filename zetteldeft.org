@@ -163,6 +163,13 @@ Some declaration.
 (require 'avy)
 #+END_SRC
 
+*** Customization
+
+#+BEGIN_SRC emacs-lisp
+(defgroup zetteldeft nil
+  "A zettelkasten on top of deft.")
+#+END_SRC
+
 ** Basic =zetteldeft= functions
 *** Search functions
 **** =zd-get-thing-at-point= returns string
@@ -277,7 +284,8 @@ String format when generating ids.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
-  "Format used when generating zetteldeft IDs."
+  "Format used when generating zetteldeft IDs.
+Be warned, changing this won't alter the regexp to filter IDs and find your files. This is WIP."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
