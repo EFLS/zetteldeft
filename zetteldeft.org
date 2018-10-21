@@ -29,7 +29,8 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *10 Okt*: Insert contents of files with given search term with =zd-org-search-insert=.
+ - *21 Oct*: =zetteldeft= is now a package.
+ - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
  - *25 Aug*: Renaming a file with =zd-file-rename= now also updates filename within the org-file. Also altered =zd-after-title=.
  - *18 July*: Include a list of links with =zd-insert-list-links=, or a list of files with =zd-org-search-include=.
@@ -45,6 +46,7 @@ Latest additions:
 
 This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent =deft= package in =emacs=.[fn:deft]
 I call it *zetteldeft*.
+
 It is inspired by the /The Archive/ app. For this and more on the Zettelkasten way of taking notes, see [[https://zettelkasten.de][zettelkasten.de]]. They have a forum for discussion on both software and the specifics of the Zettelkasten philosophy.
 
 The code that follows is created and maintained for my personal use, shared here in hope that it can benefit others as well.
@@ -58,65 +60,75 @@ Anyway, here we go.
 It is inspired by the popular Notational Velocity.
 Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] and [[http://notational.net][notational.net]].
 
-** Basic concepts
-
-*Notes* reside in the =deft-directory=.
-Notes are written in =org-mode= (although this can be changed easily).
-
-The filename of a note starts with a unique *id* based on the time and the date, for example: =2018-07-09-2115 This is a note.org=.
-
-This unique id can be used to *link* notes together.
-A link is indicated by a =§= character, followed by the id.
-For example: =§2018-07-08-2115= should link to the file above.
-A link can appear anywhere in the text.
-
-When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
-
-Notes can contain *tags*, prepended with a =#=.
-This is a tag: =#tag=.
-Tags make it easy to retrieve notes. They can appear anywhere in the note, but I'd suggest putting them somewhere at the top.
-
-Call up a =deft= search on both tags and links with =zd-search-at-point=.
-To jump to a tag or link and search it, use =zd-avy-tag-search= and =zd-avy-link-search= respectively.
-To open a note from a link, use =zd-avy-file-search=.
-
-** Basic functions
-
-Some functions to get started.
-I created more, but these should be enough to get you started.
-Default keybindings are set at the bottom -- and meant for spacemacs.
-
-| Function               | Use                              | Keybinding |
-|------------------------+----------------------------------+------------|
-| =zd-search-at-point=     | Search for thing at point        | =SPC d s=    |
-| =zd-search-current-id=   | Search for id of current file    | =SPC d c=    |
-| =zd-avy-file-search=     | Select =§= id and open linked file | =SPC d f=    |
-| =zd-avy-link-search=     | Select =§= id and search for it    | =SPC d l=    |
-| =zd-avy-tag-search=      | Select =#= tag and search for it   | =SPC d t=    |
-| =zd-new-file=            | Create new note and open         | =SPC d n=    |
-| =zd-new-file-and-link=   | Create new note and insert =§= id  | =SPC d N=    |
-| =zd-find-file-id-insert= | Pick a note and insert its =§= id  | =SPC d i=    |
-
-More details documented below.
-
 ** How to use this source
 
-This set of commands requires:
+This package requires:
  - =deft=, obviously
- - =avy= comes in handy to jump & search (see the final set of functions)
+ - =avy= to jump & search
 
 From the github repository, either
  - download the =org-file= and =org-tangle= it yourself. It should contain everything.
  - or download the =zetteldeft.el= file.
 
-Whichever way you go, load the =.el= file in emacs with
+Whichever way you go, load up the package by adding the package to your load path and requiring:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(load "/path/to/zetteldeft.el")
+(add-to-list 'load-path "~/path/to/folder/"))
+(require 'zetteldeft)
 #+END_SRC
 
 and you're good to go!
+Well, not quite. First you must read on about the basics of =zetteldeft=.
 
+** Basic concepts
+
+*Notes* reside in the =deft-directory=.
+Notes are written in =org-mode= syntax (although most functions should work in =markdown= as well).
+
+The filename of a note starts with a unique *id* based on the time and the date, for example: =2018-07-09-2115 This is a note.org=.
+
+This unique id can be used to *link* notes together.
+A link is indicated by a =§= character, followed by the id.
+For example: =§2018-07-09-2115= should link to the file above.
+A link can appear anywhere in the text.
+
+When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
+
+Notes can contain *tags* in plain text: words prepended with a =#=.
+This is a tag: =#tag=.
+Tags make it easy to retrieve notes. They can appear anywhere in the note, but I'd suggest putting them somewhere at the top.
+
+** Basic actions
+
+Create a note with =zd-new-file= and provide a name.
+
+Insert links to other notes: use =zd-find-file-id-insert= and select a file from the list.
+With =zd-find-file-full-title-insert=, you guessed it, the note's title is included as well.
+To branch out from a current note and link to a new one, use =zd-new-file-and-link=.
+
+To search for a tag or anything else under cursor, use =zd-search-at-point=.
+Combined with the power of =avy= to jump to any character on screen, use these to jump and search in one go: =zd-avy-link-search= and =zd-avy-tag-search=.
+
+To open the note behind a link, use =zd-avy-file-search=.
+
+** An overview
+
+While there are more functions, these should be enough to get you started.
+Default keybindings are suggested at the bottom of this document.
+Here is an overview.
+
+| Function               | Use                              | Keybinding |
+|------------------------+----------------------------------+------------|
+| =zd-new-file=            | Create new note and open         | =SPC d n=    |
+| =zd-new-file-and-link=   | Create new note and insert =§= id  | =SPC d N=    |
+| =zd-find-file-id-insert= | Pick a note and insert its =§= id  | =SPC d i=    |
+| =zd-search-at-point=     | Search for thing at point        | =SPC d s=    |
+| =zd-avy-file-search=     | Select =§= id and open linked file | =SPC d f=    |
+| =zd-avy-link-search=     | Select =§= id and search for it    | =SPC d l=    |
+| =zd-avy-tag-search=      | Select =#= tag and search for it   | =SPC d t=    |
+| =zd-search-current-id=   | Search for id of current file    | =SPC d c=    |
+
+More details documented below.
 
 * The =zetteldeft= package
 ** Package setup
@@ -164,6 +176,8 @@ Some declaration.
 #+END_SRC
 
 *** Customization
+
+For easy but minor customization options.
 
 #+BEGIN_SRC emacs-lisp
 (defgroup zetteldeft nil
@@ -865,6 +879,8 @@ Highlighting not working in comments.
 #+END_SRC
 
 ** Package provided
+
+That's all folks!
 
 #+BEGIN_SRC emacs-lisp
 (provide 'zetteldeft)
