@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-08-25 Sat 22:19 -->
+<!-- 2018-10-21 Sun 17:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -244,8 +244,11 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>21 Oct</b>: <code>zetteldeft</code> is now a package.</li>
+<li><b>10 Oct</b>: Insert contents of files with given search term with <code>zd-org-search-insert</code>.</li>
+<li><b>24 Sep</b>: Count the total number of words in your zetteldeft with <code>zd-count-words</code>.</li>
 <li><b>25 Aug</b>: Renaming a file with <code>zd-file-rename</code> now also updates filename within the org-file. Also altered <code>zd-after-title</code>.</li>
-<li><b>18 July</b>: Include a list of links with <code>zd-insert-list-links</code>, or a list of files with <code>zd-org-include-search</code>.</li>
+<li><b>18 July</b>: Include a list of links with <code>zd-insert-list-links</code>, or a list of files with <code>zd-org-search-include</code>.</li>
 <li><b>17 July</b>: Insert note title with <code>zd-insert-org-title</code>.</li>
 <li><b>16 July</b>: Highlight zetteldeft links in <code>org-mode</code>.</li>
 </ul>
@@ -255,77 +258,67 @@ Latest additions:
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge7f90fc">1. What?</a>
+<li><a href="#org3780bdd">1. What?</a>
 <ul>
-<li><a href="#org3c1e7f0">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
-<li><a href="#orge312532">1.2. Basic concepts</a></li>
-<li><a href="#org34056a1">1.3. Basic functions</a></li>
-<li><a href="#org7201471">1.4. How to use this source</a></li>
+<li><a href="#orgd163c86">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
+<li><a href="#org76160a7">1.2. How to use this source</a></li>
+<li><a href="#org00266a6">1.3. Basic concepts</a></li>
+<li><a href="#orgd9dc0e1">1.4. Basic actions</a></li>
+<li><a href="#org2e38c30">1.5. An overview</a></li>
 </ul>
 </li>
-<li><a href="#org733a065">2. <code>deft</code> setup</a>
+<li><a href="#org31dcfe3">2. The <code>zetteldeft</code> package</a>
 <ul>
-<li><a href="#orgfc18c13">2.1. Notes &amp; extensions</a></li>
-<li><a href="#orgd9bae6d">2.2. Ignore more <code>org-mode</code> metadata</a></li>
+<li><a href="#org558d7d1">2.1. Package setup</a></li>
+<li><a href="#org10f3d3b">2.2. Basic <code>zetteldeft</code> functions</a></li>
+<li><a href="#org8f86fc6">2.3. Gathering notes</a></li>
+<li><a href="#org5b1fcdc">2.4. Aesthetics</a></li>
+<li><a href="#orgc27f69e">2.5. Package provided</a></li>
 </ul>
 </li>
-<li><a href="#org0b59013">3. <code>zetteldeft</code> functions</a>
+<li><a href="#org00b8b86">3. Suggested setup</a>
 <ul>
-<li><a href="#org680aed9">3.1. Search functions</a></li>
-<li><a href="#org9ed014c">3.2. IDs</a></li>
-<li><a href="#orgc38eac6">3.3. Finding &amp; linking files from minibuffer</a></li>
-<li><a href="#orgb72a753">3.4. New file creation</a></li>
-<li><a href="#org9e1c0b1">3.5. Functions with <code>avy</code></a></li>
-<li><a href="#orgdfa4f7d">3.6. Utility functions</a></li>
+<li><a href="#org315697e">3.1. Suggested <code>zeteldeft</code> keybindings</a></li>
+<li><a href="#org1e38b91">3.2. Suggested <code>deft</code> setup</a></li>
 </ul>
 </li>
-<li><a href="#orgc68e6b3">4. Gathering notes</a>
+<li><a href="#orga988e9b">4. Brainstorm</a>
 <ul>
-<li><a href="#orgece8e90">4.1. Idea</a></li>
-<li><a href="#org4ef7c4f">4.2. Helper functions</a></li>
-<li><a href="#org16e0ee9">4.3. List of links</a></li>
-<li><a href="#org2670ea0">4.4. Compiling a single <code>org</code></a></li>
-</ul>
-</li>
-<li><a href="#org1973f22">5. Aesthetics</a>
-<ul>
-<li><a href="#org10e55c1">5.1. Highlighting zetteldeft links</a></li>
-</ul>
-</li>
-<li><a href="#org7411560">6. Brainstorm</a>
-<ul>
-<li><a href="#orge6b5be5">6.1. Saved searches</a></li>
-<li><a href="#org6b6c635">6.2. Generate list of tags</a></li>
-<li><a href="#orgd0b5cbf">6.3. HTML export</a></li>
-<li><a href="#org6d3f49c">6.4. Markdown export</a></li>
-<li><a href="#org0019ab4">6.5. Templates</a></li>
-<li><a href="#orga2821ce">6.6. Minor mode</a></li>
+<li><a href="#orgcef8feb">4.1. Saved searches</a></li>
+<li><a href="#orge2a086a">4.2. Generate list of tags</a></li>
+<li><a href="#org88afb4d">4.3. HTML export</a></li>
+<li><a href="#orgd5f98f4">4.4. Markdown export</a></li>
+<li><a href="#org30b8452">4.5. Templates</a></li>
+<li><a href="#org16ffd94">4.6. Minor mode</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-orge7f90fc" class="outline-2">
-<h2 id="orge7f90fc"><span class="section-number-2">1</span> What?</h2>
+<div id="outline-container-org3780bdd" class="outline-2">
+<h2 id="org3780bdd"><span class="section-number-2">1</span> What?</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org3c1e7f0" class="outline-3">
-<h3 id="org3c1e7f0"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
+<div id="outline-container-orgd163c86" class="outline-3">
+<h3 id="orgd163c86"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent <code>deft</code> package in <code>emacs</code>.<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
 I call it <b>zetteldeft</b>.
+</p>
+
+<p>
 It is inspired by the <i>The Archive</i> app. For this and more on the Zettelkasten way of taking notes, see <a href="https://zettelkasten.de">zettelkasten.de</a>. They have a forum for discussion on both software and the specifics of the Zettelkasten philosophy.
 </p>
 
 <p>
 The code that follows is created and maintained for my personal use, shared here in hope that it can benefit others as well.
-I'd be happy to learn how you use it and expand upon it.
+I&rsquo;d be happy to learn how you use it and expand upon it.
 </p>
 
 <p>
-It is very much WIP and I'm fairly new to <code>elisp</code>, so it might contain some stupid code.
+It is very much WIP and I&rsquo;m fairly new to <code>elisp</code>, so it might contain some stupid code.
 </p>
 
 <p>
@@ -334,12 +327,48 @@ Anyway, here we go.
 </div>
 </div>
 
-<div id="outline-container-orge312532" class="outline-3">
-<h3 id="orge312532"><span class="section-number-3">1.2</span> Basic concepts</h3>
+<div id="outline-container-org76160a7" class="outline-3">
+<h3 id="org76160a7"><span class="section-number-3">1.2</span> How to use this source</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
+This package requires:
+</p>
+<ul class="org-ul">
+<li><code>deft</code>, obviously</li>
+<li><code>avy</code> to jump &amp; search</li>
+</ul>
+
+<p>
+From the github repository, either
+</p>
+<ul class="org-ul">
+<li>download the <code>org-file</code> and <code>org-tangle</code> it yourself. It should contain everything.</li>
+<li>or download the <code>zetteldeft.el</code> file.</li>
+</ul>
+
+<p>
+Whichever way you go, load up the package by adding the package to your load path and requiring:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(add-to-list 'load-path <span style="color: #98be65;">"~/path/to/folder/"</span>))
+(<span style="color: #51afef;">require</span> '<span style="color: #a9a1e1;">zetteldeft</span>)
+</pre>
+</div>
+
+<p>
+and you&rsquo;re good to go!
+Well, not quite. First you must read on about the basics of <code>zetteldeft</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org00266a6" class="outline-3">
+<h3 id="org00266a6"><span class="section-number-3">1.3</span> Basic concepts</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
 <b>Notes</b> reside in the <code>deft-directory</code>.
-Notes are written in <code>org-mode</code> (although this can be changed easily).
+Notes are written in <code>org-mode</code> syntax (although most functions should work in <code>markdown</code> as well).
 </p>
 
 <p>
@@ -349,35 +378,53 @@ The filename of a note starts with a unique <b>id</b> based on the time and the 
 <p>
 This unique id can be used to <b>link</b> notes together.
 A link is indicated by a <code>§</code> character, followed by the id.
-For example: <code>§2018-07-08-2115</code> should link to the file above.
+For example: <code>§2018-07-09-2115</code> should link to the file above.
 A link can appear anywhere in the text.
 </p>
 
 <p>
-When searching <code>deft</code> with the <b>id</b> as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with <code>zd-search-current-id</code> and <code>zd-avy-link-search</code> respectively
+When searching <code>deft</code> with the <b>id</b> as a filter, you&rsquo;ll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with <code>zd-search-current-id</code> and <code>zd-avy-link-search</code> respectively
 </p>
 
 <p>
-Notes can contain <b>tags</b>, prepended with a <code>#</code>.
+Notes can contain <b>tags</b> in plain text: words prepended with a <code>#</code>.
 This is a tag: <code>#tag</code>.
-Tags make it easy to retrieve notes. They can appear anywhere in the note, but I'd suggest putting them somewhere at the top.
-</p>
-
-<p>
-Call up a <code>deft</code> search on both tags and links with <code>zd-search-at-point</code>.
-To jump to a tag or link and search it, use <code>zd-avy-tag-search</code> and <code>zd-avy-link-search</code> respectively.
-To open a note from a link, use <code>zd-avy-file-search</code>.
+Tags make it easy to retrieve notes. They can appear anywhere in the note, but I&rsquo;d suggest putting them somewhere at the top.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org34056a1" class="outline-3">
-<h3 id="org34056a1"><span class="section-number-3">1.3</span> Basic functions</h3>
-<div class="outline-text-3" id="text-1-3">
+<div id="outline-container-orgd9dc0e1" class="outline-3">
+<h3 id="orgd9dc0e1"><span class="section-number-3">1.4</span> Basic actions</h3>
+<div class="outline-text-3" id="text-1-4">
 <p>
-Some functions to get started.
-I created more, but these should be enough to get you started.
-Default keybindings are set at the bottom &#x2013; and meant for spacemacs.
+Create a note with <code>zd-new-file</code> and provide a name.
+</p>
+
+<p>
+Insert links to other notes: use <code>zd-find-file-id-insert</code> and select a file from the list.
+With <code>zd-find-file-full-title-insert</code>, you guessed it, the note&rsquo;s title is included as well.
+To branch out from a current note and link to a new one, use <code>zd-new-file-and-link</code>.
+</p>
+
+<p>
+To search for a tag or anything else under cursor, use <code>zd-search-at-point</code>.
+Combined with the power of <code>avy</code> to jump to any character on screen, use these to jump and search in one go: <code>zd-avy-link-search</code> and <code>zd-avy-tag-search</code>.
+</p>
+
+<p>
+To open the note behind a link, use <code>zd-avy-file-search</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2e38c30" class="outline-3">
+<h3 id="org2e38c30"><span class="section-number-3">1.5</span> An overview</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+While there are more functions, these should be enough to get you started.
+Default keybindings are suggested at the bottom of this document.
+Here is an overview.
 </p>
 
 <table>
@@ -399,15 +446,27 @@ Default keybindings are set at the bottom &#x2013; and meant for spacemacs.
 </thead>
 <tbody>
 <tr>
-<td class="org-left"><code>zd-search-at-point</code></td>
-<td class="org-left">Search for thing at point</td>
-<td class="org-left"><code>SPC d s</code></td>
+<td class="org-left"><code>zd-new-file</code></td>
+<td class="org-left">Create new note and open</td>
+<td class="org-left"><code>SPC d n</code></td>
 </tr>
 
 <tr>
-<td class="org-left"><code>zd-search-current-id</code></td>
-<td class="org-left">Search for id of current file</td>
-<td class="org-left"><code>SPC d c</code></td>
+<td class="org-left"><code>zd-new-file-and-link</code></td>
+<td class="org-left">Create new note and insert <code>§</code> id</td>
+<td class="org-left"><code>SPC d N</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>zd-find-file-id-insert</code></td>
+<td class="org-left">Pick a note and insert its <code>§</code> id</td>
+<td class="org-left"><code>SPC d i</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>zd-search-at-point</code></td>
+<td class="org-left">Search for thing at point</td>
+<td class="org-left"><code>SPC d s</code></td>
 </tr>
 
 <tr>
@@ -429,21 +488,9 @@ Default keybindings are set at the bottom &#x2013; and meant for spacemacs.
 </tr>
 
 <tr>
-<td class="org-left"><code>zd-new-file</code></td>
-<td class="org-left">Create new note and open</td>
-<td class="org-left"><code>SPC d n</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>zd-new-file-and-link</code></td>
-<td class="org-left">Create new note and insert <code>§</code> id</td>
-<td class="org-left"><code>SPC d N</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>zd-find-file-id-insert</code></td>
-<td class="org-left">Pick a note and insert its <code>§</code> id</td>
-<td class="org-left"><code>SPC d i</code></td>
+<td class="org-left"><code>zd-search-current-id</code></td>
+<td class="org-left">Search for id of current file</td>
+<td class="org-left"><code>SPC d c</code></td>
 </tr>
 </tbody>
 </table>
@@ -453,104 +500,96 @@ More details documented below.
 </p>
 </div>
 </div>
-
-<div id="outline-container-org7201471" class="outline-3">
-<h3 id="org7201471"><span class="section-number-3">1.4</span> How to use this source</h3>
-<div class="outline-text-3" id="text-1-4">
-<p>
-This set of commands requires:
-</p>
-<ul class="org-ul">
-<li><code>deft</code>, obviously</li>
-<li><code>avy</code> comes in handy to jump &amp; search (see the final set of functions)</li>
-</ul>
-
-<p>
-From the github repository, either
-</p>
-<ul class="org-ul">
-<li>download the <code>org-file</code> and <code>org-tangle</code> it yourself. It should contain everything.</li>
-<li>or download the <code>zetteldeft.el</code> file.</li>
-</ul>
-
-<p>
-Whichever way you go, load the <code>.el</code> file in emacs with
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">(load <span style="color: #4F894C;">"/path/to/zetteldeft.el"</span>)
-</pre>
 </div>
 
-<p>
-and you're good to go!
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org733a065" class="outline-2">
-<h2 id="org733a065"><span class="section-number-2">2</span> <code>deft</code> setup</h2>
+<div id="outline-container-org31dcfe3" class="outline-2">
+<h2 id="org31dcfe3"><span class="section-number-2">2</span> The <code>zetteldeft</code> package</h2>
 <div class="outline-text-2" id="text-2">
-<p>
-The following assumes <code>deft</code> is loaded manually in your dotfile, it merely configures the package.
-</p>
 </div>
-
-<div id="outline-container-orgfc18c13" class="outline-3">
-<h3 id="orgfc18c13"><span class="section-number-3">2.1</span> Notes &amp; extensions</h3>
+<div id="outline-container-org558d7d1" class="outline-3">
+<h3 id="org558d7d1"><span class="section-number-3">2.1</span> Package setup</h3>
 <div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org21abc0d" class="outline-4">
+<h4 id="org21abc0d"><span class="section-number-4">2.1.1</span> Preamble</h4>
+<div class="outline-text-4" id="text-2-1-1">
 <p>
-Note extensions are <code>md</code>, <code>txt</code> and <code>org</code>.
-First of this list is the default for new notes.
+Some declaration.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> deft-extensions '(<span style="color: #4F894C;">"org"</span> <span style="color: #4F894C;">"md"</span> <span style="color: #4F894C;">"txt"</span>))
+<pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">zetteldeft.el --- a simple package                     -*- lexical-binding: t; -*-</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Copyright (C) 2018  EFLS</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Author: EFLS &lt;email&gt;</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Keywords: deft zettelkasten zetteldeft</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Version: 0.0.1</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">This program is free software; you can redistribute it and/or modify</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">it under the terms of the GNU General Public License as published by</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">the Free Software Foundation, either version 3 of the License, or</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">(at your option) any later version.</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">This program is distributed in the hope that it will be useful,</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">GNU General Public License for more details.</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">You should have received a copy of the GNU General Public License</span>
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">along with this program.  If not, see <a href="http://www.gnu.org/licenses/">&lt;http://www.gnu.org/licenses/&gt;</a>.</span>
+
+<span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">Commentary:</span>
+
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Zetteldeft: turn deft into a zettelkasten writing system to create linked notes.</span>
+
+<span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">Code:</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd9bae6d" class="outline-3">
-<h3 id="orgd9bae6d"><span class="section-number-3">2.2</span> Ignore more <code>org-mode</code> metadata</h3>
+<div id="outline-container-org85af7d3" class="outline-4">
+<h4 id="org85af7d3"><span class="section-number-4">2.1.2</span> Requirements</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">require</span> '<span style="color: #a9a1e1;">deft</span>)
+
+(<span style="color: #51afef;">unless</span> (package-installed-p 'avy)
+  (<span style="color: #ECBE7B;">user-error</span> 'zetteldeft <span style="color: #98be65;">"Avy not installed, required for zd-avy-* functions."</span>))
+(<span style="color: #51afef;">require</span> '<span style="color: #a9a1e1;">avy</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ded883" class="outline-4">
+<h4 id="org2ded883"><span class="section-number-4">2.1.3</span> Customization</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+For easy but minor customization options.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defgroup</span> <span style="color: #ECBE7B;">zetteldeft</span> nil
+  <span style="color: #83898d;">"A zettelkasten on top of deft."</span>)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org10f3d3b" class="outline-3">
+<h3 id="org10f3d3b"><span class="section-number-3">2.2</span> Basic <code>zetteldeft</code> functions</h3>
 <div class="outline-text-3" id="text-2-2">
-<p>
-I tend to write <code>org-mode</code> titles with <code>#+title:</code> (i.e., uncapitalized). Also other <code>org-mode</code> code at the beginning is written in lower case.
-</p>
-
-<p>
-In order to filter these from the deft summary, let's alter the regular expression:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> deft-strip-summary-regexp
- (concat <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">(</span><span style="color: #4F894C;">"</span>
-         <span style="color: #4F894C;">"[\n\t]"</span> <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">blank</span>
-         <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">|</span><span style="color: #4F894C;">^#\\+[a-zA-Z_]+:.*$"</span> <span style="color: #8b94a5;">;;</span><span style="color: #8b94a5;">org-mode metadata</span>
-         <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">)</span><span style="color: #4F894C;">"</span>))
-</pre>
 </div>
-
-<p>
-Its original value was <code>\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)</code>.
-</p>
+<div id="outline-container-orge723fcd" class="outline-4">
+<h4 id="orge723fcd"><span class="section-number-4">2.2.1</span> Search functions</h4>
+<div class="outline-text-4" id="text-2-2-1">
 </div>
-</div>
-</div>
-
-
-<div id="outline-container-org0b59013" class="outline-2">
-<h2 id="org0b59013"><span class="section-number-2">3</span> <code>zetteldeft</code> functions</h2>
-<div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-org680aed9" class="outline-3">
-<h3 id="org680aed9"><span class="section-number-3">3.1</span> Search functions</h3>
-<div class="outline-text-3" id="text-3-1">
-</div>
-<div id="outline-container-org4bc94e2" class="outline-4">
-<h4 id="org4bc94e2"><span class="section-number-4">3.1.1</span> <code>zd-get-thing-at-point</code> returns string</h4>
-<div class="outline-text-4" id="text-3-1-1">
+<div id="outline-container-orgbb22b00" class="outline-5">
+<h5 id="orgbb22b00"><span class="section-number-5">2.2.1.1</span> <code>zd-get-thing-at-point</code> returns string</h5>
+<div class="outline-text-5" id="text-2-2-1-1">
 <p>
 Returns the thing at point as string.
 </p>
@@ -565,89 +604,86 @@ Tries to get, in the following order:
 </ul>
 
 <p>
-Based on snippet suggested by <code>saf-dmitry</code> on deft's <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
+Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-get-thing-at-point</span> ()
-<span style="color: #828b9b;">"Return the thing at point, which can be a link, tag or word."</span>
-  (<span style="color: #3B6EA8;">require</span> '<span style="color: #97365B;">thingatpt</span>)
-  (<span style="color: #3B6EA8;">let*</span> ((link-re <span style="color: #4F894C;">"\\[\\[</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">(</span><span style="color: #4F894C;">[</span><span style="color: #3B6EA8; font-weight: bold;">^</span><span style="color: #4F894C;">]]+</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">)</span><span style="color: #4F894C;">\\]\\]"</span>)
-         (htag-re <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">(</span><span style="color: #4F894C;">[&#167;#@][[:alnum:]_-]+</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">)</span><span style="color: #4F894C;">"</span>))
-   (<span style="color: #3B6EA8;">cond</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-get-thing-at-point</span> ()
+<span style="color: #83898d;">"Return the thing at point, which can be a link, tag or word."</span>
+  (<span style="color: #51afef;">require</span> '<span style="color: #a9a1e1;">thingatpt</span>)
+  (<span style="color: #51afef;">let*</span> ((link-re <span style="color: #98be65;">"\\[\\[</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">[</span><span style="color: #51afef; font-weight: bold;">^</span><span style="color: #98be65;">]]+</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">\\]\\]"</span>)
+         (htag-re <span style="color: #98be65;">"</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">[&#167;#@][[:alnum:]_-]+</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">"</span>))
+   (<span style="color: #51afef;">cond</span>
     ((thing-at-point-looking-at link-re)
       (match-string-no-properties 1))
      ((thing-at-point-looking-at htag-re)
       (match-string-no-properties 1))
-     (t (thing-at-point 'word t)))
-  ))
+     (t (thing-at-point 'word t)))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org18e482f" class="outline-4">
-<h4 id="org18e482f"><span class="section-number-4">3.1.2</span> <code>zd-search-at-point</code> thing at point</h4>
-<div class="outline-text-4" id="text-3-1-2">
+<div id="outline-container-orgb9f45a6" class="outline-5">
+<h5 id="orgb9f45a6"><span class="section-number-5">2.2.1.2</span> <code>zd-search-at-point</code> thing at point</h5>
+<div class="outline-text-5" id="text-2-2-1-2">
 <p>
 Search the thing at point.
 Note that calling <code>zd-search-at-point</code> on a <code>§</code> link includes <code>§</code> in the filter string.
 </p>
 
-
 <p>
-Based on snippet suggested by <code>saf-dmitry</code> on deft's <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
+Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-search-at-point</span> ()
-<span style="color: #828b9b;">"Search deft with thing-at-point as filter.</span>
-<span style="color: #828b9b;">Thing can be a double-bracketed link, a hashtag, or a word."</span>
-  (<span style="color: #3B6EA8;">interactive</span>)
-  (<span style="color: #3B6EA8;">let</span> ((string (zd-get-thing-at-point)))
-   (<span style="color: #3B6EA8;">if</span> string
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-search-at-point</span> ()
+<span style="color: #83898d;">"Search deft with thing-at-point as filter.</span>
+<span style="color: #83898d;">Thing can be a double-bracketed link, a hashtag, or a word."</span>
+  (<span style="color: #51afef;">interactive</span>)
+  (<span style="color: #51afef;">let</span> ((string (zd-get-thing-at-point)))
+   (<span style="color: #51afef;">if</span> string
        (zd-search-global string t)
-     (<span style="color: #9A7500;">user-error</span> <span style="color: #4F894C;">"No search term at point"</span>)))
-  )
+     (<span style="color: #ECBE7B;">user-error</span> <span style="color: #98be65;">"No search term at point"</span>))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgbf98808" class="outline-4">
-<h4 id="orgbf98808"><span class="section-number-4">3.1.3</span> <code>zd-search-global</code> for string</h4>
-<div class="outline-text-4" id="text-3-1-3">
+<div id="outline-container-org5870746" class="outline-5">
+<h5 id="org5870746"><span class="section-number-5">2.2.1.3</span> <code>zd-search-global</code> for string</h5>
+<div class="outline-text-5" id="text-2-2-1-3">
 <p>
 Search with deft for given string.
 If there is only one result, that file is opened, unless additional argument is true.
 </p>
 
 <p>
-Based on snippet suggested by <code>saf-dmitry</code> on deft's <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
+Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="https://github.com/jrblevin/deft/issues/52#issuecomment-401766828">Github</a>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-search-global</span> (str <span style="color: #9A7500;">&amp;optional</span> dntOpn)
-<span style="color: #828b9b;">"Search deft with STR as filter.</span>
-<span style="color: #828b9b;">If there is only one result, open that file (unless DNTOPN is true)."</span>
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Sanitize the filter string</span>
-  (<span style="color: #3B6EA8;">setq</span> str (replace-regexp-in-string <span style="color: #4F894C;">"[[:space:]\n]+"</span> <span style="color: #4F894C;">" "</span> str))
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Call deft search on the filter string</span>
-  (<span style="color: #3B6EA8;">let</span> ((deft-incremental-search t))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-search-global</span> (str <span style="color: #ECBE7B;">&amp;optional</span> dntOpn)
+<span style="color: #83898d;">"Search deft with STR as filter.</span>
+<span style="color: #83898d;">If there is only one result, open that file (unless DNTOPN is true)."</span>
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Sanitize the filter string</span>
+  (<span style="color: #51afef;">setq</span> str (replace-regexp-in-string <span style="color: #98be65;">"[[:space:]\n]+"</span> <span style="color: #98be65;">" "</span> str))
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Call deft search on the filter string</span>
+  (<span style="color: #51afef;">let</span> ((deft-incremental-search t))
    (deft)
    (deft-filter str t))
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">If there is a single match, open the file</span>
-  (<span style="color: #3B6EA8;">unless</span> dntOpn
-   (<span style="color: #3B6EA8;">when</span> (eq (length deft-current-files) 1)
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">If there is a single match, open the file</span>
+  (<span style="color: #51afef;">unless</span> dntOpn
+   (<span style="color: #51afef;">when</span> (eq (length deft-current-files) 1)
      (deft-open-file (car deft-current-files)))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org84d4b50" class="outline-4">
-<h4 id="org84d4b50"><span class="section-number-4">3.1.4</span> <code>zd-search-filename</code> for string</h4>
-<div class="outline-text-4" id="text-3-1-4">
+<div id="outline-container-orga07e4ea" class="outline-5">
+<h5 id="orga07e4ea"><span class="section-number-5">2.2.1.4</span> <code>zd-search-filename</code> for string</h5>
+<div class="outline-text-5" id="text-2-2-1-4">
 <p>
 Deft search on filename.
 If there is only one result, open that file.
@@ -658,26 +694,26 @@ Incremental search is turned off, and the filter is set to filenames only.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-search-filename</span> (str)
-<span style="color: #828b9b;">"Search for deft files with string STR in filename.</span>
-<span style="color: #828b9b;">Open if there is only one result."</span>
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Sanitize the filter string</span>
-  (<span style="color: #3B6EA8;">setq</span> str (replace-regexp-in-string <span style="color: #4F894C;">"[[:space:]\n]+"</span> <span style="color: #4F894C;">" "</span> str))
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Call deft search on the filter string</span>
-  (<span style="color: #3B6EA8;">let</span> ((deft-filter-only-filenames t))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-search-filename</span> (str)
+<span style="color: #83898d;">"Search for deft files with string STR in filename.</span>
+<span style="color: #83898d;">Open if there is only one result."</span>
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Sanitize the filter string</span>
+  (<span style="color: #51afef;">setq</span> str (replace-regexp-in-string <span style="color: #98be65;">"[[:space:]\n]+"</span> <span style="color: #98be65;">" "</span> str))
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Call deft search on the filter string</span>
+  (<span style="color: #51afef;">let</span> ((deft-filter-only-filenames t))
    (deft)
    (deft-filter str t))
-  <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">If there is a single match, open the file</span>
-  (<span style="color: #3B6EA8;">when</span> (eq (length deft-current-files) 1)
+  <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">If there is a single match, open the file</span>
+  (<span style="color: #51afef;">when</span> (eq (length deft-current-files) 1)
     (deft-open-file (car deft-current-files))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org0ca953c" class="outline-4">
-<h4 id="org0ca953c"><span class="section-number-4">3.1.5</span> <code>zd-search-current-id</code> searches current id</h4>
-<div class="outline-text-4" id="text-3-1-5">
+<div id="outline-container-orgb904ff5" class="outline-5">
+<h5 id="orgb904ff5"><span class="section-number-5">2.2.1.5</span> <code>zd-search-current-id</code> searches current id</h5>
+<div class="outline-text-5" id="text-2-2-1-5">
 <p>
 Deft search on the id of the current file.
 </p>
@@ -691,45 +727,44 @@ This function is useful to easily see which notes link to the current file.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-search-current-id</span> ()
-<span style="color: #828b9b;">"Search deft with the id of the current file as filter.</span>
-<span style="color: #828b9b;">Open if there is only one result."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
- (zd-search-global (zd-id-current-file) t)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-search-current-id</span> ()
+<span style="color: #83898d;">"Search deft with the id of the current file as filter.</span>
+<span style="color: #83898d;">Open if there is only one result."</span>
+ (<span style="color: #51afef;">interactive</span>)
+ (zd-search-global (zd-id-current-file) t))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9ed014c" class="outline-3">
-<h3 id="org9ed014c"><span class="section-number-3">3.2</span> IDs</h3>
-<div class="outline-text-3" id="text-3-2">
+<div id="outline-container-org49f2c9f" class="outline-4">
+<h4 id="org49f2c9f"><span class="section-number-4">2.2.2</span> IDs</h4>
+<div class="outline-text-4" id="text-2-2-2">
 </div>
-<div id="outline-container-org6ad6539" class="outline-4">
-<h4 id="org6ad6539"><span class="section-number-4">3.2.1</span> Basics for IDs</h4>
-<div class="outline-text-4" id="text-3-2-1">
+<div id="outline-container-org352b05e" class="outline-5">
+<h5 id="org352b05e"><span class="section-number-5">2.2.2.1</span> Basics for IDs</h5>
+<div class="outline-text-5" id="text-2-2-2-1">
 <p>
 String format when generating ids.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zd-id-format</span> <span style="color: #4F894C;">"%Y-%m-%d-%H%M"</span>
-  <span style="color: #828b9b;">"Format used when generating zetteldeft IDs."</span>
-  <span style="color: #29838D;">:type</span> 'string
-  <span style="color: #29838D;">:group</span> 'zetteldeft
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defcustom</span> <span style="color: #dcaeea;">zd-id-format</span> <span style="color: #98be65;">"%Y-%m-%d-%H%M"</span>
+  <span style="color: #83898d;">"Format used when generating zetteldeft IDs.</span>
+<span style="color: #83898d;">Be warned, changing this won't alter the regexp to filter IDs and find your files. This is WIP."</span>
+  <span style="color: #c678dd;">:type</span> 'string
+  <span style="color: #c678dd;">:group</span> 'zetteldeft)
 </pre>
 </div>
 
 <p>
-While we're at it, lets tell deft to create new files with this new format.
-For good measure: I'd advise creating new notes in the <code>zetteldeft</code> system with <code>zd-new-file</code> or <code>zd-new-file-and-link</code>. See below.
+While we&rsquo;re at it, lets tell deft to create new files with this new format.
+For good measure: I&rsquo;d advise creating new notes in the <code>zetteldeft</code> system with <code>zd-new-file</code> or <code>zd-new-file-and-link</code>. See below.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> deft-new-file-format zd-id-format)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">setq</span> deft-new-file-format zd-id-format)
 </pre>
 </div>
 
@@ -738,45 +773,42 @@ Here is a function to generate an id string in said format.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-generate-id</span> ()
- <span style="color: #828b9b;">"Generates an id in `</span><span style="color: #97365B;">zd-id-format</span><span style="color: #828b9b;">'."</span>
- (format-time-string zd-id-format)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-generate-id</span> ()
+  <span style="color: #83898d;">"Generates an id in `</span><span style="color: #a9a1e1;">zd-id-format</span><span style="color: #83898d;">'."</span>
+  (format-time-string zd-id-format))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9fa2664" class="outline-4">
-<h4 id="org9fa2664"><span class="section-number-4">3.2.2</span> <code>zd-id-insert</code> inserts id</h4>
-<div class="outline-text-4" id="text-3-2-2">
+<div id="outline-container-org4ee5476" class="outline-5">
+<h5 id="org4ee5476"><span class="section-number-5">2.2.2.2</span> <code>zd-id-insert</code> inserts id</h5>
+<div class="outline-text-5" id="text-2-2-2-2">
 <p>
 A helper function to insert a generated id.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-id-insert</span> ()
- (<span style="color: #3B6EA8;">interactive</span>)
- <span style="color: #4F894C;">"Inserts an id in `</span><span style="color: #97365B;">zd-id-format</span><span style="color: #4F894C;">'."</span>
- (insert (zd-generate-id) <span style="color: #4F894C;">" "</span>)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-id-insert</span> ()
+ (<span style="color: #51afef;">interactive</span>)
+ <span style="color: #98be65;">"Inserts an id in `</span><span style="color: #a9a1e1;">zd-id-format</span><span style="color: #98be65;">'."</span>
+ (insert (zd-generate-id) <span style="color: #98be65;">" "</span>))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgef642f2" class="outline-4">
-<h4 id="orgef642f2"><span class="section-number-4">3.2.3</span> <code>zd-id-sanitized</code> cleans ids</h4>
-<div class="outline-text-4" id="text-3-2-3">
+<div id="outline-container-org08f3f04" class="outline-5">
+<h5 id="org08f3f04"><span class="section-number-5">2.2.2.3</span> <code>zd-id-sanitized</code> cleans ids</h5>
+<div class="outline-text-5" id="text-2-2-2-3">
 <p>
 Returns the string stripped from everything that is not a number or a <code>-</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-id-sanitized</span> (str)
-<span style="color: #828b9b;">"Strip STRING from everything that is not a number or a dash."</span>
- (replace-regexp-in-string <span style="color: #4F894C;">"[</span><span style="color: #3B6EA8; font-weight: bold;">^</span><span style="color: #4F894C;">(0-9)-]+"</span> <span style="color: #4F894C;">""</span> str)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-id-sanitized</span> (str)
+<span style="color: #83898d;">"Strip STRING from everything that is not a number or a dash."</span>
+ (replace-regexp-in-string <span style="color: #98be65;">"[</span><span style="color: #51afef; font-weight: bold;">^</span><span style="color: #98be65;">(0-9)-]+"</span> <span style="color: #98be65;">""</span> str))
 </pre>
 </div>
 
@@ -791,9 +823,9 @@ The following regular expression should work better: <code>[0-9-]\\{2,\\}-[0-9-]
 </div>
 </div>
 
-<div id="outline-container-orge4ad71b" class="outline-4">
-<h4 id="orge4ad71b"><span class="section-number-4">3.2.4</span> <code>zd-file-id-stripped</code> strips file id from string</h4>
-<div class="outline-text-4" id="text-3-2-4">
+<div id="outline-container-orgc861dec" class="outline-5">
+<h5 id="orgc861dec"><span class="section-number-5">2.2.2.4</span> <code>zd-file-id-stripped</code> strips file id from string</h5>
+<div class="outline-text-5" id="text-2-2-2-4">
 <p>
 Attempts to strip the file id from a string.
 </p>
@@ -808,20 +840,18 @@ Next, omit anything that is not a digit or a dash.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-file-id-stripped</span> (file)
-<span style="color: #828b9b;">"Returns file id stripped from given filename FILE."</span>
- (<span style="color: #3B6EA8;">let</span> ((file (substring file 0 16)))
-   (zd-id-sanitized file)
-))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-file-id-stripped</span> (file)
+<span style="color: #83898d;">"Returns file id stripped from given filename FILE."</span>
+ (<span style="color: #51afef;">let</span> ((file (substring file 0 16)))
+   (zd-id-sanitized file)))
 </pre>
 </div>
 </div>
 </div>
 
-
-<div id="outline-container-org72399a4" class="outline-4">
-<h4 id="org72399a4"><span class="section-number-4">3.2.5</span> <code>zd-id-current-file</code> returns id in filename</h4>
-<div class="outline-text-4" id="text-3-2-5">
+<div id="outline-container-org21cdf74" class="outline-5">
+<h5 id="org21cdf74"><span class="section-number-5">2.2.2.5</span> <code>zd-id-current-file</code> returns id in filename</h5>
+<div class="outline-text-5" id="text-2-2-2-5">
 <p>
 Return the id from the filename the buffer is currently visiting.
 </p>
@@ -840,41 +870,39 @@ Steps:
 </ol>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-id-current-file</span> ()
-<span style="color: #828b9b;">"Return the id from the filename the buffer is currently visiting."</span>
- (zd-file-id-stripped (file-name-base (buffer-file-name)))
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-id-current-file</span> ()
+<span style="color: #83898d;">"Return the id from the filename the buffer is currently visiting."</span>
+ (zd-file-id-stripped (file-name-base (buffer-file-name))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1c79604" class="outline-4">
-<h4 id="org1c79604"><span class="section-number-4">3.2.6</span> <code>zd-copy-id-current-file</code> copies id in filename</h4>
-<div class="outline-text-4" id="text-3-2-6">
+<div id="outline-container-org9841ee7" class="outline-5">
+<h5 id="org9841ee7"><span class="section-number-5">2.2.2.6</span> <code>zd-copy-id-current-file</code> copies id in filename</h5>
+<div class="outline-text-5" id="text-2-2-2-6">
 <p>
 Add the ID from the current file to the kill ring.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-copy-id-current-file</span> ()
-<span style="color: #828b9b;">"Add the id from the filename the buffer is currently visiting to the kill ring."</span>
-(<span style="color: #3B6EA8;">interactive</span>)
- (kill-new (zd-id-current-file))
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-copy-id-current-file</span> ()
+<span style="color: #83898d;">"Add the id from the filename the buffer is currently visiting to the kill ring."</span>
+(<span style="color: #51afef;">interactive</span>)
+ (kill-new (zd-id-current-file)))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc38eac6" class="outline-3">
-<h3 id="orgc38eac6"><span class="section-number-3">3.3</span> Finding &amp; linking files from minibuffer</h3>
-<div class="outline-text-3" id="text-3-3">
+<div id="outline-container-org742e8f4" class="outline-4">
+<h4 id="org742e8f4"><span class="section-number-4">2.2.3</span> Finding &amp; linking files from minibuffer</h4>
+<div class="outline-text-4" id="text-2-2-3">
 </div>
-<div id="outline-container-org53691ec" class="outline-4">
-<h4 id="org53691ec"><span class="section-number-4">3.3.1</span> <code>zd-find-file</code> opens file from minibuffer</h4>
-<div class="outline-text-4" id="text-3-3-1">
+<div id="outline-container-orga2f4c39" class="outline-5">
+<h5 id="orga2f4c39"><span class="section-number-5">2.2.3.1</span> <code>zd-find-file</code> opens file from minibuffer</h5>
+<div class="outline-text-5" id="text-2-2-3-1">
 <p>
 Select file from the deft folder from the minibuffer.
 </p>
@@ -884,21 +912,20 @@ Based on <code>deft-find-file</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-find-file</span> (file)
-<span style="color: #828b9b;">"Open deft file FILE."</span>
- (<span style="color: #3B6EA8;">interactive</span>
-  (list (completing-read <span style="color: #4F894C;">"Deft find file: "</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-find-file</span> (file)
+<span style="color: #83898d;">"Open deft file FILE."</span>
+ (<span style="color: #51afef;">interactive</span>
+  (list (completing-read <span style="color: #98be65;">"Deft find file: "</span>
         (deft-find-all-files-no-prefix))))
- (deft-find-file file)
-)
+ (deft-find-file file))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd374092" class="outline-4">
-<h4 id="orgd374092"><span class="section-number-4">3.3.2</span> <code>zd-find-file-id-copy</code> copies file id</h4>
-<div class="outline-text-4" id="text-3-3-2">
+<div id="outline-container-orgd7da855" class="outline-5">
+<h5 id="orgd7da855"><span class="section-number-5">2.2.3.2</span> <code>zd-find-file-id-copy</code> copies file id</h5>
+<div class="outline-text-5" id="text-2-2-3-2">
 <p>
 Select file from minibuffer and add its link id to kill ring.
 </p>
@@ -908,21 +935,20 @@ Based on <code>deft-find-file</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-find-file-id-copy</span> (file)
-<span style="color: #828b9b;">"Find deft file FILE and add its id to the kill ring."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list
-        (completing-read <span style="color: #4F894C;">"File to copy id from: "</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-find-file-id-copy</span> (file)
+<span style="color: #83898d;">"Find deft file FILE and add its id to the kill ring."</span>
+ (<span style="color: #51afef;">interactive</span> (list
+        (completing-read <span style="color: #98be65;">"File to copy id from: "</span>
         (deft-find-all-files-no-prefix))))
-  (kill-new (concat <span style="color: #4F894C;">"&#167;"</span> (zd-file-id-stripped file)))
-)
+  (kill-new (concat <span style="color: #98be65;">"&#167;"</span> (zd-file-id-stripped file))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org0a7b702" class="outline-4">
-<h4 id="org0a7b702"><span class="section-number-4">3.3.3</span> <code>zd-find-file-id-insert</code> inserts file id</h4>
-<div class="outline-text-4" id="text-3-3-3">
+<div id="outline-container-org919f6c3" class="outline-5">
+<h5 id="org919f6c3"><span class="section-number-5">2.2.3.3</span> <code>zd-find-file-id-insert</code> inserts file id</h5>
+<div class="outline-text-5" id="text-2-2-3-3">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code>.
 </p>
@@ -932,21 +958,20 @@ Based on <code>deft-find-file</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-find-file-id-insert</span> (file)
-<span style="color: #828b9b;">"Find deft file FILE and insert its link id, prepended by &#167;."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list
-        (completing-read <span style="color: #4F894C;">"File to insert id from: "</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-find-file-id-insert</span> (file)
+<span style="color: #83898d;">"Find deft file FILE and insert its link id, prepended by &#167;."</span>
+ (<span style="color: #51afef;">interactive</span> (list
+        (completing-read <span style="color: #98be65;">"File to insert id from: "</span>
         (deft-find-all-files-no-prefix))))
-  (insert (concat <span style="color: #4F894C;">"&#167;"</span> (zd-file-id-stripped file)))
-)
+  (insert (concat <span style="color: #98be65;">"&#167;"</span> (zd-file-id-stripped file))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1260342" class="outline-4">
-<h4 id="org1260342"><span class="section-number-4">3.3.4</span> <code>zd-find-file-full-title-insert</code> inserts full file title</h4>
-<div class="outline-text-4" id="text-3-3-4">
+<div id="outline-container-orgdcd87ae" class="outline-5">
+<h5 id="orgdcd87ae"><span class="section-number-5">2.2.3.4</span> <code>zd-find-file-full-title-insert</code> inserts full file title</h5>
+<div class="outline-text-5" id="text-2-2-3-4">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code>.
 </p>
@@ -956,26 +981,25 @@ Based on <code>deft-find-file</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-find-file-full-title-insert</span> (file)
-<span style="color: #828b9b;">"Find deft file FILE and insert its link id with title, prepended by &#167;."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list
-        (completing-read <span style="color: #4F894C;">"File to insert full title from: "</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-find-file-full-title-insert</span> (file)
+<span style="color: #83898d;">"Find deft file FILE and insert its link id with title, prepended by &#167;."</span>
+ (<span style="color: #51afef;">interactive</span> (list
+        (completing-read <span style="color: #98be65;">"File to insert full title from: "</span>
         (deft-find-all-files-no-prefix))))
-  (insert (concat <span style="color: #4F894C;">"&#167;"</span> (file-name-base file)))
-)
+  (insert (concat <span style="color: #98be65;">"&#167;"</span> (file-name-base file))))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb72a753" class="outline-3">
-<h3 id="orgb72a753"><span class="section-number-3">3.4</span> New file creation</h3>
-<div class="outline-text-3" id="text-3-4">
+<div id="outline-container-org2848717" class="outline-4">
+<h4 id="org2848717"><span class="section-number-4">2.2.4</span> New file creation</h4>
+<div class="outline-text-4" id="text-2-2-4">
 </div>
-<div id="outline-container-org581c6e1" class="outline-4">
-<h4 id="org581c6e1"><span class="section-number-4">3.4.1</span> <code>zd-new-file</code> creates new file</h4>
-<div class="outline-text-4" id="text-3-4-1">
+<div id="outline-container-org238e77c" class="outline-5">
+<h5 id="org238e77c"><span class="section-number-5">2.2.4.1</span> <code>zd-new-file</code> creates new file</h5>
+<div class="outline-text-5" id="text-2-2-4-1">
 <p>
 Create new file with filename as <code>zd-id-format</code> and a string.
 </p>
@@ -989,26 +1013,25 @@ Note that the file is only actually created upon save.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-new-file</span> (str <span style="color: #9A7500;">&amp;optional</span> empty)
-<span style="color: #828b9b;">"Create a new deft file. Filename is `</span><span style="color: #97365B;">zd-id-format</span><span style="color: #828b9b;">' appended by STR. No extension needed.</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-new-file</span> (str <span style="color: #ECBE7B;">&amp;optional</span> empty)
+<span style="color: #83898d;">"Create a new deft file. Filename is `</span><span style="color: #a9a1e1;">zd-id-format</span><span style="color: #83898d;">' appended by STR. No extension needed.</span>
 
-<span style="color: #828b9b;">After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"name: "</span>)))
- (<span style="color: #3B6EA8;">let*</span> ((zdId (zd-generate-id))
-        (zdName (concat zdId <span style="color: #4F894C;">" "</span> str)))
+<span style="color: #83898d;">After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."</span>
+ (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"name: "</span>)))
+ (<span style="color: #51afef;">let*</span> ((zdId (zd-generate-id))
+        (zdName (concat zdId <span style="color: #98be65;">" "</span> str)))
  (deft-new-file-named zdName)
  (kill-new zdName)
- (<span style="color: #3B6EA8;">unless</span> empty (zd-insert-org-title))
- (<span style="color: #3B6EA8;">when</span> (<span style="color: #3B6EA8;">featurep</span> '<span style="color: #97365B;">evil</span>) (evil-insert-state))
-))
+ (<span style="color: #51afef;">unless</span> empty (zd-insert-org-title))
+ (<span style="color: #51afef;">when</span> (<span style="color: #51afef;">featurep</span> '<span style="color: #a9a1e1;">evil</span>) (evil-insert-state))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org66d433a" class="outline-4">
-<h4 id="org66d433a"><span class="section-number-4">3.4.2</span> <code>zd-new-file-and-link</code> inserts generated id</h4>
-<div class="outline-text-4" id="text-3-4-2">
+<div id="outline-container-org5806faa" class="outline-5">
+<h5 id="org5806faa"><span class="section-number-5">2.2.4.2</span> <code>zd-new-file-and-link</code> inserts generated id</h5>
+<div class="outline-text-5" id="text-2-2-4-2">
 <p>
 Generate an id, append a name, and generate a new file based on id and link.
 </p>
@@ -1018,50 +1041,48 @@ Either provide a name as argument, or enter one in the mini-buffer.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-new-file-and-link</span> (str)
-<span style="color: #828b9b;">"Inserts generated id with `</span><span style="color: #97365B;">zd-id-format</span><span style="color: #828b9b;">' appended with STR.</span>
-<span style="color: #828b9b;">Creates new deft file with id and STR as name."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"name: "</span>)))
- (insert <span style="color: #4F894C;">"&#167;"</span> (zd-generate-id) <span style="color: #4F894C;">" "</span> str)
- (zd-new-file str)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-new-file-and-link</span> (str)
+<span style="color: #83898d;">"Inserts generated id with `</span><span style="color: #a9a1e1;">zd-id-format</span><span style="color: #83898d;">' appended with STR.</span>
+<span style="color: #83898d;">Creates new deft file with id and STR as name."</span>
+ (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"name: "</span>)))
+ (insert <span style="color: #98be65;">"&#167;"</span> (zd-generate-id) <span style="color: #98be65;">" "</span> str)
+ (zd-new-file str))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9e1c0b1" class="outline-3">
-<h3 id="org9e1c0b1"><span class="section-number-3">3.5</span> Functions with <code>avy</code></h3>
-<div class="outline-text-3" id="text-3-5">
+<div id="outline-container-orgf9757a4" class="outline-4">
+<h4 id="orgf9757a4"><span class="section-number-4">2.2.5</span> Functions with <code>avy</code></h4>
+<div class="outline-text-4" id="text-2-2-5">
 </div>
-<div id="outline-container-orga1516ea" class="outline-4">
-<h4 id="orga1516ea"><span class="section-number-4">3.5.1</span> <code>zd-avy-tag-search</code></h4>
-<div class="outline-text-4" id="text-3-5-1">
+<div id="outline-container-org0cae86f" class="outline-5">
+<h5 id="org0cae86f"><span class="section-number-5">2.2.5.1</span> <code>zd-avy-tag-search</code></h5>
+<div class="outline-text-5" id="text-2-2-5-1">
 <p>
 Use avy to jump to a tag and search for it.
 </p>
 
 <p>
-The search term should include the <code>#</code> as tag identifier, so it's as easy as jumping to the <code>#</code> and running <code>zd-search-at-point</code>.
+The search term should include the <code>#</code> as tag identifier, so it&rsquo;s as easy as jumping to the <code>#</code> and running <code>zd-search-at-point</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-avy-tag-search</span> ()
-<span style="color: #828b9b;">"Call on avy to jump and search tags indicated with #."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
- (<span style="color: #3B6EA8;">save-excursion</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-avy-tag-search</span> ()
+<span style="color: #83898d;">"Call on avy to jump and search tags indicated with #."</span>
+ (<span style="color: #51afef;">interactive</span>)
+ (<span style="color: #51afef;">save-excursion</span>
   (avy-goto-char ?#)
-  (zd-search-at-point)
-))
+  (zd-search-at-point)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb42db80" class="outline-4">
-<h4 id="orgb42db80"><span class="section-number-4">3.5.2</span> <code>zd-avy-link-search</code></h4>
-<div class="outline-text-4" id="text-3-5-2">
+<div id="outline-container-orgefd3335" class="outline-5">
+<h5 id="orgefd3335"><span class="section-number-5">2.2.5.2</span> <code>zd-avy-link-search</code></h5>
+<div class="outline-text-5" id="text-2-2-5-2">
 <p>
 Use avy to jump to an id and search for it.
 </p>
@@ -1071,22 +1092,21 @@ Jumps to the <code>§</code> identifier and searches for the thing at point &#x2
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-avy-link-search</span> ()
-<span style="color: #828b9b;">"Call on avy to jump and search link ids indicated with &#167;.</span>
-<span style="color: #828b9b;">Opens immediately if there is only one result."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
- (<span style="color: #3B6EA8;">save-excursion</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-avy-link-search</span> ()
+<span style="color: #83898d;">"Call on avy to jump and search link ids indicated with &#167;.</span>
+<span style="color: #83898d;">Opens immediately if there is only one result."</span>
+ (<span style="color: #51afef;">interactive</span>)
+ (<span style="color: #51afef;">save-excursion</span>
   (avy-goto-char ?&#167;)
-  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))
-))
+  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org07757b3" class="outline-4">
-<h4 id="org07757b3"><span class="section-number-4">3.5.3</span> <code>zd-avy-file-search</code></h4>
-<div class="outline-text-4" id="text-3-5-3">
+<div id="outline-container-org6d3a335" class="outline-5">
+<h5 id="org6d3a335"><span class="section-number-5">2.2.5.3</span> <code>zd-avy-file-search</code></h5>
+<div class="outline-text-5" id="text-2-2-5-3">
 <p>
 Use avy to jump to an id and find the corresponding file.
 There should be only one result, as the id should be unique.
@@ -1098,46 +1118,44 @@ If it is non-nil, search it after sanitizing.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-avy-file-search</span> ()
-<span style="color: #828b9b;">"Call on avy to jump to link ids indicated with &#167; and use it to search for filenames."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
- (<span style="color: #3B6EA8;">save-excursion</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-avy-file-search</span> ()
+<span style="color: #83898d;">"Call on avy to jump to link ids indicated with &#167; and use it to search for filenames."</span>
+ (<span style="color: #51afef;">interactive</span>)
+ (<span style="color: #51afef;">save-excursion</span>
   (avy-goto-char ?&#167;)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
-))
+  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgdfa4f7d" class="outline-3">
-<h3 id="orgdfa4f7d"><span class="section-number-3">3.6</span> Utility functions</h3>
-<div class="outline-text-3" id="text-3-6">
+<div id="outline-container-orgc971ce1" class="outline-4">
+<h4 id="orgc971ce1"><span class="section-number-4">2.2.6</span> Utility functions</h4>
+<div class="outline-text-4" id="text-2-2-6">
 </div>
-<div id="outline-container-orgc9d6321" class="outline-4">
-<h4 id="orgc9d6321"><span class="section-number-4">3.6.1</span> Deft new search</h4>
-<div class="outline-text-4" id="text-3-6-1">
+<div id="outline-container-org2f5d3d9" class="outline-5">
+<h5 id="org2f5d3d9"><span class="section-number-5">2.2.6.1</span> Deft new search</h5>
+<div class="outline-text-5" id="text-2-2-6-1">
 <p>
 The following function launches deft, clears the filter and enters <code>evil-insert-state</code> (when evil is used).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-deft-new-search</span> ()
-<span style="color: #828b9b;">"Launch deft, clear filter and enter insert state."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-deft-new-search</span> ()
+<span style="color: #83898d;">"Launch deft, clear filter and enter insert state."</span>
+ (<span style="color: #51afef;">interactive</span>)
  (deft)
  (deft-filter-clear)
- (<span style="color: #3B6EA8;">when</span> (<span style="color: #3B6EA8;">featurep</span> '<span style="color: #97365B;">evil</span>) (evil-insert-state))
-)
+ (<span style="color: #51afef;">when</span> (<span style="color: #51afef;">featurep</span> '<span style="color: #a9a1e1;">evil</span>) (evil-insert-state)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org46babf8" class="outline-4">
-<h4 id="org46babf8"><span class="section-number-4">3.6.2</span> <code>zd-file-rename</code> renames visited file</h4>
-<div class="outline-text-4" id="text-3-6-2">
+<div id="outline-container-org7961c2d" class="outline-5">
+<h5 id="org7961c2d"><span class="section-number-5">2.2.6.2</span> <code>zd-file-rename</code> renames visited file</h5>
+<div class="outline-text-5" id="text-2-2-6-2">
 <p>
 Rename the current file.
 Based on the function <code>deft-rename-file</code> with only minor changes in the way <code>old-filename</code> is set: from current buffer rather than from <code>deft</code> search buffer.
@@ -1153,19 +1171,19 @@ The function also updates the <code>#+title:</code> at the top of the buffer, if
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-file-rename</span> ()
-<span style="color: #828b9b;">"Rename the current file via the deft function. Use this on files in the deft-directory."</span>
- (<span style="color: #3B6EA8;">interactive</span>)
-  (<span style="color: #3B6EA8;">let</span> ((old-filename (buffer-file-name))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-file-rename</span> ()
+<span style="color: #83898d;">"Rename the current file via the deft function. Use this on files in the deft-directory."</span>
+ (<span style="color: #51afef;">interactive</span>)
+  (<span style="color: #51afef;">let</span> ((old-filename (buffer-file-name))
         (deft-dir (file-name-as-directory deft-directory))
         new-filename old-name new-name)
-    (<span style="color: #3B6EA8;">when</span> old-filename
-      (<span style="color: #3B6EA8;">setq</span> old-name (deft-base-filename old-filename))
-      (<span style="color: #3B6EA8;">setq</span> new-name (read-string
-                      (concat <span style="color: #4F894C;">"Rename "</span> old-name <span style="color: #4F894C;">" to (without extension): "</span>)
+    (<span style="color: #51afef;">when</span> old-filename
+      (<span style="color: #51afef;">setq</span> old-name (deft-base-filename old-filename))
+      (<span style="color: #51afef;">setq</span> new-name (read-string
+                      (concat <span style="color: #98be65;">"Rename "</span> old-name <span style="color: #98be65;">" to (without extension): "</span>)
                       old-name))
-      (<span style="color: #3B6EA8;">setq</span> new-filename
-            (concat deft-dir new-name <span style="color: #4F894C;">"."</span> deft-default-extension))
+      (<span style="color: #51afef;">setq</span> new-filename
+            (concat deft-dir new-name <span style="color: #98be65;">"."</span> deft-default-extension))
       (rename-file old-filename new-filename)
       (deft-update-visiting-buffers old-filename new-filename)
       (zd-update-title-in-file)
@@ -1178,12 +1196,12 @@ To update the title of the currently visited file, the following function is use
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-update-title-in-file</span> ()
-<span style="color: #828b9b;">"Update the #+TITLE in the current file, if present."</span>
-  (<span style="color: #3B6EA8;">save-excursion</span>
-    (<span style="color: #3B6EA8;">let</span> ((zd-string-after-title <span style="color: #4F894C;">""</span>))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-update-title-in-file</span> ()
+<span style="color: #83898d;">"Update the #+TITLE in the current file, if present."</span>
+  (<span style="color: #51afef;">save-excursion</span>
+    (<span style="color: #51afef;">let</span> ((zd-string-after-title <span style="color: #98be65;">""</span>))
       (goto-char (point-min))
-      (<span style="color: #3B6EA8;">when</span> (search-forward <span style="color: #4F894C;">"#+title:"</span> nil t)
+      (<span style="color: #51afef;">when</span> (search-forward <span style="color: #98be65;">"#+title:"</span> nil t)
         (delete-region (line-beginning-position) (line-end-position))
         (zd-insert-org-title)))))
 </pre>
@@ -1191,9 +1209,9 @@ To update the title of the currently visited file, the following function is use
 </div>
 </div>
 
-<div id="outline-container-orgbfae4d9" class="outline-4">
-<h4 id="orgbfae4d9"><span class="section-number-4">3.6.3</span> <code>zd-insert-org-title</code> inserts file title in org-mode</h4>
-<div class="outline-text-4" id="text-3-6-3">
+<div id="outline-container-orgc0bf785" class="outline-5">
+<h5 id="orgc0bf785"><span class="section-number-5">2.2.6.3</span> <code>zd-insert-org-title</code> inserts file title in org-mode</h5>
+<div class="outline-text-5" id="text-2-2-6-3">
 <p>
 Easily insert the title of the current file in <code>org-mode</code> syntax, i.e. as a <code>#+title:</code> line.
 </p>
@@ -1208,10 +1226,11 @@ This string, variable <code>zd-string-after-title</code>, can be customized and 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-insert-org-title</span> ()
- (<span style="color: #3B6EA8;">interactive</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-insert-org-title</span> ()
+ <span style="color: #83898d;">"Insert filename of current file as org syntax."</span>
+ (<span style="color: #51afef;">interactive</span>)
  (insert
-   <span style="color: #4F894C;">"#+title: "</span>
+   <span style="color: #98be65;">"#+title: "</span>
    (zd-lift-file-title (file-name-base (buffer-file-name)))
    zd-string-after-title))
 </pre>
@@ -1219,15 +1238,39 @@ This string, variable <code>zd-string-after-title</code>, can be customized and 
 
 <p>
 Customize the string to be inserted below the title.
+Used when generating a new file.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zd-string-after-title</span> <span style="color: #4F894C;">""</span>
-  <span style="color: #828b9b;">"String inserted below title when `</span><span style="color: #97365B;">zd-insert-org-title</span><span style="color: #828b9b;">' is called.</span>
-<span style="color: #828b9b;">Empty by default.</span>
-<span style="color: #828b9b;">Don't forget to add `</span><span style="color: #97365B;">\\n</span><span style="color: #828b9b;">' at the beginning to start a new line."</span>
-  <span style="color: #29838D;">:type</span> 'string
-  <span style="color: #29838D;">:group</span> 'zetteldeft)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defcustom</span> <span style="color: #dcaeea;">zd-string-after-title</span> <span style="color: #98be65;">""</span>
+  <span style="color: #83898d;">"String inserted below title when `</span><span style="color: #a9a1e1;">zd-insert-org-title</span><span style="color: #83898d;">' is called.</span>
+<span style="color: #83898d;">Empty by default.</span>
+<span style="color: #83898d;">Don't forget to add `</span><span style="color: #a9a1e1;">\\n</span><span style="color: #83898d;">' at the beginning to start a new line."</span>
+  <span style="color: #c678dd;">:type</span> 'string
+  <span style="color: #c678dd;">:group</span> 'zetteldeft)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb39f7b6" class="outline-5">
+<h5 id="orgb39f7b6"><span class="section-number-5">2.2.6.4</span> <code>zd-count-words</code> counts total number of words</h5>
+<div class="outline-text-5" id="text-2-2-6-4">
+<p>
+To count the total number of words, lets loop over all the files and count words in each.
+The total is printed in the minibuffer.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-count-words</span> ()
+  <span style="color: #83898d;">"Prints total number of words in all deft files in the minibuffer."</span>
+  (<span style="color: #51afef;">interactive</span>)
+  (<span style="color: #51afef;">let</span> ((numWords 0))
+    (<span style="color: #51afef;">dolist</span> (deftFile deft-all-files)
+      (<span style="color: #51afef;">with-temp-buffer</span>
+        (insert-file-contents deftFile)
+        (<span style="color: #51afef;">setq</span> numWords (+ numWords (count-words (point-min) (point-max))))))
+    (message <span style="color: #98be65;">"Total words accross all notes: %s"</span> numWords)))
 </pre>
 </div>
 </div>
@@ -1235,87 +1278,41 @@ Customize the string to be inserted below the title.
 </div>
 </div>
 
-<div id="outline-container-orgc68e6b3" class="outline-2">
-<h2 id="orgc68e6b3"><span class="section-number-2">4</span> Gathering notes</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org8f86fc6" class="outline-3">
+<h3 id="org8f86fc6"><span class="section-number-3">2.3</span> Gathering notes</h3>
+<div class="outline-text-3" id="text-2-3">
 </div>
-<div id="outline-container-orgece8e90" class="outline-3">
-<h3 id="orgece8e90"><span class="section-number-3">4.1</span> Idea</h3>
-<div class="outline-text-3" id="text-4-1">
+<div id="outline-container-orgeb2524a" class="outline-4">
+<h4 id="orgeb2524a"><span class="section-number-4">2.3.1</span> On &ldquo;gathering notes&rdquo;</h4>
+<div class="outline-text-4" id="text-2-3-1">
 <p>
 Sometimes you want to easily gather all notes with a certain tag or search term.
 Say you want to quickly generate a list of links to all files including the tag <code>#zetteldeft</code>.
 </p>
 
 <p>
-The following functions automate that process:
+The following functions do that for you.
+There are three of them, each either taking a search term as argument or prompting for one:
 </p>
-<ul class="org-ul">
-<li><code>zd-insert-list-links</code> promts for a search string and inserts a list of notes</li>
-<li><code>zd-org-include-search</code> generates <code>#+INCLUDE</code> code for <code>org-mode</code> for these files.</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org4ef7c4f" class="outline-3">
-<h3 id="org4ef7c4f"><span class="section-number-3">4.2</span> Helper functions</h3>
-<div class="outline-text-3" id="text-4-2">
-</div>
-<div id="outline-container-org1ca84d1" class="outline-4">
-<h4 id="org1ca84d1"><span class="section-number-4">4.2.1</span> <code>zd-get-file-list</code> returns file list on search</h4>
-<div class="outline-text-4" id="text-4-2-1">
-<p>
-Get a list of the files with given search string.
-</p>
+<ol class="org-ol">
+<li><code>zd-insert-list-links</code> inserts a simple list of notes which contain the search term, spelling out the full filename for each note (including ID).</li>
+<li><code>zd-org-search-include</code> generates <code>org-mode</code> syntax to <code>#+INCLUDE</code> the files below a header with their title.</li>
+<li><code>zd-org-search-insert</code> inserts the contents of all of these notes below their respective titles.</li>
+</ol>
 
 <p>
-To <b>fix</b>: sorting of results.
+More documentation can be found below.
 </p>
-
-<p>
-The code searches for the given string and returns <code>deft-current-files</code>.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-get-file-list</span> (srch)
-<span style="color: #828b9b;">"Returns a list of files with the search item SRCH."</span>
-  (<span style="color: #3B6EA8;">let</span> ((deft-current-sort-method 'title))
-   (deft-filter srch t)
-   deft-current-files
-))
-</pre>
-</div>
 </div>
 </div>
 
-
-<div id="outline-container-org7790ed4" class="outline-4">
-<h4 id="org7790ed4"><span class="section-number-4">4.2.2</span> <code>zd-lift-file-title</code> returns file title from path</h4>
-<div class="outline-text-4" id="text-4-2-2">
-<p>
-Returns only the file title from a file, removing path, extension, and link ID.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-lift-file-title</span> (zdFile)
- (<span style="color: #3B6EA8;">let</span> ((baseName (file-name-base zdFile)))
-   (replace-regexp-in-string
-    <span style="color: #4F894C;">"[0-9]\\{2,\\}-[0-9-]+[[:space:]]"</span>
-    <span style="color: #4F894C;">""</span> baseName)
-))
-</pre>
+<div id="outline-container-org17de997" class="outline-4">
+<h4 id="org17de997"><span class="section-number-4">2.3.2</span> List of links</h4>
+<div class="outline-text-4" id="text-2-3-2">
 </div>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org16e0ee9" class="outline-3">
-<h3 id="org16e0ee9"><span class="section-number-3">4.3</span> List of links</h3>
-<div class="outline-text-3" id="text-4-3">
-</div>
-<div id="outline-container-org27cf0e5" class="outline-4">
-<h4 id="org27cf0e5"><span class="section-number-4">4.3.1</span> <code>zd-insert-list-links</code> generates list with tagged files</h4>
-<div class="outline-text-4" id="text-4-3-1">
+<div id="outline-container-orgc4039ca" class="outline-5">
+<h5 id="orgc4039ca"><span class="section-number-5">2.3.2.1</span> <code>zd-insert-list-links</code> generates list with tagged files</h5>
+<div class="outline-text-5" id="text-2-3-2-1">
 <p>
 Creates and inserts a list with links to all files with selected search term.
 </p>
@@ -1325,55 +1322,56 @@ The code gets a list of files that contain the search string, runs through said 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-insert-list-links</span> (zdSrch)
-<span style="color: #828b9b;">"Inserts at point a list of links to all deft files with a search string ZDSRCH.</span>
-<span style="color: #828b9b;">When searching for a tag, include # manually in the prompt."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"search string: "</span>)))
- (<span style="color: #3B6EA8;">dolist</span> (zdFile (zd-get-file-list zdSrch))
-  (zd-list-entry-file-link zdFile)
-))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-insert-list-links</span> (zdSrch)
+<span style="color: #83898d;">"Inserts at point a list of links to all deft files with a search string ZDSRCH.</span>
+<span style="color: #83898d;">When searching for a tag, include # manually in the search."</span>
+ (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"search string: "</span>)))
+ (<span style="color: #51afef;">dolist</span> (zdFile (zd-get-file-list zdSrch))
+  (zd-list-entry-file-link zdFile)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org72dceff" class="outline-4">
-<h4 id="org72dceff"><span class="section-number-4">4.3.2</span> <code>zd-list-entry-file-link</code> includes a file link as list entry</h4>
-<div class="outline-text-4" id="text-4-3-2">
+<div id="outline-container-org1a42546" class="outline-5">
+<h5 id="org1a42546"><span class="section-number-5">2.3.2.2</span> <code>zd-list-entry-file-link</code> includes a file link as list entry</h5>
+<div class="outline-text-5" id="text-2-3-2-2">
 <p>
 Inserts for given file a link id and title as a list entry.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-list-entry-file-link</span> (zdFile)
-<span style="color: #828b9b;">"Insert ZDFILE as list entry."</span>
- (insert <span style="color: #4F894C;">" - "</span> (concat <span style="color: #4F894C;">"&#167;"</span> (file-name-base zdFile)) <span style="color: #4F894C;">"\n"</span>)
-)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-list-entry-file-link</span> (zdFile)
+<span style="color: #83898d;">"Insert ZDFILE as list entry."</span>
+ (insert <span style="color: #98be65;">" - "</span> (concat <span style="color: #98be65;">"&#167;"</span> (file-name-base zdFile)) <span style="color: #98be65;">"\n"</span>))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-
-<div id="outline-container-org2670ea0" class="outline-3">
-<h3 id="org2670ea0"><span class="section-number-3">4.4</span> Compiling a single <code>org</code></h3>
-<div class="outline-text-3" id="text-4-4">
+<div id="outline-container-org0dabcbe" class="outline-4">
+<h4 id="org0dabcbe"><span class="section-number-4">2.3.3</span> Compiling a single <code>org</code></h4>
+<div class="outline-text-4" id="text-2-3-3">
 </div>
-<div id="outline-container-org50a073a" class="outline-4">
-<h4 id="org50a073a"><span class="section-number-4">4.4.1</span> Idea and example</h4>
-<div class="outline-text-4" id="text-4-4-1">
+<div id="outline-container-orgdb92c64" class="outline-5">
+<h5 id="orgdb92c64"><span class="section-number-5">2.3.3.1</span> Idea and example</h5>
+<div class="outline-text-5" id="text-2-3-3-1">
 </div>
-<div id="outline-container-orgcdeb0ee" class="outline-5">
-<h5 id="orgcdeb0ee"><span class="section-number-5">4.4.1.1</span> Including notes with given tag</h5>
-<div class="outline-text-5" id="text-4-4-1-1">
+<ol class="org-ol">
+<li><a id="org66888a4"></a>Including notes with given search term<br>
+<div class="outline-text-6" id="text-2-3-3-1-1">
 <p>
-For each of the notes with the <code>#tag</code>, it inserts a heading, a line with <code>#+INCLUDE</code> and the full path to the relevant notes.
+The following explains what <code>zd-org-search-include</code> does, but the concept is more or less the same for <code>zd-org-search-insert</code>.
+</p>
+
+<p>
+For each of the notes with the provided search term, it inserts a heading, a line with <code>#+INCLUDE</code> and the full path to the relevant notes.
 This results in a single file that can be easily exported.
 </p>
 
 <p>
-The only function meant for use on the users end, is <code>zd-org-include-search</code>.
+The only function meant for use on the users end, is <code>zd-org-search-include</code>.
 </p>
 
 <p>
@@ -1381,21 +1379,21 @@ For example,
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(zd-org-include-files <span style="color: #4F894C;">"#export"</span>)
+<pre class="src src-emacs-lisp">(zd-org-search-include <span style="color: #98be65;">"#export"</span>)
 </pre>
 </div>
 
 <p>
 inserts necessary code to include all files containing the tag <code>#export</code>.
-The results could look like the following:
+The results would look like the following:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-org">\* First file title
-<span style="color: #828b9b;">#+INCLUDE: "/path/to/2018-07-13-2210 First file title.org"</span>
+<span style="color: #83898d;">#+INCLUDE: "/path/to/2018-07-13-2210 First file title.org"</span>
 
 \* File two
-<span style="color: #828b9b;">#+INCLUDE: "/path/to/2018-07-13-2223 File two.org"</span>
+<span style="color: #83898d;">#+INCLUDE: "/path/to/2018-07-13-2223 File two.org"</span>
 </pre>
 </div>
 
@@ -1403,29 +1401,28 @@ The results could look like the following:
 All functions are documented below.
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-org47c0dae" class="outline-5">
-<h5 id="org47c0dae"><span class="section-number-5">4.4.1.2</span> Semi-automated example</h5>
-<div class="outline-text-5" id="text-4-4-1-2">
+<li><a id="orga24ac63"></a>Semi-automated example<br>
+<div class="outline-text-6" id="text-2-3-3-1-2">
 <p>
 You could, for example, add the following code to a document and execute (or evaluate) it from within <code>org-mode</code>.
-Add it under a "comment" type heading to prevent it from being exported itself, like so: <code>* COMMENT Code</code>.
+Add it under a &ldquo;comment&rdquo; type heading to prevent it from being exported itself, like so: <code>* COMMENT Code</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">let</span> (frst)
-  (<span style="color: #3B6EA8;">save-excursion</span>
-    <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Move to next heading</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">let</span> (frst)
+  (<span style="color: #51afef;">save-excursion</span>
+    <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Move to next heading</span>
     (outline-next-heading)
-    (<span style="color: #3B6EA8;">setq</span> frst (point))
-    <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Delete everything after</span>
+    (<span style="color: #51afef;">setq</span> frst (point))
+    <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Delete everything after</span>
     (delete-region frst (point-max))
-    <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Include the files</span>
-    (zd-org-include-search <span style="color: #4F894C;">"#tag"</span>)
-    <span style="color: #8b94a5;">; </span><span style="color: #8b94a5;">Sort these entries alphabetically (set mark to use a region)</span>
-<span style="color: #8b94a5;">;   </span><span style="color: #8b94a5;">(goto-char frst) (set-mark (point-max))</span>
-<span style="color: #8b94a5;">;   </span><span style="color: #8b94a5;">(org-sort-entries nil ?a)</span>
+    <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Include the files</span>
+    (zd-org-search-include <span style="color: #98be65;">"#tag"</span>)
+    <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Sort these entries alphabetically (set mark to use a region)</span>
+<span style="color: #5B6268;">;   </span><span style="color: #5B6268;">(goto-char frst) (set-mark (point-max))</span>
+<span style="color: #5B6268;">;   </span><span style="color: #5B6268;">(org-sort-entries nil ?a)</span>
   ))
 </pre>
 </div>
@@ -1439,14 +1436,13 @@ In order to also sort the entries alphabetically, uncomment the last two lines.
 </p>
 
 <p>
-Don't put the file with the above code in you <code>deft</code> folder, or it will attempt to include itself (since it has <code>#tag</code> in it).
+A final caveat: don&rsquo;t put the file with the above code in you <code>deft</code> folder, or it will attempt to include itself (since it has <code>#tag</code> in it).
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-orgb28c576" class="outline-5">
-<h5 id="orgb28c576"><span class="section-number-5">4.4.1.3</span> Issues &amp; things to note</h5>
-<div class="outline-text-5" id="text-4-4-1-3">
+<li><a id="org021c88e"></a>Issues &amp; things to note<br>
+<div class="outline-text-6" id="text-2-3-3-1-3">
 <p>
 Before we look at the functions, a note on limitations of the current implementation.
 </p>
@@ -1465,49 +1461,164 @@ To change this, edit the inserted strings in the <code>zd-org-include-file</code
 <li><b>Sorting</b>
 The files included are unsorted, or rather: sorted as <code>deft</code> provides the results.
 Attempts at sorting by title are included in <code>zd-get-file-list</code>, but not working properly.
-As a solution, use <code>org-sort</code> manually after running <code>zd-org-include-search</code>.</li>
+As a solution, use <code>org-sort</code> manually after running <code>zd-org-search-include</code>.</li>
 </ol>
 </div>
-</div>
+</li>
+</ol>
 </div>
 
-<div id="outline-container-org2afcb72" class="outline-4">
-<h4 id="org2afcb72"><span class="section-number-4">4.4.2</span> <code>zd-org-include-search</code> generates <code>#+INCLUDE</code> code</h4>
-<div class="outline-text-4" id="text-4-4-2">
+<div id="outline-container-org86f1b6a" class="outline-5">
+<h5 id="org86f1b6a"><span class="section-number-5">2.3.3.2</span> <code>zd-org-search-include</code> generates <code>#+INCLUDE</code> syntax</h5>
+<div class="outline-text-5" id="text-2-3-3-2">
 <p>
 Asks user for a search string and inserts headers and <code>#+INCLUDE</code> code for all files with said tag.
 When used on <code>#tag</code>, make sure to include the <code>#</code> manually.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-org-include-search</span> (zdSrch)
-<span style="color: #828b9b;">"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."</span>
- (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"tag (include the #): "</span>)))
- (<span style="color: #3B6EA8;">dolist</span> (zdFile (zd-get-file-list zdSrch))
-  (zd-org-include-file zdFile)
-))
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-org-search-include</span> (zdSrch)
+<span style="color: #83898d;">"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."</span>
+ (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"tag (include the #): "</span>)))
+ (<span style="color: #51afef;">dolist</span> (zdFile (zd-get-file-list zdSrch))
+  (zd-org-include-file zdFile)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgca284ee" class="outline-4">
-<h4 id="orgca284ee"><span class="section-number-4">4.4.3</span> <code>zd-org-include-file</code> includes a file in <code>org</code> format</h4>
-<div class="outline-text-4" id="text-4-4-3">
+<div id="outline-container-orgfb75ae4" class="outline-5">
+<h5 id="orgfb75ae4"><span class="section-number-5">2.3.3.3</span> <code>zd-org-search-insert</code> generates titles &amp; file content</h5>
+<div class="outline-text-5" id="text-2-3-3-3">
+<p>
+Very similar to the previous function, but rather than writing syntax to include files, insert their contents directly.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-org-search-insert</span> (zdSrch)
+<span style="color: #83898d;">"Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."</span>
+ (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"Search term: "</span>)))
+ (<span style="color: #51afef;">dolist</span> (zdFile (zd-get-file-list zdSrch))
+   (zd-org-insert-file zdFile)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga66b068" class="outline-4">
+<h4 id="orga66b068"><span class="section-number-4">2.3.4</span> Helper functions</h4>
+<div class="outline-text-4" id="text-2-3-4">
+</div>
+<div id="outline-container-org8a43f46" class="outline-5">
+<h5 id="org8a43f46"><span class="section-number-5">2.3.4.1</span> <code>zd-get-file-list</code> returns file list on search</h5>
+<div class="outline-text-5" id="text-2-3-4-1">
+<p>
+Get a list of the files with given search string.
+</p>
+
+<p>
+To <b>fix</b>: sorting of results.
+</p>
+
+<p>
+The code searches for the given string and returns <code>deft-current-files</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-get-file-list</span> (srch)
+<span style="color: #83898d;">"Returns a list of files with the search item SRCH."</span>
+  (<span style="color: #51afef;">let</span> ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf041281" class="outline-5">
+<h5 id="orgf041281"><span class="section-number-5">2.3.4.2</span> <code>zd-lift-file-title</code> returns file title from path</h5>
+<div class="outline-text-5" id="text-2-3-4-2">
+<p>
+Returns only the file title from a file, removing path, extension, and link ID.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-lift-file-title</span> (zdFile)
+  <span style="color: #83898d;">"Returns the title of a zetteldeft note.</span>
+<span style="color: #83898d;">ZDFILE should be a full path to a note."</span>
+ (<span style="color: #51afef;">let</span> ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    <span style="color: #98be65;">"[0-9]\\{2,\\}-[0-9-]+[[:space:]]"</span>
+    <span style="color: #98be65;">""</span> baseName)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org94acc93" class="outline-5">
+<h5 id="org94acc93"><span class="section-number-5">2.3.4.3</span> <code>zd-insert-file-contents</code> returns the contents of a file</h5>
+<div class="outline-text-5" id="text-2-3-4-3">
+<p>
+Returns the contents of a file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-file-contents</span> (zdFile <span style="color: #ECBE7B;">&amp;optional</span> removeLines)
+  <span style="color: #83898d;">"Inserts file contents of a zetteldeft note.</span>
+<span style="color: #83898d;">ZDFILE should be a full path to a note.</span>
+
+<span style="color: #83898d;">Optional: leave out first REMOVELINES lines."</span>
+  (<span style="color: #51afef;">with-temp-buffer</span>
+    (insert-file-contents zdFile)
+    (<span style="color: #51afef;">when</span> removeLines
+      (kill-whole-line removeLines))
+    (buffer-string)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge672519" class="outline-5">
+<h5 id="orge672519"><span class="section-number-5">2.3.4.4</span> <code>zd-org-include-file</code> includes a file in <code>org</code> format</h5>
+<div class="outline-text-5" id="text-2-3-4-4">
 <p>
 Inserts the title as a new header, with the <code>#+INCLUDE</code> line below.
 Includes only from the second line onward, so that any <code>#+TITLE</code> lines are omitted.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zd-org-include-file</span> (zdFile)
-<span style="color: #828b9b;">"Insert code to include org-file zdFile."</span>
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-org-include-file</span> (zdFile)
+<span style="color: #83898d;">"Insert code to include org-file zdFile."</span>
  (insert
-   <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Insert org-mode title</span>
-   <span style="color: #4F894C;">"\n* "</span> (zd-lift-file-title zdFile) <span style="color: #4F894C;">"\n"</span>
-   <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Insert #+INCLUDE: "file.org" :lines 2-</span>
-   <span style="color: #4F894C;">"#+INCLUDE: \""</span> zdFile <span style="color: #4F894C;">"\" :lines \"2-\"\n"</span>
- ))
+   <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Insert org-mode title</span>
+   <span style="color: #98be65;">"\n* "</span> (zd-lift-file-title zdFile) <span style="color: #98be65;">"\n"</span>
+   <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Insert #+INCLUDE: "file.org" :lines 2-</span>
+   <span style="color: #98be65;">"#+INCLUDE: \""</span> zdFile <span style="color: #98be65;">"\" :lines \"2-\"\n"</span>))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2e60f28" class="outline-5">
+<h5 id="org2e60f28"><span class="section-number-5">2.3.4.5</span> <code>zd-org-insert-file</code> inserts a files content</h5>
+<div class="outline-text-5" id="text-2-3-4-5">
+<p>
+For a file, insert its title and contents (without first 3 lines).
+</p>
+
+<p>
+Even better would be: without any of the lines starting with <code>#</code> at the beginning of the file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-org-insert-file</span> (zdFile)
+<span style="color: #83898d;">"Insert title and contents of ZDFILE."</span>
+  (insert
+    <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Insert org-mode title</span>
+    <span style="color: #98be65;">"\n* "</span> (zd-lift-file-title zdFile) <span style="color: #98be65;">"\n\n"</span>
+    <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Insert file contents (without the first 3 lines)</span>
+    (zd-file-contents zdFile 3)))
 </pre>
 </div>
 </div>
@@ -1515,15 +1626,15 @@ Includes only from the second line onward, so that any <code>#+TITLE</code> line
 </div>
 </div>
 
-<div id="outline-container-org1973f22" class="outline-2">
-<h2 id="org1973f22"><span class="section-number-2">5</span> Aesthetics</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org5b1fcdc" class="outline-3">
+<h3 id="org5b1fcdc"><span class="section-number-3">2.4</span> Aesthetics</h3>
+<div class="outline-text-3" id="text-2-4">
 </div>
-<div id="outline-container-org10e55c1" class="outline-3">
-<h3 id="org10e55c1"><span class="section-number-3">5.1</span> Highlighting zetteldeft links</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-org1b33829" class="outline-4">
+<h4 id="org1b33829"><span class="section-number-4">2.4.1</span> Highlighting zetteldeft links</h4>
+<div class="outline-text-4" id="text-2-4-1">
 <p>
-To highlight zetteldeft links, let's add a <code>font-lock</code> keyword to <code>org-mode</code>.
+To highlight zetteldeft links, let&rsquo;s add a <code>font-lock</code> keyword to <code>org-mode</code>.
 </p>
 
 <p>
@@ -1536,34 +1647,259 @@ Highlighting not working in comments.
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(font-lock-add-keywords 'org-mode '(
-  (<span style="color: #4F894C;">"&#167;[0-9]\\{2,\\}-[0-9-]+"</span> . font-lock-warning-face)
-  ))
+  (<span style="color: #98be65;">"&#167;[0-9]\\{2,\\}-[0-9-]+"</span> . font-lock-warning-face)))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7411560" class="outline-2">
-<h2 id="org7411560"><span class="section-number-2">6</span> Brainstorm</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-orgc27f69e" class="outline-3">
+<h3 id="orgc27f69e"><span class="section-number-3">2.5</span> Package provided</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+That&rsquo;s all folks!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">provide</span> '<span style="color: #a9a1e1;">zetteldeft</span>)
+<span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">zetteldeft.el ends here</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00b8b86" class="outline-2">
+<h2 id="org00b8b86"><span class="section-number-2">3</span> Suggested setup</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+The following assumes <code>deft</code> is loaded manually in your dotfile, it merely configures the package.
+</p>
+
+<p>
+None of these code blocks are tangled into the <code>.el</code> file, they are here merely as a guide.
+</p>
+</div>
+
+<div id="outline-container-org315697e" class="outline-3">
+<h3 id="org315697e"><span class="section-number-3">3.1</span> Suggested <code>zeteldeft</code> keybindings</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-org997b429" class="outline-4">
+<h4 id="org997b429"><span class="section-number-4">3.1.1</span> Keybindings with <code>general</code></h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+To call <code>zetteldeft</code> functions from anywhere behind a leader key such as <code>SPC</code>, I recommend <code>general.el</code> with the following setup.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(general-define-key
+  <span style="color: #c678dd;">:prefix</span> <span style="color: #98be65;">"SPC"</span>
+  <span style="color: #c678dd;">:non-normal-prefix</span> <span style="color: #98be65;">"C-SPC"</span>
+  <span style="color: #c678dd;">:states</span> '(normal visual motion emacs)
+  <span style="color: #c678dd;">:keymaps</span> 'override
+  <span style="color: #98be65;">"d"</span>  '(nil <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"deft"</span>)
+  <span style="color: #98be65;">"dd"</span> '(deft <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"deft"</span>)
+  <span style="color: #98be65;">"dD"</span> '(zd-deft-new-search <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"new search"</span>)
+  <span style="color: #98be65;">"dR"</span> '(deft-refresh <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"refresh"</span>)
+  <span style="color: #98be65;">"ds"</span> '(zd-search-at-point <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"search at point"</span>)
+  <span style="color: #98be65;">"dc"</span> '(zd-search-current-id <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"search current id"</span>)
+  <span style="color: #98be65;">"df"</span> '(zd-avy-file-search <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"avy file search"</span>)
+  <span style="color: #98be65;">"dl"</span> '(zd-avy-link-search <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"avy link search"</span>)
+  <span style="color: #98be65;">"dt"</span> '(zd-avy-tag-search <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"avy tag search"</span>)
+  <span style="color: #98be65;">"di"</span> '(zd-find-file-id-insert <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"insert id"</span>)
+  <span style="color: #98be65;">"dI"</span> '(zd-find-file-full-title-insert <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"insert full title"</span>)
+  <span style="color: #98be65;">"do"</span> '(zd-find-file <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"find file"</span>)
+  <span style="color: #98be65;">"dn"</span> '(zd-new-file <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"new file"</span>)
+  <span style="color: #98be65;">"dN"</span> '(zd-new-file-and-link <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"new file &amp; link"</span>)
+  <span style="color: #98be65;">"dr"</span> '(zd-file-rename <span style="color: #c678dd;">:wk</span> <span style="color: #98be65;">"rename"</span>))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd23a269" class="outline-4">
+<h4 id="orgd23a269"><span class="section-number-4">3.1.2</span> Spacemacs keybindings</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+Suggested keybindings for <code>spacemacs</code>.
+</p>
+
+<p>
+These can be called from anywhere behind <code>SPC d</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Prefix</span>
+(spacemacs/declare-prefix <span style="color: #98be65;">"d"</span> <span style="color: #98be65;">"deft"</span>)
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">Launch deft</span>
+(spacemacs/set-leader-keys <span style="color: #98be65;">"dd"</span> 'deft)
+(spacemacs/set-leader-keys <span style="color: #98be65;">"dD"</span> 'zd-deft-new-search)
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">SEARCH</span>
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Search thing at point</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"ds"</span> 'zd-search-at-point)
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Search current file id</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"dc"</span> 'zd-search-current-id)
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Jump &amp; search with avy </span>
+ <span style="color: #5B6268;">;  </span><span style="color: #5B6268;">search link as filename</span>
+    (spacemacs/set-leader-keys <span style="color: #98be65;">"df"</span> 'zd-avy-file-search)
+ <span style="color: #5B6268;">;  </span><span style="color: #5B6268;">search link as contents</span>
+    (spacemacs/set-leader-keys <span style="color: #98be65;">"dl"</span> 'zd-avy-link-search)
+ <span style="color: #5B6268;">;  </span><span style="color: #5B6268;">search tag as contents</span>
+    (spacemacs/set-leader-keys <span style="color: #98be65;">"dt"</span> 'zd-avy-tag-search)
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">LINKS</span>
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Insert link from filename</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"di"</span> 'zd-find-file-id-insert)
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Insert link with full filename</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"dI"</span> 'zd-find-file-full-title-insert)
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">FILES</span>
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Open file</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"do"</span> 'zd-find-file)
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Create new file</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"dn"</span> 'zd-new-file)
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"dN"</span> 'zd-new-file-and-link)
+ <span style="color: #5B6268;">; </span><span style="color: #5B6268;">Rename file</span>
+   (spacemacs/set-leader-keys <span style="color: #98be65;">"dr"</span> 'zd-file-rename)
+<span style="color: #5B6268;">;; </span><span style="color: #5B6268;">UTILITIES</span>
+(spacemacs/set-leader-keys <span style="color: #98be65;">"dR"</span> 'deft-refresh)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1e38b91" class="outline-3">
+<h3 id="org1e38b91"><span class="section-number-3">3.2</span> Suggested <code>deft</code> setup</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-org5bada83" class="outline-4">
+<h4 id="org5bada83"><span class="section-number-4">3.2.1</span> Notes &amp; extensions</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+Note extensions are <code>md</code>, <code>txt</code> and <code>org</code>.
+First of this list is the default for new notes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">setq</span> deft-extensions '(<span style="color: #98be65;">"org"</span> <span style="color: #98be65;">"md"</span> <span style="color: #98be65;">"txt"</span>))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7295e61" class="outline-4">
+<h4 id="org7295e61"><span class="section-number-4">3.2.2</span> Set <code>deft-directory</code></h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+Search the deft directory recursively, to include subdirectories.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">setq</span> deft-directory (concat org-directory <span style="color: #98be65;">"/notes/zetteldeft"</span>))
+(<span style="color: #51afef;">setq</span> deft-recursive t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2e95869" class="outline-4">
+<h4 id="org2e95869"><span class="section-number-4">3.2.3</span> Additional <code>deft</code> functions</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+Some personal additions.
+</p>
+
+<p>
+A small function to open a file in the other window and shifting focus to it.
+That final part is what the <code>t</code> argument does.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">efls/deft-open-other</span> ()
+ (<span style="color: #51afef;">interactive</span>)
+ (deft-open-file-other-window t))
+</pre>
+</div>
+
+<p>
+Let&rsquo;s add another function, to simply preview in the other window, i.e. not switch focus to it.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">efls/deft-open-preview</span> ()
+ (<span style="color: #51afef;">interactive</span>)
+ (deft-open-file-other-window))
+</pre>
+</div>
+
+
+<p>
+To select results from the item list without leaving the <code>insert</code> state, I add the following keys.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">with-eval-after-load</span> 'deft
+  (define-key deft-mode-map
+    (kbd <span style="color: #98be65;">"&lt;tab&gt;"</span>) 'efls/deft-open-preview)
+  (define-key deft-mode-map
+    (kbd <span style="color: #98be65;">"&lt;s-return&gt;"</span>) 'efls/deft-open-other)
+  (define-key deft-mode-map
+    (kbd <span style="color: #98be65;">"s-j"</span>) 'evil-next-line)
+  (define-key deft-mode-map (kbd <span style="color: #98be65;">"s-k"</span>) 'evil-previous-line))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org52b2e51" class="outline-4">
+<h4 id="org52b2e51"><span class="section-number-4">3.2.4</span> Ignore more <code>org-mode</code> metadata</h4>
+<div class="outline-text-4" id="text-3-2-4">
+<p>
+I tend to write <code>org-mode</code> titles with <code>#+title:</code> (i.e., uncapitalized). Also other <code>org-mode</code> code at the beginning is written in lower case.
+</p>
+
+<p>
+In order to filter these from the deft summary, let&rsquo;s alter the regular expression:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">setq</span> deft-strip-summary-regexp
+ (concat <span style="color: #98be65;">"</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">"</span>
+         <span style="color: #98be65;">"[\n\t]"</span> <span style="color: #5B6268;">;; </span><span style="color: #5B6268;">blank</span>
+         <span style="color: #98be65;">"</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">|</span><span style="color: #98be65;">^#\\+[a-zA-Z_]+:.*$"</span> <span style="color: #5B6268;">;;</span><span style="color: #5B6268;">org-mode metadata</span>
+         <span style="color: #98be65;">"</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">"</span>))
+</pre>
+</div>
+
+<p>
+Its original value was <code>\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)</code>.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga988e9b" class="outline-2">
+<h2 id="orga988e9b"><span class="section-number-2">4</span> Brainstorm</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 Some ideas for the future.
 </p>
 </div>
 
-<div id="outline-container-orge6b5be5" class="outline-3">
-<h3 id="orge6b5be5"><span class="section-number-3">6.1</span> Saved searches</h3>
-<div class="outline-text-3" id="text-6-1">
+<div id="outline-container-orgcef8feb" class="outline-3">
+<h3 id="orgcef8feb"><span class="section-number-3">4.1</span> Saved searches</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 Create a list of saved searches, somewhere easily accessible.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6b6c635" class="outline-3">
-<h3 id="org6b6c635"><span class="section-number-3">6.2</span> Generate list of tags</h3>
-<div class="outline-text-3" id="text-6-2">
+<div id="outline-container-orge2a086a" class="outline-3">
+<h3 id="orge2a086a"><span class="section-number-3">4.2</span> Generate list of tags</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 Auto-generate a list of tags.
 </p>
@@ -1574,36 +1910,36 @@ Might exceed my elisp-fu.
 </div>
 </div>
 
-<div id="outline-container-orgd0b5cbf" class="outline-3">
-<h3 id="orgd0b5cbf"><span class="section-number-3">6.3</span> HTML export</h3>
-<div class="outline-text-3" id="text-6-3">
+<div id="outline-container-org88afb4d" class="outline-3">
+<h3 id="org88afb4d"><span class="section-number-3">4.3</span> HTML export</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 Export HTML pages with clickeable links between notes.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6d3f49c" class="outline-3">
-<h3 id="org6d3f49c"><span class="section-number-3">6.4</span> Markdown export</h3>
-<div class="outline-text-3" id="text-6-4">
+<div id="outline-container-orgd5f98f4" class="outline-3">
+<h3 id="orgd5f98f4"><span class="section-number-3">4.4</span> Markdown export</h3>
+<div class="outline-text-3" id="text-4-4">
 <p>
 Export markdown through <code>pandoc</code>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0019ab4" class="outline-3">
-<h3 id="org0019ab4"><span class="section-number-3">6.5</span> Templates</h3>
-<div class="outline-text-3" id="text-6-5">
+<div id="outline-container-org30b8452" class="outline-3">
+<h3 id="org30b8452"><span class="section-number-3">4.5</span> Templates</h3>
+<div class="outline-text-3" id="text-4-5">
 <p>
 A system for note templates.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga2821ce" class="outline-3">
-<h3 id="orga2821ce"><span class="section-number-3">6.6</span> Minor mode</h3>
-<div class="outline-text-3" id="text-6-6">
+<div id="outline-container-org16ffd94" class="outline-3">
+<h3 id="org16ffd94"><span class="section-number-3">4.6</span> Minor mode</h3>
+<div class="outline-text-3" id="text-4-6">
 <p>
 Create a minor mode on top of org-mode with some niceties:
 </p>
@@ -1619,7 +1955,7 @@ Create a minor mode on top of org-mode with some niceties:
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-For those not yet familiar: <b>deft</b> is a note manager within <code>emacs</code>, for easily searching and retreiving plain text notes.
+For those not yet familiar: <b>deft</b> is a note manager within <code>emacs</code>, for easily searching and retrieving plain text notes.
 It is inspired by the popular Notational Velocity.
 Check out <a href="https://jblevins.org/projects/deft/">jblevins.org/projects/deft/</a> and <a href="http://notational.net">notational.net</a>.
 </p></div></div>
@@ -1628,11 +1964,11 @@ Check out <a href="https://jblevins.org/projects/deft/">jblevins.org/projects/de
 </div>
 </div></div>
 <div id="postamble" class="status">
-
-<hr>
 <p class='author'>Author: EFLS</p>
-<p class="date">Date: 2018-08-25 Sat 22:19</p>
-<p class="creator">Made with <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.1.13)</p>
+
+    <p class='date'>Modified: 2018-10-21 Sun 17:37</p>
+
+    <p class='creator'><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.1.13)</p>
 </div>
 </body>
 </html>
