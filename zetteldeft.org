@@ -117,9 +117,55 @@ Whichever way you go, load the =.el= file in emacs with
 
 and you're good to go!
 
-* =zetteldeft= functions
-** Search functions
-*** =zd-get-thing-at-point= returns string
+
+* The =zetteldeft= package
+** Package setup
+*** Preamble
+
+Some declaration.
+
+#+BEGIN_SRC emacs-lisp
+;;; zetteldeft.el --- a simple package                     -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2018  EFLS
+
+;; Author: EFLS <email>
+;; Keywords: deft zettelkasten zetteldeft
+;; Version: 0.0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Zetteldeft: turn deft into a zettelkasten writing system to create linked notes.
+
+;;; Code:
+#+END_SRC
+
+*** Requirements
+
+#+BEGIN_SRC emacs-lisp
+(require 'deft)
+
+(unless (package-installed-p 'avy)
+  (user-error 'zetteldeft "Avy not installed, required for zd-avy-* functions."))
+(require 'avy)
+#+END_SRC
+
+** Basic =zetteldeft= functions
+*** Search functions
+**** =zd-get-thing-at-point= returns string
 
 Returns the thing at point as string.
 
@@ -144,7 +190,7 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
      (t (thing-at-point 'word t)))))
 #+END_SRC
 
-*** =zd-search-at-point= thing at point
+**** =zd-search-at-point= thing at point
 
 Search the thing at point.
 Note that calling =zd-search-at-point= on a =§= link includes =§= in the filter string.
@@ -163,7 +209,7 @@ Thing can be a double-bracketed link, a hashtag, or a word."
      (user-error "No search term at point"))))
 #+END_SRC
 
-*** =zd-search-global= for string
+**** =zd-search-global= for string
 
 Search with deft for given string.
 If there is only one result, that file is opened, unless additional argument is true.
@@ -186,7 +232,7 @@ If there is only one result, open that file (unless DNTOPN is true)."
      (deft-open-file (car deft-current-files)))))
 #+END_SRC
 
-*** =zd-search-filename= for string
+**** =zd-search-filename= for string
 
 Deft search on filename.
 If there is only one result, open that file.
@@ -208,7 +254,7 @@ Open if there is only one result."
     (deft-open-file (car deft-current-files))))
 #+END_SRC
 
-*** =zd-search-current-id= searches current id
+**** =zd-search-current-id= searches current id
 
 Deft search on the id of the current file.
 
@@ -224,8 +270,8 @@ Open if there is only one result."
  (zd-search-global (zd-id-current-file) t))
 #+END_SRC
 
-** IDs
-*** Basics for IDs
+*** IDs
+**** Basics for IDs
 
 String format when generating ids.
 
@@ -251,7 +297,7 @@ Here is a function to generate an id string in said format.
  (format-time-string zd-id-format))
 #+END_SRC
 
-*** =zd-id-insert= inserts id
+**** =zd-id-insert= inserts id
 
 A helper function to insert a generated id.
 
@@ -262,7 +308,7 @@ A helper function to insert a generated id.
  (insert (zd-generate-id) " "))
 #+END_SRC
 
-*** FIX =zd-id-sanitized= cleans ids
+**** FIX =zd-id-sanitized= cleans ids
 
 Returns the string stripped from everything that is not a number or a =-=.
 
@@ -277,7 +323,7 @@ Problematic when stripping the id from a filename, for example.
 
 The following regular expression should work better: =[0-9-]\\{2,\\}-[0-9-]+= (but cannot be used with =replace-regexp-in-string= function). Something to fix.
 
-*** FIX =zd-file-id-stripped= strips file id from string
+**** FIX =zd-file-id-stripped= strips file id from string
 
 Attempts to strip the file id from a string.
 
@@ -294,7 +340,7 @@ Next, omit anything that is not a digit or a dash.
 #+END_SRC
 
 
-*** =zd-id-current-file= returns id in filename
+**** =zd-id-current-file= returns id in filename
 
 Return the id from the filename the buffer is currently visiting.
 
@@ -311,7 +357,7 @@ Steps:
  (zd-file-id-stripped (file-name-base (buffer-file-name))))
 #+END_SRC
 
-*** =zd-copy-id-current-file= copies id in filename
+**** =zd-copy-id-current-file= copies id in filename
 
 Add the ID from the current file to the kill ring.
 
@@ -322,8 +368,8 @@ Add the ID from the current file to the kill ring.
  (kill-new (zd-id-current-file)))
 #+END_SRC
 
-** Finding & linking files from minibuffer
-*** =zd-find-file= opens file from minibuffer
+*** Finding & linking files from minibuffer
+**** =zd-find-file= opens file from minibuffer
 
 Select file from the deft folder from the minibuffer.
 
@@ -338,7 +384,7 @@ Based on =deft-find-file=.
  (deft-find-file file))
 #+END_SRC
 
-*** =zd-find-file-id-copy= copies file id
+**** =zd-find-file-id-copy= copies file id
 
 Select file from minibuffer and add its link id to kill ring.
 
@@ -353,7 +399,7 @@ Based on =deft-find-file=.
   (kill-new (concat "§" (zd-file-id-stripped file))))
 #+END_SRC
 
-*** =zd-find-file-id-insert= inserts file id
+**** =zd-find-file-id-insert= inserts file id
 
 Select file from minibuffer and insert its link, prepended by =§=.
 
@@ -368,7 +414,7 @@ Based on =deft-find-file=.
   (insert (concat "§" (zd-file-id-stripped file))))
 #+END_SRC
 
-*** =zd-find-file-full-title-insert= inserts full file title
+**** =zd-find-file-full-title-insert= inserts full file title
 
 Select file from minibuffer and insert its link, prepended by =§=.
 
@@ -383,8 +429,8 @@ Based on =deft-find-file=.
   (insert (concat "§" (file-name-base file))))
 #+END_SRC
 
-** New file creation
-*** =zd-new-file= creates new file
+*** New file creation
+**** =zd-new-file= creates new file
 
 Create new file with filename as =zd-id-format= and a string.
 
@@ -408,7 +454,7 @@ After creating, the title is inserted in org-mode format (unless EMPTY is true) 
  (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
 
-*** =zd-new-file-and-link= inserts generated id
+**** =zd-new-file-and-link= inserts generated id
 
 Generate an id, append a name, and generate a new file based on id and link.
 
@@ -423,8 +469,8 @@ Creates new deft file with id and STR as name."
  (zd-new-file str))
 #+END_SRC
 
-** Functions with =avy=
-*** =zd-avy-tag-search=
+*** Functions with =avy=
+**** =zd-avy-tag-search=
 
 Use avy to jump to a tag and search for it.
 
@@ -439,7 +485,7 @@ The search term should include the =#= as tag identifier, so it's as easy as jum
   (zd-search-at-point)))
 #+END_SRC
 
-*** =zd-avy-link-search=
+**** =zd-avy-link-search=
 
 Use avy to jump to an id and search for it.
 
@@ -455,7 +501,7 @@ Opens immediately if there is only one result."
   (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
 #+END_SRC
 
-*** =zd-avy-file-search=
+**** =zd-avy-file-search=
 
 Use avy to jump to an id and find the corresponding file.
 There should be only one result, as the id should be unique.
@@ -472,8 +518,8 @@ If it is non-nil, search it after sanitizing.
   (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))))
 #+END_SRC
 
-** Utility functions
-*** Deft new search
+*** Utility functions
+**** Deft new search
 
 The following function launches deft, clears the filter and enters =evil-insert-state= (when evil is used).
 
@@ -486,7 +532,7 @@ The following function launches deft, clears the filter and enters =evil-insert-
  (when (featurep 'evil) (evil-insert-state)))
 #+END_SRC
 
-*** =zd-file-rename= renames visited file
+**** =zd-file-rename= renames visited file
 
 Rename the current file.
 Based on the function =deft-rename-file= with only minor changes in the way =old-filename= is set: from current buffer rather than from =deft= search buffer.
@@ -529,7 +575,7 @@ To update the title of the currently visited file, the following function is use
         (zd-insert-org-title)))))
 #+END_SRC
 
-*** =zd-insert-org-title= inserts file title in org-mode
+**** =zd-insert-org-title= inserts file title in org-mode
 
 Easily insert the title of the current file in =org-mode= syntax, i.e. as a =#+title:= line.
 
@@ -558,7 +604,7 @@ Don't forget to add `\\n' at the beginning to start a new line."
   :group 'zetteldeft)
 #+END_SRC
 
-*** =zd-count-words= counts total number of words
+**** =zd-count-words= counts total number of words
 
 To count the total number of words, lets loop over all the files and count words in each.
 The total is printed in the minibuffer.
@@ -575,8 +621,8 @@ The total is printed in the minibuffer.
     (message "Total words accross all notes: %s" numWords)))
 #+END_SRC
 
-* Gathering notes
-** On "gathering notes"
+** Gathering notes
+*** On "gathering notes"
 
 Sometimes you want to easily gather all notes with a certain tag or search term.
 Say you want to quickly generate a list of links to all files including the tag =#zetteldeft=.
@@ -589,8 +635,8 @@ There are three of them, each either taking a search term as argument or prompti
 
 More documentation can be found below.
     
-** List of links
-*** =zd-insert-list-links= generates list with tagged files
+*** List of links
+**** =zd-insert-list-links= generates list with tagged files
 
 Creates and inserts a list with links to all files with selected search term.
 
@@ -605,7 +651,7 @@ When searching for a tag, include # manually in the search."
   (zd-list-entry-file-link zdFile)))
 #+END_SRC
 
-*** =zd-list-entry-file-link= includes a file link as list entry
+**** =zd-list-entry-file-link= includes a file link as list entry
 
 Inserts for given file a link id and title as a list entry.
 
@@ -616,9 +662,9 @@ Inserts for given file a link id and title as a list entry.
 #+END_SRC
 
 
-** Compiling a single =org=
-*** Idea and example
-**** Including notes with given search term
+*** Compiling a single =org=
+**** Idea and example
+***** Including notes with given search term
 
 The following explains what =zd-org-search-include= does, but the concept is more or less the same for =zd-org-search-insert=.
 
@@ -646,7 +692,7 @@ The results would look like the following:
 
 All functions are documented below.
 
-**** Semi-automated example
+***** Semi-automated example
 
 You could, for example, add the following code to a document and execute (or evaluate) it from within =org-mode=.
 Add it under a "comment" type heading to prevent it from being exported itself, like so: =* COMMENT Code=.
@@ -673,7 +719,7 @@ In order to also sort the entries alphabetically, uncomment the last two lines.
 
 A final caveat: don't put the file with the above code in you =deft= folder, or it will attempt to include itself (since it has =#tag= in it).
 
-**** Issues & things to note
+***** Issues & things to note
 
 Before we look at the functions, a note on limitations of the current implementation.
 
@@ -692,7 +738,7 @@ Before we look at the functions, a note on limitations of the current implementa
    Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
    As a solution, use =org-sort= manually after running =zd-org-search-include=.
 
-*** =zd-org-search-include= generates =#+INCLUDE= syntax
+**** =zd-org-search-include= generates =#+INCLUDE= syntax
 
 Asks user for a search string and inserts headers and =#+INCLUDE= code for all files with said tag.
 When used on =#tag=, make sure to include the =#= manually.
@@ -705,7 +751,7 @@ When used on =#tag=, make sure to include the =#= manually.
   (zd-org-include-file zdFile)))
 #+END_SRC
 
-*** =zd-org-search-insert= generates titles & file content
+**** =zd-org-search-insert= generates titles & file content
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-search-insert (zdSrch)
@@ -715,8 +761,8 @@ When used on =#tag=, make sure to include the =#= manually.
    (zd-org-insert-file zdFile)))
 #+END_SRC
 
-** Helper functions
-*** =zd-get-file-list= returns file list on search
+*** Helper functions
+**** =zd-get-file-list= returns file list on search
 
 Get a list of the files with given search string.
 
@@ -734,7 +780,7 @@ The code searches for the given string and returns =deft-current-files=.
 #+END_SRC
 
 
-*** =zd-lift-file-title= returns file title from path
+**** =zd-lift-file-title= returns file title from path
 
 Returns only the file title from a file, removing path, extension, and link ID.
 
@@ -748,7 +794,7 @@ ZDFILE should be a full path to a note."
     "" baseName)))
 #+END_SRC
 
-*** =zd-insert-file-contents= returns the contents of a file
+**** =zd-insert-file-contents= returns the contents of a file
 
 Returns the contents of a file.
 
@@ -765,7 +811,7 @@ Optional: leave out first REMOVELINES"
     (buffer-string)))
 #+END_SRC
 
-*** =zd-org-include-file= includes a file in =org= format
+**** =zd-org-include-file= includes a file in =org= format
 
 Inserts the title as a new header, with the =#+INCLUDE= line below.
 Includes only from the second line onward, so that any =#+TITLE= lines are omitted.
@@ -780,7 +826,7 @@ Includes only from the second line onward, so that any =#+TITLE= lines are omitt
    "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"))
 #+END_SRC
 
-*** =zd-org-insert-file= inserts a files content
+**** =zd-org-insert-file= inserts a files content
 
 For a file, insert its title and contents (without first 3 lines).
 
@@ -796,8 +842,8 @@ Even better would be: without any of the lines starting with =#= at the beginnin
     (zd-file-contents zdFile 3)))
 #+END_SRC
 
-* Aesthetics
-** Highlighting zetteldeft links
+** Aesthetics
+*** Highlighting zetteldeft links
 
 To highlight zetteldeft links, let's add a =font-lock= keyword to =org-mode=.
 
@@ -808,6 +854,13 @@ Highlighting not working in comments.
 #+BEGIN_SRC emacs-lisp
 (font-lock-add-keywords 'org-mode '(
   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)))
+#+END_SRC
+
+** Package provided
+
+#+BEGIN_SRC emacs-lisp
+(provide 'zetteldeft)
+;;; zetteldeft.el ends here
 #+END_SRC
 
 * Suggested setup
