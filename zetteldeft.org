@@ -132,6 +132,10 @@ More details documented below.
 
 * The =zetteldeft= package
 ** Package setup
+
+In this section:
+#+TOC: headlines 2 local
+
 *** Preamble
 
 Some declaration.
@@ -185,6 +189,10 @@ For easy but minor customization options.
 #+END_SRC
 
 ** Basic =zetteldeft= functions
+
+In this section:
+#+TOC: headlines 2 local
+
 *** Search functions
 **** =zd-get-thing-at-point= returns string
 
@@ -644,6 +652,10 @@ The total is printed in the minibuffer.
 #+END_SRC
 
 ** Gathering notes
+
+In this section:
+#+TOC: headlines 2 local
+
 *** On "gathering notes"
 
 Sometimes you want to easily gather all notes with a certain tag or search term.
