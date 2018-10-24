@@ -29,6 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *24 Oct*: =zd-avy-file-search-other-window= follows an ID link and opens file in other window
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
@@ -268,18 +269,17 @@ If there is only one result, open that file.
 Incremental search is turned off, and the filter is set to filenames only.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-search-filename (str)
-"Search for deft files with string STR in filename.
-Open if there is only one result."
+(defun zd-search-filename (thisStr &optional otherWindow)
+"Search for deft files with string THISSTR in filename.
+Open if there is only one result (in another window if otherWindow is non-nill)."
   ;; Sanitize the filter string
-  (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
   ;; Call deft search on the filter string
   (let ((deft-filter-only-filenames t))
-   (deft)
-   (deft-filter str t))
+   (deft-filter thisStr t))
   ;; If there is a single match, open the file
   (when (eq (length deft-current-files) 1)
-    (deft-open-file (car deft-current-files))))
+    (deft-open-file (car deft-current-files) otherWindow)))
 #+END_SRC
 
 **** =zd-search-current-id= searches current id
@@ -531,19 +531,33 @@ Opens immediately if there is only one result."
 
 **** =zd-avy-file-search=
 
+Select and follow an ID link to a file.
+
 Use avy to jump to an id and find the corresponding file.
 There should be only one result, as the id should be unique.
+That file is then opend (in another window if requested).
 
 Jump to a =§= with =avy=, get the thing at point.
 If it is non-nil, search it after sanitizing.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-avy-file-search ()
-"Call on avy to jump to link ids indicated with § and use it to search for filenames."
+(defun zd-avy-file-search (&optional otherWindow)
+"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))))
+  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)) otherWindow)))
+#+END_SRC
+
+For easier access, let's define a function to open in the other window.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-file-search-other-window ()
+"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+Open that file in other window (when it is the only search result)."
+ (interactive)
+ (zd-avy-file-search t))
 #+END_SRC
 
 *** Utility functions
@@ -922,6 +936,7 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "ds" '(zd-search-at-point :wk "search at point")
   "dc" '(zd-search-current-id :wk "search current id")
   "df" '(zd-avy-file-search :wk "avy file search")
+  "dF" '(zd-avy-file-search-other-window :wk "avy file other window")
   "dl" '(zd-avy-link-search :wk "avy link search")
   "dt" '(zd-avy-tag-search :wk "avy tag search")
   "di" '(zd-find-file-id-insert :wk "insert id")
@@ -952,6 +967,7 @@ These can be called from anywhere behind =SPC d=.
  ; Jump & search with avy 
  ;  search link as filename
     (spacemacs/set-leader-keys "df" 'zd-avy-file-search)
+    (spacemacs/set-leader-keys "dF" 'zd-avy-file-search-other-window)
  ;  search link as contents
     (spacemacs/set-leader-keys "dl" 'zd-avy-link-search)
  ;  search tag as contents
