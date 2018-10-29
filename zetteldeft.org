@@ -655,14 +655,14 @@ The total is printed in the minibuffer.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-count-words ()
-  "Prints total number of words in all deft files in the minibuffer."
+  "Prints total number of words and notes in the minibuffer."
   (interactive)
   (let ((numWords 0))
     (dolist (deftFile deft-all-files)
       (with-temp-buffer
         (insert-file-contents deftFile)
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
-    (message "Total words accross all notes: %s" numWords)))
+    (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 #+END_SRC
 
 ** Gathering notes
