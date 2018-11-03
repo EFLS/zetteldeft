@@ -1010,6 +1010,7 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "dF" '(zd-avy-file-search-other-window :wk "avy file other window")
   "dl" '(zd-avy-link-search :wk "avy link search")
   "dt" '(zd-avy-tag-search :wk "avy tag search")
+  "dT" '(zd-tag-buffer :wk "tag list")
   "di" '(zd-find-file-id-insert :wk "insert id")
   "dI" '(zd-find-file-full-title-insert :wk "insert full title")
   "do" '(zd-find-file :wk "find file")
@@ -1043,6 +1044,8 @@ These can be called from anywhere behind =SPC d=.
     (spacemacs/set-leader-keys "dl" 'zd-avy-link-search)
  ;  search tag as contents
     (spacemacs/set-leader-keys "dt" 'zd-avy-tag-search)
+ ;  find all tags
+    (spacemacs/set-leader-keys "dT" 'zd-tag-buffer)
 ;; LINKS
  ; Insert link from filename
    (spacemacs/set-leader-keys "di" 'zd-find-file-id-insert)
