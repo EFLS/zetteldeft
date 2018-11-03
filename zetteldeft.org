@@ -29,6 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *4 Nov*: =zd-all-tags= and =zd-tag-buffer= find all tags
  - *24 Oct*: =zd-avy-file-search-other-window= follows an ID link and opens file in other window
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
@@ -663,6 +664,76 @@ The total is printed in the minibuffer.
         (insert-file-contents deftFile)
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
+#+END_SRC
+
+** Gathering tags
+
+One *issue*: when a url uses a =#=, it can be mistaken for a tag.
+
+=zd-all-tags= puts all tags in =zd-tag-list= and returns them.
+
+Use =zd-tag-buffer= to create a buffer with all tags.
+
+*** =zd-all-tags= returns them all
+
+Extracting tags with =zd-extract-tags=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-all-tags ()
+  "Return a list of all the tags found in zetteldeft files."
+  (setq zd-tag-list (list))
+  (dolist (deftFile deft-all-files)
+    (zd-extract-tags deftFile))
+  zd-tag-list)
+#+END_SRC
+
+*** =zd-tag-buffer= puts all tags in a buffer
+
+The name of the buffer we'll be using:
+
+#+BEGIN_SRC emacs-lisp
+(setq zd-tag-buffer-name "*zd-tag-buffer*")
+#+END_SRC
+
+And some code to create that buffer.
+
+Move to the =zd-tag-buffer-name=
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-tag-buffer ()
+  "Switch to the *zd-tag-buffer* and list tags."
+  (interactive)
+  (switch-to-buffer zd-tag-buffer-name)
+  (erase-buffer)
+  (dolist (zdTag (zd-all-tags))
+    (insert (format "%s \n" zdTag)))
+  (unless (eq major-mode 'org-mode) (org-mode))
+  (sort-lines nil (point-min) (point-max)))
+#+END_SRC
+
+*** Tag extracting functions
+
+Some utility functions to achieve all of this.
+
+**** =zd-extract-tags= from a file
+
+Open a given file in a temporary buffer.
+Loop a search for the tag regexp.
+When a tag is found, add it to the =zd-tag-list= if it isn't there already.
+Delete the found tag and search again.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-extract-tags (deftFile)
+  "Find all tags in DEFTFILE and add them to zd-tag-list"
+  (with-temp-buffer
+    (insert-file-contents deftFile)
+    (while (re-search-forward "#[A-Za-z-]+" nil t)
+      (let ((foundTag (match-string 0)))
+        ;; Add found tag to zd-tag-list if it isn't there already
+        (unless (member foundTag zd-tag-list)
+          (push foundTag zd-tag-list)))
+      ;; Remove found tag from buffer
+      (delete-region (point) (re-search-backward "#")))))
 #+END_SRC
 
 ** Gathering notes
