@@ -69,18 +69,17 @@ If there is only one result, open that file (unless DNTOPN is true)."
    (when (eq (length deft-current-files) 1)
      (deft-open-file (car deft-current-files)))))
 
-(defun zd-search-filename (str)
-"Search for deft files with string STR in filename.
-Open if there is only one result."
+(defun zd-search-filename (thisStr &optional otherWindow)
+"Search for deft files with string THISSTR in filename.
+Open if there is only one result (in another window if otherWindow is non-nill)."
   ;; Sanitize the filter string
-  (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
   ;; Call deft search on the filter string
   (let ((deft-filter-only-filenames t))
-   (deft)
-   (deft-filter str t))
+   (deft-filter thisStr t))
   ;; If there is a single match, open the file
   (when (eq (length deft-current-files) 1)
-    (deft-open-file (car deft-current-files))))
+    (deft-open-file (car deft-current-files) otherWindow)))
 
 (defun zd-search-current-id ()
 "Search deft with the id of the current file as filter.
@@ -185,12 +184,19 @@ Opens immediately if there is only one result."
   (avy-goto-char ?§)
   (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
 
-(defun zd-avy-file-search ()
-"Call on avy to jump to link ids indicated with § and use it to search for filenames."
+(defun zd-avy-file-search (&optional otherWindow)
+"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))))
+  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)) otherWindow)))
+
+(defun zd-avy-file-search-other-window ()
+"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+Open that file in other window (when it is the only search result)."
+ (interactive)
+ (zd-avy-file-search t))
 
 (defun zd-deft-new-search ()
 "Launch deft, clear filter and enter insert state."
@@ -242,14 +248,45 @@ Don't forget to add `\\n' at the beginning to start a new line."
   :group 'zetteldeft)
 
 (defun zd-count-words ()
-  "Prints total number of words in all deft files in the minibuffer."
+  "Prints total number of words and notes in the minibuffer."
   (interactive)
   (let ((numWords 0))
     (dolist (deftFile deft-all-files)
       (with-temp-buffer
         (insert-file-contents deftFile)
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
-    (message "Total words accross all notes: %s" numWords)))
+    (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
+
+(defun zd-all-tags ()
+  "Return a list of all the tags found in zetteldeft files."
+  (setq zd-tag-list (list))
+  (dolist (deftFile deft-all-files)
+    (zd-extract-tags deftFile))
+  zd-tag-list)
+
+(setq zd-tag-buffer-name "*zd-tag-buffer*")
+
+(defun zd-tag-buffer ()
+  "Switch to the *zd-tag-buffer* and list tags."
+  (interactive)
+  (switch-to-buffer zd-tag-buffer-name)
+  (erase-buffer)
+  (dolist (zdTag (zd-all-tags))
+    (insert (format "%s \n" zdTag)))
+  (unless (eq major-mode 'org-mode) (org-mode))
+  (sort-lines nil (point-min) (point-max)))
+
+(defun zd-extract-tags (deftFile)
+  "Find all tags in DEFTFILE and add them to zd-tag-list"
+  (with-temp-buffer
+    (insert-file-contents deftFile)
+    (while (re-search-forward "#[A-Za-z-]+" nil t)
+      (let ((foundTag (match-string 0)))
+        ;; Add found tag to zd-tag-list if it isn't there already
+        (unless (member foundTag zd-tag-list)
+          (push foundTag zd-tag-list)))
+      ;; Remove found tag from buffer
+      (delete-region (point) (re-search-backward "#")))))
 
 (defun zd-insert-list-links (zdSrch)
 "Inserts at point a list of links to all deft files with a search string ZDSRCH.
@@ -333,8 +370,10 @@ Optional: leave out first REMOVELINES lines."
   "ds" '(zd-search-at-point :wk "search at point")
   "dc" '(zd-search-current-id :wk "search current id")
   "df" '(zd-avy-file-search :wk "avy file search")
+  "dF" '(zd-avy-file-search-other-window :wk "avy file other window")
   "dl" '(zd-avy-link-search :wk "avy link search")
   "dt" '(zd-avy-tag-search :wk "avy tag search")
+  "dT" '(zd-tag-buffer :wk "tag list")
   "di" '(zd-find-file-id-insert :wk "insert id")
   "dI" '(zd-find-file-full-title-insert :wk "insert full title")
   "do" '(zd-find-file :wk "find file")

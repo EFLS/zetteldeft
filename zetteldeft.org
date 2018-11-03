@@ -34,11 +34,7 @@ Latest additions:
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
- - *25 Aug*: Renaming a file with =zd-file-rename= now also updates filename within the org-file. Also altered =zd-after-title=.
  - *18 July*: Include a list of links with =zd-insert-list-links=, or a list of files with =zd-org-search-include=.
- - *17 July*: Insert note title with =zd-insert-org-title=.
- - *16 July*: Highlight zetteldeft links in =org-mode=.
-
 
 # Table of Contents
 #+TOC: headlines 2
