@@ -935,9 +935,9 @@ Includes only from the second line onward, so that any =#+TITLE= lines are omitt
 "Insert code to include org-file zdFile."
  (insert
    ;; Insert org-mode title
-   "\n* " (zd-lift-file-title zdFile) "\n"
+   "* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org" :lines 2-
-   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"))
+   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
 #+END_SRC
 
 **** =zd-org-insert-file= inserts a files content
