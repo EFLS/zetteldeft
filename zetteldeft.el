@@ -276,12 +276,17 @@ Don't forget to add `\\n' at the beginning to start a new line."
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
 
+(defcustom zd-tag-format "\\(^\\|\s\\)#[A-Za-z-]+"
+  "Regular expression used to filter out tags."
+  :type 'string
+  :group 'zetteldeft)
+
 (defun zd-extract-tags (deftFile)
   "Find all tags in DEFTFILE and add them to zd-tag-list"
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward "#[A-Za-z-]+" nil t)
-      (let ((foundTag (match-string 0)))
+    (while (re-search-forward zd-tag-format nil t)
+      (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zd-tag-list if it isn't there already
         (unless (member foundTag zd-tag-list)
           (push foundTag zd-tag-list)))
@@ -357,26 +362,3 @@ Optional: leave out first REMOVELINES lines."
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here
-
-(general-define-key
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
-  :states '(normal visual motion emacs)
-  :keymaps 'override
-  "d"  '(nil :wk "deft")
-  "dd" '(deft :wk "deft")
-  "dD" '(zd-deft-new-search :wk "new search")
-  "dR" '(deft-refresh :wk "refresh")
-  "ds" '(zd-search-at-point :wk "search at point")
-  "dc" '(zd-search-current-id :wk "search current id")
-  "df" '(zd-avy-file-search :wk "avy file search")
-  "dF" '(zd-avy-file-search-other-window :wk "avy file other window")
-  "dl" '(zd-avy-link-search :wk "avy link search")
-  "dt" '(zd-avy-tag-search :wk "avy tag search")
-  "dT" '(zd-tag-buffer :wk "tag list")
-  "di" '(zd-find-file-id-insert :wk "insert id")
-  "dI" '(zd-find-file-full-title-insert :wk "insert full title")
-  "do" '(zd-find-file :wk "find file")
-  "dn" '(zd-new-file :wk "new file")
-  "dN" '(zd-new-file-and-link :wk "new file & link")
-  "dr" '(zd-file-rename :wk "rename"))
