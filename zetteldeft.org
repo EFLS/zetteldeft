@@ -714,12 +714,14 @@ Some utility functions to achieve all of this.
 **** =zd-tag-format= provides the tag-finding regex
 
 The regular expression used to filter out tags.
-Tags consist of =#= and at least one or more letters, with =-= allowed.
+Tags start with a =#= or =@= and contain least one or more letters.
+Dashes are allowed.
+
 Tags should be positioned either be at the beginning of a new line, or preceded by a space.
-This should help filter out tags used in URLs.
+This should help filter out hashtags used in URLs.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zd-tag-format "\\(^\\|\s\\)#[A-Za-z-]+"
+(defcustom zd-tag-format "\\(^\\|\s\\)[#@][a-z-]+"
   "Regular expression used to filter out tags."
   :type 'string
   :group 'zetteldeft)
