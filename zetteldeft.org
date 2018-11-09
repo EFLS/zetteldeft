@@ -743,7 +743,7 @@ Delete the found tag and search again.
         (unless (member foundTag zd-tag-list)
           (push foundTag zd-tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward "#")))))
+      (delete-region (point) (re-search-backward zd-tag-format)))))
 #+END_SRC
 
 ** Gathering notes
