@@ -711,11 +711,25 @@ Move to the =zd-tag-buffer-name=
 
 Some utility functions to achieve all of this.
 
+**** =zd-tag-format= provides the tag-finding regex
+
+The regular expression used to filter out tags.
+Tags consist of =#= and at least one or more letters, with =-= allowed.
+Tags should be positioned either be at the beginning of a new line, or preceded by a space.
+This should help filter out tags used in URLs.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zd-tag-format "\\(^\\|\s\\)#[A-Za-z-]+"
+  "Regular expression used to filter out tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
 **** =zd-extract-tags= from a file
 
 Open a given file in a temporary buffer.
 Loop a search for the tag regexp.
-When a tag is found, add it to the =zd-tag-list= if it isn't there already.
+When a tag is found, remove any whitespace from it and add it to the =zd-tag-list= if it isn't there already.
 Delete the found tag and search again.
 
 #+BEGIN_SRC emacs-lisp
@@ -723,8 +737,8 @@ Delete the found tag and search again.
   "Find all tags in DEFTFILE and add them to zd-tag-list"
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward "#[A-Za-z-]+" nil t)
-      (let ((foundTag (match-string 0)))
+    (while (re-search-forward zd-tag-format nil t)
+      (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zd-tag-list if it isn't there already
         (unless (member foundTag zd-tag-list)
           (push foundTag zd-tag-list)))
@@ -990,7 +1004,7 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 
 To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, I recommend =general.el= with the following setup.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (general-define-key
   :prefix "SPC"
   :non-normal-prefix "C-SPC"
