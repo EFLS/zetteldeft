@@ -334,20 +334,27 @@ A helper function to insert a generated id.
  (insert (zd-generate-id) " "))
 #+END_SRC
 
-**** FIX =zd-id-sanitized= cleans ids
+**** =zd-id-sanitized= filters zd ID from strings
 
-Returns the string stripped from everything that is not a number or a =-=.
+Return the zetteldeft ID from any string.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-sanitized (str)
 "Strip STRING from everything that is not a number or a dash."
- (replace-regexp-in-string "[^(0-9)-]+" "" str))
+  (with-temp-buffer
+    (insert str)
+    (when (re-search-forward "[0-9]+\\{4,\\}-[0-9-]+" nil t -1)
+      (match-string 0))))
 #+END_SRC
 
-Potential shortcomming: any numbers /after/ the id are not stripped.
-Problematic when stripping the id from a filename, for example.
+Or are there better ways than working =with-temp-buffer=?
 
-The following regular expression should work better: =[0-9-]\\{2,\\}-[0-9-]+= (but cannot be used with =replace-regexp-in-string= function). Something to fix.
+
+Here is a little test.
+
+#+BEGIN_SRC emacs-lisp :exports both :tangle no
+(zd-id-sanitized "2018-11-09-1934 Schuldenaren in variatie Tst 2000 p. 12-25")
+#+END_SRC
 
 **** FIX =zd-file-id-stripped= strips file id from string
 
