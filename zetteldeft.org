@@ -385,21 +385,6 @@ Based on =deft-find-file=.
  (deft-find-file file))
 #+END_SRC
 
-**** =zd-find-file-id-copy= copies file id
-
-Select file from minibuffer and add its link id to kill ring.
-
-Based on =deft-find-file=.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-find-file-id-copy (file)
-"Find deft file FILE and add its id to the kill ring."
- (interactive (list
-        (completing-read "File to copy id from: "
-        (deft-find-all-files-no-prefix))))
-  (kill-new (concat "§" (zd-lift-id file))))
-#+END_SRC
-
 **** =zd-find-file-id-insert= inserts file id
 
 Select file from minibuffer and insert its link, prepended by =§=.
