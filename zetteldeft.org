@@ -296,26 +296,26 @@ Open if there is only one result."
 #+END_SRC
 
 *** IDs
-**** Basics for IDs
+**** =zd-id-format= for generating ID strings
 
 String format when generating ids.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
-Be warned, changing this won't alter the regexp to filter IDs and find your files. This is WIP."
+Be warned: the regexp to find these IDs is set separately."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
 
 While we're at it, lets tell deft to create new files with this new format.
-For good measure: I'd advise creating new notes in the =zetteldeft= system with =zd-new-file= or =zd-new-file-and-link=. See below.
+For good measure: I advise creating new notes in the =zetteldeft= system with =zd-new-file= or =zd-new-file-and-link= as defined below.
 
 #+BEGIN_SRC emacs-lisp
 (setq deft-new-file-format zd-id-format)
 #+END_SRC
 
-Here is a function to generate an id string in said format.
+Here is the function to generate an ID string in said format.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
@@ -323,38 +323,57 @@ Here is a function to generate an id string in said format.
   (format-time-string zd-id-format))
 #+END_SRC
 
-**** =zd-id-insert= inserts id
+**** =zd-id-regex= for finding IDs
 
-A helper function to insert a generated id.
+The regular expression used to search for zetteldeft IDs.
+
+This dictates that a zetteldeft ID should consist of:
+ 1. a series of exactly 4 numbers
+ 2. followed by exactly 3 sets of a dash and two or more numbers
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
+  "The regex used to search for zetteldeft IDs."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+**** =zd-id-insert= inserts a newly generated ID
+
+A helper function to insert a newly generated id.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-insert ()
- (interactive)
- "Inserts an id in `zd-id-format'."
- (insert (zd-generate-id) " "))
+  "Inserts an id in `zd-id-format'."
+  (interactive)
+  (insert (zd-generate-id) " "))
 #+END_SRC
 
-**** =zd-id-sanitized= filters zd ID from strings
+**** =zd-id-sanitized= filters the ID from a string
 
 Return the zetteldeft ID from any string.
 
+Searches with a temporary buffer, from the end of the string backwards (hence the =-1= argument), which implies that the last zetteldeft string is returned.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-sanitized (str)
-"Strip STRING from everything that is not a number or a dash."
+  "Extract the zetteldeft ID from STR with the regular expression stored in `zd-id-regex'."
   (with-temp-buffer
     (insert str)
-    (when (re-search-forward "[0-9]+\\{4,\\}-[0-9-]+" nil t -1)
+    (when (re-search-forward zd-id-regex nil t -1)
       (match-string 0))))
 #+END_SRC
 
 Or are there better ways than working =with-temp-buffer=?
 
-
 Here is a little test.
 
-#+BEGIN_SRC emacs-lisp :exports both :tangle no
-(zd-id-sanitized "2018-11-09-1934 Schuldenaren in variatie Tst 2000 p. 12-25")
+#+BEGIN_SRC emacs-lisp :exports both :tangle no :results replace value
+(zd-id-sanitized "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
 #+END_SRC
+
+#+RESULTS:
+: 2018-11-09-1934
 
 **** FIX =zd-file-id-stripped= strips file id from string
 
