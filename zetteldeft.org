@@ -349,14 +349,14 @@ A helper function to insert a newly generated id.
   (insert (zd-generate-id) " "))
 #+END_SRC
 
-**** =zd-id-sanitized= filters the ID from a string
+**** =zd-lift-id= filters the ID from a string
 
 Return the zetteldeft ID from any string.
 
 Searches with a temporary buffer, from the end of the string backwards (hence the =-1= argument), which implies that the last zetteldeft string is returned.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-id-sanitized (str)
+(defun zd-lift-id (str)
   "Extract the zetteldeft ID from STR with the regular expression stored in `zd-id-regex'."
   (with-temp-buffer
     (insert str)
@@ -369,33 +369,15 @@ Or are there better ways than working =with-temp-buffer=?
 Here is a little test.
 
 #+BEGIN_SRC emacs-lisp :exports both :tangle no :results replace value
-(zd-id-sanitized "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
+(zd-lift-id "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
 #+END_SRC
 
 #+RESULTS:
 : 2018-11-09-1934
 
-**** FIX =zd-file-id-stripped= strips file id from string
-
-Attempts to strip the file id from a string.
-
-This requires a *fix*, or better yet, a reimplementation. Too crude at the moment.
-
-First, take only 17 first characters from the input string.
-Next, omit anything that is not a digit or a dash.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-file-id-stripped (file)
-"Returns file id stripped from given filename FILE."
- (let ((file (substring file 0 16)))
-   (zd-id-sanitized file)))
-#+END_SRC
-
 **** =zd-id-current-file= returns id in filename
 
-Return the id from the filename the buffer is currently visiting.
-
-Requires *fix*: filenames with numbers in it are not fully stripped.
+Return the ID from the filename the buffer is currently visiting.
 
 Steps:
  1. Get the filename from the buffer
@@ -405,7 +387,7 @@ Steps:
 #+BEGIN_SRC emacs-lisp
 (defun zd-id-current-file ()
 "Return the id from the filename the buffer is currently visiting."
- (zd-file-id-stripped (file-name-base (buffer-file-name))))
+ (zd-lift-id (file-name-base (buffer-file-name))))
 #+END_SRC
 
 **** =zd-copy-id-current-file= copies id in filename
@@ -447,7 +429,7 @@ Based on =deft-find-file=.
  (interactive (list
         (completing-read "File to copy id from: "
         (deft-find-all-files-no-prefix))))
-  (kill-new (concat "§" (zd-file-id-stripped file))))
+  (kill-new (concat "§" (zd-lift-id file))))
 #+END_SRC
 
 **** =zd-find-file-id-insert= inserts file id
@@ -462,7 +444,7 @@ Based on =deft-find-file=.
  (interactive (list
         (completing-read "File to insert id from: "
         (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (zd-file-id-stripped file))))
+  (insert (concat "§" (zd-lift-id file))))
 #+END_SRC
 
 **** =zd-find-file-full-title-insert= inserts full file title
@@ -549,7 +531,7 @@ Opens immediately if there is only one result."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
+  (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
 #+END_SRC
 
 **** =zd-avy-file-search=
@@ -570,7 +552,7 @@ Open that file (when it is the only search result, and in another window if OTHE
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)) otherWindow)))
+  (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 #+END_SRC
 
 For easier access, let's define a function to open in the other window.
