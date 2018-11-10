@@ -56,7 +56,7 @@ Thing can be a double-bracketed link, a hashtag, or a word."
      (user-error "No search term at point"))))
 
 (defun zd-search-global (str &optional dntOpn)
-"Search deft with STR as filter.
+  "Search deft with STR as filter.
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
   (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
@@ -70,7 +70,7 @@ If there is only one result, open that file (unless DNTOPN is true)."
      (deft-open-file (car deft-current-files)))))
 
 (defun zd-search-filename (thisStr &optional otherWindow)
-"Search for deft files with string THISSTR in filename.
+  "Search for deft files with string THISSTR in filename.
 Open if there is only one result (in another window if otherWindow is non-nill)."
   ;; Sanitize the filter string
   (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
@@ -85,11 +85,17 @@ Open if there is only one result (in another window if otherWindow is non-nill).
 "Search deft with the id of the current file as filter.
 Open if there is only one result."
  (interactive)
- (zd-search-global (zd-id-current-file) t))
+ (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
+
+(defun zd-get-file-list (srch)
+"Returns a list of files with the search item SRCH."
+  (let ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files))
 
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
-Be warned, changing this won't alter the regexp to filter IDs and find your files. This is WIP."
+Be warned: the regexp to find these IDs is set separately."
   :type 'string
   :group 'zetteldeft)
 
@@ -99,28 +105,17 @@ Be warned, changing this won't alter the regexp to filter IDs and find your file
   "Generates an id in `zd-id-format'."
   (format-time-string zd-id-format))
 
-(defun zd-id-insert ()
- (interactive)
- "Inserts an id in `zd-id-format'."
- (insert (zd-generate-id) " "))
+(defcustom zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
+  "The regex used to search for zetteldeft IDs."
+  :type 'string
+  :group 'zetteldeft)
 
-(defun zd-id-sanitized (str)
-"Strip STRING from everything that is not a number or a dash."
- (replace-regexp-in-string "[^(0-9)-]+" "" str))
-
-(defun zd-file-id-stripped (file)
-"Returns file id stripped from given filename FILE."
- (let ((file (substring file 0 16)))
-   (zd-id-sanitized file)))
-
-(defun zd-id-current-file ()
-"Return the id from the filename the buffer is currently visiting."
- (zd-file-id-stripped (file-name-base (buffer-file-name))))
-
-(defun zd-copy-id-current-file ()
-"Add the id from the filename the buffer is currently visiting to the kill ring."
-(interactive)
- (kill-new (zd-id-current-file)))
+(defun zd-lift-id (str)
+  "Extract the zetteldeft ID from STR with the regular expression stored in `zd-id-regex'."
+  (with-temp-buffer
+    (insert str)
+    (when (re-search-forward zd-id-regex nil t -1)
+      (match-string 0))))
 
 (defun zd-find-file (file)
 "Open deft file FILE."
@@ -129,19 +124,12 @@ Be warned, changing this won't alter the regexp to filter IDs and find your file
         (deft-find-all-files-no-prefix))))
  (deft-find-file file))
 
-(defun zd-find-file-id-copy (file)
-"Find deft file FILE and add its id to the kill ring."
- (interactive (list
-        (completing-read "File to copy id from: "
-        (deft-find-all-files-no-prefix))))
-  (kill-new (concat "§" (zd-file-id-stripped file))))
-
 (defun zd-find-file-id-insert (file)
 "Find deft file FILE and insert its link id, prepended by §."
  (interactive (list
         (completing-read "File to insert id from: "
         (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (zd-file-id-stripped file))))
+  (insert (concat "§" (zd-lift-id file))))
 
 (defun zd-find-file-full-title-insert (file)
 "Find deft file FILE and insert its link id with title, prepended by §."
@@ -182,7 +170,7 @@ Opens immediately if there is only one result."
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))))
+  (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
 
 (defun zd-avy-file-search (&optional otherWindow)
 "Call on avy to jump to link ids indicated with § and use it to search for filenames.
@@ -190,7 +178,7 @@ Open that file (when it is the only search result, and in another window if OTHE
  (interactive)
  (save-excursion
   (avy-goto-char ?§)
-  (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)) otherWindow)))
+  (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 
 (defun zd-avy-file-search-other-window ()
 "Call on avy to jump to link ids indicated with § and use it to search for filenames.
@@ -231,6 +219,14 @@ Open that file in other window (when it is the only search result)."
       (when (search-forward "#+title:" nil t)
         (delete-region (line-beginning-position) (line-end-position))
         (zd-insert-org-title)))))
+
+(defun zd-lift-file-title (zdFile)
+  "Returns the title of a zetteldeft note.
+ZDFILE should be a full path to a note."
+ (let ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+    "" baseName)))
 
 (defun zd-insert-org-title ()
  "Insert filename of current file as org syntax."
@@ -276,7 +272,7 @@ Don't forget to add `\\n' at the beginning to start a new line."
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
 
-(defcustom zd-tag-format "\\(^\\|\s\\)#[A-Za-z-]+"
+(defcustom zd-tag-format "\\(^\\|\s\\)[#@][a-z-]+"
   "Regular expression used to filter out tags."
   :type 'string
   :group 'zetteldeft)
@@ -291,7 +287,7 @@ Don't forget to add `\\n' at the beginning to start a new line."
         (unless (member foundTag zd-tag-list)
           (push foundTag zd-tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward "#")))))
+      (delete-region (point) (re-search-backward zd-tag-format)))))
 
 (defun zd-insert-list-links (zdSrch)
 "Inserts at point a list of links to all deft files with a search string ZDSRCH.
@@ -316,20 +312,6 @@ When searching for a tag, include # manually in the search."
  (dolist (zdFile (zd-get-file-list zdSrch))
    (zd-org-insert-file zdFile)))
 
-(defun zd-get-file-list (srch)
-"Returns a list of files with the search item SRCH."
-  (let ((deft-current-sort-method 'title))
-   (deft-filter srch t)
-   deft-current-files))
-
-(defun zd-lift-file-title (zdFile)
-  "Returns the title of a zetteldeft note.
-ZDFILE should be a full path to a note."
- (let ((baseName (file-name-base zdFile)))
-   (replace-regexp-in-string
-    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-    "" baseName)))
-
 (defun zd-file-contents (zdFile &optional removeLines)
   "Inserts file contents of a zetteldeft note.
 ZDFILE should be a full path to a note.
@@ -345,9 +327,9 @@ Optional: leave out first REMOVELINES lines."
 "Insert code to include org-file zdFile."
  (insert
    ;; Insert org-mode title
-   "\n* " (zd-lift-file-title zdFile) "\n"
+   "* " (zd-lift-file-title zdFile) "\n"
    ;; Insert #+INCLUDE: "file.org" :lines 2-
-   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"))
+   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
 
 (defun zd-org-insert-file (zdFile)
 "Insert title and contents of ZDFILE."
