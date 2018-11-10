@@ -129,10 +129,10 @@ Here is an overview.
 More details documented below.
 
 * The =zetteldeft= package
-** Package setup
+** Package preparation
 
-In this section:
-#+TOC: headlines 2 local
+The required preamble and some other initial settings.
+To know how this package works, please skip right past this to the next section.
 
 *** Preamble
 
@@ -168,6 +168,8 @@ Some declaration.
 #+END_SRC
 
 *** Requirements
+
+=deft= is required, obviously, and =avy= is needed for some utility functions.
 
 #+BEGIN_SRC emacs-lisp
 (require 'deft)
@@ -244,7 +246,7 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-global (str &optional dntOpn)
-"Search deft with STR as filter.
+  "Search deft with STR as filter.
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
   (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
@@ -267,7 +269,7 @@ Incremental search is turned off, and the filter is set to filenames only.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-filename (thisStr &optional otherWindow)
-"Search for deft files with string THISSTR in filename.
+  "Search for deft files with string THISSTR in filename.
 Open if there is only one result (in another window if otherWindow is non-nill)."
   ;; Sanitize the filter string
   (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
@@ -298,6 +300,22 @@ Steps:
 Open if there is only one result."
  (interactive)
  (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
+#+END_SRC
+
+**** =zd-get-file-list= returns file list with search term
+
+Get a list of the files with given search string.
+
+To *fix*: sorting of results.
+
+The code searches for the given string and returns =deft-current-files=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-get-file-list (srch)
+"Returns a list of files with the search item SRCH."
+  (let ((deft-current-sort-method 'title))
+   (deft-filter srch t)
+   deft-current-files))
 #+END_SRC
 
 *** IDs
@@ -400,7 +418,7 @@ Based on =deft-find-file=.
   (insert (concat "§" (zd-lift-id file))))
 #+END_SRC
 
-**** =zd-find-file-full-title-insert= inserts full file title
+**** =zd-find-file-full-title-insert= inserts id and title
 
 Select file from minibuffer and insert its link, prepended by =§=.
 
@@ -455,7 +473,7 @@ Creates new deft file with id and STR as name."
  (zd-new-file str))
 #+END_SRC
 
-*** Functions with =avy=
+*** Moving around with =avy=
 **** =zd-avy-tag-search=
 
 Use avy to jump to a tag and search for it.
@@ -575,6 +593,19 @@ To update the title of the currently visited file, the following function is use
         (zd-insert-org-title)))))
 #+END_SRC
 
+**** =zd-lift-file-title= returns file title from path
+
+Returns only the file title from a file, removing path, extension, and link ID.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-lift-file-title (zdFile)
+  "Returns the title of a zetteldeft note.
+ZDFILE should be a full path to a note."
+ (let ((baseName (file-name-base zdFile)))
+   (replace-regexp-in-string
+    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+    "" baseName)))
+#+END_SRC
 **** =zd-insert-org-title= inserts file title in org-mode
 
 Easily insert the title of the current file in =org-mode= syntax, i.e. as a =#+title:= line.
@@ -623,9 +654,7 @@ The total is printed in the minibuffer.
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 #+END_SRC
 
-** Gathering tags
-
-One *issue*: when a url uses a =#=, it can be mistaken for a tag.
+** Listing all tags
 
 =zd-all-tags= puts all tags in =zd-tag-list= and returns them.
 
@@ -855,36 +884,6 @@ Very similar to the previous function, but rather than writing syntax to include
 #+END_SRC
 
 *** Helper functions
-**** =zd-get-file-list= returns file list on search
-
-Get a list of the files with given search string.
-
-To *fix*: sorting of results.
-
-The code searches for the given string and returns =deft-current-files=.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-get-file-list (srch)
-"Returns a list of files with the search item SRCH."
-  (let ((deft-current-sort-method 'title))
-   (deft-filter srch t)
-   deft-current-files))
-#+END_SRC
-
-**** =zd-lift-file-title= returns file title from path
-
-Returns only the file title from a file, removing path, extension, and link ID.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-lift-file-title (zdFile)
-  "Returns the title of a zetteldeft note.
-ZDFILE should be a full path to a note."
- (let ((baseName (file-name-base zdFile)))
-   (replace-regexp-in-string
-    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-    "" baseName)))
-#+END_SRC
-
 **** =zd-insert-file-contents= returns the contents of a file
 
 Returns the contents of a file.
@@ -947,7 +946,7 @@ Highlighting not working in comments.
   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)))
 #+END_SRC
 
-** Package provided
+** End of package
 
 That's all folks!
 
@@ -1137,3 +1136,4 @@ A system for note templates.
 Create a minor mode on top of org-mode with some niceties:
  - higlight links & tags
  - clickeable links
+   
