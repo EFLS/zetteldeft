@@ -338,17 +338,6 @@ This dictates that a zetteldeft ID should consist of:
   :group 'zetteldeft)
 #+END_SRC
 
-**** =zd-id-insert= inserts a newly generated ID
-
-A helper function to insert a newly generated id.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-id-insert ()
-  "Inserts an id in `zd-id-format'."
-  (interactive)
-  (insert (zd-generate-id) " "))
-#+END_SRC
-
 **** =zd-lift-id= filters the ID from a string
 
 Return the zetteldeft ID from any string.
