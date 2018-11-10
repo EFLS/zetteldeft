@@ -283,16 +283,21 @@ Open if there is only one result (in another window if otherWindow is non-nill).
 
 Deft search on the id of the current file.
 
+This function is useful to easily see which notes link to the current file.
+
 Result is not opened automaticaly.
 
-This function is useful to easily see which notes link to the current file.
+Steps:
+ 1. Get the filename from the current buffer.
+ 2. Lift the ID from it.
+ 3. Search with resulting string.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-current-id ()
 "Search deft with the id of the current file as filter.
 Open if there is only one result."
  (interactive)
- (zd-search-global (zd-id-current-file) t))
+ (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
 #+END_SRC
 
 *** IDs
@@ -363,21 +368,6 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
-
-**** =zd-id-current-file= returns id in filename
-
-Return the ID from the filename the buffer is currently visiting.
-
-Steps:
- 1. Get the filename from the buffer
- 2. Strip the ID from it.
- 3. Result can be empty string when no id is detected in the filename.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-id-current-file ()
-"Return the id from the filename the buffer is currently visiting."
- (zd-lift-id (file-name-base (buffer-file-name))))
-#+END_SRC
 
 *** Finding & linking files from minibuffer
 **** =zd-find-file= opens file from minibuffer
