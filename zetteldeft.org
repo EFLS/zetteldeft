@@ -390,17 +390,6 @@ Steps:
  (zd-lift-id (file-name-base (buffer-file-name))))
 #+END_SRC
 
-**** =zd-copy-id-current-file= copies id in filename
-
-Add the ID from the current file to the kill ring.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-copy-id-current-file ()
-"Add the id from the filename the buffer is currently visiting to the kill ring."
-(interactive)
- (kill-new (zd-id-current-file)))
-#+END_SRC
-
 *** Finding & linking files from minibuffer
 **** =zd-find-file= opens file from minibuffer
 
