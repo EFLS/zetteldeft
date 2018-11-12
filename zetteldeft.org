@@ -654,6 +654,17 @@ The total is printed in the minibuffer.
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 #+END_SRC
 
+**** =zd-copy-id-current-file= copies id in filename
+
+Add the ID from the current file to the kill ring.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-copy-id-current-file ()
+ "Add the id from the filename the buffer is currently visiting to the kill ring."
+ (interactive)
+ (kill-new (zd-id-current-file)))
+#+END_SRC
+
 ** Listing all tags
 
 =zd-all-tags= puts all tags in =zd-tag-list= and returns them.
