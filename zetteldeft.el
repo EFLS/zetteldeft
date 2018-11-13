@@ -253,6 +253,11 @@ Don't forget to add `\\n' at the beginning to start a new line."
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 
+(defun zd-copy-id-current-file ()
+ "Add the id from the filename the buffer is currently visiting to the kill ring."
+ (interactive)
+ (kill-new (zd-id-current-file)))
+
 (defun zd-all-tags ()
   "Return a list of all the tags found in zetteldeft files."
   (setq zd-tag-list (list))
@@ -338,6 +343,99 @@ Optional: leave out first REMOVELINES lines."
     "\n* " (zd-lift-file-title zdFile) "\n\n"
     ;; Insert file contents (without the first 3 lines)
     (zd-file-contents zdFile 3)))
+
+(defun zd-org-graph-search (str)
+  "Insert org source block for graph with zd search results. STR should be the search the resulting notes of which should be included in the graph."
+  (interactive (list (read-string "search string: ")))
+  (setq zd-graph--links (list))
+  (let ((zdList (zd-get-file-list str)))
+    (insert zd-graph-syntax-begin)
+    (insert "\n  // links\n")
+    (dolist (oneFile zdList)
+      (insert "\n")
+      (zd-graph-insert-links oneFile))
+    (zd-graph-insert-all-titles))
+  (insert zd-graph-syntax-end))
+
+(defun zd-org-graph-note (deftFile)
+  "Create a graph starting from note DEFTFILE."
+  (interactive)
+  (setq zd-graph--links (list))
+  (insert zd-graph-syntax-begin)
+  (insert "\n  // base note and links \n")
+  (zd-graph-insert-links deftFile)
+  (zd-graph-insert-additional-links)
+  (zd-graph-insert-all-titles)
+  (insert zd-graph-syntax-end))
+
+(defcustom zd-graph-syntax-begin
+  "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
+  \n graph {\n"
+  "Syntax to be included at the start of the zetteldeft graph.")
+
+(defcustom zd-graph-syntax-end
+  "} \n#+END_SRC\n"
+  "Syntax to be included at the end of the zetteldeft graph.")
+
+(defun zd-extract-links (deftFile)
+  "Find all links in DEFTFILE and return a list."
+  (let ((zdLinks (list)))
+    (with-temp-buffer
+      (insert-file-contents deftFile)
+      (while (re-search-forward zd-id-regex nil t)
+        (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
+          ;; Add found tag to zdLinks if it isn't there already
+          (unless (member foundTag zdLinks)
+            (push foundTag zdLinks)))
+        ;; Remove found tag from buffer
+        (delete-region (point) (re-search-backward zd-id-regex))))
+   zdLinks))
+
+(defun zd-graph-insert-links (deftFile)
+  "Inserts a file's links in a one line dot graph format.
+Any inserted ID is also stored in `zd-graph--links'."
+  (insert "  \""
+          (zd-lift-id deftFile)
+          "\" -- {")
+  (dolist (oneLink (zd-extract-links deftFile))
+    (zd-graph-store-link oneLink t)
+    (insert "\"" oneLink "\" "))
+  (insert "}\n")
+  (zd-graph-store-link deftFile))
+
+(defun zd-graph-insert-title (deftFile)
+  "Inserts the DEFTFILE title definition in a one line dot graph format."
+  (let ((zdTitle (zd-lift-file-title deftFile))
+        (zdId    (zd-lift-id deftFile)))
+    (insert "  \"" zdId "\""
+            " [label = \"" zdTitle " (§" zdId ")\"")
+    (insert "]" "\n"))
+  (zd-graph-store-link deftFile))
+
+(defun zd-graph-store-link (deftFile &optional idToFile)
+  "Push DEFTFILE to zd-graph--links unless it's already there.
+When IDTOFILE is non-nil, DEFTFILE is considered an id and the the function first looks for the corresponding file."
+  (when idToFile
+    (let ((deft-filter-only-filenames t))
+      (progn
+        (deft-filter deftFile t)
+        (setq deftFile (car deft-current-files)))))
+  (unless (member deftFile zd-graph--links)
+    (push deftFile zd-graph--links)))
+
+(defun zd-graph-insert-additional-links ()
+  "Insert rest of `zd-graph--links'."
+  (setq zd-graph--links (cdr zd-graph--links))
+  (dolist (oneFile zd-graph--links)
+    (zd-graph-insert-links oneFile)))
+
+(defun zd-graph-insert-all-titles ()
+  "Insert all graphviz title lines for all links stored in `zd-graph--links'."
+  (insert "\n  // titles \n")
+  (dolist (oneLink zd-graph--links)
+    ;; Sometimes, a 'nil' list item is present. Ignore those.
+    (when oneLink
+      (zd-graph-insert-title oneLink))))
 
 (font-lock-add-keywords 'org-mode '(
   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)))
