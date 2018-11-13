@@ -254,9 +254,11 @@ Don't forget to add `\\n' at the beginning to start a new line."
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 
 (defun zd-copy-id-current-file ()
- "Add the id from the filename the buffer is currently visiting to the kill ring."
- (interactive)
- (kill-new (zd-id-current-file)))
+  "Add the id from the filename the buffer is currently visiting to the kill ring."
+  (interactive)
+  (let ((ID (concat "§" (zd-lift-id (file-name-base (buffer-file-name))))))
+    (kill-new ID)
+    (message "%s" ID)))
 
 (defun zd-all-tags ()
   "Return a list of all the tags found in zetteldeft files."

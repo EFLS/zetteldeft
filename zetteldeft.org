@@ -659,11 +659,18 @@ The total is printed in the minibuffer.
 
 Add the ID from the current file to the kill ring.
 
+Steps:
+ 1. Get the filename from the buffer
+ 2. Strip the ID from it.
+ 3. Result can be empty string when no id is detected in the filename.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-copy-id-current-file ()
- "Add the id from the filename the buffer is currently visiting to the kill ring."
- (interactive)
- (kill-new (zd-id-current-file)))
+  "Add the id from the filename the buffer is currently visiting to the kill ring."
+  (interactive)
+  (let ((ID (concat "§" (zd-lift-id (file-name-base (buffer-file-name))))))
+    (kill-new ID)
+    (message "%s" ID)))
 #+END_SRC
 
 ** Listing all tags
