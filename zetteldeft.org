@@ -76,6 +76,14 @@ Whichever way you go, load up the package by adding the package to your load pat
 (require 'zetteldeft)
 #+END_SRC
 
+Or, if you use =use-package=, do something like:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package zetteldeft
+  :load-path "~/git/zetteldeft/"
+  :after deft)
+#+END_SRC
+
 and you're good to go!
 Well, not quite. First you must read on about the basics of =zetteldeft=.
 
