@@ -300,6 +300,7 @@ Steps:
 "Search deft with the id of the current file as filter.
 Open if there is only one result."
  (interactive)
+ (zd--check)
  (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
 #+END_SRC
 
@@ -582,6 +583,7 @@ The function also updates the =#+title:= at the top of the buffer, if any is pre
 (defun zd-file-rename ()
 "Rename the current file via the deft function. Use this on files in the deft-directory."
  (interactive)
+ (zd--check)
   (let ((old-filename (buffer-file-name))
         (deft-dir (file-name-as-directory deft-directory))
         new-filename old-name new-name)
@@ -637,6 +639,7 @@ This string, variable =zd-string-after-title=, can be customized and is empty by
 (defun zd-insert-org-title ()
  "Insert filename of current file as org syntax."
  (interactive)
+ (zd--check)
  (insert
    "#+title: "
    (zd-lift-file-title (file-name-base (buffer-file-name)))
@@ -685,6 +688,7 @@ Steps:
 (defun zd-copy-id-current-file ()
   "Add the id from the filename the buffer is currently visiting to the kill ring."
   (interactive)
+  (zd--check)
   (let ((ID (concat "§" (zd-lift-id (file-name-base (buffer-file-name))))))
     (kill-new ID)
     (message "%s" ID)))
