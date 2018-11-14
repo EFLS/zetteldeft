@@ -35,7 +35,7 @@
   "A zettelkasten on top of deft.")
 
 (defun zd-get-thing-at-point ()
-"Return the thing at point, which can be a link, tag or word."
+  "Return the thing at point, which can be a link, tag or word."
   (require 'thingatpt)
   (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
          (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
@@ -47,7 +47,7 @@
      (t (thing-at-point 'word t)))))
 
 (defun zd-search-at-point ()
-"Search deft with thing-at-point as filter.
+  "Search deft with thing-at-point as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
   (let ((string (zd-get-thing-at-point)))
@@ -82,16 +82,17 @@ Open if there is only one result (in another window if otherWindow is non-nill).
     (deft-open-file (car deft-current-files) otherWindow)))
 
 (defun zd-search-current-id ()
-"Search deft with the id of the current file as filter.
+  "Search deft with the id of the current file as filter.
 Open if there is only one result."
- (interactive)
- (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
+  (interactive)
+  (zd--check)
+  (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
 
 (defun zd-get-file-list (srch)
-"Returns a list of files with the search item SRCH."
+  "Returns a list of files with the search item SRCH."
   (let ((deft-current-sort-method 'title))
-   (deft-filter srch t)
-   deft-current-files))
+    (deft-filter srch t)
+    deft-current-files))
 
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
@@ -118,101 +119,109 @@ Be warned: the regexp to find these IDs is set separately."
       (match-string 0))))
 
 (defun zd-find-file (file)
-"Open deft file FILE."
- (interactive
-  (list (completing-read "Deft find file: "
-        (deft-find-all-files-no-prefix))))
- (deft-find-file file))
+  "Open deft file FILE."
+  (interactive
+    (list (completing-read "Deft find file: "
+           (deft-find-all-files-no-prefix))))
+  (deft-find-file file))
 
 (defun zd-find-file-id-insert (file)
-"Find deft file FILE and insert its link id, prepended by §."
- (interactive (list
-        (completing-read "File to insert id from: "
-        (deft-find-all-files-no-prefix))))
+  "Find deft file FILE and insert its link id, prepended by §."
+  (interactive (list
+    (completing-read "File to insert id from: "
+      (deft-find-all-files-no-prefix))))
   (insert (concat "§" (zd-lift-id file))))
 
 (defun zd-find-file-full-title-insert (file)
-"Find deft file FILE and insert its link id with title, prepended by §."
- (interactive (list
-        (completing-read "File to insert full title from: "
-        (deft-find-all-files-no-prefix))))
+  "Find deft file FILE and insert its link id with title, prepended by §."
+  (interactive (list
+    (completing-read "File to insert full title from: "
+      (deft-find-all-files-no-prefix))))
   (insert (concat "§" (file-name-base file))))
 
 (defun zd-new-file (str &optional empty)
-"Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
+  "Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
 
 After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."
- (interactive (list (read-string "name: ")))
- (let* ((zdId (zd-generate-id))
-        (zdName (concat zdId " " str)))
- (deft-new-file-named zdName)
- (kill-new zdName)
- (unless empty (zd-insert-org-title))
- (when (featurep 'evil) (evil-insert-state))))
+  (interactive (list (read-string "name: ")))
+  (let* ((zdId (zd-generate-id))
+         (zdName (concat zdId " " str)))
+  (deft-new-file-named zdName)
+  (kill-new zdName)
+  (unless empty (zd-insert-org-title))
+  (when (featurep 'evil) (evil-insert-state))))
 
 (defun zd-new-file-and-link (str)
-"Inserts generated id with `zd-id-format' appended with STR.
+  "Inserts generated id with `zd-id-format' appended with STR.
 Creates new deft file with id and STR as name."
- (interactive (list (read-string "name: ")))
- (insert "§" (zd-generate-id) " " str)
- (zd-new-file str))
+  (interactive (list (read-string "name: ")))
+  (insert "§" (zd-generate-id) " " str)
+  (zd-new-file str))
 
 (defun zd-avy-tag-search ()
-"Call on avy to jump and search tags indicated with #."
- (interactive)
- (save-excursion
-  (avy-goto-char ?#)
-  (zd-search-at-point)))
+  "Call on avy to jump and search tags indicated with #."
+  (interactive)
+  (save-excursion
+   (avy-goto-char ?#)
+   (zd-search-at-point)))
 
 (defun zd-avy-link-search ()
-"Call on avy to jump and search link ids indicated with §.
+  "Call on avy to jump and search link ids indicated with §.
 Opens immediately if there is only one result."
- (interactive)
- (save-excursion
-  (avy-goto-char ?§)
-  (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
+  (interactive)
+  (save-excursion
+    (avy-goto-char ?§)
+    (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
 
 (defun zd-avy-file-search (&optional otherWindow)
-"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+ "Call on avy to jump to link ids indicated with § and use it to search for filenames.
 Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
- (interactive)
- (save-excursion
-  (avy-goto-char ?§)
-  (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
+  (interactive)
+  (save-excursion
+    (avy-goto-char ?§)
+    (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 
 (defun zd-avy-file-search-other-window ()
-"Call on avy to jump to link ids indicated with § and use it to search for filenames.
+  "Call on avy to jump to link ids indicated with § and use it to search for filenames.
 Open that file in other window (when it is the only search result)."
- (interactive)
- (zd-avy-file-search t))
+  (interactive)
+  (zd-avy-file-search t))
 
 (defun zd-deft-new-search ()
-"Launch deft, clear filter and enter insert state."
- (interactive)
- (deft)
- (deft-filter-clear)
- (when (featurep 'evil) (evil-insert-state)))
+  "Launch deft, clear filter and enter insert state."
+  (interactive)
+  (deft)
+  (deft-filter-clear)
+  (when (featurep 'evil) (evil-insert-state)))
+
+(defun zd--check ()
+  "Checks if the currently visited file is in `zetteldeft' territory: whether it has `deft-directory' somewhere in its path."
+  (unless (string-match-p
+            (regexp-quote deft-directory)
+            (file-name-directory (buffer-file-name)))
+    (user-error "Not in zetteldeft territory.")))
 
 (defun zd-file-rename ()
-"Rename the current file via the deft function. Use this on files in the deft-directory."
- (interactive)
-  (let ((old-filename (buffer-file-name))
-        (deft-dir (file-name-as-directory deft-directory))
-        new-filename old-name new-name)
-    (when old-filename
-      (setq old-name (deft-base-filename old-filename))
-      (setq new-name (read-string
-                      (concat "Rename " old-name " to (without extension): ")
-                      old-name))
-      (setq new-filename
-            (concat deft-dir new-name "." deft-default-extension))
-      (rename-file old-filename new-filename)
-      (deft-update-visiting-buffers old-filename new-filename)
-      (zd-update-title-in-file)
-      (deft-refresh))))
+  "Rename the current file via the deft function. Use this on files in the deft-directory."
+  (interactive)
+  (zd--check)
+    (let ((old-filename (buffer-file-name))
+          (deft-dir (file-name-as-directory deft-directory))
+          new-filename old-name new-name)
+      (when old-filename
+        (setq old-name (deft-base-filename old-filename))
+        (setq new-name (read-string
+                        (concat "Rename " old-name " to (without extension): ")
+                        old-name))
+        (setq new-filename
+              (concat deft-dir new-name "." deft-default-extension))
+        (rename-file old-filename new-filename)
+        (deft-update-visiting-buffers old-filename new-filename)
+        (zd-update-title-in-file)
+        (deft-refresh))))
 
 (defun zd-update-title-in-file ()
-"Update the #+TITLE in the current file, if present."
+  "Update the #+TITLE in the current file, if present."
   (save-excursion
     (let ((zd-string-after-title ""))
       (goto-char (point-min))
@@ -223,18 +232,19 @@ Open that file in other window (when it is the only search result)."
 (defun zd-lift-file-title (zdFile)
   "Returns the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
- (let ((baseName (file-name-base zdFile)))
-   (replace-regexp-in-string
-    "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-    "" baseName)))
+  (let ((baseName (file-name-base zdFile)))
+    (replace-regexp-in-string
+     "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+     "" baseName)))
 
 (defun zd-insert-org-title ()
- "Insert filename of current file as org syntax."
- (interactive)
- (insert
-   "#+title: "
-   (zd-lift-file-title (file-name-base (buffer-file-name)))
-   zd-string-after-title))
+  "Insert filename of current file as org syntax."
+  (interactive)
+  (zd--check)
+  (insert
+    "#+title: "
+    (zd-lift-file-title (file-name-base (buffer-file-name)))
+    zd-string-after-title))
 
 (defcustom zd-string-after-title ""
   "String inserted below title when `zd-insert-org-title' is called.
@@ -256,6 +266,7 @@ Don't forget to add `\\n' at the beginning to start a new line."
 (defun zd-copy-id-current-file ()
   "Add the id from the filename the buffer is currently visiting to the kill ring."
   (interactive)
+  (zd--check)
   (let ((ID (concat "§" (zd-lift-id (file-name-base (buffer-file-name))))))
     (kill-new ID)
     (message "%s" ID)))
@@ -297,27 +308,27 @@ Don't forget to add `\\n' at the beginning to start a new line."
       (delete-region (point) (re-search-backward zd-tag-format)))))
 
 (defun zd-insert-list-links (zdSrch)
-"Inserts at point a list of links to all deft files with a search string ZDSRCH.
+  "Inserts at point a list of links to all deft files with a search string ZDSRCH.
 When searching for a tag, include # manually in the search."
- (interactive (list (read-string "search string: ")))
- (dolist (zdFile (zd-get-file-list zdSrch))
-  (zd-list-entry-file-link zdFile)))
+  (interactive (list (read-string "search string: ")))
+  (dolist (zdFile (zd-get-file-list zdSrch))
+    (zd-list-entry-file-link zdFile)))
 
 (defun zd-list-entry-file-link (zdFile)
-"Insert ZDFILE as list entry."
- (insert " - " (concat "§" (file-name-base zdFile)) "\n"))
+  "Insert ZDFILE as list entry."
+  (insert " - " (concat "§" (file-name-base zdFile)) "\n"))
 
 (defun zd-org-search-include (zdSrch)
-"Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
- (interactive (list (read-string "tag (include the #): ")))
- (dolist (zdFile (zd-get-file-list zdSrch))
-  (zd-org-include-file zdFile)))
+  "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
+  (interactive (list (read-string "tag (include the #): ")))
+  (dolist (zdFile (zd-get-file-list zdSrch))
+    (zd-org-include-file zdFile)))
 
 (defun zd-org-search-insert (zdSrch)
-"Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
- (interactive (list (read-string "Search term: ")))
- (dolist (zdFile (zd-get-file-list zdSrch))
-   (zd-org-insert-file zdFile)))
+  "Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
+  (interactive (list (read-string "Search term: ")))
+  (dolist (zdFile (zd-get-file-list zdSrch))
+    (zd-org-insert-file zdFile)))
 
 (defun zd-file-contents (zdFile &optional removeLines)
   "Inserts file contents of a zetteldeft note.
@@ -331,15 +342,15 @@ Optional: leave out first REMOVELINES lines."
     (buffer-string)))
 
 (defun zd-org-include-file (zdFile)
-"Insert code to include org-file zdFile."
- (insert
-   ;; Insert org-mode title
-   "* " (zd-lift-file-title zdFile) "\n"
-   ;; Insert #+INCLUDE: "file.org" :lines 2-
-   "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
+  "Insert code to include org-file zdFile."
+  (insert
+    ;; Insert org-mode title
+    "* " (zd-lift-file-title zdFile) "\n"
+    ;; Insert #+INCLUDE: "file.org" :lines 2-
+    "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
 
 (defun zd-org-insert-file (zdFile)
-"Insert title and contents of ZDFILE."
+  "Insert title and contents of ZDFILE."
   (insert
     ;; Insert org-mode title
     "\n* " (zd-lift-file-title zdFile) "\n\n"
