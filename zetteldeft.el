@@ -181,11 +181,16 @@ Open that file (when it is the only search result, and in another window if OTHE
     (avy-goto-char ?§)
     (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 
-(defun zd-avy-file-search-other-window ()
+(defun zd-avy-file-search-ace-window ()
   "Call on avy to jump to link ids indicated with § and use it to search for filenames.
-Open that file in other window (when it is the only search result)."
+When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
   (interactive)
-  (zd-avy-file-search t))
+  (require 'ace-window)
+  (save-excursion
+    (avy-goto-char ?§)
+    (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+      (select-window (aw-select "Select window..."))
+      (zd-search-filename ID))))
 
 (defun zd-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
@@ -418,7 +423,7 @@ Any inserted ID is also stored in `zd-graph--links'."
 
 (defun zd-graph-insert-title (deftFile)
   "Inserts the DEFTFILE title definition in a one line dot graph format."
-  (let ((zdTitle (zd-lift-file-title deftFile))
+  (let ((zdTitle (replace-regexp-in-string "\"" "" (zd-lift-file-title deftFile)))
         (zdId    (zd-lift-id deftFile)))
     (insert "  \"" zdId "\""
             " [label = \"" zdTitle " (§" zdId ")\"")
