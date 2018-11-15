@@ -1114,13 +1114,15 @@ The following function should achieve that.
 #+BEGIN_SRC emacs-lisp
 (defun zd-graph-insert-title (deftFile)
   "Inserts the DEFTFILE title definition in a one line dot graph format."
-  (let ((zdTitle (zd-lift-file-title deftFile))
+  (let ((zdTitle (replace-regexp-in-string "\"" "" (zd-lift-file-title deftFile)))
         (zdId    (zd-lift-id deftFile)))
     (insert "  \"" zdId "\""
             " [label = \"" zdTitle " (§" zdId ")\"")
     (insert "]" "\n"))
   (zd-graph-store-link deftFile))
 #+END_SRC
+
+The title is taken from the file string and any additional quotes removed.
 
 **** =zd-graph-store-link= stores provided notes
 
