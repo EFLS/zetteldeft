@@ -29,9 +29,9 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *15 Nov*: open link in other window with =zd-avy-file-search-ace-window=.
  - *13 Nov*: functions to create =graphviz= added.
  - *4 Nov*: =zd-all-tags= and =zd-tag-buffer= find all tags
- - *24 Oct*: =zd-avy-file-search-other-window= follows an ID link and opens file in other window
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
@@ -536,14 +536,20 @@ Open that file (when it is the only search result, and in another window if OTHE
     (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 #+END_SRC
 
-For easier access, let's define a function to open in the other window.
+Let's also define a function to open a file in another window.
+Selection of the window occurs via =ace-window=.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-avy-file-search-other-window ()
+(defun zd-avy-file-search-ace-window ()
   "Call on avy to jump to link ids indicated with § and use it to search for filenames.
-Open that file in other window (when it is the only search result)."
+When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
   (interactive)
-  (zd-avy-file-search t))
+  (require 'ace-window)
+  (save-excursion
+    (avy-goto-char ?§)
+    (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+      (select-window (aw-select "Select window..."))
+      (zd-search-filename ID))))
 #+END_SRC
 
 *** Utility functions
@@ -1219,7 +1225,7 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "ds" '(zd-search-at-point :wk "search at point")
   "dc" '(zd-search-current-id :wk "search current id")
   "df" '(zd-avy-file-search :wk "avy file search")
-  "dF" '(zd-avy-file-search-other-window :wk "avy file other window")
+  "dF" '(zd-avy-file-search-ace-window :wk "avy file other window")
   "dl" '(zd-avy-link-search :wk "avy link search")
   "dt" '(zd-avy-tag-search :wk "avy tag search")
   "dT" '(zd-tag-buffer :wk "tag list")
@@ -1251,7 +1257,7 @@ These can be called from anywhere behind =SPC d=.
  ; Jump & search with avy 
  ;  search link as filename
     (spacemacs/set-leader-keys "df" 'zd-avy-file-search)
-    (spacemacs/set-leader-keys "dF" 'zd-avy-file-search-other-window)
+    (spacemacs/set-leader-keys "dF" 'zd-avy-file-search-ace-window)
  ;  search link as contents
     (spacemacs/set-leader-keys "dl" 'zd-avy-link-search)
  ;  search tag as contents
