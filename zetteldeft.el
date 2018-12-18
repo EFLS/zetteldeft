@@ -276,6 +276,15 @@ Don't forget to add `\\n' at the beginning to start a new line."
     (kill-new ID)
     (message "%s" ID)))
 
+(defun zd-id-to-full-title (zdID)
+  "Return full title from given zetteldeft ID.
+Throws an error when either none or multiple files with said ID are found."
+  (let ((deft-filter-only-filenames t))
+    (deft-filter zdID t))
+  (unless (eq (length deft-current-files) 1)
+    (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s." zdID))
+  (file-name-base (car deft-current-files)))
+
 (defun zd-all-tags ()
   "Return a list of all the tags found in zetteldeft files."
   (setq zd-tag-list (list))
@@ -318,6 +327,25 @@ When searching for a tag, include # manually in the search."
   (interactive (list (read-string "search string: ")))
   (dolist (zdFile (zd-get-file-list zdSrch))
     (zd-list-entry-file-link zdFile)))
+
+(defun zd-insert-list-links-new (zdSrch)
+  "Inserst a list of links to all deft files with a search string ZDSRCH, yet in contrast to `zd-insert-list-links' only includes links that are not yet present in the current file.
+Can only be called from a file in the zetteldeft directory."
+  (interactive (list (read-string "search string: ")))
+  (zd--check)
+  (let (zdCurrentIDs zdFoundIDs zdFinalIDs)
+    (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
+    ; filter IDs from search results
+    (dolist (zdFile (zd-get-file-list zdSrch))
+      (push (zd-lift-id zdFile) zdFoundIDs))
+    ; create new list with unique ids
+    (dolist (zdID zdFoundIDs)
+      (unless (member zdID zdCurrentIDs)
+        (push zdID zdFinalIDs)))
+    ; finally find full title for each ID and insert it
+    (dolist (zdID zdFinalIDs)
+      (setq zdID (zd-id-to-full-title zdID))
+      (insert " - " (concat "§" zdID "\n")))))
 
 (defun zd-list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
