@@ -709,6 +709,23 @@ Steps:
     (message "%s" ID)))
 #+END_SRC
 
+**** =zd-id-to-full-title= returns title from ID
+
+Convert a zetteldeft ID into its full title.
+
+The ID should lead to only one title, obviously, so an error is thrown when this is not the case.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-id-to-full-title (zdID)
+  "Return full title from given zetteldeft ID.
+Throws an error when either none or multiple files with said ID are found."
+  (let ((deft-filter-only-filenames t))
+    (deft-filter zdID t))
+  (unless (eq (length deft-current-files) 1)
+    (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s." zdID))
+  (file-name-base (car deft-current-files)))
+#+END_SRC
+
 ** Listing all tags
 
 =zd-all-tags= puts all tags in =zd-tag-list= and returns them.
