@@ -29,6 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *18 Dec*: insert not yet included links with =zd-insert-list-links-new=.
  - *15 Nov*: open link in other window with =zd-avy-file-search-ace-window=.
  - *13 Nov*: functions to create =graphviz= added.
  - *4 Nov*: =zd-all-tags= and =zd-tag-buffer= find all tags
