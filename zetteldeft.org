@@ -1050,6 +1050,11 @@ A brief introduction:
  - =zd-org-graph-search= creates a graph with all the notes containing a provided string.
  - =zd-org-graph-note= creates a graph that starts at a note, connects all notes linked to it, and all notes linked to those. In other words, it looks two levels deep.
 
+
+The resulting graph looks something like this:
+
+[[./img/zd-graph.jpg]]
+
 It's worth noting, again, that this is very provisional.
  
 *** Graph functions
