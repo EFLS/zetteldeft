@@ -29,7 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *18 Dec*: insert not yet included links with =zd-insert-list-links-new=.
+ - *18 Dec*: insert not yet included links with =zd-insert-list-links-missing=.
  - *15 Nov*: open link in other window with =zd-avy-file-search-ace-window=.
  - *13 Nov*: functions to create =graphviz= added.
  - *4 Nov*: =zd-all-tags= and =zd-tag-buffer= find all tags
@@ -850,7 +850,7 @@ When searching for a tag, include # manually in the search."
     (zd-list-entry-file-link zdFile)))
 #+END_SRC
 
-**** =zd-insert-list-links-new= generates list with new links
+**** =zd-insert-list-links-missing= generates list with new links
 
 Does the same as the above function, but only inserts IDs that aren't already present in the current file.
 
@@ -862,7 +862,7 @@ Another fundamental *shortcoming* of this piece of code, is that after it is exe
 The most immediate solution is for the user to be wary of this, and deleting said links and refreshing the deft cache with =deft-refresh= before calling this function.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-insert-list-links-new (zdSrch)
+(defun zd-insert-list-links-missing (zdSrch)
   "Inserst a list of links to all deft files with a search string ZDSRCH, yet in contrast to `zd-insert-list-links' only includes links that are not yet present in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
