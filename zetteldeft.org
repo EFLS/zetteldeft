@@ -856,7 +856,10 @@ Does the same as the above function, but only inserts IDs that aren't already pr
 
 This is especially handy when you hope to check wheter all notes with a certain tag are linked to, or simply to list unlinked notes.
 
-One potential *issue*, to be fixed in the future: the file from where the function is called, will also be in said list...
+One potential *issue*, to be fixed in the future: the file from where the function is called, will also be in the list...
+
+Another fundamental *shortcoming* of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run /no/ links will be included...
+The most immediate solution is for the user to be wary of this, and deleting said links and refreshing the deft cache with =deft-refresh= before calling this function.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links-new (zdSrch)
