@@ -833,11 +833,13 @@ There are three of them, each either taking a search term as argument or prompti
 More documentation can be found below.
     
 *** List of links
-**** =zd-insert-list-links= generates list with tagged files
+**** FIX =zd-insert-list-links= generates list with tagged files
 
 Creates and inserts a list with links to all files with selected search term.
 
 The code gets a list of files that contain the search string, runs through said list and inserts a link for each entry.
+
+To *fix*: when called from within a zetteldeft note, exclude the note itself from the generated list.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links (zdSrch)
