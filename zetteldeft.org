@@ -1094,10 +1094,14 @@ Insert an org source code block for a graphviz presentation of a note and its co
 
 When links are added, they are also stored in =zd-graph--links= which is later used to insert titles.
 
+When called interactively, select a file from the completion interface.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
-  (interactive)
+  (interactive (list
+    (completing-read "Note to start graph from: "
+      (deft-find-all-files))))
   (setq zd-graph--links (list))
   (insert zd-graph-syntax-begin)
   (insert "\n  // base note and links \n")
