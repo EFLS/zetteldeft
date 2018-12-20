@@ -571,13 +571,16 @@ The following function launches deft, clears the filter and enters =evil-insert-
 
 A quick but necessary check to see whether the provided file is part of the deft directory.
 
-To achieve this, take the directory of the current buffer file name and expand it to its absolute path.
+To achieve this, first check whether the buffer is visiting a file.
+When that is the case, take the directory of the current buffer file name and expand it to its absolute path.
 Then check whether the =deft-directory= is part of that absolute path.
 Signal a user error if it is not.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd--check ()
   "Checks if the currently visited file is in `zetteldeft' territory: whether it has `deft-directory' somewhere in its path."
+  (unless (buffer-file-name)
+    (user-error "Buffer not visiting a file."))
   (unless (string-match-p
             (regexp-quote deft-directory)
             (file-name-directory (buffer-file-name)))
