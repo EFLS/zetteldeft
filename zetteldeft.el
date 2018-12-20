@@ -201,6 +201,8 @@ When there is only one search result, as there should be, open that file in a wi
 
 (defun zd--check ()
   "Checks if the currently visited file is in `zetteldeft' territory: whether it has `deft-directory' somewhere in its path."
+  (unless (buffer-file-name)
+    (user-error "Buffer not visiting a file."))
   (unless (string-match-p
             (regexp-quote deft-directory)
             (file-name-directory (buffer-file-name)))
@@ -328,7 +330,7 @@ When searching for a tag, include # manually in the search."
   (dolist (zdFile (zd-get-file-list zdSrch))
     (zd-list-entry-file-link zdFile)))
 
-(defun zd-insert-list-links-new (zdSrch)
+(defun zd-insert-list-links-missing (zdSrch)
   "Inserst a list of links to all deft files with a search string ZDSRCH, yet in contrast to `zd-insert-list-links' only includes links that are not yet present in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))

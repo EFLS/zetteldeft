@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-12-18 Tue 23:02 -->
+<!-- 2018-12-20 Thu 19:48 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -244,7 +244,7 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
-<li><b>18 Dec</b>: insert not yet included links with <code>zd-insert-list-links-new</code>.</li>
+<li><b>18 Dec</b>: insert not yet included links with <code>zd-insert-list-links-missing</code>.</li>
 <li><b>15 Nov</b>: open link in other window with <code>zd-avy-file-search-ace-window</code>.</li>
 <li><b>13 Nov</b>: functions to create <code>graphviz</code> added.</li>
 <li><b>4 Nov</b>: <code>zd-all-tags</code> and <code>zd-tag-buffer</code> find all tags</li>
@@ -258,52 +258,52 @@ Latest additions:
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga2f5d47">1. What?</a>
+<li><a href="#org8ff1bfb">1. What?</a>
 <ul>
-<li><a href="#orgb7f8360">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
-<li><a href="#org5f5f008">1.2. How to use this source</a></li>
-<li><a href="#org6400c53">1.3. Basic concepts</a></li>
-<li><a href="#orgd9d350a">1.4. Basic actions</a></li>
-<li><a href="#org3ea9726">1.5. An overview</a></li>
+<li><a href="#orgb9bd1b9">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
+<li><a href="#org6e4a1f3">1.2. How to use this source</a></li>
+<li><a href="#org74667a5">1.3. Basic concepts</a></li>
+<li><a href="#orgc741cf8">1.4. Basic actions</a></li>
+<li><a href="#org14c28b8">1.5. An overview</a></li>
 </ul>
 </li>
-<li><a href="#orge1e293b">2. The <code>zetteldeft</code> package</a>
+<li><a href="#orgc0e5a5a">2. The <code>zetteldeft</code> package</a>
 <ul>
-<li><a href="#orgee446be">2.1. Package preparation</a></li>
-<li><a href="#orgfc8257f">2.2. Basic <code>zetteldeft</code> functions</a></li>
-<li><a href="#org919c58f">2.3. Listing all tags</a></li>
-<li><a href="#org0f6c6c4">2.4. Gathering notes</a></li>
-<li><a href="#org826f35d">2.5. Creating visuals</a></li>
-<li><a href="#org60d26ea">2.6. Aesthetics</a></li>
-<li><a href="#orgdf86822">2.7. End of package</a></li>
+<li><a href="#org0b98414">2.1. Package preparation</a></li>
+<li><a href="#org2972dda">2.2. Basic <code>zetteldeft</code> functions</a></li>
+<li><a href="#org6e45974">2.3. Listing all tags</a></li>
+<li><a href="#org5b70f76">2.4. Gathering notes</a></li>
+<li><a href="#org0cb51a4">2.5. Creating visuals</a></li>
+<li><a href="#orgd6cf7ba">2.6. Aesthetics</a></li>
+<li><a href="#orgc149bbb">2.7. End of package</a></li>
 </ul>
 </li>
-<li><a href="#org23e6343">3. Suggested setup</a>
+<li><a href="#org1b51bd4">3. Suggested setup</a>
 <ul>
-<li><a href="#orgd2df9cf">3.1. Suggested <code>zeteldeft</code> keybindings</a></li>
-<li><a href="#org4c84cd5">3.2. Suggested <code>deft</code> setup</a></li>
+<li><a href="#orgae9ad23">3.1. Suggested <code>zeteldeft</code> keybindings</a></li>
+<li><a href="#org4c2ba8f">3.2. Suggested <code>deft</code> setup</a></li>
 </ul>
 </li>
-<li><a href="#orgca5f489">4. Brainstorm</a>
+<li><a href="#org9214a75">4. Brainstorm</a>
 <ul>
-<li><a href="#orgcf917e6">4.1. Saved searches</a></li>
-<li><a href="#orgd09cda6">4.2. Generate list of tags</a></li>
-<li><a href="#orgac3db68">4.3. HTML export</a></li>
-<li><a href="#org7d082da">4.4. Markdown export</a></li>
-<li><a href="#org5f50f24">4.5. Templates</a></li>
-<li><a href="#org4e76f5d">4.6. Minor mode</a></li>
+<li><a href="#org94fde75">4.1. Saved searches</a></li>
+<li><a href="#org91f51a6">4.2. Generate list of tags</a></li>
+<li><a href="#org9cac542">4.3. HTML export</a></li>
+<li><a href="#org6fb0b02">4.4. Markdown export</a></li>
+<li><a href="#orgf5a755a">4.5. Templates</a></li>
+<li><a href="#org4976223">4.6. Minor mode</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-orga2f5d47" class="outline-2">
-<h2 id="orga2f5d47"><span class="section-number-2">1</span> What?</h2>
+<div id="outline-container-org8ff1bfb" class="outline-2">
+<h2 id="org8ff1bfb"><span class="section-number-2">1</span> What?</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgb7f8360" class="outline-3">
-<h3 id="orgb7f8360"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
+<div id="outline-container-orgb9bd1b9" class="outline-3">
+<h3 id="orgb9bd1b9"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent <code>deft</code> package in <code>emacs</code>.<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
@@ -329,8 +329,8 @@ Anyway, here we go.
 </div>
 </div>
 
-<div id="outline-container-org5f5f008" class="outline-3">
-<h3 id="org5f5f008"><span class="section-number-3">1.2</span> How to use this source</h3>
+<div id="outline-container-org6e4a1f3" class="outline-3">
+<h3 id="org6e4a1f3"><span class="section-number-3">1.2</span> How to use this source</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 This package requires:
@@ -376,8 +376,8 @@ Well, not quite. First you must read on about the basics of <code>zetteldeft</co
 </div>
 </div>
 
-<div id="outline-container-org6400c53" class="outline-3">
-<h3 id="org6400c53"><span class="section-number-3">1.3</span> Basic concepts</h3>
+<div id="outline-container-org74667a5" class="outline-3">
+<h3 id="org74667a5"><span class="section-number-3">1.3</span> Basic concepts</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 <b>Notes</b> reside in the <code>deft-directory</code>.
@@ -407,8 +407,8 @@ Tags make it easy to retrieve notes. They can appear anywhere in the note, but I
 </div>
 </div>
 
-<div id="outline-container-orgd9d350a" class="outline-3">
-<h3 id="orgd9d350a"><span class="section-number-3">1.4</span> Basic actions</h3>
+<div id="outline-container-orgc741cf8" class="outline-3">
+<h3 id="orgc741cf8"><span class="section-number-3">1.4</span> Basic actions</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Create a note with <code>zd-new-file</code> and provide a name.
@@ -431,8 +431,8 @@ To open the note behind a link, use <code>zd-avy-file-search</code>.
 </div>
 </div>
 
-<div id="outline-container-org3ea9726" class="outline-3">
-<h3 id="org3ea9726"><span class="section-number-3">1.5</span> An overview</h3>
+<div id="outline-container-org14c28b8" class="outline-3">
+<h3 id="org14c28b8"><span class="section-number-3">1.5</span> An overview</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 While there are more functions, these should be enough to get you started.
@@ -515,12 +515,12 @@ More details documented below.
 </div>
 </div>
 
-<div id="outline-container-orge1e293b" class="outline-2">
-<h2 id="orge1e293b"><span class="section-number-2">2</span> The <code>zetteldeft</code> package</h2>
+<div id="outline-container-orgc0e5a5a" class="outline-2">
+<h2 id="orgc0e5a5a"><span class="section-number-2">2</span> The <code>zetteldeft</code> package</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgee446be" class="outline-3">
-<h3 id="orgee446be"><span class="section-number-3">2.1</span> Package preparation</h3>
+<div id="outline-container-org0b98414" class="outline-3">
+<h3 id="org0b98414"><span class="section-number-3">2.1</span> Package preparation</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The required preamble and some other initial settings.
@@ -528,8 +528,8 @@ To know how this package works, please skip right past this to the next section.
 </p>
 </div>
 
-<div id="outline-container-org3cae63d" class="outline-4">
-<h4 id="org3cae63d"><span class="section-number-4">2.1.1</span> Preamble</h4>
+<div id="outline-container-org76dcd1f" class="outline-4">
+<h4 id="org76dcd1f"><span class="section-number-4">2.1.1</span> Preamble</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 Some declaration.
@@ -567,8 +567,8 @@ Some declaration.
 </div>
 </div>
 
-<div id="outline-container-org3ea29d5" class="outline-4">
-<h4 id="org3ea29d5"><span class="section-number-4">2.1.2</span> Requirements</h4>
+<div id="outline-container-org6828edf" class="outline-4">
+<h4 id="org6828edf"><span class="section-number-4">2.1.2</span> Requirements</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 <code>deft</code> is required, obviously, and <code>avy</code> is needed for some utility functions.
@@ -585,8 +585,8 @@ Some declaration.
 </div>
 </div>
 
-<div id="outline-container-org0abbe5c" class="outline-4">
-<h4 id="org0abbe5c"><span class="section-number-4">2.1.3</span> Customization</h4>
+<div id="outline-container-org7d6dc1c" class="outline-4">
+<h4 id="org7d6dc1c"><span class="section-number-4">2.1.3</span> Customization</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 For easy but minor customization options.
@@ -601,73 +601,73 @@ For easy but minor customization options.
 </div>
 </div>
 
-<div id="outline-container-orgfc8257f" class="outline-3">
-<h3 id="orgfc8257f"><span class="section-number-3">2.2</span> Basic <code>zetteldeft</code> functions</h3>
+<div id="outline-container-org2972dda" class="outline-3">
+<h3 id="org2972dda"><span class="section-number-3">2.2</span> Basic <code>zetteldeft</code> functions</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0f91812">2.2.1. Search functions</a>
+<li><a href="#orgf450463">2.2.1. Search functions</a>
 <ul>
-<li><a href="#org0a757f1">2.2.1.1. <code>zd-get-thing-at-point</code> returns string</a></li>
-<li><a href="#orgd37b290">2.2.1.2. <code>zd-search-at-point</code> thing at point</a></li>
-<li><a href="#org6246855">2.2.1.3. <code>zd-search-global</code> for string</a></li>
-<li><a href="#org9512343">2.2.1.4. <code>zd-search-filename</code> for string</a></li>
-<li><a href="#orgb9ed098">2.2.1.5. <code>zd-search-current-id</code> searches current id</a></li>
-<li><a href="#org7a9a734">2.2.1.6. <code>zd-get-file-list</code> returns file list with search term</a></li>
+<li><a href="#orgad0cf81">2.2.1.1. <code>zd-get-thing-at-point</code> returns string</a></li>
+<li><a href="#orgc4d7f58">2.2.1.2. <code>zd-search-at-point</code> thing at point</a></li>
+<li><a href="#org16dc472">2.2.1.3. <code>zd-search-global</code> for string</a></li>
+<li><a href="#orgcd95014">2.2.1.4. <code>zd-search-filename</code> for string</a></li>
+<li><a href="#org5a296ba">2.2.1.5. <code>zd-search-current-id</code> searches current id</a></li>
+<li><a href="#org7b74e06">2.2.1.6. <code>zd-get-file-list</code> returns file list with search term</a></li>
 </ul>
 </li>
-<li><a href="#org8f51f5d">2.2.2. IDs</a>
+<li><a href="#org8abe102">2.2.2. IDs</a>
 <ul>
-<li><a href="#org749c6bb">2.2.2.1. <code>zd-id-format</code> for generating ID strings</a></li>
-<li><a href="#org6d6dbcc">2.2.2.2. <code>zd-id-regex</code> for finding IDs</a></li>
-<li><a href="#org8291770">2.2.2.3. <code>zd-lift-id</code> filters the ID from a string</a></li>
+<li><a href="#orgc21eb71">2.2.2.1. <code>zd-id-format</code> for generating ID strings</a></li>
+<li><a href="#orgfb8e522">2.2.2.2. <code>zd-id-regex</code> for finding IDs</a></li>
+<li><a href="#orge2e4c58">2.2.2.3. <code>zd-lift-id</code> filters the ID from a string</a></li>
 </ul>
 </li>
-<li><a href="#orgc6270f2">2.2.3. Finding &amp; linking files from minibuffer</a>
+<li><a href="#orgd553708">2.2.3. Finding &amp; linking files from minibuffer</a>
 <ul>
-<li><a href="#orgb865f82">2.2.3.1. <code>zd-find-file</code> opens file from minibuffer</a></li>
-<li><a href="#org0b685bc">2.2.3.2. <code>zd-find-file-id-insert</code> inserts file id</a></li>
-<li><a href="#org88f2abe">2.2.3.3. <code>zd-find-file-full-title-insert</code> inserts id and title</a></li>
+<li><a href="#org82db060">2.2.3.1. <code>zd-find-file</code> opens file from minibuffer</a></li>
+<li><a href="#org2bcbb5a">2.2.3.2. <code>zd-find-file-id-insert</code> inserts file id</a></li>
+<li><a href="#org6089392">2.2.3.3. <code>zd-find-file-full-title-insert</code> inserts id and title</a></li>
 </ul>
 </li>
-<li><a href="#orga1a529a">2.2.4. New file creation</a>
+<li><a href="#orga8ef8a8">2.2.4. New file creation</a>
 <ul>
-<li><a href="#orgd47cd6d">2.2.4.1. <code>zd-new-file</code> creates new file</a></li>
-<li><a href="#org5ba7d11">2.2.4.2. <code>zd-new-file-and-link</code> inserts generated id</a></li>
+<li><a href="#org3010cca">2.2.4.1. <code>zd-new-file</code> creates new file</a></li>
+<li><a href="#org1cc2eed">2.2.4.2. <code>zd-new-file-and-link</code> inserts generated id</a></li>
 </ul>
 </li>
-<li><a href="#org7ca302e">2.2.5. Moving around with <code>avy</code></a>
+<li><a href="#org631fb52">2.2.5. Moving around with <code>avy</code></a>
 <ul>
-<li><a href="#org47c5be2">2.2.5.1. <code>zd-avy-tag-search</code></a></li>
-<li><a href="#orgf06d623">2.2.5.2. <code>zd-avy-link-search</code></a></li>
-<li><a href="#orgecf16dd">2.2.5.3. <code>zd-avy-file-search</code></a></li>
+<li><a href="#org0eef6aa">2.2.5.1. <code>zd-avy-tag-search</code></a></li>
+<li><a href="#org62deed5">2.2.5.2. <code>zd-avy-link-search</code></a></li>
+<li><a href="#org759c6e1">2.2.5.3. <code>zd-avy-file-search</code></a></li>
 </ul>
 </li>
-<li><a href="#orga2052cf">2.2.6. Utility functions</a>
+<li><a href="#org2f2d5fb">2.2.6. Utility functions</a>
 <ul>
-<li><a href="#org7c7805f">2.2.6.1. Deft new search</a></li>
-<li><a href="#orgb04363b">2.2.6.2. <code>zd--check</code> checks if file is part of zetteldeft</a></li>
-<li><a href="#org30e30b6">2.2.6.3. <code>zd-file-rename</code> renames visited file</a></li>
-<li><a href="#org43a4ffa">2.2.6.4. <code>zd-lift-file-title</code> returns file title from path</a></li>
-<li><a href="#org405ddcc">2.2.6.5. <code>zd-insert-org-title</code> inserts file title in org-mode</a></li>
-<li><a href="#orgaac6f42">2.2.6.6. <code>zd-count-words</code> counts total number of words</a></li>
-<li><a href="#org03c2f5d">2.2.6.7. <code>zd-copy-id-current-file</code> copies id in filename</a></li>
-<li><a href="#org49116b0">2.2.6.8. <code>zd-id-to-full-title</code> returns title from ID</a></li>
+<li><a href="#orged8ed29">2.2.6.1. Deft new search</a></li>
+<li><a href="#org5363a66">2.2.6.2. <code>zd--check</code> checks if file is part of zetteldeft</a></li>
+<li><a href="#orgaaf4ee3">2.2.6.3. <code>zd-file-rename</code> renames visited file</a></li>
+<li><a href="#org7fcec70">2.2.6.4. <code>zd-lift-file-title</code> returns file title from path</a></li>
+<li><a href="#orgbe629ad">2.2.6.5. <code>zd-insert-org-title</code> inserts file title in org-mode</a></li>
+<li><a href="#orgbd22e1c">2.2.6.6. <code>zd-count-words</code> counts total number of words</a></li>
+<li><a href="#org8a5ab10">2.2.6.7. <code>zd-copy-id-current-file</code> copies id in filename</a></li>
+<li><a href="#org95d971e">2.2.6.8. <code>zd-id-to-full-title</code> returns title from ID</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0f91812" class="outline-4">
-<h4 id="org0f91812"><span class="section-number-4">2.2.1</span> Search functions</h4>
+<div id="outline-container-orgf450463" class="outline-4">
+<h4 id="orgf450463"><span class="section-number-4">2.2.1</span> Search functions</h4>
 <div class="outline-text-4" id="text-2-2-1">
 </div>
-<div id="outline-container-org0a757f1" class="outline-5">
-<h5 id="org0a757f1"><span class="section-number-5">2.2.1.1</span> <code>zd-get-thing-at-point</code> returns string</h5>
+<div id="outline-container-orgad0cf81" class="outline-5">
+<h5 id="orgad0cf81"><span class="section-number-5">2.2.1.1</span> <code>zd-get-thing-at-point</code> returns string</h5>
 <div class="outline-text-5" id="text-2-2-1-1">
 <p>
 Returns the thing at point as string.
@@ -703,8 +703,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-orgd37b290" class="outline-5">
-<h5 id="orgd37b290"><span class="section-number-5">2.2.1.2</span> <code>zd-search-at-point</code> thing at point</h5>
+<div id="outline-container-orgc4d7f58" class="outline-5">
+<h5 id="orgc4d7f58"><span class="section-number-5">2.2.1.2</span> <code>zd-search-at-point</code> thing at point</h5>
 <div class="outline-text-5" id="text-2-2-1-2">
 <p>
 Search the thing at point.
@@ -729,8 +729,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-org6246855" class="outline-5">
-<h5 id="org6246855"><span class="section-number-5">2.2.1.3</span> <code>zd-search-global</code> for string</h5>
+<div id="outline-container-org16dc472" class="outline-5">
+<h5 id="org16dc472"><span class="section-number-5">2.2.1.3</span> <code>zd-search-global</code> for string</h5>
 <div class="outline-text-5" id="text-2-2-1-3">
 <p>
 Search with deft for given string.
@@ -760,8 +760,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-org9512343" class="outline-5">
-<h5 id="org9512343"><span class="section-number-5">2.2.1.4</span> <code>zd-search-filename</code> for string</h5>
+<div id="outline-container-orgcd95014" class="outline-5">
+<h5 id="orgcd95014"><span class="section-number-5">2.2.1.4</span> <code>zd-search-filename</code> for string</h5>
 <div class="outline-text-5" id="text-2-2-1-4">
 <p>
 Deft search on filename.
@@ -789,8 +789,8 @@ Incremental search is turned off, and the filter is set to filenames only.
 </div>
 </div>
 
-<div id="outline-container-orgb9ed098" class="outline-5">
-<h5 id="orgb9ed098"><span class="section-number-5">2.2.1.5</span> <code>zd-search-current-id</code> searches current id</h5>
+<div id="outline-container-org5a296ba" class="outline-5">
+<h5 id="org5a296ba"><span class="section-number-5">2.2.1.5</span> <code>zd-search-current-id</code> searches current id</h5>
 <div class="outline-text-5" id="text-2-2-1-5">
 <p>
 Deft search on the id of the current file.
@@ -825,8 +825,8 @@ Steps:
 </div>
 </div>
 
-<div id="outline-container-org7a9a734" class="outline-5">
-<h5 id="org7a9a734"><span class="section-number-5">2.2.1.6</span> <code>zd-get-file-list</code> returns file list with search term</h5>
+<div id="outline-container-org7b74e06" class="outline-5">
+<h5 id="org7b74e06"><span class="section-number-5">2.2.1.6</span> <code>zd-get-file-list</code> returns file list with search term</h5>
 <div class="outline-text-5" id="text-2-2-1-6">
 <p>
 Get a list of the files with given search string.
@@ -852,12 +852,12 @@ The code searches for the given string and returns <code>deft-current-files</cod
 </div>
 </div>
 
-<div id="outline-container-org8f51f5d" class="outline-4">
-<h4 id="org8f51f5d"><span class="section-number-4">2.2.2</span> IDs</h4>
+<div id="outline-container-org8abe102" class="outline-4">
+<h4 id="org8abe102"><span class="section-number-4">2.2.2</span> IDs</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
-<div id="outline-container-org749c6bb" class="outline-5">
-<h5 id="org749c6bb"><span class="section-number-5">2.2.2.1</span> <code>zd-id-format</code> for generating ID strings</h5>
+<div id="outline-container-orgc21eb71" class="outline-5">
+<h5 id="orgc21eb71"><span class="section-number-5">2.2.2.1</span> <code>zd-id-format</code> for generating ID strings</h5>
 <div class="outline-text-5" id="text-2-2-2-1">
 <p>
 String format when generating ids.
@@ -895,8 +895,8 @@ Here is the function to generate an ID string in said format.
 </div>
 </div>
 
-<div id="outline-container-org6d6dbcc" class="outline-5">
-<h5 id="org6d6dbcc"><span class="section-number-5">2.2.2.2</span> <code>zd-id-regex</code> for finding IDs</h5>
+<div id="outline-container-orgfb8e522" class="outline-5">
+<h5 id="orgfb8e522"><span class="section-number-5">2.2.2.2</span> <code>zd-id-regex</code> for finding IDs</h5>
 <div class="outline-text-5" id="text-2-2-2-2">
 <p>
 The regular expression used to search for zetteldeft IDs.
@@ -920,8 +920,8 @@ This dictates that a zetteldeft ID should consist of:
 </div>
 </div>
 
-<div id="outline-container-org8291770" class="outline-5">
-<h5 id="org8291770"><span class="section-number-5">2.2.2.3</span> <code>zd-lift-id</code> filters the ID from a string</h5>
+<div id="outline-container-orge2e4c58" class="outline-5">
+<h5 id="orge2e4c58"><span class="section-number-5">2.2.2.3</span> <code>zd-lift-id</code> filters the ID from a string</h5>
 <div class="outline-text-5" id="text-2-2-2-3">
 <p>
 Return the zetteldeft ID from any string.
@@ -962,12 +962,12 @@ Here is a little test.
 </div>
 </div>
 
-<div id="outline-container-orgc6270f2" class="outline-4">
-<h4 id="orgc6270f2"><span class="section-number-4">2.2.3</span> Finding &amp; linking files from minibuffer</h4>
+<div id="outline-container-orgd553708" class="outline-4">
+<h4 id="orgd553708"><span class="section-number-4">2.2.3</span> Finding &amp; linking files from minibuffer</h4>
 <div class="outline-text-4" id="text-2-2-3">
 </div>
-<div id="outline-container-orgb865f82" class="outline-5">
-<h5 id="orgb865f82"><span class="section-number-5">2.2.3.1</span> <code>zd-find-file</code> opens file from minibuffer</h5>
+<div id="outline-container-org82db060" class="outline-5">
+<h5 id="org82db060"><span class="section-number-5">2.2.3.1</span> <code>zd-find-file</code> opens file from minibuffer</h5>
 <div class="outline-text-5" id="text-2-2-3-1">
 <p>
 Select file from the deft folder from the minibuffer.
@@ -989,8 +989,8 @@ Based on <code>deft-find-file</code>.
 </div>
 </div>
 
-<div id="outline-container-org0b685bc" class="outline-5">
-<h5 id="org0b685bc"><span class="section-number-5">2.2.3.2</span> <code>zd-find-file-id-insert</code> inserts file id</h5>
+<div id="outline-container-org2bcbb5a" class="outline-5">
+<h5 id="org2bcbb5a"><span class="section-number-5">2.2.3.2</span> <code>zd-find-file-id-insert</code> inserts file id</h5>
 <div class="outline-text-5" id="text-2-2-3-2">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code>.
@@ -1012,8 +1012,8 @@ Based on <code>deft-find-file</code>.
 </div>
 </div>
 
-<div id="outline-container-org88f2abe" class="outline-5">
-<h5 id="org88f2abe"><span class="section-number-5">2.2.3.3</span> <code>zd-find-file-full-title-insert</code> inserts id and title</h5>
+<div id="outline-container-org6089392" class="outline-5">
+<h5 id="org6089392"><span class="section-number-5">2.2.3.3</span> <code>zd-find-file-full-title-insert</code> inserts id and title</h5>
 <div class="outline-text-5" id="text-2-2-3-3">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code>.
@@ -1036,12 +1036,12 @@ Based on <code>deft-find-file</code>.
 </div>
 </div>
 
-<div id="outline-container-orga1a529a" class="outline-4">
-<h4 id="orga1a529a"><span class="section-number-4">2.2.4</span> New file creation</h4>
+<div id="outline-container-orga8ef8a8" class="outline-4">
+<h4 id="orga8ef8a8"><span class="section-number-4">2.2.4</span> New file creation</h4>
 <div class="outline-text-4" id="text-2-2-4">
 </div>
-<div id="outline-container-orgd47cd6d" class="outline-5">
-<h5 id="orgd47cd6d"><span class="section-number-5">2.2.4.1</span> <code>zd-new-file</code> creates new file</h5>
+<div id="outline-container-org3010cca" class="outline-5">
+<h5 id="org3010cca"><span class="section-number-5">2.2.4.1</span> <code>zd-new-file</code> creates new file</h5>
 <div class="outline-text-5" id="text-2-2-4-1">
 <p>
 Create new file with filename as <code>zd-id-format</code> and a string.
@@ -1072,8 +1072,8 @@ Note that the file is only actually created upon save.
 </div>
 </div>
 
-<div id="outline-container-org5ba7d11" class="outline-5">
-<h5 id="org5ba7d11"><span class="section-number-5">2.2.4.2</span> <code>zd-new-file-and-link</code> inserts generated id</h5>
+<div id="outline-container-org1cc2eed" class="outline-5">
+<h5 id="org1cc2eed"><span class="section-number-5">2.2.4.2</span> <code>zd-new-file-and-link</code> inserts generated id</h5>
 <div class="outline-text-5" id="text-2-2-4-2">
 <p>
 Generate an id, append a name, and generate a new file based on id and link.
@@ -1096,12 +1096,12 @@ Either provide a name as argument, or enter one in the mini-buffer.
 </div>
 </div>
 
-<div id="outline-container-org7ca302e" class="outline-4">
-<h4 id="org7ca302e"><span class="section-number-4">2.2.5</span> Moving around with <code>avy</code></h4>
+<div id="outline-container-org631fb52" class="outline-4">
+<h4 id="org631fb52"><span class="section-number-4">2.2.5</span> Moving around with <code>avy</code></h4>
 <div class="outline-text-4" id="text-2-2-5">
 </div>
-<div id="outline-container-org47c5be2" class="outline-5">
-<h5 id="org47c5be2"><span class="section-number-5">2.2.5.1</span> <code>zd-avy-tag-search</code></h5>
+<div id="outline-container-org0eef6aa" class="outline-5">
+<h5 id="org0eef6aa"><span class="section-number-5">2.2.5.1</span> <code>zd-avy-tag-search</code></h5>
 <div class="outline-text-5" id="text-2-2-5-1">
 <p>
 Use avy to jump to a tag and search for it.
@@ -1123,8 +1123,8 @@ The search term should include the <code>#</code> as tag identifier, so it&rsquo
 </div>
 </div>
 
-<div id="outline-container-orgf06d623" class="outline-5">
-<h5 id="orgf06d623"><span class="section-number-5">2.2.5.2</span> <code>zd-avy-link-search</code></h5>
+<div id="outline-container-org62deed5" class="outline-5">
+<h5 id="org62deed5"><span class="section-number-5">2.2.5.2</span> <code>zd-avy-link-search</code></h5>
 <div class="outline-text-5" id="text-2-2-5-2">
 <p>
 Use avy to jump to an id and search for it.
@@ -1147,8 +1147,8 @@ Jumps to the <code>§</code> identifier and searches for the thing at point &#x2
 </div>
 </div>
 
-<div id="outline-container-orgecf16dd" class="outline-5">
-<h5 id="orgecf16dd"><span class="section-number-5">2.2.5.3</span> <code>zd-avy-file-search</code></h5>
+<div id="outline-container-org759c6e1" class="outline-5">
+<h5 id="org759c6e1"><span class="section-number-5">2.2.5.3</span> <code>zd-avy-file-search</code></h5>
 <div class="outline-text-5" id="text-2-2-5-3">
 <p>
 Select and follow an ID link to a file.
@@ -1198,12 +1198,12 @@ Selection of the window occurs via <code>ace-window</code>.
 </div>
 </div>
 
-<div id="outline-container-orga2052cf" class="outline-4">
-<h4 id="orga2052cf"><span class="section-number-4">2.2.6</span> Utility functions</h4>
+<div id="outline-container-org2f2d5fb" class="outline-4">
+<h4 id="org2f2d5fb"><span class="section-number-4">2.2.6</span> Utility functions</h4>
 <div class="outline-text-4" id="text-2-2-6">
 </div>
-<div id="outline-container-org7c7805f" class="outline-5">
-<h5 id="org7c7805f"><span class="section-number-5">2.2.6.1</span> Deft new search</h5>
+<div id="outline-container-orged8ed29" class="outline-5">
+<h5 id="orged8ed29"><span class="section-number-5">2.2.6.1</span> Deft new search</h5>
 <div class="outline-text-5" id="text-2-2-6-1">
 <p>
 The following function launches deft, clears the filter and enters <code>evil-insert-state</code> (when evil is used).
@@ -1221,15 +1221,16 @@ The following function launches deft, clears the filter and enters <code>evil-in
 </div>
 </div>
 
-<div id="outline-container-orgb04363b" class="outline-5">
-<h5 id="orgb04363b"><span class="section-number-5">2.2.6.2</span> <code>zd--check</code> checks if file is part of zetteldeft</h5>
+<div id="outline-container-org5363a66" class="outline-5">
+<h5 id="org5363a66"><span class="section-number-5">2.2.6.2</span> <code>zd--check</code> checks if file is part of zetteldeft</h5>
 <div class="outline-text-5" id="text-2-2-6-2">
 <p>
 A quick but necessary check to see whether the provided file is part of the deft directory.
 </p>
 
 <p>
-To achieve this, take the directory of the current buffer file name and expand it to its absolute path.
+To achieve this, first check whether the buffer is visiting a file.
+When that is the case, take the directory of the current buffer file name and expand it to its absolute path.
 Then check whether the <code>deft-directory</code> is part of that absolute path.
 Signal a user error if it is not.
 </p>
@@ -1237,6 +1238,8 @@ Signal a user error if it is not.
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd--check</span> ()
   <span style="color: #83898d;">"Checks if the currently visited file is in `</span><span style="color: #a9a1e1;">zetteldeft</span><span style="color: #83898d;">' territory: whether it has `</span><span style="color: #a9a1e1;">deft-directory</span><span style="color: #83898d;">' somewhere in its path."</span>
+  (<span style="color: #51afef;">unless</span> (buffer-file-name)
+    (<span style="color: #ECBE7B;">user-error</span> <span style="color: #98be65;">"Buffer not visiting a file."</span>))
   (<span style="color: #51afef;">unless</span> (string-match-p
             (regexp-quote deft-directory)
             (file-name-directory (buffer-file-name)))
@@ -1246,8 +1249,8 @@ Signal a user error if it is not.
 </div>
 </div>
 
-<div id="outline-container-org30e30b6" class="outline-5">
-<h5 id="org30e30b6"><span class="section-number-5">2.2.6.3</span> <code>zd-file-rename</code> renames visited file</h5>
+<div id="outline-container-orgaaf4ee3" class="outline-5">
+<h5 id="orgaaf4ee3"><span class="section-number-5">2.2.6.3</span> <code>zd-file-rename</code> renames visited file</h5>
 <div class="outline-text-5" id="text-2-2-6-3">
 <p>
 Rename the current file.
@@ -1303,8 +1306,8 @@ To update the title of the currently visited file, the following function is use
 </div>
 </div>
 
-<div id="outline-container-org43a4ffa" class="outline-5">
-<h5 id="org43a4ffa"><span class="section-number-5">2.2.6.4</span> <code>zd-lift-file-title</code> returns file title from path</h5>
+<div id="outline-container-org7fcec70" class="outline-5">
+<h5 id="org7fcec70"><span class="section-number-5">2.2.6.4</span> <code>zd-lift-file-title</code> returns file title from path</h5>
 <div class="outline-text-5" id="text-2-2-6-4">
 <p>
 Returns only the file title from a file, removing path, extension, and link ID.
@@ -1323,8 +1326,8 @@ Returns only the file title from a file, removing path, extension, and link ID.
 </div>
 </div>
 
-<div id="outline-container-org405ddcc" class="outline-5">
-<h5 id="org405ddcc"><span class="section-number-5">2.2.6.5</span> <code>zd-insert-org-title</code> inserts file title in org-mode</h5>
+<div id="outline-container-orgbe629ad" class="outline-5">
+<h5 id="orgbe629ad"><span class="section-number-5">2.2.6.5</span> <code>zd-insert-org-title</code> inserts file title in org-mode</h5>
 <div class="outline-text-5" id="text-2-2-6-5">
 <p>
 Easily insert the title of the current file in <code>org-mode</code> syntax, i.e. as a <code>#+title:</code> line.
@@ -1368,8 +1371,8 @@ Used when generating a new file.
 </div>
 </div>
 
-<div id="outline-container-orgaac6f42" class="outline-5">
-<h5 id="orgaac6f42"><span class="section-number-5">2.2.6.6</span> <code>zd-count-words</code> counts total number of words</h5>
+<div id="outline-container-orgbd22e1c" class="outline-5">
+<h5 id="orgbd22e1c"><span class="section-number-5">2.2.6.6</span> <code>zd-count-words</code> counts total number of words</h5>
 <div class="outline-text-5" id="text-2-2-6-6">
 <p>
 To count the total number of words, lets loop over all the files and count words in each.
@@ -1391,8 +1394,8 @@ The total is printed in the minibuffer.
 </div>
 </div>
 
-<div id="outline-container-org03c2f5d" class="outline-5">
-<h5 id="org03c2f5d"><span class="section-number-5">2.2.6.7</span> <code>zd-copy-id-current-file</code> copies id in filename</h5>
+<div id="outline-container-org8a5ab10" class="outline-5">
+<h5 id="org8a5ab10"><span class="section-number-5">2.2.6.7</span> <code>zd-copy-id-current-file</code> copies id in filename</h5>
 <div class="outline-text-5" id="text-2-2-6-7">
 <p>
 Add the ID from the current file to the kill ring.
@@ -1420,8 +1423,8 @@ Steps:
 </div>
 </div>
 
-<div id="outline-container-org49116b0" class="outline-5">
-<h5 id="org49116b0"><span class="section-number-5">2.2.6.8</span> <code>zd-id-to-full-title</code> returns title from ID</h5>
+<div id="outline-container-org95d971e" class="outline-5">
+<h5 id="org95d971e"><span class="section-number-5">2.2.6.8</span> <code>zd-id-to-full-title</code> returns title from ID</h5>
 <div class="outline-text-5" id="text-2-2-6-8">
 <p>
 Convert a zetteldeft ID into its full title.
@@ -1447,8 +1450,8 @@ The ID should lead to only one title, obviously, so an error is thrown when this
 </div>
 </div>
 
-<div id="outline-container-org919c58f" class="outline-3">
-<h3 id="org919c58f"><span class="section-number-3">2.3</span> Listing all tags</h3>
+<div id="outline-container-org6e45974" class="outline-3">
+<h3 id="org6e45974"><span class="section-number-3">2.3</span> Listing all tags</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <code>zd-all-tags</code> puts all tags in <code>zd-tag-list</code> and returns them.
@@ -1459,8 +1462,8 @@ Use <code>zd-tag-buffer</code> to create a buffer with all tags.
 </p>
 </div>
 
-<div id="outline-container-org4acfc0e" class="outline-4">
-<h4 id="org4acfc0e"><span class="section-number-4">2.3.1</span> <code>zd-all-tags</code> returns them all</h4>
+<div id="outline-container-orgb680178" class="outline-4">
+<h4 id="orgb680178"><span class="section-number-4">2.3.1</span> <code>zd-all-tags</code> returns them all</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
 Extracting tags with <code>zd-extract-tags</code>.
@@ -1478,8 +1481,8 @@ Extracting tags with <code>zd-extract-tags</code>.
 </div>
 </div>
 
-<div id="outline-container-org30efd3c" class="outline-4">
-<h4 id="org30efd3c"><span class="section-number-4">2.3.2</span> <code>zd-tag-buffer</code> puts all tags in a buffer</h4>
+<div id="outline-container-orgef9093d" class="outline-4">
+<h4 id="orgef9093d"><span class="section-number-4">2.3.2</span> <code>zd-tag-buffer</code> puts all tags in a buffer</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 The name of the buffer we&rsquo;ll be using:
@@ -1513,16 +1516,16 @@ Move to the <code>zd-tag-buffer-name</code>
 </div>
 </div>
 
-<div id="outline-container-orgbab4204" class="outline-4">
-<h4 id="orgbab4204"><span class="section-number-4">2.3.3</span> Tag extracting functions</h4>
+<div id="outline-container-org16645ad" class="outline-4">
+<h4 id="org16645ad"><span class="section-number-4">2.3.3</span> Tag extracting functions</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 Some utility functions to achieve all of this.
 </p>
 </div>
 
-<div id="outline-container-org6b45f9a" class="outline-5">
-<h5 id="org6b45f9a"><span class="section-number-5">2.3.3.1</span> <code>zd-tag-format</code> provides the tag-finding regex</h5>
+<div id="outline-container-org533c1ae" class="outline-5">
+<h5 id="org533c1ae"><span class="section-number-5">2.3.3.1</span> <code>zd-tag-format</code> provides the tag-finding regex</h5>
 <div class="outline-text-5" id="text-2-3-3-1">
 <p>
 The regular expression used to filter out tags.
@@ -1545,8 +1548,8 @@ This should help filter out hashtags used in URLs.
 </div>
 </div>
 
-<div id="outline-container-org73126b9" class="outline-5">
-<h5 id="org73126b9"><span class="section-number-5">2.3.3.2</span> <code>zd-extract-tags</code> from a file</h5>
+<div id="outline-container-org4b97e20" class="outline-5">
+<h5 id="org4b97e20"><span class="section-number-5">2.3.3.2</span> <code>zd-extract-tags</code> from a file</h5>
 <div class="outline-text-5" id="text-2-3-3-2">
 <p>
 Open a given file in a temporary buffer.
@@ -1574,42 +1577,42 @@ Delete the found tag and search again.
 </div>
 </div>
 
-<div id="outline-container-org0f6c6c4" class="outline-3">
-<h3 id="org0f6c6c4"><span class="section-number-3">2.4</span> Gathering notes</h3>
+<div id="outline-container-org5b70f76" class="outline-3">
+<h3 id="org5b70f76"><span class="section-number-3">2.4</span> Gathering notes</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfed132a">2.4.1. On &ldquo;gathering notes&rdquo;</a></li>
-<li><a href="#org405af0b">2.4.2. List of links</a>
+<li><a href="#org81d7887">2.4.1. On &ldquo;gathering notes&rdquo;</a></li>
+<li><a href="#org2fe40a8">2.4.2. List of links</a>
 <ul>
-<li><a href="#org26298ac">2.4.2.1. <code>zd-insert-list-links</code> generates list with tagged files</a></li>
-<li><a href="#orgeb361bd">2.4.2.2. <code>zd-insert-list-links-new</code> generates list with new links</a></li>
-<li><a href="#org4fa551e">2.4.2.3. <code>zd-list-entry-file-link</code> includes a file link as list entry</a></li>
+<li><a href="#org33cd783">2.4.2.1. <code>zd-insert-list-links</code> generates list with tagged files</a></li>
+<li><a href="#org96815e6">2.4.2.2. <code>zd-insert-list-links-missing</code> generates list with new links</a></li>
+<li><a href="#orgf304fbf">2.4.2.3. <code>zd-list-entry-file-link</code> includes a file link as list entry</a></li>
 </ul>
 </li>
-<li><a href="#orgbfebfe6">2.4.3. Compiling a single <code>org</code></a>
+<li><a href="#orgac61df5">2.4.3. Compiling a single <code>org</code></a>
 <ul>
-<li><a href="#org33edc0c">2.4.3.1. Idea and example</a></li>
-<li><a href="#orgf6ac34d">2.4.3.2. <code>zd-org-search-include</code> generates <code>#+INCLUDE</code> syntax</a></li>
-<li><a href="#org25f904a">2.4.3.3. <code>zd-org-search-insert</code> generates titles &amp; file content</a></li>
+<li><a href="#orgd193fa0">2.4.3.1. Idea and example</a></li>
+<li><a href="#orga6750dc">2.4.3.2. <code>zd-org-search-include</code> generates <code>#+INCLUDE</code> syntax</a></li>
+<li><a href="#org53d1ef5">2.4.3.3. <code>zd-org-search-insert</code> generates titles &amp; file content</a></li>
 </ul>
 </li>
-<li><a href="#org4bc65d3">2.4.4. Helper functions</a>
+<li><a href="#org708729a">2.4.4. Helper functions</a>
 <ul>
-<li><a href="#org21b5b69">2.4.4.1. <code>zd-insert-file-contents</code> returns the contents of a file</a></li>
-<li><a href="#orge7bb0a2">2.4.4.2. <code>zd-org-include-file</code> includes a file in <code>org</code> format</a></li>
-<li><a href="#orgf6b430c">2.4.4.3. <code>zd-org-insert-file</code> inserts a files content</a></li>
+<li><a href="#org55e7ee7">2.4.4.1. <code>zd-insert-file-contents</code> returns the contents of a file</a></li>
+<li><a href="#org7cd3e01">2.4.4.2. <code>zd-org-include-file</code> includes a file in <code>org</code> format</a></li>
+<li><a href="#orgf544c41">2.4.4.3. <code>zd-org-insert-file</code> inserts a files content</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfed132a" class="outline-4">
-<h4 id="orgfed132a"><span class="section-number-4">2.4.1</span> On &ldquo;gathering notes&rdquo;</h4>
+<div id="outline-container-org81d7887" class="outline-4">
+<h4 id="org81d7887"><span class="section-number-4">2.4.1</span> On &ldquo;gathering notes&rdquo;</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 Sometimes you want to easily gather all notes with a certain tag or search term.
@@ -1632,12 +1635,12 @@ More documentation can be found below.
 </div>
 </div>
 
-<div id="outline-container-org405af0b" class="outline-4">
-<h4 id="org405af0b"><span class="section-number-4">2.4.2</span> List of links</h4>
+<div id="outline-container-org2fe40a8" class="outline-4">
+<h4 id="org2fe40a8"><span class="section-number-4">2.4.2</span> List of links</h4>
 <div class="outline-text-4" id="text-2-4-2">
 </div>
-<div id="outline-container-org26298ac" class="outline-5">
-<h5 id="org26298ac"><span class="section-number-5">2.4.2.1</span> <code>zd-insert-list-links</code> generates list with tagged files</h5>
+<div id="outline-container-org33cd783" class="outline-5">
+<h5 id="org33cd783"><span class="section-number-5">2.4.2.1</span> <code>zd-insert-list-links</code> generates list with tagged files</h5>
 <div class="outline-text-5" id="text-2-4-2-1">
 <p>
 Creates and inserts a list with links to all files with selected search term.
@@ -1645,6 +1648,10 @@ Creates and inserts a list with links to all files with selected search term.
 
 <p>
 The code gets a list of files that contain the search string, runs through said list and inserts a link for each entry.
+</p>
+
+<p>
+To <b>fix</b>: when called from within a zetteldeft note, exclude the note itself from the generated list.
 </p>
 
 <div class="org-src-container">
@@ -1659,8 +1666,8 @@ The code gets a list of files that contain the search string, runs through said 
 </div>
 </div>
 
-<div id="outline-container-orgeb361bd" class="outline-5">
-<h5 id="orgeb361bd"><span class="section-number-5">2.4.2.2</span> <code>zd-insert-list-links-new</code> generates list with new links</h5>
+<div id="outline-container-org96815e6" class="outline-5">
+<h5 id="org96815e6"><span class="section-number-5">2.4.2.2</span> <code>zd-insert-list-links-missing</code> generates list with new links</h5>
 <div class="outline-text-5" id="text-2-4-2-2">
 <p>
 Does the same as the above function, but only inserts IDs that aren&rsquo;t already present in the current file.
@@ -1671,11 +1678,16 @@ This is especially handy when you hope to check wheter all notes with a certain 
 </p>
 
 <p>
-One potential <b>issue</b>, to be fixed in the future: the file from where the function is called, will also be in said list&#x2026;
+One potential <b>issue</b>, to be fixed in the future: the file from where the function is called, will also be in the list&#x2026;
+</p>
+
+<p>
+Another fundamental <b>shortcoming</b> of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run <i>no</i> links will be included&#x2026;
+The most immediate solution is for the user to be wary of this, and deleting said links and refreshing the deft cache with <code>deft-refresh</code> before calling this function.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-insert-list-links-new</span> (zdSrch)
+<pre class="src src-emacs-lisp">(<span style="color: #51afef;">defun</span> <span style="color: #c678dd;">zd-insert-list-links-missing</span> (zdSrch)
   <span style="color: #83898d;">"Inserst a list of links to all deft files with a search string ZDSRCH, yet in contrast to `</span><span style="color: #a9a1e1;">zd-insert-list-links</span><span style="color: #83898d;">' only includes links that are not yet present in the current file.</span>
 <span style="color: #83898d;">Can only be called from a file in the zetteldeft directory."</span>
   (<span style="color: #51afef;">interactive</span> (list (read-string <span style="color: #98be65;">"search string: "</span>)))
@@ -1698,8 +1710,8 @@ One potential <b>issue</b>, to be fixed in the future: the file from where the f
 </div>
 </div>
 
-<div id="outline-container-org4fa551e" class="outline-5">
-<h5 id="org4fa551e"><span class="section-number-5">2.4.2.3</span> <code>zd-list-entry-file-link</code> includes a file link as list entry</h5>
+<div id="outline-container-orgf304fbf" class="outline-5">
+<h5 id="orgf304fbf"><span class="section-number-5">2.4.2.3</span> <code>zd-list-entry-file-link</code> includes a file link as list entry</h5>
 <div class="outline-text-5" id="text-2-4-2-3">
 <p>
 Inserts for given file a link id and title as a list entry.
@@ -1715,16 +1727,16 @@ Inserts for given file a link id and title as a list entry.
 </div>
 </div>
 
-<div id="outline-container-orgbfebfe6" class="outline-4">
-<h4 id="orgbfebfe6"><span class="section-number-4">2.4.3</span> Compiling a single <code>org</code></h4>
+<div id="outline-container-orgac61df5" class="outline-4">
+<h4 id="orgac61df5"><span class="section-number-4">2.4.3</span> Compiling a single <code>org</code></h4>
 <div class="outline-text-4" id="text-2-4-3">
 </div>
-<div id="outline-container-org33edc0c" class="outline-5">
-<h5 id="org33edc0c"><span class="section-number-5">2.4.3.1</span> Idea and example</h5>
+<div id="outline-container-orgd193fa0" class="outline-5">
+<h5 id="orgd193fa0"><span class="section-number-5">2.4.3.1</span> Idea and example</h5>
 <div class="outline-text-5" id="text-2-4-3-1">
 </div>
 <ol class="org-ol">
-<li><a id="org31d8adc"></a>Including notes with given search term<br>
+<li><a id="orga7b53de"></a>Including notes with given search term<br>
 <div class="outline-text-6" id="text-2-4-3-1-1">
 <p>
 The following explains what <code>zd-org-search-include</code> does, but the concept is more or less the same for <code>zd-org-search-insert</code>.
@@ -1768,7 +1780,7 @@ All functions are documented below.
 </div>
 </li>
 
-<li><a id="orgf1e379f"></a>Semi-automated example<br>
+<li><a id="org7658187"></a>Semi-automated example<br>
 <div class="outline-text-6" id="text-2-4-3-1-2">
 <p>
 You could, for example, add the following code to a document and execute (or evaluate) it from within <code>org-mode</code>.
@@ -1806,7 +1818,7 @@ A final caveat: don&rsquo;t put the file with the above code in you <code>deft</
 </div>
 </li>
 
-<li><a id="orgc7b9fb7"></a>Issues &amp; things to note<br>
+<li><a id="org7976e73"></a>Issues &amp; things to note<br>
 <div class="outline-text-6" id="text-2-4-3-1-3">
 <p>
 Before we look at the functions, a note on limitations of the current implementation.
@@ -1833,8 +1845,8 @@ As a solution, use <code>org-sort</code> manually after running <code>zd-org-sea
 </ol>
 </div>
 
-<div id="outline-container-orgf6ac34d" class="outline-5">
-<h5 id="orgf6ac34d"><span class="section-number-5">2.4.3.2</span> <code>zd-org-search-include</code> generates <code>#+INCLUDE</code> syntax</h5>
+<div id="outline-container-orga6750dc" class="outline-5">
+<h5 id="orga6750dc"><span class="section-number-5">2.4.3.2</span> <code>zd-org-search-include</code> generates <code>#+INCLUDE</code> syntax</h5>
 <div class="outline-text-5" id="text-2-4-3-2">
 <p>
 Asks user for a search string and inserts headers and <code>#+INCLUDE</code> code for all files with said tag.
@@ -1852,8 +1864,8 @@ When used on <code>#tag</code>, make sure to include the <code>#</code> manually
 </div>
 </div>
 
-<div id="outline-container-org25f904a" class="outline-5">
-<h5 id="org25f904a"><span class="section-number-5">2.4.3.3</span> <code>zd-org-search-insert</code> generates titles &amp; file content</h5>
+<div id="outline-container-org53d1ef5" class="outline-5">
+<h5 id="org53d1ef5"><span class="section-number-5">2.4.3.3</span> <code>zd-org-search-insert</code> generates titles &amp; file content</h5>
 <div class="outline-text-5" id="text-2-4-3-3">
 <p>
 Very similar to the previous function, but rather than writing syntax to include files, insert their contents directly.
@@ -1871,12 +1883,12 @@ Very similar to the previous function, but rather than writing syntax to include
 </div>
 </div>
 
-<div id="outline-container-org4bc65d3" class="outline-4">
-<h4 id="org4bc65d3"><span class="section-number-4">2.4.4</span> Helper functions</h4>
+<div id="outline-container-org708729a" class="outline-4">
+<h4 id="org708729a"><span class="section-number-4">2.4.4</span> Helper functions</h4>
 <div class="outline-text-4" id="text-2-4-4">
 </div>
-<div id="outline-container-org21b5b69" class="outline-5">
-<h5 id="org21b5b69"><span class="section-number-5">2.4.4.1</span> <code>zd-insert-file-contents</code> returns the contents of a file</h5>
+<div id="outline-container-org55e7ee7" class="outline-5">
+<h5 id="org55e7ee7"><span class="section-number-5">2.4.4.1</span> <code>zd-insert-file-contents</code> returns the contents of a file</h5>
 <div class="outline-text-5" id="text-2-4-4-1">
 <p>
 Returns the contents of a file.
@@ -1898,8 +1910,8 @@ Returns the contents of a file.
 </div>
 </div>
 
-<div id="outline-container-orge7bb0a2" class="outline-5">
-<h5 id="orge7bb0a2"><span class="section-number-5">2.4.4.2</span> <code>zd-org-include-file</code> includes a file in <code>org</code> format</h5>
+<div id="outline-container-org7cd3e01" class="outline-5">
+<h5 id="org7cd3e01"><span class="section-number-5">2.4.4.2</span> <code>zd-org-include-file</code> includes a file in <code>org</code> format</h5>
 <div class="outline-text-5" id="text-2-4-4-2">
 <p>
 Inserts the title as a new header, with the <code>#+INCLUDE</code> line below.
@@ -1919,8 +1931,8 @@ Includes only from the second line onward, so that any <code>#+TITLE</code> line
 </div>
 </div>
 
-<div id="outline-container-orgf6b430c" class="outline-5">
-<h5 id="orgf6b430c"><span class="section-number-5">2.4.4.3</span> <code>zd-org-insert-file</code> inserts a files content</h5>
+<div id="outline-container-orgf544c41" class="outline-5">
+<h5 id="orgf544c41"><span class="section-number-5">2.4.4.3</span> <code>zd-org-insert-file</code> inserts a files content</h5>
 <div class="outline-text-5" id="text-2-4-4-3">
 <p>
 For a file, insert its title and contents (without first 3 lines).
@@ -1945,39 +1957,39 @@ Even better would be: without any of the lines starting with <code>#</code> at t
 </div>
 </div>
 
-<div id="outline-container-org826f35d" class="outline-3">
-<h3 id="org826f35d"><span class="section-number-3">2.5</span> Creating visuals</h3>
+<div id="outline-container-org0cb51a4" class="outline-3">
+<h3 id="org0cb51a4"><span class="section-number-3">2.5</span> Creating visuals</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2f48129">2.5.1. Introducing graphs</a></li>
-<li><a href="#orgef4339b">2.5.2. Graph functions</a>
+<li><a href="#orgff9b306">2.5.1. Introducing graphs</a></li>
+<li><a href="#org769da3e">2.5.2. Graph functions</a>
 <ul>
-<li><a href="#org3e0b6d7">2.5.2.1. <code>zd-org-graph-search</code> creates graph from search string</a></li>
-<li><a href="#org1c182cf">2.5.2.2. <code>zd-org-graph-note</code> creates graph from note</a></li>
+<li><a href="#org6271327">2.5.2.1. <code>zd-org-graph-search</code> creates graph from search string</a></li>
+<li><a href="#org92116d9">2.5.2.2. <code>zd-org-graph-note</code> creates graph from note</a></li>
 </ul>
 </li>
-<li><a href="#org82f0486">2.5.3. Building blocks</a>
+<li><a href="#orgdbf9e08">2.5.3. Building blocks</a>
 <ul>
-<li><a href="#org4a64aaa">2.5.3.1. <code>zd-graph-syntax-begin</code> provides opening syntax</a></li>
-<li><a href="#orge7a2c10">2.5.3.2. <code>zd-graph-syntax-end</code> provides closing syntax</a></li>
-<li><a href="#org12fd0c3">2.5.3.3. <code>zd-extract-links</code> pulls links from a file</a></li>
-<li><a href="#org35f606f">2.5.3.4. <code>zd-graph-insert-links</code> inserts graphviz links</a></li>
-<li><a href="#org19002e1">2.5.3.5. <code>zd-graph-insert-title</code> inserts graphviz title line</a></li>
-<li><a href="#org0d2bcb4">2.5.3.6. <code>zd-graph-store-link</code> stores provided notes</a></li>
-<li><a href="#orgcfbc6a8">2.5.3.7. <code>zd-graph-insert-additional-links</code> inserts stored links</a></li>
-<li><a href="#orgc6c8097">2.5.3.8. <code>zd-graph-insert-all-titles</code> inserts all stored titles</a></li>
+<li><a href="#orgd4c9871">2.5.3.1. <code>zd-graph-syntax-begin</code> provides opening syntax</a></li>
+<li><a href="#org3982591">2.5.3.2. <code>zd-graph-syntax-end</code> provides closing syntax</a></li>
+<li><a href="#org934c513">2.5.3.3. <code>zd-extract-links</code> pulls links from a file</a></li>
+<li><a href="#org8f22a0f">2.5.3.4. <code>zd-graph-insert-links</code> inserts graphviz links</a></li>
+<li><a href="#org7fc0775">2.5.3.5. <code>zd-graph-insert-title</code> inserts graphviz title line</a></li>
+<li><a href="#org44775bf">2.5.3.6. <code>zd-graph-store-link</code> stores provided notes</a></li>
+<li><a href="#orgd6cafe1">2.5.3.7. <code>zd-graph-insert-additional-links</code> inserts stored links</a></li>
+<li><a href="#org8b710e5">2.5.3.8. <code>zd-graph-insert-all-titles</code> inserts all stored titles</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2f48129" class="outline-4">
-<h4 id="org2f48129"><span class="section-number-4">2.5.1</span> Introducing graphs</h4>
+<div id="outline-container-orgff9b306" class="outline-4">
+<h4 id="orgff9b306"><span class="section-number-4">2.5.1</span> Introducing graphs</h4>
 <div class="outline-text-4" id="text-2-5-1">
 <p>
 Linking notes together in plain text is fun, but sometimes you want to visualize which notes are connected.
@@ -2013,12 +2025,12 @@ It&rsquo;s worth noting, again, that this is very provisional.
 </div>
 </div>
 
-<div id="outline-container-orgef4339b" class="outline-4">
-<h4 id="orgef4339b"><span class="section-number-4">2.5.2</span> Graph functions</h4>
+<div id="outline-container-org769da3e" class="outline-4">
+<h4 id="org769da3e"><span class="section-number-4">2.5.2</span> Graph functions</h4>
 <div class="outline-text-4" id="text-2-5-2">
 </div>
-<div id="outline-container-org3e0b6d7" class="outline-5">
-<h5 id="org3e0b6d7"><span class="section-number-5">2.5.2.1</span> <code>zd-org-graph-search</code> creates graph from search string</h5>
+<div id="outline-container-org6271327" class="outline-5">
+<h5 id="org6271327"><span class="section-number-5">2.5.2.1</span> <code>zd-org-graph-search</code> creates graph from search string</h5>
 <div class="outline-text-5" id="text-2-5-2-1">
 <p>
 An org code block with <code>graphviz</code> code for a <code>graph.pdf</code>.
@@ -2047,8 +2059,8 @@ Loop over this list, and insert title and links for each one.
 </div>
 </div>
 
-<div id="outline-container-org1c182cf" class="outline-5">
-<h5 id="org1c182cf"><span class="section-number-5">2.5.2.2</span> <code>zd-org-graph-note</code> creates graph from note</h5>
+<div id="outline-container-org92116d9" class="outline-5">
+<h5 id="org92116d9"><span class="section-number-5">2.5.2.2</span> <code>zd-org-graph-note</code> creates graph from note</h5>
 <div class="outline-text-5" id="text-2-5-2-2">
 <p>
 Insert an org source code block for a graphviz presentation of a note and its connections.
@@ -2075,12 +2087,12 @@ When links are added, they are also stored in <code>zd-graph--links</code> which
 </div>
 </div>
 
-<div id="outline-container-org82f0486" class="outline-4">
-<h4 id="org82f0486"><span class="section-number-4">2.5.3</span> Building blocks</h4>
+<div id="outline-container-orgdbf9e08" class="outline-4">
+<h4 id="orgdbf9e08"><span class="section-number-4">2.5.3</span> Building blocks</h4>
 <div class="outline-text-4" id="text-2-5-3">
 </div>
-<div id="outline-container-org4a64aaa" class="outline-5">
-<h5 id="org4a64aaa"><span class="section-number-5">2.5.3.1</span> <code>zd-graph-syntax-begin</code> provides opening syntax</h5>
+<div id="outline-container-orgd4c9871" class="outline-5">
+<h5 id="orgd4c9871"><span class="section-number-5">2.5.3.1</span> <code>zd-graph-syntax-begin</code> provides opening syntax</h5>
 <div class="outline-text-5" id="text-2-5-3-1">
 <p>
 Within graphviz, I advise to use <code>fdp</code>, <code>twopi</code> (which overlaps more) or <code>circo</code> as layouts.
@@ -2096,8 +2108,8 @@ Within graphviz, I advise to use <code>fdp</code>, <code>twopi</code> (which ove
 </div>
 </div>
 
-<div id="outline-container-orge7a2c10" class="outline-5">
-<h5 id="orge7a2c10"><span class="section-number-5">2.5.3.2</span> <code>zd-graph-syntax-end</code> provides closing syntax</h5>
+<div id="outline-container-org3982591" class="outline-5">
+<h5 id="org3982591"><span class="section-number-5">2.5.3.2</span> <code>zd-graph-syntax-end</code> provides closing syntax</h5>
 <div class="outline-text-5" id="text-2-5-3-2">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #51afef;">defcustom</span> <span style="color: #dcaeea;">zd-graph-syntax-end</span>
@@ -2108,8 +2120,8 @@ Within graphviz, I advise to use <code>fdp</code>, <code>twopi</code> (which ove
 </div>
 </div>
 
-<div id="outline-container-org12fd0c3" class="outline-5">
-<h5 id="org12fd0c3"><span class="section-number-5">2.5.3.3</span> <code>zd-extract-links</code> pulls links from a file</h5>
+<div id="outline-container-org934c513" class="outline-5">
+<h5 id="org934c513"><span class="section-number-5">2.5.3.3</span> <code>zd-extract-links</code> pulls links from a file</h5>
 <div class="outline-text-5" id="text-2-5-3-3">
 <p>
 Very similar to the <code>zd-extract-tags</code> function, but returns links instead of storing them.
@@ -2134,8 +2146,8 @@ Very similar to the <code>zd-extract-tags</code> function, but returns links ins
 </div>
 </div>
 
-<div id="outline-container-org35f606f" class="outline-5">
-<h5 id="org35f606f"><span class="section-number-5">2.5.3.4</span> <code>zd-graph-insert-links</code> inserts graphviz links</h5>
+<div id="outline-container-org8f22a0f" class="outline-5">
+<h5 id="org8f22a0f"><span class="section-number-5">2.5.3.4</span> <code>zd-graph-insert-links</code> inserts graphviz links</h5>
 <div class="outline-text-5" id="text-2-5-3-4">
 <p>
 Insert the sanitized ID from the file, followed by an arrow and all of the links.
@@ -2162,8 +2174,8 @@ Store both the deft file provided and any found files in <code>zd-graph--links</
 </div>
 </div>
 
-<div id="outline-container-org19002e1" class="outline-5">
-<h5 id="org19002e1"><span class="section-number-5">2.5.3.5</span> <code>zd-graph-insert-title</code> inserts graphviz title line</h5>
+<div id="outline-container-org7fc0775" class="outline-5">
+<h5 id="org7fc0775"><span class="section-number-5">2.5.3.5</span> <code>zd-graph-insert-title</code> inserts graphviz title line</h5>
 <div class="outline-text-5" id="text-2-5-3-5">
 <p>
 Titles have to be inserted in the correct <code>graphviz</code> format, like so:
@@ -2196,8 +2208,8 @@ The title is taken from the file string and any additional quotes removed.
 </div>
 </div>
 
-<div id="outline-container-org0d2bcb4" class="outline-5">
-<h5 id="org0d2bcb4"><span class="section-number-5">2.5.3.6</span> <code>zd-graph-store-link</code> stores provided notes</h5>
+<div id="outline-container-org44775bf" class="outline-5">
+<h5 id="org44775bf"><span class="section-number-5">2.5.3.6</span> <code>zd-graph-store-link</code> stores provided notes</h5>
 <div class="outline-text-5" id="text-2-5-3-6">
 <p>
 For future reference, linked files are stored in <code>zd-graph--links</code>.
@@ -2225,8 +2237,8 @@ Simply providing an ID works too, if you provide the second argument as true.
 </div>
 </div>
 
-<div id="outline-container-orgcfbc6a8" class="outline-5">
-<h5 id="orgcfbc6a8"><span class="section-number-5">2.5.3.7</span> <code>zd-graph-insert-additional-links</code> inserts stored links</h5>
+<div id="outline-container-orgd6cafe1" class="outline-5">
+<h5 id="orgd6cafe1"><span class="section-number-5">2.5.3.7</span> <code>zd-graph-insert-additional-links</code> inserts stored links</h5>
 <div class="outline-text-5" id="text-2-5-3-7">
 <p>
 Insert links stored in the <code>zd-graph--links</code> list.
@@ -2244,8 +2256,8 @@ Except the first list item, as this is considered the base file already included
 </div>
 </div>
 
-<div id="outline-container-orgc6c8097" class="outline-5">
-<h5 id="orgc6c8097"><span class="section-number-5">2.5.3.8</span> <code>zd-graph-insert-all-titles</code> inserts all stored titles</h5>
+<div id="outline-container-org8b710e5" class="outline-5">
+<h5 id="org8b710e5"><span class="section-number-5">2.5.3.8</span> <code>zd-graph-insert-all-titles</code> inserts all stored titles</h5>
 <div class="outline-text-5" id="text-2-5-3-8">
 <p>
 Insert all titles stored in <code>zd-graph--links</code>.
@@ -2266,12 +2278,12 @@ Insert all titles stored in <code>zd-graph--links</code>.
 </div>
 </div>
 
-<div id="outline-container-org60d26ea" class="outline-3">
-<h3 id="org60d26ea"><span class="section-number-3">2.6</span> Aesthetics</h3>
+<div id="outline-container-orgd6cf7ba" class="outline-3">
+<h3 id="orgd6cf7ba"><span class="section-number-3">2.6</span> Aesthetics</h3>
 <div class="outline-text-3" id="text-2-6">
 </div>
-<div id="outline-container-org63749fb" class="outline-4">
-<h4 id="org63749fb"><span class="section-number-4">2.6.1</span> Highlighting zetteldeft links</h4>
+<div id="outline-container-org43dd27f" class="outline-4">
+<h4 id="org43dd27f"><span class="section-number-4">2.6.1</span> Highlighting zetteldeft links</h4>
 <div class="outline-text-4" id="text-2-6-1">
 <p>
 To highlight zetteldeft links, let&rsquo;s add a <code>font-lock</code> keyword to <code>org-mode</code>.
@@ -2294,8 +2306,8 @@ Highlighting not working in comments.
 </div>
 </div>
 
-<div id="outline-container-orgdf86822" class="outline-3">
-<h3 id="orgdf86822"><span class="section-number-3">2.7</span> End of package</h3>
+<div id="outline-container-orgc149bbb" class="outline-3">
+<h3 id="orgc149bbb"><span class="section-number-3">2.7</span> End of package</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 That&rsquo;s all folks!
@@ -2310,8 +2322,8 @@ That&rsquo;s all folks!
 </div>
 </div>
 
-<div id="outline-container-org23e6343" class="outline-2">
-<h2 id="org23e6343"><span class="section-number-2">3</span> Suggested setup</h2>
+<div id="outline-container-org1b51bd4" class="outline-2">
+<h2 id="org1b51bd4"><span class="section-number-2">3</span> Suggested setup</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 The following assumes <code>deft</code> is loaded manually in your dotfile, it merely configures the package.
@@ -2322,12 +2334,12 @@ None of these code blocks are tangled into the <code>.el</code> file, they are h
 </p>
 </div>
 
-<div id="outline-container-orgd2df9cf" class="outline-3">
-<h3 id="orgd2df9cf"><span class="section-number-3">3.1</span> Suggested <code>zeteldeft</code> keybindings</h3>
+<div id="outline-container-orgae9ad23" class="outline-3">
+<h3 id="orgae9ad23"><span class="section-number-3">3.1</span> Suggested <code>zeteldeft</code> keybindings</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
-<div id="outline-container-org146e0cb" class="outline-4">
-<h4 id="org146e0cb"><span class="section-number-4">3.1.1</span> Keybindings with <code>general</code></h4>
+<div id="outline-container-orgdb48a57" class="outline-4">
+<h4 id="orgdb48a57"><span class="section-number-4">3.1.1</span> Keybindings with <code>general</code></h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 To call <code>zetteldeft</code> functions from anywhere behind a leader key such as <code>SPC</code>, I recommend <code>general.el</code> with the following setup.
@@ -2361,8 +2373,8 @@ To call <code>zetteldeft</code> functions from anywhere behind a leader key such
 </div>
 </div>
 
-<div id="outline-container-org508efb4" class="outline-4">
-<h4 id="org508efb4"><span class="section-number-4">3.1.2</span> Spacemacs keybindings</h4>
+<div id="outline-container-orgcb535b2" class="outline-4">
+<h4 id="orgcb535b2"><span class="section-number-4">3.1.2</span> Spacemacs keybindings</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 Suggested keybindings for <code>spacemacs</code>.
@@ -2414,12 +2426,12 @@ These can be called from anywhere behind <code>SPC d</code>.
 </div>
 </div>
 
-<div id="outline-container-org4c84cd5" class="outline-3">
-<h3 id="org4c84cd5"><span class="section-number-3">3.2</span> Suggested <code>deft</code> setup</h3>
+<div id="outline-container-org4c2ba8f" class="outline-3">
+<h3 id="org4c2ba8f"><span class="section-number-3">3.2</span> Suggested <code>deft</code> setup</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
-<div id="outline-container-org4758511" class="outline-4">
-<h4 id="org4758511"><span class="section-number-4">3.2.1</span> Notes &amp; extensions</h4>
+<div id="outline-container-org96e773c" class="outline-4">
+<h4 id="org96e773c"><span class="section-number-4">3.2.1</span> Notes &amp; extensions</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 Note extensions are <code>md</code>, <code>txt</code> and <code>org</code>.
@@ -2433,8 +2445,8 @@ First of this list is the default for new notes.
 </div>
 </div>
 
-<div id="outline-container-org25dc1e7" class="outline-4">
-<h4 id="org25dc1e7"><span class="section-number-4">3.2.2</span> Set <code>deft-directory</code></h4>
+<div id="outline-container-org9e3df8c" class="outline-4">
+<h4 id="org9e3df8c"><span class="section-number-4">3.2.2</span> Set <code>deft-directory</code></h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 Search the deft directory recursively, to include subdirectories.
@@ -2448,8 +2460,8 @@ Search the deft directory recursively, to include subdirectories.
 </div>
 </div>
 
-<div id="outline-container-orgb8f1acb" class="outline-4">
-<h4 id="orgb8f1acb"><span class="section-number-4">3.2.3</span> Additional <code>deft</code> functions</h4>
+<div id="outline-container-org570cd0e" class="outline-4">
+<h4 id="org570cd0e"><span class="section-number-4">3.2.3</span> Additional <code>deft</code> functions</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <p>
 Some personal additions.
@@ -2497,8 +2509,8 @@ To select results from the item list without leaving the <code>insert</code> sta
 </div>
 </div>
 
-<div id="outline-container-org068eb64" class="outline-4">
-<h4 id="org068eb64"><span class="section-number-4">3.2.4</span> Ignore more <code>org-mode</code> metadata</h4>
+<div id="outline-container-org14d8bec" class="outline-4">
+<h4 id="org14d8bec"><span class="section-number-4">3.2.4</span> Ignore more <code>org-mode</code> metadata</h4>
 <div class="outline-text-4" id="text-3-2-4">
 <p>
 I tend to write <code>org-mode</code> titles with <code>#+title:</code> (i.e., uncapitalized). Also other <code>org-mode</code> code at the beginning is written in lower case.
@@ -2525,16 +2537,16 @@ Its original value was <code>\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)</code>.
 </div>
 </div>
 
-<div id="outline-container-orgca5f489" class="outline-2">
-<h2 id="orgca5f489"><span class="section-number-2">4</span> Brainstorm</h2>
+<div id="outline-container-org9214a75" class="outline-2">
+<h2 id="org9214a75"><span class="section-number-2">4</span> Brainstorm</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Some ideas for the future.
 </p>
 </div>
 
-<div id="outline-container-orgcf917e6" class="outline-3">
-<h3 id="orgcf917e6"><span class="section-number-3">4.1</span> Saved searches</h3>
+<div id="outline-container-org94fde75" class="outline-3">
+<h3 id="org94fde75"><span class="section-number-3">4.1</span> Saved searches</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 Create a list of saved searches, somewhere easily accessible.
@@ -2542,8 +2554,8 @@ Create a list of saved searches, somewhere easily accessible.
 </div>
 </div>
 
-<div id="outline-container-orgd09cda6" class="outline-3">
-<h3 id="orgd09cda6"><span class="section-number-3">4.2</span> Generate list of tags</h3>
+<div id="outline-container-org91f51a6" class="outline-3">
+<h3 id="org91f51a6"><span class="section-number-3">4.2</span> Generate list of tags</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 Auto-generate a list of tags.
@@ -2555,8 +2567,8 @@ Might exceed my elisp-fu.
 </div>
 </div>
 
-<div id="outline-container-orgac3db68" class="outline-3">
-<h3 id="orgac3db68"><span class="section-number-3">4.3</span> HTML export</h3>
+<div id="outline-container-org9cac542" class="outline-3">
+<h3 id="org9cac542"><span class="section-number-3">4.3</span> HTML export</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 Export HTML pages with clickeable links between notes.
@@ -2564,8 +2576,8 @@ Export HTML pages with clickeable links between notes.
 </div>
 </div>
 
-<div id="outline-container-org7d082da" class="outline-3">
-<h3 id="org7d082da"><span class="section-number-3">4.4</span> Markdown export</h3>
+<div id="outline-container-org6fb0b02" class="outline-3">
+<h3 id="org6fb0b02"><span class="section-number-3">4.4</span> Markdown export</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 Export markdown through <code>pandoc</code>.
@@ -2573,8 +2585,8 @@ Export markdown through <code>pandoc</code>.
 </div>
 </div>
 
-<div id="outline-container-org5f50f24" class="outline-3">
-<h3 id="org5f50f24"><span class="section-number-3">4.5</span> Templates</h3>
+<div id="outline-container-orgf5a755a" class="outline-3">
+<h3 id="orgf5a755a"><span class="section-number-3">4.5</span> Templates</h3>
 <div class="outline-text-3" id="text-4-5">
 <p>
 A system for note templates.
@@ -2582,8 +2594,8 @@ A system for note templates.
 </div>
 </div>
 
-<div id="outline-container-org4e76f5d" class="outline-3">
-<h3 id="org4e76f5d"><span class="section-number-3">4.6</span> Minor mode</h3>
+<div id="outline-container-org4976223" class="outline-3">
+<h3 id="org4976223"><span class="section-number-3">4.6</span> Minor mode</h3>
 <div class="outline-text-3" id="text-4-6">
 <p>
 Create a minor mode on top of org-mode with some niceties:
@@ -2611,7 +2623,7 @@ Check out <a href="https://jblevins.org/projects/deft/">jblevins.org/projects/de
 <div id="postamble" class="status">
 <p class='author'>Author: EFLS</p>
 
-    <p class='date'>Modified: 2018-12-18 Tue 23:01</p>
+    <p class='date'>Modified: 2018-12-20 Thu 19:47</p>
 
     <p class='creator'><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.1.13)</p>
 </div>
