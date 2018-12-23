@@ -457,9 +457,11 @@ Note that the file is only actually created upon save.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-new-file (str &optional empty)
-  "Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
+  "Create a new deft file. Filename is `zd-id-format' appended by STR.
+No extension needed.
 
-After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."
+After creating, the title is inserted in org-mode format (unless EMPTY is true)
+and the full file name is added to the kill ring."
   (interactive (list (read-string "name: ")))
   (let* ((zdId (zd-generate-id))
          (zdName (concat zdId " " str)))
@@ -542,8 +544,10 @@ Selection of the window occurs via =ace-window=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-file-search-ace-window ()
-  "Call on avy to jump to link ids indicated with § and use it to search for filenames.
-When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
+  "Call on avy to jump to link IDs indicated with §
+and use it to search for filenames.
+When there is only one search result, as there should be,
+open that file in a window selected through `ace-window'."
   (interactive)
   (require 'ace-window)
   (save-excursion
@@ -578,7 +582,8 @@ Signal a user error if it is not.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd--check ()
-  "Checks if the currently visited file is in `zetteldeft' territory: whether it has `deft-directory' somewhere in its path."
+  "Checks if the currently visited file is in `zetteldeft' territory:
+whether it has `deft-directory' somewhere in its path."
   (unless (buffer-file-name)
     (user-error "Buffer not visiting a file."))
   (unless (string-match-p
@@ -788,7 +793,7 @@ This should help filter out hashtags used in URLs.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-tag-format "\\(^\\|\s\\)[#@][a-z-]+"
-  "Regular expression used to filter out tags."
+  "Regular expression used to find and filter tags."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
@@ -843,7 +848,7 @@ To *fix*: when called from within a zetteldeft note, exclude the note itself fro
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links (zdSrch)
-  "Inserts at point a list of links to all deft files with a search string ZDSRCH.
+  "Insert at point a list of links to all deft files with a search string ZDSRCH.
 When searching for a tag, include # manually in the search."
   (interactive (list (read-string "search string: ")))
   (dolist (zdFile (zd-get-file-list zdSrch))
@@ -863,7 +868,9 @@ The most immediate solution is for the user to be wary of this, and deleting sai
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links-missing (zdSrch)
-  "Inserst a list of links to all deft files with a search string ZDSRCH, yet in contrast to `zd-insert-list-links' only includes links that are not yet present in the current file.
+  "Insert a list of links to all deft files with a search string ZDSRCH.
+In contrast to `zd-insert-list-links' only include links not yet present
+in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
   (zd--check)
@@ -975,7 +982,8 @@ When used on =#tag=, make sure to include the =#= manually.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-search-include (zdSrch)
-  "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
+  "Inserts at point org-mode code to include all files with the selected tag.
+Include the # manually in the prompt."
   (interactive (list (read-string "tag (include the #): ")))
   (dolist (zdFile (zd-get-file-list zdSrch))
     (zd-org-include-file zdFile)))
@@ -987,7 +995,8 @@ Very similar to the previous function, but rather than writing syntax to include
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-org-search-insert (zdSrch)
-  "Inserts at point all the content of the files with ZDSRCH. When looking for zetteldeft tags, include the # manually in the search."
+  "Inserts at point all the content of the files with ZDSRCH.
+When looking for zetteldeft tags, include the # manually in the search."
   (interactive (list (read-string "Search term: ")))
   (dolist (zdFile (zd-get-file-list zdSrch))
     (zd-org-insert-file zdFile)))
@@ -1075,7 +1084,8 @@ Loop over this list, and insert title and links for each one.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defun zd-org-graph-search (str)
-  "Insert org source block for graph with zd search results. STR should be the search the resulting notes of which should be included in the graph."
+  "Insert org source block for graph with zd search results.
+STR should be the search the resulting notes of which should be included in the graph."
   (interactive (list (read-string "search string: ")))
   (setq zd-graph--links (list))
   (let ((zdList (zd-get-file-list str)))
@@ -1205,7 +1215,8 @@ Simply providing an ID works too, if you provide the second argument as true.
 #+BEGIN_SRC emacs-lisp
 (defun zd-graph-store-link (deftFile &optional idToFile)
   "Push DEFTFILE to zd-graph--links unless it's already there.
-When IDTOFILE is non-nil, DEFTFILE is considered an id and the the function first looks for the corresponding file."
+When IDTOFILE is non-nil, DEFTFILE is considered an id
+and the the function first looks for the corresponding file."
   (when idToFile
     (let ((deft-filter-only-filenames t))
       (progn
