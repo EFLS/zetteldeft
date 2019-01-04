@@ -468,6 +468,7 @@ and the full file name is added to the kill ring."
   (deft-new-file-named zdName)
   (kill-new zdName)
   (unless empty (zd-insert-org-title))
+  (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
 
