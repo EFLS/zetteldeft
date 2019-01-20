@@ -202,10 +202,12 @@ For easy but minor customization options.
 #+END_SRC
 
 ** Basic =zetteldeft= functions
+:toc:
 
 In this section:
 #+TOC: headlines 2 local
 
+:end:
 *** Search functions
 **** =zd-get-thing-at-point= returns string
 
@@ -876,10 +878,12 @@ Delete the found tag and search again.
 #+END_SRC
 
 ** Gathering notes
+:toc:
 
 In this section:
 #+TOC: headlines 2 local
 
+:end:
 *** On "gathering notes"
 
 Sometimes you want to easily gather all notes with a certain tag or search term.
@@ -1108,10 +1112,12 @@ Even better would be: without any of the lines starting with =#= at the beginnin
 #+END_SRC
 
 ** Creating visuals
+:toc:
 
 In this section:
 #+TOC: headlines 2 local
 
+:end:
 *** Introducing graphs
 
 Linking notes together in plain text is fun, but sometimes you want to visualize which notes are connected.
