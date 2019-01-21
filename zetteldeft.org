@@ -543,13 +543,16 @@ Use avy to jump to a tag and search for it.
 
 The search term should include the =#= as tag identifier, so it's as easy as jumping to the =#= and running =zd-search-at-point=.
 
+Avy uses =zd-tag-regex= as a regular expression.
+
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-tag-search ()
-  "Call on avy to jump and search tags indicated with #."
+  "Call on avy to jump to a tag.
+Tags are filtered with `zd-tag-regex'."
   (interactive)
   (save-excursion
-   (avy-goto-char ?#)
-   (zd-search-at-point)))
+    (avy--generic-jump zd-tag-regex nil avy-style)
+    (zd-search-at-point)))
 #+END_SRC
 
 **** =zd-avy-link-search=
