@@ -125,6 +125,11 @@ This variable should be a string containing only one character."
     (when (re-search-forward zd-id-regex nil t -1)
       (match-string 0))))
 
+(defcustom zd-tag-regex "[#@][a-z-]+"
+  "Regular expression for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+
 (defun zd-find-file (file)
   "Open deft file FILE."
   (interactive
@@ -169,11 +174,12 @@ Creates new deft file with id and STR as name."
   (zd-new-file str))
 
 (defun zd-avy-tag-search ()
-  "Call on avy to jump and search tags indicated with #."
+  "Call on avy to jump to a tag.
+Tags are filtered with `zd-tag-regex'."
   (interactive)
   (save-excursion
-   (avy-goto-char ?#)
-   (zd-search-at-point)))
+    (avy--generic-jump zd-tag-regex nil avy-style)
+    (zd-search-at-point)))
 
 (defun zd-avy-link-search ()
   "Call on avy to jump to a link and search it.
@@ -328,10 +334,7 @@ Throws an error when either none or multiple files with said ID are found."
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
 
-(defcustom zd-tag-format "\\(^\\|\s\\)[#@][a-z-]+"
-  "Regular expression used to find and filter tags."
-  :type 'string
-  :group 'zetteldeft)
+(setq zd-tag-format (concat "\\(^\\|\s\\)" zd-tag-regex))
 
 (defun zd-extract-tags (deftFile)
   "Find all tags in DEFTFILE and add them to zd-tag-list"
