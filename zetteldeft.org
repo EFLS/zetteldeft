@@ -25,7 +25,7 @@
 
 This document contains all the source code to a set of functions for =emacs= which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
-Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
+Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
 Read on for an introduction and some documentation.
 
 Latest additions:
@@ -68,9 +68,9 @@ This package requires:
  - =deft=, obviously
  - =avy= to jump & search
 
-From the github repository, either
+From the [[https://github.com/EFLS/zetteldeft][Github repository]], either
+ - download the =zetteldeft.el= file,
  - download the =org-file= and =org-tangle= it yourself. It should contain everything.
- - or download the =zetteldeft.el= file.
 
 Whichever way you go, load up the package by adding the package to your load path and requiring:
 
@@ -88,7 +88,9 @@ Or, if you use =use-package=, do something like:
 #+END_SRC
 
 and you're good to go!
-Well, not quite. First you must read on about the basics of =zetteldeft=.
+Well, not quite.
+First you must read on about the basics of =zetteldeft=.
+You'll also want some keybindings. Check out the [[id:A1DD85BF-24F3-49A6-A5AA-ADE5F58F0F2C][suggested setup]] below.
 
 ** Basic concepts
 
@@ -101,7 +103,7 @@ This unique id can be used to *link* notes together.
 A link consists of the =§= character followed by the id.
 For example: =§2018-07-09-2115= should link to the file above.
 A link can appear anywhere in the text.
-See [[id:0B9AFBF6-6F5D-4607-9FB1-B1DD42BF2C46][below]] for more details on IDs and links.
+See [[id:0B9AFBF6-6F5D-4607-9FB1-B1DD42BF2C46][below]] for advanced information about IDs and links.
 
 When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zd-search-current-id= and =zd-avy-link-search= respectively
 
@@ -113,19 +115,31 @@ Tags make it easy to retrieve notes. They can appear anywhere in the note, but I
 
 Create a note with =zd-new-file= and provide a name.
 
-Insert links to other notes: use =zd-find-file-id-insert= and select a file from the list.
+To insert links to other notes, either
+ - enter their links manually,
+ - use =zd-find-file-id-insert= and select a file from the list,
+
 With =zd-find-file-full-title-insert=, you guessed it, the note's title is included as well.
-To branch out from a current note and link to a new one, use =zd-new-file-and-link=.
+
+To easily branch out from the current note (i.e. create a new one and link to it in one go), use =zd-new-file-and-link=.
 
 To search for a tag or anything else under cursor, use =zd-search-at-point=.
 Combined with the power of =avy= to jump to any character on screen, use these to jump and search in one go: =zd-avy-link-search= and =zd-avy-tag-search=.
 
 To open the note behind a link, use =zd-avy-file-search=.
 
+Want more functionality?
+How about showing a [[id:FC450309-4237-478F-BCC4-B8B773C35DA9][list of tags]] or [[id:4B6C921E-F6EF-438A-B53D-C0A1629D424F][gathering notes]] with a certain search string?
+Or maybe a [[id:23BFEC36-C43E-4BAA-92C5-C0A7DA909754][graph]] visualizing how notes are linked?
+
+Still hungry?
+I'm welcoming both contributions and suggestions.
+Feel free to submit comments or pull requests on Github.
+
 ** An overview
 
-While there are more functions, these should be enough to get you started.
-Default keybindings are suggested at the bottom of this document.
+While there are many, these should be enough to get you started.
+Default keybindings are suggested at [[id:A220934C-8D39-47F5-8E38-86FBC064AF2D][the end of this document]].
 Here is an overview.
 
 | Function               | Use                             | Keybinding |
@@ -133,13 +147,13 @@ Here is an overview.
 | =zd-new-file=            | Create new note and open        | =SPC d n=    |
 | =zd-new-file-and-link=   | Create new note and insert link | =SPC d N=    |
 | =zd-find-file-id-insert= | Pick a note and insert a link   | =SPC d i=    |
+| =zd-avy-file-search=     | Select and follow a link        | =SPC d f=    |
+| =zd-avy-link-search=     | Select and seearch a link's ID  | =SPC d l=    |
+| =zd-avy-tag-search=      | Select a tag and search for it  | =SPC d t=    |
 | =zd-search-at-point=     | Search for thing at point       | =SPC d s=    |
-| =zd-avy-file-search=     | Select and follow note link     | =SPC d f=    |
-| =zd-avy-link-search=     | Select and seearch for link     | =SPC d l=    |
-| =zd-avy-tag-search=      | Select =#= tag and search for it  | =SPC d t=    |
 | =zd-search-current-id=   | Search for id of current file   | =SPC d c=    |
 
-More details documented below.
+Read on, dear reader, for all of this and much more.
 
 * The =zetteldeft= package
 ** Package preparation
@@ -562,7 +576,7 @@ Tags are filtered with `zd-tag-regex'."
 
 **** =zd-avy-link-search=
 
-Use avy to jump to a link search for its id.
+Use avy to jump to a link search for its ID in deft.
 
 Jumps to a link identifier (i.e. =zd-link-indicator=, =§= by default) and searches for the ID found.
 Note that this will not work when =zd-link-indicator= is set to nil.
@@ -799,6 +813,9 @@ Throws an error when either none or multiple files are found."
 #+END_SRC
 
 ** Listing all tags
+:PROPERTIES:
+:ID:       FC450309-4237-478F-BCC4-B8B773C35DA9
+:END:
 
 =zd-all-tags= puts all tags in =zd-tag-list= and returns them.
 
@@ -878,6 +895,9 @@ Delete the found tag and search again.
 #+END_SRC
 
 ** Gathering notes
+:PROPERTIES:
+:ID:       4B6C921E-F6EF-438A-B53D-C0A1629D424F
+:END:
 :toc:
 
 In this section:
@@ -1112,6 +1132,9 @@ Even better would be: without any of the lines starting with =#= at the beginnin
 #+END_SRC
 
 ** Creating visuals
+:PROPERTIES:
+:ID:       23BFEC36-C43E-4BAA-92C5-C0A7DA909754
+:END:
 :toc:
 
 In this section:
@@ -1339,12 +1362,18 @@ That's all folks!
 #+END_SRC
 
 * Suggested setup
+:PROPERTIES:
+:ID:       A1DD85BF-24F3-49A6-A5AA-ADE5F58F0F2C
+:END:
 
 The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
 
 None of these code blocks are tangled into the =.el= file, they are here merely as a guide.
 
 ** Suggested =zeteldeft= keybindings
+:PROPERTIES:
+:ID:       A220934C-8D39-47F5-8E38-86FBC064AF2D
+:END:
 *** Keybindings with =general=
 
 To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, I recommend =general.el= with the following setup.
