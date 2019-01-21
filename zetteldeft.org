@@ -1521,31 +1521,8 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 Some ideas for the future.
 
-** Saved searches
-
-Create a list of saved searches, somewhere easily accessible.
-
-** Generate list of tags
-
-Auto-generate a list of tags.
-
-Might exceed my elisp-fu.
-
-** HTML export
-
-Export HTML pages with clickeable links between notes.
-
-** Markdown export
-
-Export markdown through =pandoc=.
-
-** Templates
-
-A system for note templates.
-
-** Minor mode
-
-Create a minor mode on top of org-mode with some niceties:
- - higlight links & tags
- - clickeable links
+- Export HTML with clickeable links between notes.
+- Export markdown through =pandoc=.
+- Create a minor mode to higlight links & tags and display clickeable links.
+- Saved searches, somewhere easily accessible.
    
