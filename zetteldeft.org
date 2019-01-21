@@ -29,6 +29,7 @@ Check out the github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *21 Jan*: introduction of customizable =zd-tag-regex=.
  - *20 Jan 2019*: replaced =§= with customizable =zd-link-indicator=.
  - *18 Dec*: insert not yet included links with =zd-insert-list-links-missing=.
  - *15 Nov*: open link in other window with =zd-avy-file-search-ace-window=.
@@ -330,7 +331,7 @@ The code searches for the given string and returns =deft-current-files=.
     deft-current-files))
 #+END_SRC
 
-*** IDs and links
+*** IDs, links and tags
 **** A note on nomenclature, IDs and links
 :PROPERTIES:
 :ID:       0B9AFBF6-6F5D-4607-9FB1-B1DD42BF2C46
@@ -429,6 +430,22 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
+
+**** =zd-tag-regex= for finding tags
+
+This regular expression indicates what tags can look like.
+
+By default, tags start with a =#= or =@= and contain least one or more lower case letters.
+Dashes are allowed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zd-tag-regex "[#@][a-z-]+"
+  "Regular expression for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Note that this regular expression does not handle hashtags used in, for example, urls.
 
 *** Finding & linking files from minibuffer
 **** =zd-find-file= opens file from minibuffer
@@ -823,20 +840,15 @@ Move to the =zd-tag-buffer-name=
 
 Some utility functions to achieve all of this.
 
-**** =zd-tag-format= provides the tag-finding regex
+**** =zd-tag-format= adjusts the tag finding regex
 
-The regular expression used to filter out tags.
-Tags start with a =#= or =@= and contain least one or more letters.
-Dashes are allowed.
+The regular expression used to filter out tags, =zd-tag-regex= works, but doesn't filter strictly enough.
+Hashtags used in URLs are also found, for example.
 
-Tags should be positioned either be at the beginning of a new line, or preceded by a space.
-This should help filter out hashtags used in URLs.
+That's why we can make the existing regex more precise by stating that tags should be positioned either be at the beginning of a new line, or preceded by a space.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zd-tag-format "\\(^\\|\s\\)[#@][a-z-]+"
-  "Regular expression used to find and filter tags."
-  :type 'string
-  :group 'zetteldeft)
+(setq zd-tag-format (concat "\\(^\\|\s\\)" zd-tag-regex))
 #+END_SRC
 
 **** =zd-extract-tags= from a file
