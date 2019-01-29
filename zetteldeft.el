@@ -233,8 +233,8 @@ whether it has `deft-directory' somewhere in its path."
   (unless (buffer-file-name)
     (user-error "Buffer not visiting a file"))
   (unless (string-match-p
-            (regexp-quote deft-directory)
-            (file-name-directory (buffer-file-name)))
+            (regexp-quote (file-truename deft-directory))
+            (buffer-file-name))
     (user-error "Not in zetteldeft territory")))
 
 (defun zd-file-rename ()
