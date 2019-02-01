@@ -28,9 +28,8 @@
 
 (require 'deft)
 
-(unless (package-installed-p 'avy)
-  (user-error 'zetteldeft "Avy not installed, required for zd-avy-* functions"))
-(require 'avy)
+(unless (require 'avy nil 'no-error)
+  (user-error "Avy not installed, required for zd-avy-* functions"))
 
 (defgroup zetteldeft nil
   "A zettelkasten on top of deft.")
