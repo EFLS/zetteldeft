@@ -918,20 +918,25 @@ There are three of them, each either taking a search term as argument or prompti
 More documentation can be found below.
     
 *** List of links
-**** FIX =zd-insert-list-links= generates list with tagged files
+**** =zd-insert-list-links= generates list with tagged files
 
 Creates and inserts a list with links to all files with selected search term.
 
 The code gets a list of files that contain the search string, runs through said list and inserts a link for each entry.
 
-To *fix*: when called from within a zetteldeft note, exclude the note itself from the generated list.
+When called from a note within zetteldeft, exclude the note itself from the generated list.
+This is necessary so that when called from an =org= code block within a note, the note itself is not included (since it will be found by =deft=, as the search string will be part of that note).
+To achieve this, get the ID from the current note (which will be nil if there is no zetteldeft ID detected), and remove it from the results as needed.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
-  (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-list-entry-file-link zdFile)))
+  (let ((zdResults (zd-get-file-list zdSrch))
+        (zdThisID (zd-lift-id (file-name-base (buffer-file-name)))))
+    (when zdThisID (delete zdThisID zdResults))
+    (dolist (zdFile zdResults)
+      (zd-list-entry-file-link zdFile))))
 #+END_SRC
 
 **** =zd-insert-list-links-missing= generates list with new links
