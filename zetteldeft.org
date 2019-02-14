@@ -29,6 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *14 Feb*: fix =zd-insert-list-links= and its brother =zd-insert-list-links-missing=.
  - *21 Jan*: introduction of customizable =zd-tag-regex=.
  - *20 Jan 2019*: replaced =§= with customizable =zd-link-indicator=.
  - *18 Dec*: insert not yet included links with =zd-insert-list-links-missing=.
