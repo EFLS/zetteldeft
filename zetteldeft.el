@@ -352,8 +352,11 @@ Throws an error when either none or multiple files are found."
 (defun zd-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
-  (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-list-entry-file-link zdFile)))
+  (let ((zdResults (zd-get-file-list zdSrch))
+        (zdThisID (zd-lift-id (file-name-base (buffer-file-name)))))
+    (when zdThisID (delete zdThisID zdResults))
+    (dolist (zdFile zdResults)
+      (zd-list-entry-file-link zdFile))))
 
 (defun zd-insert-list-links-missing (zdSrch)
   "Insert a list of links to all deft files with a search string ZDSRCH.
@@ -371,6 +374,8 @@ Can only be called from a file in the zetteldeft directory."
     (dolist (zdID zdFoundIDs)
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
+    ; remove the ID of the current buffer from said list
+    (delete (zd-lift-id (file-name-base (buffer-file-name))) zdFinalIDs)
     ; finally find full title for each ID and insert it
     (dolist (zdID zdFinalIDs)
       (setq zdID (zd-id-to-full-title zdID))
