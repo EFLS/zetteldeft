@@ -942,13 +942,13 @@ To achieve this, get the ID from the current note (which will be nil if there is
 **** =zd-insert-list-links-missing= generates list with new links
 
 Does the same as the above function, but only inserts IDs that aren't already present in the current file.
+In contrast with =zd-insert-list-links=, this function can only be used from within a zetteldeft note.
 
-This is especially handy when you hope to check wheter all notes with a certain tag are linked to, or simply to list unlinked notes.
-
+This is especially handy when you want to check wheter all notes with a certain tag are linked to, or simply to list notes with a specific tag that are not linked to yet.
 Similar to the function above, filter out ID of the current note.
 
 Another fundamental *shortcoming* of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run /no/ links will be included...
-The most immediate solution is for the user to be wary of this, and deleting said links and refreshing the deft cache with =deft-refresh= before calling this function.
+The most immediate solution is for the user to be wary of this, remove any previously inserted links, save the buffer and refresh the deft cache with =deft-refresh= before calling this function.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links-missing (zdSrch)
