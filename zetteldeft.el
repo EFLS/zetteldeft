@@ -353,8 +353,8 @@ Throws an error when either none or multiple files are found."
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
   (let ((zdResults (zd-get-file-list zdSrch))
-        (zdThisID (zd-lift-id (file-name-base (buffer-file-name)))))
-    (when zdThisID (delete zdThisID zdResults))
+        (zdThisNote (buffer-file-name)))
+    (when zdThisNote (setq zdResults (delete zdThisNote zdResults)))
     (dolist (zdFile zdResults)
       (zd-list-entry-file-link zdFile))))
 
@@ -365,7 +365,7 @@ in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
   (zd--check)
-  (let (zdCurrentIDs zdFoundIDs zdFinalIDs)
+  (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
     (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
     ; filter IDs from search results
     (dolist (zdFile (zd-get-file-list zdSrch))
@@ -375,7 +375,8 @@ Can only be called from a file in the zetteldeft directory."
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
     ; remove the ID of the current buffer from said list
-    (delete (zd-lift-id (file-name-base (buffer-file-name))) zdFinalIDs)
+    (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
+    (setq zdFinalIDs (delete zdThisID zdFinalIDs))
     ; finally find full title for each ID and insert it
     (dolist (zdID zdFinalIDs)
       (setq zdID (zd-id-to-full-title zdID))
