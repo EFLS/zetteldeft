@@ -927,15 +927,16 @@ The code gets a list of files that contain the search string, runs through said 
 
 When called from a note within zetteldeft, exclude the note itself from the generated list.
 This is necessary so that when called from an =org= code block within a note, the note itself is not included (since it will be found by =deft=, as the search string will be part of that note).
-To achieve this, get the ID from the current note (which will be nil if there is no zetteldeft ID detected), and remove it from the results as needed.
+To achieve this, get the full file name of the current buffer, and remove it from the search results if its found there.
+The =when= part is there so that this deletion is not attempted if the current buffer is not visiting a file.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
   (let ((zdResults (zd-get-file-list zdSrch))
-        (zdThisID (zd-lift-id (file-name-base (buffer-file-name)))))
-    (when zdThisID (delete zdThisID zdResults))
+        (zdThisNote (buffer-file-name)))
+    (when zdThisNote (setq zdResults (delete zdThisNote zdResults)))
     (dolist (zdFile zdResults)
       (zd-list-entry-file-link zdFile))))
 #+END_SRC
@@ -947,6 +948,7 @@ In contrast with =zd-insert-list-links=, this function can only be used from wit
 
 This is especially handy when you want to check wheter all notes with a certain tag are linked to, or simply to list notes with a specific tag that are not linked to yet.
 Similar to the function above, filter out ID of the current note.
+In contrast to the function above, this one works with IDs rather than full paths.
 
 Another fundamental *shortcoming* of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run /no/ links will be included...
 The most immediate solution is for the user to be wary of this, remove any previously inserted links, save the buffer and refresh the deft cache with =deft-refresh= before calling this function.
@@ -959,7 +961,7 @@ in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
   (zd--check)
-  (let (zdCurrentIDs zdFoundIDs zdFinalIDs)
+  (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
     (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
     ; filter IDs from search results
     (dolist (zdFile (zd-get-file-list zdSrch))
@@ -969,7 +971,8 @@ Can only be called from a file in the zetteldeft directory."
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
     ; remove the ID of the current buffer from said list
-    (delete (zd-lift-id (file-name-base (buffer-file-name))) zdFinalIDs)
+    (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
+    (setq zdFinalIDs (delete zdThisID zdFinalIDs))
     ; finally find full title for each ID and insert it
     (dolist (zdID zdFinalIDs)
       (setq zdID (zd-id-to-full-title zdID))
