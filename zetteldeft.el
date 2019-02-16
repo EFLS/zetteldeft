@@ -383,14 +383,16 @@ Can only be called from a file in the zetteldeft directory."
           (setq zdID (zd-id-to-full-title zdID))
           (insert " - " (concat zd-link-indicator zdID "\n")))
       ; unless the list is empty, then insert a message
-      (insert (format zd-insert-list-links-missing-message zdSrch)))))
+      (insert (format zd-list-links-missing-message zdSrch)))))
 
-(defcustom zd-insert-list-links-missing-message
+(defcustom zd-list-links-missing-message
   "   No missing links with search term =%s= found\n"
   "Message to insert when no missing links are found
 by `zd-insert-list-links-missing'.
 %s will be replaced by the search term provided to
-that function.")
+that function."
+  :type 'string
+  :group 'zetteldeft)
 
 (defun zd-list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."

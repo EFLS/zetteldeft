@@ -29,7 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *16 Feb*: include customizable message when =zd-insert-list-links-missing= finds no missing links.
+ - *16 Feb*: include customizable message =zd-list-links-missing= for when no missing links are found.
  - *14 Feb*: fix =zd-insert-list-links= and its brother =zd-insert-list-links-missing=.
  - *21 Jan*: introduction of customizable =zd-tag-regex=.
  - *20 Jan 2019*: replaced =§= with customizable =zd-link-indicator=.
@@ -980,7 +980,7 @@ Can only be called from a file in the zetteldeft directory."
           (setq zdID (zd-id-to-full-title zdID))
           (insert " - " (concat zd-link-indicator zdID "\n")))
       ; unless the list is empty, then insert a message
-      (insert (format zd-insert-list-links-missing-message zdSrch)))))
+      (insert (format zd-list-links-missing-message zdSrch)))))
 #+END_SRC
 
 When no missing links are found, i.e. all the notes with the provided strings are already linked to in the current note, a message is printed instead.
@@ -988,12 +988,14 @@ When no missing links are found, i.e. all the notes with the provided strings ar
 To be able to customize this message, include a =defcustom=.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zd-insert-list-links-missing-message
+(defcustom zd-list-links-missing-message
   "   No missing links with search term =%s= found\n"
   "Message to insert when no missing links are found
 by `zd-insert-list-links-missing'.
 %s will be replaced by the search term provided to
-that function.")
+that function."
+  :type 'string
+  :group 'zetteldeft)
 #+END_SRC
 
 **** =zd-list-entry-file-link= includes a file link as list entry
