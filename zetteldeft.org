@@ -369,45 +369,62 @@ Note that if this variable is set to nil, the =zd-avy-link-search= and =zd-avy-f
 
 **** =zd-id-format= for generating ID strings
 
-String format when generating ids.
+Format used to generate ids.
+
+See documentation of =format-time-string= for more info on possible placeholders.
+
+If you customize this value, make sure to edit the =zd-id-regex= as well, so that the IDs can be found by other functions.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
-Be warned: the regexp to find these IDs is set separately."
+
+Be warned: the regexp to find IDs is set separately.
+If you change this value, set `zd-id-regex' so that
+the IDs can be found.
+
+Check the documentation of the `format-time-string'
+function to see which placeholders can be used."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
 
-While we're at it, lets tell deft to create new files with this new format.
-For good measure: I advise creating new notes in the =zetteldeft= system with =zd-new-file= or =zd-new-file-and-link= as defined below.
+Another popular option would be to set this value to ="%Y%m%d%H%M"=, so that a similar ID is generated without any dashes.
+See below for a corresponding regular expression.
+
+While we're at it, lets tell =deft= to use this format when creating new files.
+For good measure: I advise creating new notes in the =zetteldeft= system with =zd-new-file= or =zd-new-file-and-link= as defined below, rather than through =deft= itself.
 
 #+BEGIN_SRC emacs-lisp
 (setq deft-new-file-format zd-id-format)
 #+END_SRC
 
-Here is the function to generate an ID string in said format.
+Next up, a function to generate an ID string in the above format.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-generate-id ()
-  "Generate an id in `zd-id-format'."
+  "Generate an ID in the format of `zd-id-format'."
   (format-time-string zd-id-format))
 #+END_SRC
 
 **** =zd-id-regex= for finding IDs
 
-The regular expression used to search for zetteldeft IDs.
+The regular expression used to search for zetteldeft IDs as set in =zd-id-format=.
 
-This dictates that a zetteldeft ID should consist of:
+The default regex dictates that a zetteldeft ID should consist of:
  1. a series of exactly 4 numbers
  2. followed by exactly 3 sets of a dash and two or more numbers
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
-  "The regex used to search for zetteldeft IDs."
+  "The regular expression used to search for zetteldeft IDs.
+Set it so that it matches strings generated with
+`zd-id-format'."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
+
+If you use a ="%Y%m%d%H%M"= format for note naming, you might want to set the regular expression to ="20[0-9]\\{10\\}"= so that it matches any string starting with =20= followed by 10 other digits.
 
 **** =zd-link-indicator= prepends ID links
 
