@@ -96,18 +96,26 @@ Open if there is only one result."
 
 (defcustom zd-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
-Be warned: the regexp to find these IDs is set separately."
+
+Be warned: the regexp to find IDs is set separately.
+If you change this value, set `zd-id-regex' so that
+the IDs can be found.
+
+Check the documentation of the `format-time-string'
+function to see which placeholders can be used."
   :type 'string
   :group 'zetteldeft)
 
 (setq deft-new-file-format zd-id-format)
 
 (defun zd-generate-id ()
-  "Generate an id in `zd-id-format'."
+  "Generate an ID in the format of `zd-id-format'."
   (format-time-string zd-id-format))
 
 (defcustom zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
-  "The regex used to search for zetteldeft IDs."
+  "The regular expression used to search for zetteldeft IDs.
+Set it so that it matches strings generated with
+`zd-id-format'."
   :type 'string
   :group 'zetteldeft)
 
