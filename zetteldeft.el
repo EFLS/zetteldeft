@@ -31,6 +31,10 @@
 (unless (require 'avy nil 'no-error)
   (user-error "Avy not installed, required for zd-avy-* functions"))
 
+(unless (fboundp 'avy-jump)
+  (display-warning 'zetteldeft
+    "Function `avy-jump' not available. Please update `avy'"))
+
 (defgroup zetteldeft nil
   "A zettelkasten on top of deft.")
 
@@ -188,7 +192,7 @@ Creates new deft file with id and STR as name."
 Tags are filtered with `zd-tag-regex'."
   (interactive)
   (save-excursion
-    (avy--generic-jump zd-tag-regex nil avy-style)
+    (avy-jump zd-tag-regex)
     (zd-search-at-point)))
 
 (defun zd-avy-link-search ()
