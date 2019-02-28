@@ -29,6 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *28 Feb*: Update =zd-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
  - *16 Feb*: include customizable message =zd-list-links-missing= for when no missing links are found.
  - *14 Feb*: fix =zd-insert-list-links= and its brother =zd-insert-list-links-missing=.
  - *21 Jan*: introduction of customizable =zd-tag-regex=.
@@ -206,6 +207,16 @@ Some declaration.
 
 (unless (require 'avy nil 'no-error)
   (user-error "Avy not installed, required for zd-avy-* functions"))
+#+END_SRC
+
+Since february 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
+Unfortunately, this change doesn't seem to be indicated with a specific version number.
+So let's check whether that function is available, and show a message when it's not.
+
+#+BEGIN_SRC emacs-lisp
+(unless (fboundp 'avy-jump)
+  (display-warning 'zetteldeft
+    "Function `avy-jump' not available. Please update `avy'"))
 #+END_SRC
 
 *** Customization
@@ -588,7 +599,7 @@ Avy uses =zd-tag-regex= as a regular expression.
 Tags are filtered with `zd-tag-regex'."
   (interactive)
   (save-excursion
-    (avy--generic-jump zd-tag-regex nil avy-style)
+    (avy-jump zd-tag-regex)
     (zd-search-at-point)))
 #+END_SRC
 
