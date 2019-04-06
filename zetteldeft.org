@@ -130,7 +130,7 @@ To easily branch out from the current note (i.e. create a new one and link to it
 To search for a tag or anything else under cursor, use =zd-search-at-point=.
 Combined with the power of =avy= to jump to any character on screen, use these to jump and search in one go: =zd-avy-link-search= and =zd-avy-tag-search=.
 
-To open the note behind a link, use =zd-avy-file-search=.
+To open the note behind a link, use =zd-follow-link=.
 
 Want more functionality?
 How about showing a [[id:FC450309-4237-478F-BCC4-B8B773C35DA9][list of tags]] or [[id:4B6C921E-F6EF-438A-B53D-C0A1629D424F][gathering notes]] with a certain search string?
