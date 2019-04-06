@@ -152,7 +152,7 @@ Here is an overview.
 | =zd-new-file-and-link=   | Create new note and insert link | =SPC d N=    |
 | =zd-find-file-id-insert= | Pick a note and insert a link   | =SPC d i=    |
 | =zd-follow-link=         | Follow a link                   | =SPC d f=    |
-| =zd-avy-link-search=     | Select and seearch a link's ID  | =SPC d l=    |
+| =zd-avy-link-search=     | Select and search a link's ID   | =SPC d l=    |
 | =zd-avy-tag-search=      | Select a tag and search for it  | =SPC d t=    |
 | =zd-search-at-point=     | Search for thing at point       | =SPC d s=    |
 | =zd-search-current-id=   | Search for id of current file   | =SPC d c=    |
@@ -1544,6 +1544,7 @@ Search the deft directory recursively, to include subdirectories.
 *** Additional =deft= functions
 
 Some personal additions.
+Note that these are functional suggestions, and not included in the =zetteldeft= package.
 
 A small function to open a file in the other window and shifting focus to it.
 That final part is what the =t= argument does.
