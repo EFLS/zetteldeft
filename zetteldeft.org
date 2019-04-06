@@ -151,7 +151,7 @@ Here is an overview.
 | =zd-new-file=            | Create new note and open        | =SPC d n=    |
 | =zd-new-file-and-link=   | Create new note and insert link | =SPC d N=    |
 | =zd-find-file-id-insert= | Pick a note and insert a link   | =SPC d i=    |
-| =zd-avy-file-search=     | Select and follow a link        | =SPC d f=    |
+| =zd-follow-link=         | Follow a link                   | =SPC d f=    |
 | =zd-avy-link-search=     | Select and seearch a link's ID  | =SPC d l=    |
 | =zd-avy-tag-search=      | Select a tag and search for it  | =SPC d t=    |
 | =zd-search-at-point=     | Search for thing at point       | =SPC d s=    |
@@ -1465,7 +1465,7 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "dR" '(deft-refresh :wk "refresh")
   "ds" '(zd-search-at-point :wk "search at point")
   "dc" '(zd-search-current-id :wk "search current id")
-  "df" '(zd-avy-file-search :wk "avy file search")
+  "df" '(zd-follow-link :wk "follow link")
   "dF" '(zd-avy-file-search-ace-window :wk "avy file other window")
   "dl" '(zd-avy-link-search :wk "avy link search")
   "dt" '(zd-avy-tag-search :wk "avy tag search")
@@ -1497,7 +1497,7 @@ These can be called from anywhere behind =SPC d=.
    (spacemacs/set-leader-keys "dc" 'zd-search-current-id)
  ; Jump & search with avy 
  ;  search link as filename
-    (spacemacs/set-leader-keys "df" 'zd-avy-file-search)
+    (spacemacs/set-leader-keys "df" 'zd-follow-link)
     (spacemacs/set-leader-keys "dF" 'zd-avy-file-search-ace-window)
  ;  search link as contents
     (spacemacs/set-leader-keys "dl" 'zd-avy-link-search)
