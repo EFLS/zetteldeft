@@ -187,6 +187,14 @@ Creates new deft file with id and STR as name."
   (insert zd-link-indicator (zd-generate-id) " " str)
   (zd-new-file str))
 
+(defun zd-follow-link ()
+  "Follows zetteldeft link to a file if point is on a link.
+Prompts for a link to follow with `zd-avy-file-search' if it isn't."
+  (interactive)
+  (if (thing-at-point-looking-at (concat zd-link-indicator zd-id-regex))
+      (zd-search-filename (zd-lift-id (zd-get-thing-at-point)))
+    (zd-avy-file-search)))
+
 (defun zd-avy-tag-search ()
   "Call on avy to jump to a tag.
 Tags are filtered with `zd-tag-regex'."
