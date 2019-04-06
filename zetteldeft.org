@@ -29,6 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *6 Apr*: Add =zd-follow-link= for convenience.
  - *28 Feb*: Update =zd-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
  - *16 Feb*: include customizable message =zd-list-links-missing= for when no missing links are found.
  - *14 Feb*: fix =zd-insert-list-links= and its brother =zd-insert-list-links-missing=.
@@ -585,6 +586,22 @@ Creates new deft file with id and STR as name."
 #+END_SRC
 
 *** Moving around with =avy=
+**** Following links with =zd-follow-link=
+
+This is a wrapper function to follow links to a file.
+When point is in a link, open the note it links to.
+When point is not in a link, =avy= to jump to and open a selected link.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-follow-link ()
+  "Follows zetteldeft link to a file if point is on a link.
+Prompts for a link to follow with `zd-avy-file-search' if it isn't."
+  (interactive)
+  (if (thing-at-point-looking-at (concat zd-link-indicator zd-id-regex))
+      (zd-search-filename (zd-lift-id (zd-get-thing-at-point)))
+    (zd-avy-file-search)))
+#+END_SRC
+
 **** =zd-avy-tag-search=
 
 Use avy to jump to a tag and search for it.
