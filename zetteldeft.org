@@ -29,6 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *30 May*: Rename =zd-string-after-title= to =zd-title-suffix= and add customizable =zd-title-prefix=.
  - *6 Apr*: Add =zd-follow-link= for convenience.
  - *28 Feb*: Update =zd-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
  - *16 Feb*: include customizable message =zd-list-links-missing= for when no missing links are found.
@@ -545,10 +546,12 @@ Based on =deft-find-file=.
 
 Create new file with filename as =zd-id-format= and a string.
 
-Either provide a name as argument, or enter one in the mini-buffer.
-A title is automatically added to the file, unless an additioanl parameter is given.
+Either provide a name as argument, or (when called interactively) enter one in the mini-buffer.
+Unless an additional parameter is provided, the title (prepended by =zd-title-prefix= and appended by =zd-title-suffix=) is automatically added.
+
 When =evil= is used, enter the insert state as well.
 The full name is added to the kill ring.
+
 Note that the file is only actually created upon save.
 
 #+BEGIN_SRC emacs-lisp
@@ -565,7 +568,7 @@ When `evil' is loaded, enter instert state."
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zd-insert-org-title))
+  (unless empty (zd-insert-title))
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
@@ -746,16 +749,20 @@ The function also updates the =#+title:= at the top of the buffer, if any is pre
 #+END_SRC
 
 To update the title of the currently visited file, the following function is used.
+It simply looks for the =zd-title-prefix=, deletes that line, and replaced it with a new title line.
+
+A *limitation* of this workflow is that it will not work when the =zd-title-prefix= has a new line in it.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-update-title-in-file ()
-  "Update the #+TITLE in the current file, if present."
+  "Update the title of the current file, if present.
+Does so by looking for `zd-title-prefix'."
   (save-excursion
-    (let ((zd-string-after-title ""))
+    (let ((zd-title-suffix ""))
       (goto-char (point-min))
-      (when (search-forward "#+title:" nil t)
+      (when (re-search-forward (regexp-quote zd-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zd-insert-org-title)))))
+        (zd-insert-title)))))
 #+END_SRC
 
 **** =zd-lift-file-title= returns file title from path
@@ -772,32 +779,45 @@ ZDFILE should be a full path to a note."
      "" baseName)))
 #+END_SRC
 
-**** =zd-insert-org-title= inserts file title in org-mode
+**** =zd-insert-title= inserts file title in org-mode
 
-Easily insert the title of the current file in =org-mode= syntax, i.e. as a =#+title:= line.
+Easily insert the title of the current file.
 
-The code gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
+
+The code below gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
 
 Below the title, an additional template string is inserted automatically.
-This string, variable =zd-string-after-title=, can be customized and is empty by default.
+This string, variable =zd-title-suffix=, can be customized and is empty by default.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-insert-org-title ()
-  "Insert filename of current file as org syntax."
+(defun zd-insert-title ()
+  "Insert filename of current zd note, stripped from its ID.
+Prepended by `zd-title-prefix' and appended by `zd-title-suffix'."
   (interactive)
   (zd--check)
   (insert
-    "#+title: "
+    zd-title-prefix
     (zd-lift-file-title (file-name-base (buffer-file-name)))
-    zd-string-after-title))
+    zd-title-suffix))
+#+END_SRC
+
+Prefix to include before the title.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zd-title-prefix "#+TITLE: "
+  "Prefix string included when `zd-insert-title' is called.
+Formatted for `org-mode' by default.
+Don't forget to include a space."
+  :type 'string
+  :group 'zetteldeft)
 #+END_SRC
 
 Customize the string to be inserted below the title.
 Used when generating a new file.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zd-string-after-title ""
-  "String inserted below title when `zd-insert-org-title' is called.
+(defcustom zd-title-suffix ""
+  "String inserted below title when `zd-insert-title' is called.
 Empty by default.
 Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
