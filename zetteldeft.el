@@ -416,8 +416,7 @@ Can only be called from a file in the zetteldeft directory."
 
 (defcustom zd-list-links-missing-message
   "   No missing links with search term =%s= found\n"
-  "Message to insert when no missing links are found
-by `zd-insert-list-links-missing'.
+  "Message to insert when no missing links are found by `zd-insert-list-links-missing'.
 %s will be replaced by the search term provided to
 that function."
   :type 'string
