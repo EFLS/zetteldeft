@@ -1,12 +1,12 @@
-;;; zetteldeft.el --- a simple package                     -*- lexical-binding: t; -*-
+;;; zetteldeft.el --- Turn deft into a zettelkasten system -*- lexical-binding: t -*-
 
-;; Zetteldeft: Turn deft into a Zettelkasten writing system to create linked notes.
 ;; Copyright (C) 2018-2019  EFLS
 
 ;; Author: EFLS <Elias Storms>
-;; Website: https://efls.github.io/zetteldeft/
+;; URL: https://efls.github.io/zetteldeft/
 ;; Keywords: deft zettelkasten zetteldeft
-;; Version: 0.0.1
+;; Version: 0.1
+;; Package-Requires: ((emacs "25.1") (deft "0.8"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@
 
 ;;; Commentary:
 
-;; Zetteldeft: turn deft into a zettelkasten writing system to create linked notes.
+;; Zetteldeft is an extension of the deft package for emacs.
+;; It generates unique IDs to create stable links between notes, which
+;; allows the user to make an interconnected system of notes.
+;; Zetteldeft uses deft to find and follow links to notes.
 
 ;;; Code:
 
