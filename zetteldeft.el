@@ -176,7 +176,7 @@ When `evil' is loaded, enter instert state."
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zd-insert-org-title))
+  (unless empty (zd-insert-title))
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
@@ -276,13 +276,14 @@ whether it has `deft-directory' somewhere in its path."
         (deft-refresh))))
 
 (defun zd-update-title-in-file ()
-  "Update the #+TITLE in the current file, if present."
+  "Update the title of the current file, if present.
+Does so by looking for `zd-title-prefix'."
   (save-excursion
-    (let ((zd-string-after-title ""))
+    (let ((zd-title-suffix ""))
       (goto-char (point-min))
-      (when (search-forward "#+title:" nil t)
+      (when (re-search-forward (regexp-quote zd-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zd-insert-org-title)))))
+        (zd-insert-title)))))
 
 (defun zd-lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
@@ -292,17 +293,25 @@ ZDFILE should be a full path to a note."
      "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
      "" baseName)))
 
-(defun zd-insert-org-title ()
-  "Insert filename of current file as org syntax."
+(defun zd-insert-title ()
+  "Insert filename of current zd note, stripped from its ID.
+Prepended by `zd-title-prefix' and appended by `zd-title-suffix'."
   (interactive)
   (zd--check)
   (insert
-    "#+title: "
+    zd-title-prefix
     (zd-lift-file-title (file-name-base (buffer-file-name)))
-    zd-string-after-title))
+    zd-title-suffix))
 
-(defcustom zd-string-after-title ""
-  "String inserted below title when `zd-insert-org-title' is called.
+(defcustom zd-title-prefix "#+TITLE: "
+  "Prefix string included when `zd-insert-title' is called.
+Formatted for `org-mode' by default.
+Don't forget to include a space."
+  :type 'string
+  :group 'zetteldeft)
+
+(defcustom zd-title-suffix ""
+  "String inserted below title when `zd-insert-title' is called.
 Empty by default.
 Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
