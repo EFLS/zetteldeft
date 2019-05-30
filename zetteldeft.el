@@ -1,5 +1,6 @@
 ;;; zetteldeft.el --- a simple package                     -*- lexical-binding: t; -*-
 
+;; Zetteldeft: Turn deft into a Zettelkasten writing system to create linked notes.
 ;; Copyright (C) 2018-2019  EFLS
 
 ;; Author: EFLS <Elias Storms>
