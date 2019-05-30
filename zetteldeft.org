@@ -723,14 +723,12 @@ whether it has `deft-directory' somewhere in its path."
 Rename the current file.
 Based on the function =deft-rename-file= with only minor changes in the way =old-filename= is set: from current buffer rather than from =deft= search buffer.
 
-Probably requires some more testing.
-Anyway, best to use this only when visiting a file in the deft directory.
-
-The function also updates the =#+title:= at the top of the buffer, if any is present.
+The function should also update the title declaration at the top of the file, if =zd-title-prefix= is used.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-file-rename ()
-  "Rename the current file via the deft function. Use this on files in the deft-directory."
+  "Rename the current file via the deft function.
+Use this on files in the deft-directory."
   (interactive)
   (zd--check)
     (let ((old-filename (buffer-file-name))
