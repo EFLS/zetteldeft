@@ -232,7 +232,8 @@ Open that file (in another window if OTHERWINDOW)."
 (defun zd-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
 When there is only one search result, as there should be,
-open that file in a window selected through `ace-window'."
+open that file in a window selected through `ace-window'.
+When only one window is active, split it first."
   (interactive)
   (unless zd-link-indicator
     (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
@@ -240,6 +241,7 @@ open that file in a window selected through `ace-window'."
   (save-excursion
     (avy-goto-char (string-to-char zd-link-indicator))
     (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+      (when (eq 1 (length (window-list))) (split-window))
       (select-window (aw-select "Select window..."))
       (zd-search-filename ID))))
 
