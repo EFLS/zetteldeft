@@ -80,7 +80,7 @@ From the [[https://github.com/EFLS/zetteldeft][Github repository]], either
 Whichever way you go, load up the package by adding the package to your load path and requiring:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(add-to-list 'load-path "~/path/to/folder/"))
+(add-to-list 'load-path "~/path/to/folder/")
 (require 'zetteldeft)
 #+END_SRC
 
