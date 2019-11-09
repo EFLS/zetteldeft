@@ -29,6 +29,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *9 Nov*: Rename internal functions & prepare for MELPA.
  - *30 May*: Rename =zd-string-after-title= to =zd-title-suffix= and add customizable =zd-title-prefix=.
  - *6 Apr*: Add =zd-follow-link= for convenience.
  - *28 Feb*: Update =zd-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
@@ -39,7 +40,7 @@ Latest additions:
  - *18 Dec*: insert not yet included links with =zd-insert-list-links-missing=.
  - *15 Nov*: open link in other window with =zd-avy-file-search-ace-window=.
  - *13 Nov*: functions to create =graphviz= added.
- - *4 Nov*: =zd-all-tags= and =zd-tag-buffer= find all tags
+ - *4 Nov*: =zd--get-all-tags= and =zd-tag-buffer= find all tags
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zd-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zd-count-words=.
@@ -177,9 +178,11 @@ Some declaration.
 
 ;; Author: EFLS <Elias Storms>
 ;; URL: https://efls.github.io/zetteldeft/
-;; Keywords: deft zettelkasten zetteldeft
-;; Version: 0.1
+;; Keywords: deft zettelkasten zetteldeft wp files
+;; Version: 0.2
 ;; Package-Requires: ((emacs "25.1") (deft "0.8"))
+
+;; This file is not part of Emacs
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -196,10 +199,15 @@ Some declaration.
 
 ;;; Commentary:
 
-;; Zetteldeft is an extension of the deft package for emacs.
+;; Zetteldeft is an extension of the deft package for Emacs.
 ;; It generates unique IDs to create stable links between notes, which
 ;; allows the user to make an interconnected system of notes.
 ;; Zetteldeft uses deft to find and follow links to notes.
+;; For more information, see zetteldeft.org
+;; or https://efls.github.io/zetteldeft
+
+;; Note: this file is tangled from zetteldeft.org.
+;; The .org contains documentation and notes on usage of the package.
 
 ;;; Code:
 #+END_SRC
@@ -231,7 +239,9 @@ For easy but minor customization options.
 
 #+BEGIN_SRC emacs-lisp
 (defgroup zetteldeft nil
-  "A zettelkasten on top of deft.")
+  "A zettelkasten on top of deft."
+  :group 'deft
+  :link '(url-link "https://efls.github.io/zetteldeft"))
 #+END_SRC
 
 ** Basic =zetteldeft= functions
@@ -242,7 +252,7 @@ In this section:
 
 :end:
 *** Search functions
-**** =zd-get-thing-at-point= returns string
+**** =zd--get-thing-at-point= returns string
 
 Returns the thing at point as string.
 
@@ -254,11 +264,15 @@ Tries to get, in the following order:
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-get-thing-at-point ()
-  "Return the thing at point, which can be a link, tag or word."
-  (require 'thingatpt)
-  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-         (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
+(defun zd--get-thing-at-point ()
+  "Return the thing at point.
+This can be
+ - a link: a string between [[ brackets ]],
+ - a tag: string starting with §, # or @
+ - or a word."
+ (require 'thingatpt)
+ (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
+        (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
    (cond
     ((thing-at-point-looking-at link-re)
       (match-string-no-properties 1))
@@ -275,16 +289,16 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-search-at-point ()
-  "Search deft with `thing-at-point' as filter.
+  "Search via `deft' with `thing-at-point' as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
-  (let ((string (zd-get-thing-at-point)))
+  (let ((string (zd--get-thing-at-point)))
    (if string
-       (zd-search-global string t)
+       (zd--search-global string t)
      (user-error "No search term at point"))))
 #+END_SRC
 
-**** =zd-search-global= for string
+**** =zd--search-global= for string
 
 Search with deft for given string.
 If there is only one result, that file is opened, unless additional argument is true.
@@ -292,7 +306,7 @@ If there is only one result, that file is opened, unless additional argument is 
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-search-global (str &optional dntOpn)
+(defun zd--search-global (str &optional dntOpn)
   "Search deft with STR as filter.
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
@@ -307,7 +321,7 @@ If there is only one result, open that file (unless DNTOPN is true)."
      (deft-open-file (car deft-current-files)))))
 #+END_SRC
 
-**** =zd-search-filename= for string
+**** =zd--search-filename= for string
 
 Deft search on filename.
 If there is only one result, open that file.
@@ -315,7 +329,7 @@ If there is only one result, open that file.
 Incremental search is turned off, and the filter is set to filenames only.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-search-filename (thisStr &optional otherWindow)
+(defun zd--search-filename (thisStr &optional otherWindow)
   "Search for deft files with string THISSTR in filename.
 Open if there is only one result (in another window if OTHERWINDOW is non-nill)."
   ;; Sanitize the filter string
@@ -347,10 +361,10 @@ Steps:
 Open if there is only one result."
   (interactive)
   (zd--check)
-  (zd-search-global (zd-lift-id (file-name-base (buffer-file-name))) t))
+  (zd--search-global (zd--lift-id (file-name-base (buffer-file-name))) t))
 #+END_SRC
 
-**** =zd-get-file-list= returns file list with search term
+**** =zd--get-file-list= returns file list with search term
 
 Get a list of the files with given search string.
 
@@ -359,7 +373,7 @@ To *fix*: sorting of results.
 The code searches for the given string and returns =deft-current-files=.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-get-file-list (srch)
+(defun zd--get-file-list (srch)
   "Return a list of files with the search item SRCH."
   (let ((deft-current-sort-method 'title))
     (deft-filter srch t)
@@ -457,14 +471,14 @@ This variable should be a string containing only one character."
   :group 'zetteldeft)
 #+END_SRC
 
-**** =zd-lift-id= filters the ID from a string
+**** =zd--lift-id= filters the ID from a string
 
 Return the zetteldeft ID from any string.
 
 Searches with a temporary buffer, from the end of the string backwards (hence the =-1= argument), which implies that the last zetteldeft string is returned.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-lift-id (str)
+(defun zd--lift-id (str)
   "Extract the zetteldeft ID from STR with the regular expression stored in `zd-id-regex'."
   (with-temp-buffer
     (insert str)
@@ -477,7 +491,7 @@ Or are there better ways than working =with-temp-buffer=?
 Here is a little test.
 
 #+BEGIN_SRC emacs-lisp :exports both :tangle no :results replace value
-(zd-lift-id "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
+(zd--lift-id "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
 #+END_SRC
 
 #+RESULTS:
@@ -511,7 +525,7 @@ Based on =deft-find-file=.
   "Open deft file FILE."
   (interactive
     (list (completing-read "Deft find file: "
-           (deft-find-all-files-no-prefix))))
+            (deft-find-all-files-no-prefix))))
   (deft-find-file file))
 #+END_SRC
 
@@ -527,7 +541,7 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zd-link-indicator (zd-lift-id file))))
+  (insert (concat zd-link-indicator (zd--lift-id file))))
 #+END_SRC
 
 **** =zd-find-file-full-title-insert= inserts id and title
@@ -572,7 +586,7 @@ When `evil' is loaded, enter instert state."
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zd-insert-title))
+  (unless empty (zd--insert-title))
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
@@ -605,11 +619,11 @@ When point is not in a link, =avy= to jump to and open a selected link.
 Prompts for a link to follow with `zd-avy-file-search' if it isn't."
   (interactive)
   (if (thing-at-point-looking-at (concat zd-link-indicator zd-id-regex))
-      (zd-search-filename (zd-lift-id (zd-get-thing-at-point)))
+      (zd--search-filename (zd--lift-id (zd--get-thing-at-point)))
     (zd-avy-file-search)))
 #+END_SRC
 
-**** =zd-avy-tag-search=
+**** =zd-avy-tag-search= selects and searches tags with =avy=
 
 Use avy to jump to a tag and search for it.
 
@@ -627,9 +641,11 @@ Tags are filtered with `zd-tag-regex'."
     (zd-search-at-point)))
 #+END_SRC
 
-**** =zd-avy-link-search=
+**** =zd-avy-link-search= selects and searches links with =avy=
 
 Use avy to jump to a link search for its ID in deft.
+This means that each note containing this ID is found.
+If you want to open the note with the ID as its name (i.e., follow a link), use =zd-avy-file-search=.
 
 Jumps to a link identifier (i.e. =zd-link-indicator=, =§= by default) and searches for the ID found.
 Note that this will not work when =zd-link-indicator= is set to nil.
@@ -644,10 +660,10 @@ Opens immediately if there is only one result."
     (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
   (save-excursion
     (avy-goto-char (string-to-char zd-link-indicator))
-    (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
+    (zd--search-global (zd--lift-id (zd--get-thing-at-point)))))
 #+END_SRC
 
-**** =zd-avy-file-search=
+**** =zd-avy-file-search= selects and follows links with =avy=
 
 Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
@@ -663,7 +679,7 @@ Open that file (in another window if OTHERWINDOW)."
     (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
   (save-excursion
     (avy-goto-char (string-to-char zd-link-indicator))
-    (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
+    (zd--search-filename (zd--lift-id (zd--get-thing-at-point)) otherWindow)))
 #+END_SRC
 
 Let's also define a function to open a file in another window.
@@ -683,14 +699,14 @@ When only one window is active, split it first."
   (require 'ace-window)
   (save-excursion
     (avy-goto-char (string-to-char zd-link-indicator))
-    (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+    (let ((ID (zd--lift-id (zd--get-thing-at-point))))
       (when (eq 1 (length (window-list))) (split-window))
       (select-window (aw-select "Select window..."))
-      (zd-search-filename ID))))
+      (zd--search-filename ID))))
 #+END_SRC
 
 *** Utility functions
-**** Deft new search
+**** =zd-deft-new-search= starts a new deft search
 
 The following function launches deft, clears the filter and enters =evil-insert-state= (when evil is used).
 
@@ -735,7 +751,7 @@ The function should also update the title declaration at the top of the file, if
 #+BEGIN_SRC emacs-lisp
 (defun zd-file-rename ()
   "Rename the current file via the deft function.
-Use this on files in the deft-directory."
+Use this on files in the `deft-directory'."
   (interactive)
   (zd--check)
     (let ((old-filename (buffer-file-name))
@@ -768,15 +784,15 @@ Does so by looking for `zd-title-prefix'."
       (goto-char (point-min))
       (when (re-search-forward (regexp-quote zd-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zd-insert-title)))))
+        (zd--insert-title)))))
 #+END_SRC
 
-**** =zd-lift-file-title= returns file title from path
+**** =zd--lift-file-title= returns file title from path
 
 Returns only the file title from a file, removing path, extension, and link ID.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-lift-file-title (zdFile)
+(defun zd--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
   (let ((baseName (file-name-base zdFile)))
@@ -785,10 +801,9 @@ ZDFILE should be a full path to a note."
      "" baseName)))
 #+END_SRC
 
-**** =zd-insert-title= inserts file title in org-mode
+**** =zd--insert-title= inserts file title in org-mode
 
 Easily insert the title of the current file.
-
 
 The code below gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
 
@@ -796,14 +811,13 @@ Below the title, an additional template string is inserted automatically.
 This string, variable =zd-title-suffix=, can be customized and is empty by default.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-insert-title ()
+(defun zd--insert-title ()
   "Insert filename of current zd note, stripped from its ID.
 Prepended by `zd-title-prefix' and appended by `zd-title-suffix'."
-  (interactive)
   (zd--check)
   (insert
     zd-title-prefix
-    (zd-lift-file-title (file-name-base (buffer-file-name)))
+    (zd--lift-file-title (file-name-base (buffer-file-name)))
     zd-title-suffix))
 #+END_SRC
 
@@ -811,7 +825,7 @@ Prefix to include before the title.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-title-prefix "#+TITLE: "
-  "Prefix string included when `zd-insert-title' is called.
+  "Prefix string included when `zd--insert-title' is called.
 Formatted for `org-mode' by default.
 Don't forget to include a space."
   :type 'string
@@ -823,7 +837,7 @@ Used when generating a new file.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-title-suffix ""
-  "String inserted below title when `zd-insert-title' is called.
+  "String inserted below title when `zd--insert-title' is called.
 Empty by default.
 Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
@@ -863,19 +877,19 @@ Steps:
   (interactive)
   (zd--check)
   (let ((ID (concat zd-link-indicator
-                    (zd-lift-id (file-name-base (buffer-file-name))))))
+                    (zd--lift-id (file-name-base (buffer-file-name))))))
     (kill-new ID)
     (message "%s" ID)))
 #+END_SRC
 
-**** =zd-id-to-full-title= returns title from ID
+**** =zd--id-to-full-title= returns title from ID
 
 Convert a zetteldeft ID into its full title.
 
 The ID should lead to only one title, obviously, so an error is thrown when this is not the case.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-id-to-full-title (zdID)
+(defun zd--id-to-full-title (zdID)
   "Return full title from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
@@ -890,21 +904,27 @@ Throws an error when either none or multiple files are found."
 :ID:       FC450309-4237-478F-BCC4-B8B773C35DA9
 :END:
 
-=zd-all-tags= puts all tags in =zd-tag-list= and returns them.
+=zd--get-all-tags= puts all tags in =zd--tag-list= and returns them.
 
 Use =zd-tag-buffer= to create a buffer with all tags.
 
-*** =zd-all-tags= returns them all
+*** =zd--get-all-tags= returns them all
 
-Extracting tags with =zd-extract-tags=.
+First, we need a variable to store the tags in.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-all-tags ()
+(defvar zd--tag-list)
+#+END_SRC
+
+Extracting tags with =zd--extract-tags=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd--get-all-tags ()
   "Return a list of all the tags found in zetteldeft files."
-  (setq zd-tag-list (list))
+  (setq zd--tag-list (list))
   (dolist (deftFile deft-all-files)
-    (zd-extract-tags deftFile))
-  zd-tag-list)
+    (zd--extract-tags deftFile))
+  zd--tag-list)
 #+END_SRC
 
 *** =zd-tag-buffer= puts all tags in a buffer
@@ -912,20 +932,20 @@ Extracting tags with =zd-extract-tags=.
 The name of the buffer we'll be using:
 
 #+BEGIN_SRC emacs-lisp
-(setq zd-tag-buffer-name "*zd-tag-buffer*")
+(defconst zd--tag-buffer-name "*zd-tag-buffer*")
 #+END_SRC
 
 And some code to create that buffer.
 
-Move to the =zd-tag-buffer-name=
+Move to the =zd--tag-buffer-name=
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-tag-buffer ()
   "Switch to the *zd-tag-buffer* and list tags."
   (interactive)
-  (switch-to-buffer zd-tag-buffer-name)
+  (switch-to-buffer zd--tag-buffer-name)
   (erase-buffer)
-  (dolist (zdTag (zd-all-tags))
+  (dolist (zdTag (zd--get-all-tags))
     (insert (format "%s \n" zdTag)))
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
@@ -935,7 +955,7 @@ Move to the =zd-tag-buffer-name=
 
 Some utility functions to achieve all of this.
 
-**** =zd-tag-format= adjusts the tag finding regex
+**** =zd--tag-format= adjusts the tag finding regex
 
 The regular expression used to filter out tags, =zd-tag-regex= works, but doesn't filter strictly enough.
 Hashtags used in URLs are also found, for example.
@@ -943,28 +963,28 @@ Hashtags used in URLs are also found, for example.
 That's why we can make the existing regex more precise by stating that tags should be positioned either be at the beginning of a new line, or preceded by a space.
 
 #+BEGIN_SRC emacs-lisp
-(setq zd-tag-format (concat "\\(^\\|\s\\)" zd-tag-regex))
+(defconst zd--tag-format (concat "\\(^\\|\s\\)" zd-tag-regex))
 #+END_SRC
 
-**** =zd-extract-tags= from a file
+**** =zd--extract-tags= from a file
 
 Open a given file in a temporary buffer.
 Loop a search for the tag regexp.
-When a tag is found, remove any whitespace from it and add it to the =zd-tag-list= if it isn't there already.
+When a tag is found, remove any whitespace from it and add it to the =zd--tag-list= if it isn't there already.
 Delete the found tag and search again.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-extract-tags (deftFile)
-  "Find all tags in DEFTFILE and add them to `zd-tag-list'."
+(defun zd--extract-tags (deftFile)
+  "Find all tags in DEFTFILE and add them to `zd--tag-list'."
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward zd-tag-format nil t)
+    (while (re-search-forward zd--tag-format nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
-        ;; Add found tag to zd-tag-list if it isn't there already
-        (unless (member foundTag zd-tag-list)
-          (push foundTag zd-tag-list)))
+        ;; Add found tag to zd--tag-list if it isn't there already
+        (unless (member foundTag zd--tag-list)
+          (push foundTag zd--tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward zd-tag-format)))))
+      (delete-region (point) (re-search-backward zd--tag-format)))))
 #+END_SRC
 
 ** Gathering notes
@@ -1006,11 +1026,11 @@ The =when= part is there so that this deletion is not attempted if the current b
 (defun zd-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
-  (let ((zdResults (zd-get-file-list zdSrch))
+  (let ((zdResults (zd--get-file-list zdSrch))
         (zdThisNote (buffer-file-name)))
     (when zdThisNote (setq zdResults (delete zdThisNote zdResults)))
     (dolist (zdFile zdResults)
-      (zd-list-entry-file-link zdFile))))
+      (zd--list-entry-file-link zdFile))))
 #+END_SRC
 
 **** =zd-insert-list-links-missing= generates list with new links
@@ -1034,21 +1054,21 @@ Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
   (zd--check)
   (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
-    (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
+    (setq zdCurrentIDs (zd--extract-links (buffer-file-name)))
     ; filter IDs from search results
-    (dolist (zdFile (zd-get-file-list zdSrch))
-      (push (zd-lift-id zdFile) zdFoundIDs))
+    (dolist (zdFile (zd--get-file-list zdSrch))
+      (push (zd--lift-id zdFile) zdFoundIDs))
     ; create new list with unique ids
     (dolist (zdID zdFoundIDs)
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
     ; remove the ID of the current buffer from said list
-    (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
+    (setq zdThisID (zd--lift-id (file-name-base (buffer-file-name))))
     (setq zdFinalIDs (delete zdThisID zdFinalIDs))
     ; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
-          (setq zdID (zd-id-to-full-title zdID))
+          (setq zdID (zd--id-to-full-title zdID))
           (insert " - " (concat zd-link-indicator zdID "\n")))
       ; unless the list is empty, then insert a message
       (insert (format zd-list-links-missing-message zdSrch)))))
@@ -1061,19 +1081,20 @@ To be able to customize this message, include a =defcustom=.
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-list-links-missing-message
   "   No missing links with search term =%s= found\n"
-  "Message to insert when no missing links are found by `zd-insert-list-links-missing'.
+  "Message to insert when no missing links are found.
+This is used by `zd-insert-list-links-missing'.
 %s will be replaced by the search term provided to
-that function."
+this function."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
 
-**** =zd-list-entry-file-link= includes a file link as list entry
+**** =zd--list-entry-file-link= includes a file link as list entry
 
 Inserts for given file a link id and title as a list entry.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-list-entry-file-link (zdFile)
+(defun zd--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
   (insert " - " (concat zd-link-indicator (file-name-base zdFile)) "\n"))
 #+END_SRC
@@ -1147,11 +1168,11 @@ Before we look at the functions, a note on limitations of the current implementa
 2. *Inclusion from second line onwards*
    Currently, the =#+INCLUDE= lines only include from the second line onwards.
    This is a work-around to prevent =#+TITLE= lines from being included (and messing up the title on =org-export=.
-   To change this, edit the inserted strings in the =zd-org-include-file= function.
+   To change this, edit the inserted strings in the =zd--org-include-file= function.
 
 3. *Sorting*
    The files included are unsorted, or rather: sorted as =deft= provides the results.
-   Attempts at sorting by title are included in =zd-get-file-list=, but not working properly.
+   Attempts at sorting by title are included in =zd--get-file-list=, but not working properly.
    As a solution, use =org-sort= manually after running =zd-org-search-include=.
 
 **** =zd-org-search-include= generates =#+INCLUDE= syntax
@@ -1164,8 +1185,8 @@ When used on =#tag=, make sure to include the =#= manually.
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
 Prompt for search string when called interactively."
   (interactive (list (read-string "tag (include the #): ")))
-  (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-org-include-file zdFile)))
+  (dolist (zdFile (zd--get-file-list zdSrch))
+    (zd--org-include-file zdFile)))
 #+END_SRC
 
 **** =zd-org-search-insert= generates titles & file content
@@ -1178,8 +1199,8 @@ Very similar to the previous function, but rather than writing syntax to include
 Files are separated by `org-mode' headers with corresponding titles.
 Prompt for search string when called interactively."
   (interactive (list (read-string "Search term: ")))
-  (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-org-insert-file zdFile)))
+  (dolist (zdFile (zd--get-file-list zdSrch))
+    (zd--org-insert-file zdFile)))
 #+END_SRC
 
 *** Helper functions
@@ -1188,7 +1209,7 @@ Prompt for search string when called interactively."
 Returns the contents of a file.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-file-contents (zdFile &optional removeLines)
+(defun zd--file-contents (zdFile &optional removeLines)
   "Insert file contents of a zetteldeft note.
 ZDFILE should be a full path to a note.
 
@@ -1200,35 +1221,35 @@ Optional: leave out first REMOVELINES lines."
     (buffer-string)))
 #+END_SRC
 
-**** =zd-org-include-file= includes a file in =org= format
+**** =zd--org-include-file= includes a file in =org= format
 
 Inserts the title as a new header, with the =#+INCLUDE= line below.
 Includes only from the second line onward, so that any =#+TITLE= lines are omitted.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-org-include-file (zdFile)
+(defun zd--org-include-file (zdFile)
   "Insert code to include org file ZDFILE."
   (insert
     ;; Insert org-mode title
-    "* " (zd-lift-file-title zdFile) "\n"
+    "* " (zd--lift-file-title zdFile) "\n"
     ;; Insert #+INCLUDE: "file.org" :lines 2-
     "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
 #+END_SRC
 
-**** =zd-org-insert-file= inserts a files content
+**** =zd--org-insert-file= inserts a files content
 
 For a file, insert its title and contents (without first 3 lines).
 
 Even better would be: without any of the lines starting with =#= at the beginning of the file.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-org-insert-file (zdFile)
+(defun zd--org-insert-file (zdFile)
   "Insert title and contents of ZDFILE."
   (insert
     ;; Insert org-mode title
-    "\n* " (zd-lift-file-title zdFile) "\n\n"
+    "\n* " (zd--lift-file-title zdFile) "\n\n"
     ;; Insert file contents (without the first 3 lines)
-    (zd-file-contents zdFile 3)))
+    (zd--file-contents zdFile 3)))
 #+END_SRC
 
 ** Creating visuals
@@ -1267,19 +1288,27 @@ An org code block with =graphviz= code for a =graph.pdf=.
 Find all notes with the provided search term.
 Loop over this list, and insert title and links for each one.
 
+The links are temporarily stored in =zd--graph-links=.
+
+#+BEGIN_SRC emacs-lisp
+(defvar zd--graph-links)
+#+END_SRC
+
+Now for the function itself.
+
 #+BEGIN_SRC emacs-lisp :results silent
 (defun zd-org-graph-search (str)
   "Insert org source block for graph with zd search results.
 STR should be the search the resulting notes of which should be included in the graph."
   (interactive (list (read-string "search string: ")))
-  (setq zd-graph--links (list))
-  (let ((zdList (zd-get-file-list str)))
+  (setq zd--graph-links (list))
+  (let ((zdList (zd--get-file-list str)))
     (insert zd-graph-syntax-begin)
     (insert "\n  // links\n")
     (dolist (oneFile zdList)
       (insert "\n")
-      (zd-graph-insert-links oneFile))
-    (zd-graph-insert-all-titles))
+      (zd--graph-insert-links oneFile))
+    (zd--graph-insert-all-titles))
   (insert zd-graph-syntax-end))
 #+END_SRC
 
@@ -1287,7 +1316,7 @@ STR should be the search the resulting notes of which should be included in the 
 
 Insert an org source code block for a graphviz presentation of a note and its connections.
 
-When links are added, they are also stored in =zd-graph--links= which is later used to insert titles.
+When links are added, they are also stored in =zd--graph-links= which is later used to insert titles.
 
 When called interactively, select a file from the completion interface.
 
@@ -1297,12 +1326,12 @@ When called interactively, select a file from the completion interface.
   (interactive (list
     (completing-read "Note to start graph from: "
       (deft-find-all-files))))
-  (setq zd-graph--links (list))
+  (setq zd--graph-links (list))
   (insert zd-graph-syntax-begin)
   (insert "\n  // base note and links \n")
-  (zd-graph-insert-links deftFile)
-  (zd-graph-insert-additional-links)
-  (zd-graph-insert-all-titles)
+  (zd--graph-insert-links deftFile)
+  (zd--graph-insert-additional-links)
+  (zd--graph-insert-all-titles)
   (insert zd-graph-syntax-end))
 #+END_SRC
 
@@ -1315,7 +1344,9 @@ Within graphviz, I advise to use =fdp=, =twopi= (which overlaps more) or =circo=
 (defcustom zd-graph-syntax-begin
   "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
   \n graph {\n"
-  "Syntax to be included at the start of the zetteldeft graph.")
+  "Syntax to be included at the start of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
 #+END_SRC
           
 **** =zd-graph-syntax-end= provides closing syntax
@@ -1323,15 +1354,17 @@ Within graphviz, I advise to use =fdp=, =twopi= (which overlaps more) or =circo=
 #+BEGIN_SRC emacs-lisp
 (defcustom zd-graph-syntax-end
   "} \n#+END_SRC\n"
-  "Syntax to be included at the end of the zetteldeft graph.")
+  "Syntax to be included at the end of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
 #+END_SRC
 
-**** =zd-extract-links= pulls links from a file
+**** =zd--extract-links= pulls links from a file
 
-Very similar to the =zd-extract-tags= function, but returns links instead of storing them.
+Very similar to the =zd--extract-tags= function, but returns links instead of storing them.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-extract-links (deftFile)
+(defun zd--extract-links (deftFile)
   "Find all links in DEFTFILE and return a list."
   (let ((zdLinks (list)))
     (with-temp-buffer
@@ -1346,27 +1379,27 @@ Very similar to the =zd-extract-tags= function, but returns links instead of sto
    zdLinks))
 #+END_SRC
 
-**** =zd-graph-insert-links= inserts graphviz links
+**** =zd--graph-insert-links= inserts graphviz links
 
 Insert the sanitized ID from the file, followed by an arrow and all of the links.
 
-Store both the deft file provided and any found files in =zd-graph--links=.
+Store both the deft file provided and any found files in =zd--graph-links=.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-graph-insert-links (deftFile)
+(defun zd--graph-insert-links (deftFile)
   "Insert links in DEFTFILE in dot graph syntax on a single line.
-Any inserted ID is also stored in `zd-graph--links'."
+Any inserted ID is also stored in `zd--graph-links'."
   (insert "  \""
-          (zd-lift-id deftFile)
+          (zd--lift-id deftFile)
           "\" -- {")
-  (dolist (oneLink (zd-extract-links deftFile))
-    (zd-graph-store-link oneLink t)
+  (dolist (oneLink (zd--extract-links deftFile))
+    (zd--graph-store-link oneLink t)
     (insert "\"" oneLink "\" "))
   (insert "}\n")
-  (zd-graph-store-link deftFile))
+  (zd--graph-store-link deftFile))
 #+END_SRC
 
-**** =zd-graph-insert-title= inserts graphviz title line
+**** =zd--graph-insert-title= inserts graphviz title line
 
 Titles have to be inserted in the correct =graphviz= format, like so:
 
@@ -1377,29 +1410,29 @@ Titles have to be inserted in the correct =graphviz= format, like so:
 The following function should achieve that.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-graph-insert-title (deftFile)
+(defun zd--graph-insert-title (deftFile)
   "Insert the DEFTFILE title definition in a one line dot graph format."
-  (let ((zdTitle (replace-regexp-in-string "\"" "" (zd-lift-file-title deftFile)))
-        (zdId    (zd-lift-id deftFile)))
+  (let ((zdTitle (replace-regexp-in-string "\"" "" (zd--lift-file-title deftFile)))
+        (zdId    (zd--lift-id deftFile)))
     (insert "  \"" zdId "\""
             " [label = \"" zdTitle " (" zd-link-indicator zdId ")\"")
     (insert "]" "\n"))
-  (zd-graph-store-link deftFile))
+  (zd--graph-store-link deftFile))
 #+END_SRC
 
 The title is taken from the file string and any additional quotes removed.
 
-**** =zd-graph-store-link= stores provided notes
+**** =zd--graph-store-link= stores provided notes
 
-For future reference, linked files are stored in =zd-graph--links=.
+For future reference, linked files are stored in =zd--graph-links=.
 This function facilitates that process.
 
 Provide a link to a file to store it.
 Simply providing an ID works too, if you provide the second argument as true.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-graph-store-link (deftFile &optional idToFile)
-  "Push DEFTFILE to zd-graph--links unless it's already there.
+(defun zd--graph-store-link (deftFile &optional idToFile)
+  "Push DEFTFILE to zd--graph-links unless it's already there.
 When IDTOFILE is non-nil, DEFTFILE is considered an id
 and the the function first looks for the corresponding file."
   (when idToFile
@@ -1407,35 +1440,35 @@ and the the function first looks for the corresponding file."
       (progn
         (deft-filter deftFile t)
         (setq deftFile (car deft-current-files)))))
-  (unless (member deftFile zd-graph--links)
-    (push deftFile zd-graph--links)))
+  (unless (member deftFile zd--graph-links)
+    (push deftFile zd--graph-links)))
 #+END_SRC
 
-**** =zd-graph-insert-additional-links= inserts stored links
+**** =zd--graph-insert-additional-links= inserts stored links
 
-Insert links stored in the =zd-graph--links= list.
+Insert links stored in the =zd--graph-links= list.
 Except the first list item, as this is considered the base file already included.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-graph-insert-additional-links ()
-  "Insert rest of `zd-graph--links'."
-  (setq zd-graph--links (cdr zd-graph--links))
-  (dolist (oneFile zd-graph--links)
-    (zd-graph-insert-links oneFile)))
+(defun zd--graph-insert-additional-links ()
+  "Insert rest of `zd--graph-links'."
+  (setq zd--graph-links (cdr zd--graph-links))
+  (dolist (oneFile zd--graph-links)
+    (zd--graph-insert-links oneFile)))
 #+END_SRC
 
-**** =zd-graph-insert-all-titles= inserts all stored titles
+**** =zd--graph-insert-all-titles= inserts all stored titles
 
-Insert all titles stored in =zd-graph--links=.
+Insert all titles stored in =zd--graph-links=.
 
 #+BEGIN_SRC emacs-lisp
-(defun zd-graph-insert-all-titles ()
-  "Insert all graphviz title lines for all links stored in `zd-graph--links'."
+(defun zd--graph-insert-all-titles ()
+  "Insert all graphviz title lines for all links stored in `zd--graph-links'."
   (insert "\n  // titles \n")
-  (dolist (oneLink zd-graph--links)
+  (dolist (oneLink zd--graph-links)
     ;; Sometimes, a 'nil' list item is present. Ignore those.
     (when oneLink
-      (zd-graph-insert-title oneLink))))
+      (zd--graph-insert-title oneLink))))
 #+END_SRC
 
 ** Aesthetics
@@ -1474,7 +1507,7 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 :PROPERTIES:
 :ID:       A220934C-8D39-47F5-8E38-86FBC064AF2D
 :END:
-*** Keybindings with =general=
+*** Keybindings for =evil= with =general=
 
 To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, I recommend =general.el= with the following setup.
 
@@ -1503,7 +1536,7 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "dr" '(zd-file-rename :wk "rename"))
 #+END_SRC
 
-*** Spacemacs keybindings
+*** Keybindings for =spacemacs=
 
 Suggested keybindings for =spacemacs=.
 
