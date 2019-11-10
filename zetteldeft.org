@@ -1,24 +1,14 @@
 #+title: Zetteldeft
 #+author: EFLS
-#+date: July 2018
+#+date: 2018-2019
 :headers:
 # By default, each block of code should tangle & evaluate silently
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle zetteldeft.el
 :end:
-:statuses:
-# Different statuses
-#+TODO: FIX(f) NEW(n) DEV(o) | DONE(d)
-# FIX: Fix needed
-# NEW: New feature, awaiting implementation
-# DEV: In development
-:end:
 :export:
 #+OPTIONS: date:nil toc:nil H:4
 #+EXPORT_FILE_NAME: ./docs/index
-# CSS
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
-# PDF
-#+LATEX_HEADER: \usepackage[]{efls-doc}
 :end:
 
 * Introduction                                 :ignore:
