@@ -252,6 +252,45 @@ In this section:
 
 :end:
 *** Search functions
+**** =zd-search-at-point= thing at point
+
+Search the thing at point.
+
+Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-at-point ()
+  "Search via `deft' with `thing-at-point' as filter.
+Thing can be a double-bracketed link, a hashtag, or a word."
+  (interactive)
+  (let ((string (zd--get-thing-at-point)))
+   (if string
+       (zd--search-global string t)
+     (user-error "No search term at point"))))
+#+END_SRC
+
+**** =zd-search-current-id= searches current id
+
+Deft search on the id of the current file.
+
+This function is useful to easily see which notes link to the current file.
+
+Result is not opened automaticaly.
+
+Steps:
+ 1. Get the filename from the current buffer.
+ 2. Lift the ID from it.
+ 3. Search with resulting string.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-search-current-id ()
+  "Search deft with the id of the current file as filter.
+Open if there is only one result."
+  (interactive)
+  (zd--check)
+  (zd--search-global (zd--lift-id (file-name-base (buffer-file-name))) t))
+#+END_SRC
+
 **** =zd--get-thing-at-point= returns string
 
 Returns the thing at point as string.
@@ -279,23 +318,6 @@ This can be
      ((thing-at-point-looking-at htag-re)
       (match-string-no-properties 1))
      (t (thing-at-point 'word t)))))
-#+END_SRC
-
-**** =zd-search-at-point= thing at point
-
-Search the thing at point.
-
-Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-search-at-point ()
-  "Search via `deft' with `thing-at-point' as filter.
-Thing can be a double-bracketed link, a hashtag, or a word."
-  (interactive)
-  (let ((string (zd--get-thing-at-point)))
-   (if string
-       (zd--search-global string t)
-     (user-error "No search term at point"))))
 #+END_SRC
 
 **** =zd--search-global= for string
@@ -340,28 +362,6 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nill).
   ;; If there is a single match, open the file
   (when (eq (length deft-current-files) 1)
     (deft-open-file (car deft-current-files) otherWindow)))
-#+END_SRC
-
-**** =zd-search-current-id= searches current id
-
-Deft search on the id of the current file.
-
-This function is useful to easily see which notes link to the current file.
-
-Result is not opened automaticaly.
-
-Steps:
- 1. Get the filename from the current buffer.
- 2. Lift the ID from it.
- 3. Search with resulting string.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-search-current-id ()
-  "Search deft with the id of the current file as filter.
-Open if there is only one result."
-  (interactive)
-  (zd--check)
-  (zd--search-global (zd--lift-id (file-name-base (buffer-file-name))) t))
 #+END_SRC
 
 **** =zd--get-file-list= returns file list with search term
@@ -457,6 +457,22 @@ Set it so that it matches strings generated with
 
 If you use a ="%Y%m%d%H%M"= format for note naming, you might want to set the regular expression to ="20[0-9]\\{10\\}"= so that it matches any string starting with =20= followed by 10 other digits.
 
+**** =zd-tag-regex= for finding tags
+
+This regular expression indicates what tags can look like.
+
+By default, tags start with a =#= or =@= and contain least one or more lower case letters.
+Dashes are allowed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zd-tag-regex "[#@][a-z-]+"
+  "Regular expression for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Note that this regular expression does not handle hashtags used in, for example, urls.
+
 **** =zd-link-indicator= prepends ID links
 
 To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
@@ -496,22 +512,6 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
-
-**** =zd-tag-regex= for finding tags
-
-This regular expression indicates what tags can look like.
-
-By default, tags start with a =#= or =@= and contain least one or more lower case letters.
-Dashes are allowed.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zd-tag-regex "[#@][a-z-]+"
-  "Regular expression for zetteldeft tags."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-Note that this regular expression does not handle hashtags used in, for example, urls.
 
 *** Finding & linking files from minibuffer
 **** =zd-find-file= opens file from minibuffer
@@ -641,28 +641,6 @@ Tags are filtered with `zd-tag-regex'."
     (zd-search-at-point)))
 #+END_SRC
 
-**** =zd-avy-link-search= selects and searches links with =avy=
-
-Use avy to jump to a link search for its ID in deft.
-This means that each note containing this ID is found.
-If you want to open the note with the ID as its name (i.e., follow a link), use =zd-avy-file-search=.
-
-Jumps to a link identifier (i.e. =zd-link-indicator=, =§= by default) and searches for the ID found.
-Note that this will not work when =zd-link-indicator= is set to nil.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd-avy-link-search ()
-  "Use `avy' to perform a deft search on a zetteldeft link.
-Links are found via `zd-link-indicator'.
-Opens immediately if there is only one result."
-  (interactive)
-  (unless zd-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
-  (save-excursion
-    (avy-goto-char (string-to-char zd-link-indicator))
-    (zd--search-global (zd--lift-id (zd--get-thing-at-point)))))
-#+END_SRC
-
 **** =zd-avy-file-search= selects and follows links with =avy=
 
 Use avy to jump to a link and find the corresponding file.
@@ -703,6 +681,28 @@ When only one window is active, split it first."
       (when (eq 1 (length (window-list))) (split-window))
       (select-window (aw-select "Select window..."))
       (zd--search-filename ID))))
+#+END_SRC
+
+**** =zd-avy-link-search= selects and searches links with =avy=
+
+Use avy to jump to a link search for its ID in deft.
+This means that each note containing this ID is found.
+If you want to open the note with the ID as its name (i.e., follow a link), use =zd-avy-file-search=.
+
+Jumps to a link identifier (i.e. =zd-link-indicator=, =§= by default) and searches for the ID found.
+Note that this will not work when =zd-link-indicator= is set to nil.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd-avy-link-search ()
+  "Use `avy' to perform a deft search on a zetteldeft link.
+Links are found via `zd-link-indicator'.
+Opens immediately if there is only one result."
+  (interactive)
+  (unless zd-link-indicator
+    (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
+  (save-excursion
+    (avy-goto-char (string-to-char zd-link-indicator))
+    (zd--search-global (zd--lift-id (zd--get-thing-at-point)))))
 #+END_SRC
 
 *** Utility functions
@@ -908,25 +908,6 @@ Throws an error when either none or multiple files are found."
 
 Use =zd-tag-buffer= to create a buffer with all tags.
 
-*** =zd--get-all-tags= returns them all
-
-First, we need a variable to store the tags in.
-
-#+BEGIN_SRC emacs-lisp
-(defvar zd--tag-list)
-#+END_SRC
-
-Extracting tags with =zd--extract-tags=.
-
-#+BEGIN_SRC emacs-lisp
-(defun zd--get-all-tags ()
-  "Return a list of all the tags found in zetteldeft files."
-  (setq zd--tag-list (list))
-  (dolist (deftFile deft-all-files)
-    (zd--extract-tags deftFile))
-  zd--tag-list)
-#+END_SRC
-
 *** =zd-tag-buffer= puts all tags in a buffer
 
 The name of the buffer we'll be using:
@@ -949,6 +930,25 @@ Move to the =zd--tag-buffer-name=
     (insert (format "%s \n" zdTag)))
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
+#+END_SRC
+
+*** =zd--get-all-tags= lists all tags
+
+First, we need a variable to store the tags in.
+
+#+BEGIN_SRC emacs-lisp
+(defvar zd--tag-list)
+#+END_SRC
+
+Extracting tags with =zd--extract-tags=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zd--get-all-tags ()
+  "Return a list of all the tags found in zetteldeft files."
+  (setq zd--tag-list (list))
+  (dolist (deftFile deft-all-files)
+    (zd--extract-tags deftFile))
+  zd--tag-list)
 #+END_SRC
 
 *** Tag extracting functions
