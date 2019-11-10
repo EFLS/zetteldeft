@@ -40,7 +40,7 @@
 (require 'deft)
 
 (unless (require 'avy nil 'no-error)
-  (user-error "Avy not installed, required for zd-avy-* functions"))
+  (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
@@ -51,23 +51,23 @@
   :group 'deft
   :link '(url-link "https://efls.github.io/zetteldeft"))
 
-(defun zd-search-at-point ()
+(defun zetteldeft-search-at-point ()
   "Search via `deft' with `thing-at-point' as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
-  (let ((string (zd--get-thing-at-point)))
+  (let ((string (zetteldeft--get-thing-at-point)))
    (if string
-       (zd--search-global string t)
+       (zetteldeft--search-global string t)
      (user-error "No search term at point"))))
 
-(defun zd-search-current-id ()
+(defun zetteldeft-search-current-id ()
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
   (interactive)
-  (zd--check)
-  (zd--search-global (zd--lift-id (file-name-base (buffer-file-name))) t))
+  (zetteldeft--check)
+  (zetteldeft--search-global (zetteldeft--lift-id (file-name-base (buffer-file-name))) t))
 
-(defun zd--get-thing-at-point ()
+(defun zetteldeft--get-thing-at-point ()
   "Return the thing at point.
 This can be
  - a link: a string between [[ brackets ]],
@@ -83,7 +83,7 @@ This can be
       (match-string-no-properties 1))
      (t (thing-at-point 'word t)))))
 
-(defun zd--search-global (str &optional dntOpn)
+(defun zetteldeft--search-global (str &optional dntOpn)
   "Search deft with STR as filter.
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
@@ -97,7 +97,7 @@ If there is only one result, open that file (unless DNTOPN is true)."
    (when (eq (length deft-current-files) 1)
      (deft-open-file (car deft-current-files)))))
 
-(defun zd--search-filename (thisStr &optional otherWindow)
+(defun zetteldeft--search-filename (thisStr &optional otherWindow)
   "Search for deft files with string THISSTR in filename.
 Open if there is only one result (in another window if OTHERWINDOW is non-nill)."
   ;; Sanitize the filter string
@@ -109,17 +109,17 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nill).
   (when (eq (length deft-current-files) 1)
     (deft-open-file (car deft-current-files) otherWindow)))
 
-(defun zd--get-file-list (srch)
+(defun zetteldeft--get-file-list (srch)
   "Return a list of files with the search item SRCH."
   (let ((deft-current-sort-method 'title))
     (deft-filter srch t)
     deft-current-files))
 
-(defcustom zd-id-format "%Y-%m-%d-%H%M"
+(defcustom zetteldeft-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
 
 Be warned: the regexp to find IDs is set separately.
-If you change this value, set `zd-id-regex' so that
+If you change this value, set `zetteldeft-id-regex' so that
 the IDs can be found.
 
 Check the documentation of the `format-time-string'
@@ -127,145 +127,145 @@ function to see which placeholders can be used."
   :type 'string
   :group 'zetteldeft)
 
-(setq deft-new-file-format zd-id-format)
+(setq deft-new-file-format zetteldeft-id-format)
 
-(defun zd-generate-id ()
-  "Generate an ID in the format of `zd-id-format'."
-  (format-time-string zd-id-format))
+(defun zetteldeft-generate-id ()
+  "Generate an ID in the format of `zetteldeft-id-format'."
+  (format-time-string zetteldeft-id-format))
 
-(defcustom zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
+(defcustom zetteldeft-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
   "The regular expression used to search for zetteldeft IDs.
 Set it so that it matches strings generated with
-`zd-id-format'."
+`zetteldeft-id-format'."
   :type 'string
   :group 'zetteldeft)
 
-(defcustom zd-tag-regex "[#@][a-z-]+"
+(defcustom zetteldeft-tag-regex "[#@][a-z-]+"
   "Regular expression for zetteldeft tags."
   :type 'string
   :group 'zetteldeft)
 
-(defcustom zd-link-indicator "§"
+(defcustom zetteldeft-link-indicator "§"
   "String to indicate zetteldeft links.
 String prepended to IDs to easily identify them as links to zetteldeft notes.
 This variable should be a string containing only one character."
   :type 'string
   :group 'zetteldeft)
 
-(defun zd--lift-id (str)
-  "Extract the zetteldeft ID from STR with the regular expression stored in `zd-id-regex'."
+(defun zetteldeft--lift-id (str)
+  "Extract the zetteldeft ID from STR with the regular expression stored in `zetteldeft-id-regex'."
   (with-temp-buffer
     (insert str)
-    (when (re-search-forward zd-id-regex nil t -1)
+    (when (re-search-forward zetteldeft-id-regex nil t -1)
       (match-string 0))))
 
-(defun zd-find-file (file)
+(defun zetteldeft-find-file (file)
   "Open deft file FILE."
   (interactive
     (list (completing-read "Deft find file: "
             (deft-find-all-files-no-prefix))))
   (deft-find-file file))
 
-(defun zd-find-file-id-insert (file)
+(defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zd-link-indicator (zd--lift-id file))))
+  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file))))
 
-(defun zd-find-file-full-title-insert (file)
+(defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zd-link-indicator (file-name-base file))))
+  (insert (concat zetteldeft-link-indicator (file-name-base file))))
 
-(defun zd-new-file (str &optional empty)
+(defun zetteldeft-new-file (str &optional empty)
   "Create a new deft file.
-Filename is `zd-id-format' appended by STR.
+Filename is `zetteldeft-id-format' appended by STR.
 No file extension needed.
 
 The title is inserted in `org-mode' format (unless EMPTY is true)
 and the file name (without extension) is added to the kill ring.
 When `evil' is loaded, enter instert state."
   (interactive (list (read-string "name: ")))
-  (let* ((zdId (zd-generate-id))
+  (let* ((zdId (zetteldeft-generate-id))
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zd--insert-title))
+  (unless empty (zetteldeft--insert-title))
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
-(defun zd-new-file-and-link (str)
-  "Insert generated id with `zd-id-format' appended with STR.
+(defun zetteldeft-new-file-and-link (str)
+  "Insert generated id with `zetteldeft-id-format' appended with STR.
 Creates new deft file with id and STR as name."
   (interactive (list (read-string "name: ")))
-  (insert zd-link-indicator (zd-generate-id) " " str)
-  (zd-new-file str))
+  (insert zetteldeft-link-indicator (zetteldeft-generate-id) " " str)
+  (zetteldeft-new-file str))
 
-(defun zd-follow-link ()
+(defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
-Prompts for a link to follow with `zd-avy-file-search' if it isn't."
+Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
-  (if (thing-at-point-looking-at (concat zd-link-indicator zd-id-regex))
-      (zd--search-filename (zd--lift-id (zd--get-thing-at-point)))
-    (zd-avy-file-search)))
+  (if (thing-at-point-looking-at (concat zetteldeft-link-indicator zetteldeft-id-regex))
+      (zetteldeft--search-filename (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
+    (zetteldeft-avy-file-search)))
 
-(defun zd-avy-tag-search ()
+(defun zetteldeft-avy-tag-search ()
   "Call on avy to jump to a tag.
-Tags are filtered with `zd-tag-regex'."
+Tags are filtered with `zetteldeft-tag-regex'."
   (interactive)
   (save-excursion
-    (avy-jump zd-tag-regex)
-    (zd-search-at-point)))
+    (avy-jump zetteldeft-tag-regex)
+    (zetteldeft-search-at-point)))
 
-(defun zd-avy-file-search (&optional otherWindow)
+(defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
-Links are found via `zd-link-indicator'
+Links are found via `zetteldeft-link-indicator'
 Open that file (in another window if OTHERWINDOW)."
   (interactive)
-  (unless zd-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
+  (unless zetteldeft-link-indicator
+    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zd-link-indicator))
-    (zd--search-filename (zd--lift-id (zd--get-thing-at-point)) otherWindow)))
+    (avy-goto-char (string-to-char zetteldeft-link-indicator))
+    (zetteldeft--search-filename (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
 
-(defun zd-avy-file-search-ace-window ()
+(defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
 When there is only one search result, as there should be,
 open that file in a window selected through `ace-window'.
 When only one window is active, split it first."
   (interactive)
-  (unless zd-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
+  (unless zetteldeft-link-indicator
+    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (require 'ace-window)
   (save-excursion
-    (avy-goto-char (string-to-char zd-link-indicator))
-    (let ((ID (zd--lift-id (zd--get-thing-at-point))))
+    (avy-goto-char (string-to-char zetteldeft-link-indicator))
+    (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
       (when (eq 1 (length (window-list))) (split-window))
       (select-window (aw-select "Select window..."))
-      (zd--search-filename ID))))
+      (zetteldeft--search-filename ID))))
 
-(defun zd-avy-link-search ()
+(defun zetteldeft-avy-link-search ()
   "Use `avy' to perform a deft search on a zetteldeft link.
-Links are found via `zd-link-indicator'.
+Links are found via `zetteldeft-link-indicator'.
 Opens immediately if there is only one result."
   (interactive)
-  (unless zd-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zd-link-indicator' is nil"))
+  (unless zetteldeft-link-indicator
+    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zd-link-indicator))
-    (zd--search-global (zd--lift-id (zd--get-thing-at-point)))))
+    (avy-goto-char (string-to-char zetteldeft-link-indicator))
+    (zetteldeft--search-global (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))))
 
-(defun zd-deft-new-search ()
+(defun zetteldeft-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
   (interactive)
   (deft)
   (deft-filter-clear)
   (when (featurep 'evil) (evil-insert-state)))
 
-(defun zd--check ()
+(defun zetteldeft--check ()
   "Check if the currently visited file is in `zetteldeft' territory:
 whether it has `deft-directory' somewhere in its path."
   (unless (buffer-file-name)
@@ -275,11 +275,11 @@ whether it has `deft-directory' somewhere in its path."
             (buffer-file-name))
     (user-error "Not in zetteldeft territory")))
 
-(defun zd-file-rename ()
+(defun zetteldeft-file-rename ()
   "Rename the current file via the deft function.
 Use this on files in the `deft-directory'."
   (interactive)
-  (zd--check)
+  (zetteldeft--check)
     (let ((old-filename (buffer-file-name))
           (deft-dir (file-name-as-directory deft-directory))
           new-filename old-name new-name)
@@ -292,20 +292,20 @@ Use this on files in the `deft-directory'."
               (concat deft-dir new-name "." deft-default-extension))
         (rename-file old-filename new-filename)
         (deft-update-visiting-buffers old-filename new-filename)
-        (zd-update-title-in-file)
+        (zetteldeft-update-title-in-file)
         (deft-refresh))))
 
-(defun zd-update-title-in-file ()
+(defun zetteldeft-update-title-in-file ()
   "Update the title of the current file, if present.
-Does so by looking for `zd-title-prefix'."
+Does so by looking for `zetteldeft-title-prefix'."
   (save-excursion
-    (let ((zd-title-suffix ""))
+    (let ((zetteldeft-title-suffix ""))
       (goto-char (point-min))
-      (when (re-search-forward (regexp-quote zd-title-prefix) nil t)
+      (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zd--insert-title)))))
+        (zetteldeft--insert-title)))))
 
-(defun zd--lift-file-title (zdFile)
+(defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
   (let ((baseName (file-name-base zdFile)))
@@ -313,30 +313,30 @@ ZDFILE should be a full path to a note."
      "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
      "" baseName)))
 
-(defun zd--insert-title ()
+(defun zetteldeft--insert-title ()
   "Insert filename of current zd note, stripped from its ID.
-Prepended by `zd-title-prefix' and appended by `zd-title-suffix'."
-  (zd--check)
+Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'."
+  (zetteldeft--check)
   (insert
-    zd-title-prefix
-    (zd--lift-file-title (file-name-base (buffer-file-name)))
-    zd-title-suffix))
+    zetteldeft-title-prefix
+    (zetteldeft--lift-file-title (file-name-base (buffer-file-name)))
+    zetteldeft-title-suffix))
 
-(defcustom zd-title-prefix "#+TITLE: "
-  "Prefix string included when `zd--insert-title' is called.
+(defcustom zetteldeft-title-prefix "#+TITLE: "
+  "Prefix string included when `zetteldeft--insert-title' is called.
 Formatted for `org-mode' by default.
 Don't forget to include a space."
   :type 'string
   :group 'zetteldeft)
 
-(defcustom zd-title-suffix ""
-  "String inserted below title when `zd--insert-title' is called.
+(defcustom zetteldeft-title-suffix ""
+  "String inserted below title when `zetteldeft--insert-title' is called.
 Empty by default.
 Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
   :group 'zetteldeft)
 
-(defun zd-count-words ()
+(defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
   (interactive)
   (let ((numWords 0))
@@ -346,16 +346,16 @@ Don't forget to add `\\n' at the beginning to start a new line."
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
     (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
 
-(defun zd-copy-id-current-file ()
+(defun zetteldeft-copy-id-current-file ()
   "Add the id from the filename the buffer is currently visiting to the kill ring."
   (interactive)
-  (zd--check)
-  (let ((ID (concat zd-link-indicator
-                    (zd--lift-id (file-name-base (buffer-file-name))))))
+  (zetteldeft--check)
+  (let ((ID (concat zetteldeft-link-indicator
+                    (zetteldeft--lift-id (file-name-base (buffer-file-name))))))
     (kill-new ID)
     (message "%s" ID)))
 
-(defun zd--id-to-full-title (zdID)
+(defun zetteldeft--id-to-full-title (zdID)
   "Return full title from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
@@ -364,106 +364,106 @@ Throws an error when either none or multiple files are found."
     (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
   (file-name-base (car deft-current-files)))
 
-(defconst zd--tag-buffer-name "*zd-tag-buffer*")
+(defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
-(defun zd-tag-buffer ()
-  "Switch to the *zd-tag-buffer* and list tags."
+(defun zetteldeft-tag-buffer ()
+  "Switch to the *zetteldeft-tag-buffer* and list tags."
   (interactive)
-  (switch-to-buffer zd--tag-buffer-name)
+  (switch-to-buffer zetteldeft--tag-buffer-name)
   (erase-buffer)
-  (dolist (zdTag (zd--get-all-tags))
+  (dolist (zdTag (zetteldeft--get-all-tags))
     (insert (format "%s \n" zdTag)))
   (unless (eq major-mode 'org-mode) (org-mode))
   (sort-lines nil (point-min) (point-max)))
 
-(defvar zd--tag-list)
+(defvar zetteldeft--tag-list)
 
-(defun zd--get-all-tags ()
+(defun zetteldeft--get-all-tags ()
   "Return a list of all the tags found in zetteldeft files."
-  (setq zd--tag-list (list))
+  (setq zetteldeft--tag-list (list))
   (dolist (deftFile deft-all-files)
-    (zd--extract-tags deftFile))
-  zd--tag-list)
+    (zetteldeft--extract-tags deftFile))
+  zetteldeft--tag-list)
 
-(defconst zd--tag-format (concat "\\(^\\|\s\\)" zd-tag-regex))
+(defconst zetteldeft--tag-format (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 
-(defun zd--extract-tags (deftFile)
-  "Find all tags in DEFTFILE and add them to `zd--tag-list'."
+(defun zetteldeft--extract-tags (deftFile)
+  "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'."
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward zd--tag-format nil t)
+    (while (re-search-forward zetteldeft--tag-format nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
-        ;; Add found tag to zd--tag-list if it isn't there already
-        (unless (member foundTag zd--tag-list)
-          (push foundTag zd--tag-list)))
+        ;; Add found tag to zetteldeft--tag-list if it isn't there already
+        (unless (member foundTag zetteldeft--tag-list)
+          (push foundTag zetteldeft--tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward zd--tag-format)))))
+      (delete-region (point) (re-search-backward zetteldeft--tag-format)))))
 
-(defun zd-insert-list-links (zdSrch)
+(defun zetteldeft-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
-  (let ((zdResults (zd--get-file-list zdSrch))
+  (let ((zdResults (zetteldeft--get-file-list zdSrch))
         (zdThisNote (buffer-file-name)))
     (when zdThisNote (setq zdResults (delete zdThisNote zdResults)))
     (dolist (zdFile zdResults)
-      (zd--list-entry-file-link zdFile))))
+      (zetteldeft--list-entry-file-link zdFile))))
 
-(defun zd-insert-list-links-missing (zdSrch)
+(defun zetteldeft-insert-list-links-missing (zdSrch)
   "Insert a list of links to all deft files with a search string ZDSRCH.
-In contrast to `zd-insert-list-links' only include links not yet present
+In contrast to `zetteldeft-insert-list-links' only include links not yet present
 in the current file.
 Can only be called from a file in the zetteldeft directory."
   (interactive (list (read-string "search string: ")))
-  (zd--check)
+  (zetteldeft--check)
   (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
-    (setq zdCurrentIDs (zd--extract-links (buffer-file-name)))
+    (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
     ; filter IDs from search results
-    (dolist (zdFile (zd--get-file-list zdSrch))
-      (push (zd--lift-id zdFile) zdFoundIDs))
+    (dolist (zdFile (zetteldeft--get-file-list zdSrch))
+      (push (zetteldeft--lift-id zdFile) zdFoundIDs))
     ; create new list with unique ids
     (dolist (zdID zdFoundIDs)
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
     ; remove the ID of the current buffer from said list
-    (setq zdThisID (zd--lift-id (file-name-base (buffer-file-name))))
+    (setq zdThisID (zetteldeft--lift-id (file-name-base (buffer-file-name))))
     (setq zdFinalIDs (delete zdThisID zdFinalIDs))
     ; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
-          (setq zdID (zd--id-to-full-title zdID))
-          (insert " - " (concat zd-link-indicator zdID "\n")))
+          (setq zdID (zetteldeft--id-to-full-title zdID))
+          (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
       ; unless the list is empty, then insert a message
-      (insert (format zd-list-links-missing-message zdSrch)))))
+      (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
-(defcustom zd-list-links-missing-message
+(defcustom zetteldeft-list-links-missing-message
   "   No missing links with search term =%s= found\n"
   "Message to insert when no missing links are found.
-This is used by `zd-insert-list-links-missing'.
+This is used by `zetteldeft-insert-list-links-missing'.
 %s will be replaced by the search term provided to
 this function."
   :type 'string
   :group 'zetteldeft)
 
-(defun zd--list-entry-file-link (zdFile)
+(defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - " (concat zd-link-indicator (file-name-base zdFile)) "\n"))
+  (insert " - " (concat zetteldeft-link-indicator (file-name-base zdFile)) "\n"))
 
-(defun zd-org-search-include (zdSrch)
+(defun zetteldeft-org-search-include (zdSrch)
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
 Prompt for search string when called interactively."
   (interactive (list (read-string "tag (include the #): ")))
-  (dolist (zdFile (zd--get-file-list zdSrch))
-    (zd--org-include-file zdFile)))
+  (dolist (zdFile (zetteldeft--get-file-list zdSrch))
+    (zetteldeft--org-include-file zdFile)))
 
-(defun zd-org-search-insert (zdSrch)
+(defun zetteldeft-org-search-insert (zdSrch)
   "Insert the contents of all files containing ZDSRCH.
 Files are separated by `org-mode' headers with corresponding titles.
 Prompt for search string when called interactively."
   (interactive (list (read-string "Search term: ")))
-  (dolist (zdFile (zd--get-file-list zdSrch))
-    (zd--org-insert-file zdFile)))
+  (dolist (zdFile (zetteldeft--get-file-list zdSrch))
+    (zetteldeft--org-insert-file zdFile)))
 
-(defun zd--file-contents (zdFile &optional removeLines)
+(defun zetteldeft--file-contents (zdFile &optional removeLines)
   "Insert file contents of a zetteldeft note.
 ZDFILE should be a full path to a note.
 
@@ -474,101 +474,101 @@ Optional: leave out first REMOVELINES lines."
       (kill-whole-line removeLines))
     (buffer-string)))
 
-(defun zd--org-include-file (zdFile)
+(defun zetteldeft--org-include-file (zdFile)
   "Insert code to include org file ZDFILE."
   (insert
     ;; Insert org-mode title
-    "* " (zd--lift-file-title zdFile) "\n"
+    "* " (zetteldeft--lift-file-title zdFile) "\n"
     ;; Insert #+INCLUDE: "file.org" :lines 2-
     "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n\n"))
 
-(defun zd--org-insert-file (zdFile)
+(defun zetteldeft--org-insert-file (zdFile)
   "Insert title and contents of ZDFILE."
   (insert
     ;; Insert org-mode title
-    "\n* " (zd--lift-file-title zdFile) "\n\n"
+    "\n* " (zetteldeft--lift-file-title zdFile) "\n\n"
     ;; Insert file contents (without the first 3 lines)
-    (zd--file-contents zdFile 3)))
+    (zetteldeft--file-contents zdFile 3)))
 
-(defvar zd--graph-links)
+(defvar zetteldeft--graph-links)
 
-(defun zd-org-graph-search (str)
+(defun zetteldeft-org-graph-search (str)
   "Insert org source block for graph with zd search results.
 STR should be the search the resulting notes of which should be included in the graph."
   (interactive (list (read-string "search string: ")))
-  (setq zd--graph-links (list))
-  (let ((zdList (zd--get-file-list str)))
-    (insert zd-graph-syntax-begin)
+  (setq zetteldeft--graph-links (list))
+  (let ((zdList (zetteldeft--get-file-list str)))
+    (insert zetteldeft-graph-syntax-begin)
     (insert "\n  // links\n")
     (dolist (oneFile zdList)
       (insert "\n")
-      (zd--graph-insert-links oneFile))
-    (zd--graph-insert-all-titles))
-  (insert zd-graph-syntax-end))
+      (zetteldeft--graph-insert-links oneFile))
+    (zetteldeft--graph-insert-all-titles))
+  (insert zetteldeft-graph-syntax-end))
 
-(defun zd-org-graph-note (deftFile)
+(defun zetteldeft-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
   (interactive (list
     (completing-read "Note to start graph from: "
       (deft-find-all-files))))
-  (setq zd--graph-links (list))
-  (insert zd-graph-syntax-begin)
+  (setq zetteldeft--graph-links (list))
+  (insert zetteldeft-graph-syntax-begin)
   (insert "\n  // base note and links \n")
-  (zd--graph-insert-links deftFile)
-  (zd--graph-insert-additional-links)
-  (zd--graph-insert-all-titles)
-  (insert zd-graph-syntax-end))
+  (zetteldeft--graph-insert-links deftFile)
+  (zetteldeft--graph-insert-additional-links)
+  (zetteldeft--graph-insert-all-titles)
+  (insert zetteldeft-graph-syntax-end))
 
-(defcustom zd-graph-syntax-begin
+(defcustom zetteldeft-graph-syntax-begin
   "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
   \n graph {\n"
   "Syntax to be included at the start of the zetteldeft graph."
   :type 'string
   :group 'zetteldeft)
 
-(defcustom zd-graph-syntax-end
+(defcustom zetteldeft-graph-syntax-end
   "} \n#+END_SRC\n"
   "Syntax to be included at the end of the zetteldeft graph."
   :type 'string
   :group 'zetteldeft)
 
-(defun zd--extract-links (deftFile)
+(defun zetteldeft--extract-links (deftFile)
   "Find all links in DEFTFILE and return a list."
   (let ((zdLinks (list)))
     (with-temp-buffer
       (insert-file-contents deftFile)
-      (while (re-search-forward zd-id-regex nil t)
+      (while (re-search-forward zetteldeft-id-regex nil t)
         (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
           ;; Add found tag to zdLinks if it isn't there already
           (unless (member foundTag zdLinks)
             (push foundTag zdLinks)))
         ;; Remove found tag from buffer
-        (delete-region (point) (re-search-backward zd-id-regex))))
+        (delete-region (point) (re-search-backward zetteldeft-id-regex))))
    zdLinks))
 
-(defun zd--graph-insert-links (deftFile)
+(defun zetteldeft--graph-insert-links (deftFile)
   "Insert links in DEFTFILE in dot graph syntax on a single line.
-Any inserted ID is also stored in `zd--graph-links'."
+Any inserted ID is also stored in `zetteldeft--graph-links'."
   (insert "  \""
-          (zd--lift-id deftFile)
+          (zetteldeft--lift-id deftFile)
           "\" -- {")
-  (dolist (oneLink (zd--extract-links deftFile))
-    (zd--graph-store-link oneLink t)
+  (dolist (oneLink (zetteldeft--extract-links deftFile))
+    (zetteldeft--graph-store-link oneLink t)
     (insert "\"" oneLink "\" "))
   (insert "}\n")
-  (zd--graph-store-link deftFile))
+  (zetteldeft--graph-store-link deftFile))
 
-(defun zd--graph-insert-title (deftFile)
+(defun zetteldeft--graph-insert-title (deftFile)
   "Insert the DEFTFILE title definition in a one line dot graph format."
-  (let ((zdTitle (replace-regexp-in-string "\"" "" (zd--lift-file-title deftFile)))
-        (zdId    (zd--lift-id deftFile)))
+  (let ((zdTitle (replace-regexp-in-string "\"" "" (zetteldeft--lift-file-title deftFile)))
+        (zdId    (zetteldeft--lift-id deftFile)))
     (insert "  \"" zdId "\""
-            " [label = \"" zdTitle " (" zd-link-indicator zdId ")\"")
+            " [label = \"" zdTitle " (" zetteldeft-link-indicator zdId ")\"")
     (insert "]" "\n"))
-  (zd--graph-store-link deftFile))
+  (zetteldeft--graph-store-link deftFile))
 
-(defun zd--graph-store-link (deftFile &optional idToFile)
-  "Push DEFTFILE to zd--graph-links unless it's already there.
+(defun zetteldeft--graph-store-link (deftFile &optional idToFile)
+  "Push DEFTFILE to zetteldeft--graph-links unless it's already there.
 When IDTOFILE is non-nil, DEFTFILE is considered an id
 and the the function first looks for the corresponding file."
   (when idToFile
@@ -576,25 +576,25 @@ and the the function first looks for the corresponding file."
       (progn
         (deft-filter deftFile t)
         (setq deftFile (car deft-current-files)))))
-  (unless (member deftFile zd--graph-links)
-    (push deftFile zd--graph-links)))
+  (unless (member deftFile zetteldeft--graph-links)
+    (push deftFile zetteldeft--graph-links)))
 
-(defun zd--graph-insert-additional-links ()
-  "Insert rest of `zd--graph-links'."
-  (setq zd--graph-links (cdr zd--graph-links))
-  (dolist (oneFile zd--graph-links)
-    (zd--graph-insert-links oneFile)))
+(defun zetteldeft--graph-insert-additional-links ()
+  "Insert rest of `zetteldeft--graph-links'."
+  (setq zetteldeft--graph-links (cdr zetteldeft--graph-links))
+  (dolist (oneFile zetteldeft--graph-links)
+    (zetteldeft--graph-insert-links oneFile)))
 
-(defun zd--graph-insert-all-titles ()
-  "Insert all graphviz title lines for all links stored in `zd--graph-links'."
+(defun zetteldeft--graph-insert-all-titles ()
+  "Insert all graphviz title lines for all links stored in `zetteldeft--graph-links'."
   (insert "\n  // titles \n")
-  (dolist (oneLink zd--graph-links)
+  (dolist (oneLink zetteldeft--graph-links)
     ;; Sometimes, a 'nil' list item is present. Ignore those.
     (when oneLink
-      (zd--graph-insert-title oneLink))))
+      (zetteldeft--graph-insert-title oneLink))))
 
 (font-lock-add-keywords 'org-mode
-  `((,(concat zd-link-indicator zd-id-regex) . font-lock-warning-face)))
+  `((,(concat zetteldeft-link-indicator zetteldeft-id-regex) . font-lock-warning-face)))
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here
