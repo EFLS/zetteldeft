@@ -153,7 +153,8 @@ This variable should be a string containing only one character."
   :group 'zetteldeft)
 
 (defun zetteldeft--lift-id (str)
-  "Extract the zetteldeft ID from STR with the regular expression stored in `zetteldeft-id-regex'."
+  "Extract the zetteldeft ID from STR with the
+regular expression stored in `zetteldeft-id-regex'."
   (with-temp-buffer
     (insert str)
     (when (re-search-forward zetteldeft-id-regex nil t -1)
@@ -208,8 +209,10 @@ Creates new deft file with id and STR as name."
   "Follows zetteldeft link to a file if point is on a link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
-  (if (thing-at-point-looking-at (concat zetteldeft-link-indicator zetteldeft-id-regex))
-      (zetteldeft--search-filename (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
+  (if (thing-at-point-looking-at
+        (concat zetteldeft-link-indicator zetteldeft-id-regex))
+      (zetteldeft--search-filename
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
     (zetteldeft-avy-file-search)))
 
 (defun zetteldeft-avy-tag-search ()
@@ -229,7 +232,8 @@ Open that file (in another window if OTHERWINDOW)."
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
     (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (zetteldeft--search-filename (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
+    (zetteldeft--search-filename
+      (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
 
 (defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
@@ -344,10 +348,13 @@ Don't forget to add `\\n' at the beginning to start a new line."
       (with-temp-buffer
         (insert-file-contents deftFile)
         (setq numWords (+ numWords (count-words (point-min) (point-max))))))
-    (message "Your zettelkasten contains %s notes with %s words in total." (length deft-all-files) numWords)))
+    (message
+      "Your zettelkasten contains %s notes with %s words in total."
+      (length deft-all-files) numWords)))
 
 (defun zetteldeft-copy-id-current-file ()
-  "Add the id from the filename the buffer is currently visiting to the kill ring."
+  "Add the id from the filename the buffer is
+currently visiting to the kill ring."
   (interactive)
   (zetteldeft--check)
   (let ((ID (concat zetteldeft-link-indicator
@@ -560,7 +567,9 @@ Any inserted ID is also stored in `zetteldeft--graph-links'."
 
 (defun zetteldeft--graph-insert-title (deftFile)
   "Insert the DEFTFILE title definition in a one line dot graph format."
-  (let ((zdTitle (replace-regexp-in-string "\"" "" (zetteldeft--lift-file-title deftFile)))
+  (let ((zdTitle
+          (replace-regexp-in-string "\"" ""
+            (zetteldeft--lift-file-title deftFile)))
         (zdId    (zetteldeft--lift-id deftFile)))
     (insert "  \"" zdId "\""
             " [label = \"" zdTitle " (" zetteldeft-link-indicator zdId ")\"")
@@ -586,7 +595,8 @@ and the the function first looks for the corresponding file."
     (zetteldeft--graph-insert-links oneFile)))
 
 (defun zetteldeft--graph-insert-all-titles ()
-  "Insert all graphviz title lines for all links stored in `zetteldeft--graph-links'."
+  "Insert all graphviz title lines for all links
+stored in `zetteldeft--graph-links'."
   (insert "\n  // titles \n")
   (dolist (oneLink zetteldeft--graph-links)
     ;; Sometimes, a 'nil' list item is present. Ignore those.
