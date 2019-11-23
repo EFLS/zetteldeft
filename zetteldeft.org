@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *23 Nov*: Update suggested keybindings.
  - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
  - *9 Nov*: Rename internal functions & prepare for MELPA.
  - *30 May*: Rename =zetteldeft-string-after-title= to =zetteldeft-title-suffix= and add customizable =zetteldeft-title-prefix=.
@@ -136,19 +137,22 @@ Feel free to submit comments or pull requests on Github.
 ** An overview
 
 While there are many, these should be enough to get you started.
-Default keybindings are suggested at [[id:A220934C-8D39-47F5-8E38-86FBC064AF2D][the end of this document]].
 Here is an overview.
 
-| Function                       | Use                             | Keybinding |
+Note that the package itself does /not/ define any keybindings.
+You'll need to set up those yourself, but defaults are suggested at [[id:A220934C-8D39-47F5-8E38-86FBC064AF2D][the end of this document]].
+Keybindings in the overview below are preceded by =C-c d= or =SPC d=, depending on the setup.
+
+| Function                       | Description                     | Keybinding |
 |--------------------------------+---------------------------------+------------|
-| =zetteldeft-new-file=            | Create new note and open        | =SPC d n=    |
-| =zetteldeft-new-file-and-link=   | Create new note and insert link | =SPC d N=    |
-| =zetteldeft-find-file-id-insert= | Pick a note and insert a link   | =SPC d i=    |
-| =zetteldeft-follow-link=         | Follow a link                   | =SPC d f=    |
-| =zetteldeft-avy-link-search=     | Select and search a link's ID   | =SPC d l=    |
-| =zetteldeft-avy-tag-search=      | Select a tag and search for it  | =SPC d t=    |
-| =zetteldeft-search-at-point=     | Search for thing at point       | =SPC d s=    |
-| =zetteldeft-search-current-id=   | Search for id of current file   | =SPC d c=    |
+| =zetteldeft-new-file=            | Create new note and open        | =d n=        |
+| =zetteldeft-new-file-and-link=   | Create new note and insert link | =d N=        |
+| =zetteldeft-find-file-id-insert= | Pick a note and insert a link   | =d i=        |
+| =zetteldeft-follow-link=         | Follow a link                   | =d f=        |
+| =zetteldeft-avy-link-search=     | Select and search a link's ID   | =d l=        |
+| =zetteldeft-avy-tag-search=      | Select a tag and search for it  | =d t=        |
+| =zetteldeft-search-at-point=     | Search for thing at point       | =d s=        |
+| =zetteldeft-search-current-id=   | Search for id of current file   | =d c=        |
 
 Read on, dear reader, for all of this and much more.
 
@@ -1508,6 +1512,14 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 :PROPERTIES:
 :ID:       A220934C-8D39-47F5-8E38-86FBC064AF2D
 :END:
+
+The =zetteldeft= package doesn't come with any keybindings.
+You'll have to set those up yourself.
+
+Below are some suggestions.
+Don't know where to start?
+Simply copy the "Classical keybindings".
+
 *** Classical keybindings behind =C-c d=
 
 Let's bind some keys behind =C-c d=.
@@ -1536,7 +1548,8 @@ I suggest =d= for deft for mnemonic reasons, but you can of course replace this 
 
 *** Keybindings for =evil= with =general=
 
-To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, I recommend =general.el= with the following setup.
+The setup below is the one I use personally.
+It uses =general.el= for modal editing with =evil= and configures =deft= and =zetteldeft= functions behind leader key =SPC d=.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (general-define-key
@@ -1560,7 +1573,8 @@ To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, 
   "do" '(zetteldeft-find-file :wk "find file")
   "dn" '(zetteldeft-new-file :wk "new file")
   "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
-  "dr" '(zetteldeft-file-rename :wk "rename"))
+  "dr" '(zetteldeft-file-rename :wk "rename")
+  "dx" '(zetteldeft-count-words :wk "count words"))
 #+END_SRC
 
 *** Keybindings for =spacemacs=
@@ -1570,41 +1584,25 @@ Suggested keybindings for =spacemacs=.
 These can be called from anywhere behind =SPC d=.
 
 #+BEGIN_SRC emacs-lisp :tangle no
-;; Prefix
 (spacemacs/declare-prefix "d" "deft")
-;; Launch deft
+
 (spacemacs/set-leader-keys "dd" 'deft)
-(spacemacs/set-leader-keys "dD" 'zetteldeft-deft-new-search)
-;; SEARCH
- ; Search thing at point
-   (spacemacs/set-leader-keys "ds" 'zetteldeft-search-at-point)
- ; Search current file id
-   (spacemacs/set-leader-keys "dc" 'zetteldeft-search-current-id)
- ; Jump & search with avy 
- ;  search link as filename
-    (spacemacs/set-leader-keys "df" 'zetteldeft-follow-link)
-    (spacemacs/set-leader-keys "dF" 'zetteldeft-avy-file-search-ace-window)
- ;  search link as contents
-    (spacemacs/set-leader-keys "dl" 'zetteldeft-avy-link-search)
- ;  search tag as contents
-    (spacemacs/set-leader-keys "dt" 'zetteldeft-avy-tag-search)
- ;  find all tags
-    (spacemacs/set-leader-keys "dT" 'zetteldeft-tag-buffer)
-;; LINKS
- ; Insert link from filename
-   (spacemacs/set-leader-keys "di" 'zetteldeft-find-file-id-insert)
- ; Insert link with full filename
-   (spacemacs/set-leader-keys "dI" 'zetteldeft-find-file-full-title-insert)
-;; FILES
- ; Open file
-   (spacemacs/set-leader-keys "do" 'zetteldeft-find-file)
- ; Create new file
-   (spacemacs/set-leader-keys "dn" 'zetteldeft-new-file)
-   (spacemacs/set-leader-keys "dN" 'zetteldeft-new-file-and-link)
- ; Rename file
-   (spacemacs/set-leader-keys "dr" 'zetteldeft-file-rename)
-;; UTILITIES
 (spacemacs/set-leader-keys "dR" 'deft-refresh)
+(spacemacs/set-leader-keys "dD" 'zetteldeft-deft-new-search)
+(spacemacs/set-leader-keys "ds" 'zetteldeft-search-at-point)
+(spacemacs/set-leader-keys "dc" 'zetteldeft-search-current-id)
+(spacemacs/set-leader-keys "df" 'zetteldeft-follow-link)
+(spacemacs/set-leader-keys "dF" 'zetteldeft-avy-file-search-ace-window)
+(spacemacs/set-leader-keys "dl" 'zetteldeft-avy-link-search)
+(spacemacs/set-leader-keys "dt" 'zetteldeft-avy-tag-search)
+(spacemacs/set-leader-keys "dT" 'zetteldeft-tag-buffer)
+(spacemacs/set-leader-keys "di" 'zetteldeft-find-file-id-insert)
+(spacemacs/set-leader-keys "dI" 'zetteldeft-find-file-full-title-insert)
+(spacemacs/set-leader-keys "do" 'zetteldeft-find-file)
+(spacemacs/set-leader-keys "dn" 'zetteldeft-new-file)
+(spacemacs/set-leader-keys "dN" 'zetteldeft-new-file-and-link)
+(spacemacs/set-leader-keys "dr" 'zetteldeft-file-rename)
+(spacemacs/set-leader-keys "dx" 'zetteldeft-count-words)
 #+END_SRC
 
 ** Suggested =deft= setup
