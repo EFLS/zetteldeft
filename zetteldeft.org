@@ -1508,6 +1508,32 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 :PROPERTIES:
 :ID:       A220934C-8D39-47F5-8E38-86FBC064AF2D
 :END:
+*** Classical keybindings behind =C-c d=
+
+Let's bind some keys behind =C-c d=.
+
+I suggest =d= for deft for mnemonic reasons, but you can of course replace this as you like.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(global-set-key (kbd "C-c d d") 'deft)
+(global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
+(global-set-key (kbd "C-c d R") 'deft-refresh)
+(global-set-key (kbd "C-c d s") 'zetteldeft-search-at-point)
+(global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
+(global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
+(global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+(global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
+(global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
+(global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+(global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
+(global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
+(global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
+(global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
+(global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
+(global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
+(global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
+#+END_SRC
+
 *** Keybindings for =evil= with =general=
 
 To call =zetteldeft= functions from anywhere behind a leader key such as =SPC=, I recommend =general.el= with the following setup.
