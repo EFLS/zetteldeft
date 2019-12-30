@@ -223,9 +223,16 @@ Unfortunately, this change doesn't seem to be indicated with a specific version 
 So let's check whether that function is available, and show a message when it's not.
 
 #+BEGIN_SRC emacs-lisp
+(declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
     "Function `avy-jump' not available. Please update `avy'"))
+#+END_SRC
+
+Finally, let's make sure =avy-goto-char= is found as well.
+
+#+BEGIN_SRC emacs-lisp
+(declare-function avy-goto-char "avy")
 #+END_SRC
 
 *** Customization
@@ -567,6 +574,12 @@ Unless an additional parameter is provided, the title (prepended by =zetteldeft-
 When =evil= is used, enter the insert state as well.
 The full name is added to the kill ring.
 
+First, let's make sure =emacs= knows where to find =evil-insert-state=.
+
+#+BEGIN_SRC emacs-lisp
+(declare-function evil-insert-state "evil")
+#+END_SRC
+
 Note that the file is only actually created upon save.
 
 #+BEGIN_SRC emacs-lisp
@@ -662,6 +675,11 @@ Open that file (in another window if OTHERWINDOW)."
 
 Let's also define a function to open a file in another window.
 Selection of the window occurs via =ace-window=.
+
+#+BEGIN_SRC emacs-lisp
+(declare-function aw-select "ace-window")
+#+END_SRC
+
 When only one window is open, split it first.
 =ace-window= will select the other window automatically when only two are available.
 
