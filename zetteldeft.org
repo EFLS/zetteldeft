@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *30 Dec*: Minor fixes for MELPA.
  - *23 Nov*: Update suggested keybindings.
  - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
  - *9 Nov*: Rename internal functions & prepare for MELPA.
