@@ -21,7 +21,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -42,9 +42,12 @@
 (unless (require 'avy nil 'no-error)
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
+(declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
     "Function `avy-jump' not available. Please update `avy'"))
+
+(declare-function avy-goto-char "avy")
 
 (defgroup zetteldeft nil
   "A zettelkasten on top of deft."
@@ -153,8 +156,9 @@ This variable should be a string containing only one character."
   :group 'zetteldeft)
 
 (defun zetteldeft--lift-id (str)
-  "Extract the zetteldeft ID from STR with the
-regular expression stored in `zetteldeft-id-regex'."
+  "Extract zetteldeft ID from STR.
+This is done with the regular expression stored in
+`zetteldeft-id-regex'."
   (with-temp-buffer
     (insert str)
     (when (re-search-forward zetteldeft-id-regex nil t -1)
@@ -180,6 +184,8 @@ regular expression stored in `zetteldeft-id-regex'."
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
   (insert (concat zetteldeft-link-indicator (file-name-base file))))
+
+(declare-function evil-insert-state "evil")
 
 (defun zetteldeft-new-file (str &optional empty)
   "Create a new deft file.
@@ -235,6 +241,8 @@ Open that file (in another window if OTHERWINDOW)."
     (zetteldeft--search-filename
       (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
 
+(declare-function aw-select "ace-window")
+
 (defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
 When there is only one search result, as there should be,
@@ -279,6 +287,37 @@ whether it has `deft-directory' somewhere in its path."
             (buffer-file-name))
     (user-error "Not in zetteldeft territory")))
 
+(defcustom zetteldeft-title-prefix "#+TITLE: "
+  "Prefix string included when `zetteldeft--insert-title' is called.
+Formatted for `org-mode' by default.
+Don't forget to include a space."
+  :type 'string
+  :group 'zetteldeft)
+
+(defcustom zetteldeft-title-suffix ""
+  "String inserted below title when `zetteldeft--insert-title' is called.
+Empty by default.
+Don't forget to add `\\n' at the beginning to start a new line."
+  :type 'string
+  :group 'zetteldeft)
+
+(defun zetteldeft--insert-title ()
+  "Insert filename of current zd note, stripped from its ID.
+Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'."
+  (zetteldeft--check)
+  (insert
+    zetteldeft-title-prefix
+    (zetteldeft--lift-file-title (file-name-base (buffer-file-name)))
+    zetteldeft-title-suffix))
+
+(defun zetteldeft--lift-file-title (zdFile)
+  "Return the title of a zetteldeft note.
+ZDFILE should be a full path to a note."
+  (let ((baseName (file-name-base zdFile)))
+    (replace-regexp-in-string
+     "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+     "" baseName)))
+
 (defun zetteldeft-file-rename ()
   "Rename the current file via the deft function.
 Use this on files in the `deft-directory'."
@@ -309,37 +348,6 @@ Does so by looking for `zetteldeft-title-prefix'."
         (delete-region (line-beginning-position) (line-end-position))
         (zetteldeft--insert-title)))))
 
-(defun zetteldeft--lift-file-title (zdFile)
-  "Return the title of a zetteldeft note.
-ZDFILE should be a full path to a note."
-  (let ((baseName (file-name-base zdFile)))
-    (replace-regexp-in-string
-     "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-     "" baseName)))
-
-(defun zetteldeft--insert-title ()
-  "Insert filename of current zd note, stripped from its ID.
-Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'."
-  (zetteldeft--check)
-  (insert
-    zetteldeft-title-prefix
-    (zetteldeft--lift-file-title (file-name-base (buffer-file-name)))
-    zetteldeft-title-suffix))
-
-(defcustom zetteldeft-title-prefix "#+TITLE: "
-  "Prefix string included when `zetteldeft--insert-title' is called.
-Formatted for `org-mode' by default.
-Don't forget to include a space."
-  :type 'string
-  :group 'zetteldeft)
-
-(defcustom zetteldeft-title-suffix ""
-  "String inserted below title when `zetteldeft--insert-title' is called.
-Empty by default.
-Don't forget to add `\\n' at the beginning to start a new line."
-  :type 'string
-  :group 'zetteldeft)
-
 (defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
   (interactive)
@@ -353,8 +361,9 @@ Don't forget to add `\\n' at the beginning to start a new line."
       (length deft-all-files) numWords)))
 
 (defun zetteldeft-copy-id-current-file ()
-  "Add the id from the filename the buffer is
-currently visiting to the kill ring."
+  "Copy current ID.
+Add the id from the filename the buffer is currently visiting to the
+kill ring."
   (interactive)
   (zetteldeft--check)
   (let ((ID (concat zetteldeft-link-indicator
@@ -415,33 +424,6 @@ Throws an error when either none or multiple files are found."
     (dolist (zdFile zdResults)
       (zetteldeft--list-entry-file-link zdFile))))
 
-(defun zetteldeft-insert-list-links-missing (zdSrch)
-  "Insert a list of links to all deft files with a search string ZDSRCH.
-In contrast to `zetteldeft-insert-list-links' only include links not yet present
-in the current file.
-Can only be called from a file in the zetteldeft directory."
-  (interactive (list (read-string "search string: ")))
-  (zetteldeft--check)
-  (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
-    (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
-    ; filter IDs from search results
-    (dolist (zdFile (zetteldeft--get-file-list zdSrch))
-      (push (zetteldeft--lift-id zdFile) zdFoundIDs))
-    ; create new list with unique ids
-    (dolist (zdID zdFoundIDs)
-      (unless (member zdID zdCurrentIDs)
-        (push zdID zdFinalIDs)))
-    ; remove the ID of the current buffer from said list
-    (setq zdThisID (zetteldeft--lift-id (file-name-base (buffer-file-name))))
-    (setq zdFinalIDs (delete zdThisID zdFinalIDs))
-    ; finally find full title for each ID and insert it
-    (if zdFinalIDs
-        (dolist (zdID zdFinalIDs)
-          (setq zdID (zetteldeft--id-to-full-title zdID))
-          (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
-      ; unless the list is empty, then insert a message
-      (insert (format zetteldeft-list-links-missing-message zdSrch)))))
-
 (defcustom zetteldeft-list-links-missing-message
   "   No missing links with search term =%s= found\n"
   "Message to insert when no missing links are found.
@@ -450,6 +432,33 @@ This is used by `zetteldeft-insert-list-links-missing'.
 this function."
   :type 'string
   :group 'zetteldeft)
+
+(defun zetteldeft-insert-list-links-missing (zdSrch)
+  "Insert a list of links to all deft files with a search string ZDSRCH.
+In contrast to `zetteldeft-insert-list-links' only include links not
+yet present in the current file. Can only be called from a file in the
+zetteldeft directory."
+  (interactive (list (read-string "search string: ")))
+  (zetteldeft--check)
+  (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
+    (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
+    ;; filter IDs from search results
+    (dolist (zdFile (zetteldeft--get-file-list zdSrch))
+      (push (zetteldeft--lift-id zdFile) zdFoundIDs))
+    ;; create new list with unique ids
+    (dolist (zdID zdFoundIDs)
+      (unless (member zdID zdCurrentIDs)
+        (push zdID zdFinalIDs)))
+    ;; remove the ID of the current buffer from said list
+    (setq zdThisID (zetteldeft--lift-id (file-name-base (buffer-file-name))))
+    (setq zdFinalIDs (delete zdThisID zdFinalIDs))
+    ;; finally find full title for each ID and insert it
+    (if zdFinalIDs
+        (dolist (zdID zdFinalIDs)
+          (setq zdID (zetteldeft--id-to-full-title zdID))
+          (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
+      ;; unless the list is empty, then insert a message
+      (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
@@ -497,6 +506,19 @@ Optional: leave out first REMOVELINES lines."
     ;; Insert file contents (without the first 3 lines)
     (zetteldeft--file-contents zdFile 3)))
 
+(defcustom zetteldeft-graph-syntax-begin
+  "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
+  \n graph {\n"
+  "Syntax to be included at the start of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
+
+(defcustom zetteldeft-graph-syntax-end
+  "} \n#+END_SRC\n"
+  "Syntax to be included at the end of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
+
 (defvar zetteldeft--graph-links)
 
 (defun zetteldeft-org-graph-search (str)
@@ -525,19 +547,6 @@ STR should be the search the resulting notes of which should be included in the 
   (zetteldeft--graph-insert-additional-links)
   (zetteldeft--graph-insert-all-titles)
   (insert zetteldeft-graph-syntax-end))
-
-(defcustom zetteldeft-graph-syntax-begin
-  "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
-  \n graph {\n"
-  "Syntax to be included at the start of the zetteldeft graph."
-  :type 'string
-  :group 'zetteldeft)
-
-(defcustom zetteldeft-graph-syntax-end
-  "} \n#+END_SRC\n"
-  "Syntax to be included at the end of the zetteldeft graph."
-  :type 'string
-  :group 'zetteldeft)
 
 (defun zetteldeft--extract-links (deftFile)
   "Find all links in DEFTFILE and return a list."
@@ -595,8 +604,8 @@ and the the function first looks for the corresponding file."
     (zetteldeft--graph-insert-links oneFile)))
 
 (defun zetteldeft--graph-insert-all-titles ()
-  "Insert all graphviz title lines for all links
-stored in `zetteldeft--graph-links'."
+  "Insert graphviz title lines.
+Does this for all links stored in `zetteldeft--graph-links'."
   (insert "\n  // titles \n")
   (dolist (oneLink zetteldeft--graph-links)
     ;; Sometimes, a 'nil' list item is present. Ignore those.
