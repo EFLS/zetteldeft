@@ -190,7 +190,7 @@ Some declaration.
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -490,8 +490,9 @@ Searches with a temporary buffer, from the end of the string backwards (hence th
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--lift-id (str)
-  "Extract the zetteldeft ID from STR with the
-regular expression stored in `zetteldeft-id-regex'."
+  "Extract zetteldeft ID from STR.
+This is done with the regular expression stored in
+`zetteldeft-id-regex'."
   (with-temp-buffer
     (insert str)
     (when (re-search-forward zetteldeft-id-regex nil t -1)
@@ -874,8 +875,9 @@ Steps:
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-copy-id-current-file ()
-  "Add the id from the filename the buffer is
-currently visiting to the kill ring."
+  "Copy current ID.
+Add the id from the filename the buffer is currently visiting to the
+kill ring."
   (interactive)
   (zetteldeft--check)
   (let ((ID (concat zetteldeft-link-indicator
@@ -1050,29 +1052,29 @@ The most immediate solution is for the user to be wary of this, remove any previ
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-insert-list-links-missing (zdSrch)
   "Insert a list of links to all deft files with a search string ZDSRCH.
-In contrast to `zetteldeft-insert-list-links' only include links not yet present
-in the current file.
-Can only be called from a file in the zetteldeft directory."
+In contrast to `zetteldeft-insert-list-links' only include links not
+yet present in the current file. Can only be called from a file in the
+zetteldeft directory."
   (interactive (list (read-string "search string: ")))
   (zetteldeft--check)
   (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
     (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
-    ; filter IDs from search results
+    ;; filter IDs from search results
     (dolist (zdFile (zetteldeft--get-file-list zdSrch))
       (push (zetteldeft--lift-id zdFile) zdFoundIDs))
-    ; create new list with unique ids
+    ;; create new list with unique ids
     (dolist (zdID zdFoundIDs)
       (unless (member zdID zdCurrentIDs)
         (push zdID zdFinalIDs)))
-    ; remove the ID of the current buffer from said list
+    ;; remove the ID of the current buffer from said list
     (setq zdThisID (zetteldeft--lift-id (file-name-base (buffer-file-name))))
     (setq zdFinalIDs (delete zdThisID zdFinalIDs))
-    ; finally find full title for each ID and insert it
+    ;; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
           (setq zdID (zetteldeft--id-to-full-title zdID))
           (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
-      ; unless the list is empty, then insert a message
+      ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 #+END_SRC
 
@@ -1467,8 +1469,8 @@ Insert all titles stored in =zetteldeft--graph-links=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--graph-insert-all-titles ()
-  "Insert all graphviz title lines for all links
-stored in `zetteldeft--graph-links'."
+  "Insert graphviz title lines.
+Does this for all links stored in `zetteldeft--graph-links'."
   (insert "\n  // titles \n")
   (dolist (oneLink zetteldeft--graph-links)
     ;; Sometimes, a 'nil' list item is present. Ignore those.
