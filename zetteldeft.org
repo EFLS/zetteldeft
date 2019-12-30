@@ -1042,11 +1042,25 @@ The =when= part is there so that this deletion is not attempted if the current b
 Does the same as the above function, but only inserts IDs that aren't already present in the current file.
 In contrast with =zetteldeft-insert-list-links=, this function can only be used from within a zetteldeft note.
 
-This is especially handy when you want to check wheter all notes with a certain tag are linked to, or simply to list notes with a specific tag that are not linked to yet.
+When no missing links are found, i.e. all the notes with the provided strings are already linked to in the current note, a message is printed instead.
+To be able to customize this message, include a =defcustom=.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-list-links-missing-message
+  "   No missing links with search term =%s= found\n"
+  "Message to insert when no missing links are found.
+This is used by `zetteldeft-insert-list-links-missing'.
+%s will be replaced by the search term provided to
+this function."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Including missing links is especially handy when you want to check wheter all notes with a certain tag are mentioned in a note, or simply to list notes with a specific tag that are not linked to yet.
 Similar to the function above, filter out ID of the current note.
 In contrast to the function above, this one works with IDs rather than full paths.
 
-Another fundamental *shortcoming* of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run /no/ links will be included...
+A fundamental *shortcoming* of this piece of code, is that after it is executed, the note now includes the previously missing ID links, which in turn means that on the next run /no/ links will be included...
 The most immediate solution is for the user to be wary of this, remove any previously inserted links, save the buffer and refresh the deft cache with =deft-refresh= before calling this function.
 
 #+BEGIN_SRC emacs-lisp
@@ -1076,21 +1090,6 @@ zetteldeft directory."
           (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
-#+END_SRC
-
-When no missing links are found, i.e. all the notes with the provided strings are already linked to in the current note, a message is printed instead.
-
-To be able to customize this message, include a =defcustom=.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-list-links-missing-message
-  "   No missing links with search term =%s= found\n"
-  "Message to insert when no missing links are found.
-This is used by `zetteldeft-insert-list-links-missing'.
-%s will be replaced by the search term provided to
-this function."
-  :type 'string
-  :group 'zetteldeft)
 #+END_SRC
 
 **** =zetteldeft--list-entry-file-link= includes a file link as list entry
