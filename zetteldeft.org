@@ -1283,6 +1283,35 @@ The resulting graph looks something like this:
 
 It's worth noting, again, that this is very provisional.
  
+*** Customizable elements
+
+We begin by setting up some customizable parts: syntax that should go at the start and the end of the =org-mode= source blocks that will be generated.
+
+**** =zetteldeft-graph-syntax-begin= provides opening syntax
+
+Within graphviz, I advise to use =fdp=, =twopi= (which overlaps more) or =circo= as layouts.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-graph-syntax-begin
+  "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
+  \n graph {\n"
+  "Syntax to be included at the start of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+**** =zetteldeft-graph-syntax-end= provides closing syntax
+
+This merely closes the source block.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-graph-syntax-end
+  "} \n#+END_SRC\n"
+  "Syntax to be included at the end of the zetteldeft graph."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
 *** Graph functions
 **** =zetteldeft-org-graph-search= creates graph from search string
 
@@ -1339,29 +1368,6 @@ When called interactively, select a file from the completion interface.
 #+END_SRC
 
 *** Building blocks
-**** =zetteldeft-graph-syntax-begin= provides opening syntax
-
-Within graphviz, I advise to use =fdp=, =twopi= (which overlaps more) or =circo= as layouts.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-graph-syntax-begin
-  "#+BEGIN_SRC dot :file ./graph.pdf :cmdline -Kfdp -Tpdf
-  \n graph {\n"
-  "Syntax to be included at the start of the zetteldeft graph."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-          
-**** =zetteldeft-graph-syntax-end= provides closing syntax
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-graph-syntax-end
-  "} \n#+END_SRC\n"
-  "Syntax to be included at the end of the zetteldeft graph."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
 **** =zetteldeft--extract-links= pulls links from a file
 
 Very similar to the =zetteldeft--extract-tags= function, but returns links instead of storing them.
