@@ -222,7 +222,7 @@ Some declaration.
 (require 'thingatpt)
 #+END_SRC
 
-Since february 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
+Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
 Unfortunately, this change doesn't seem to be indicated with a specific version number.
 So let's check whether that function is available, and show a message when it's not.
 
@@ -281,7 +281,7 @@ Deft search on the id of the current file.
 
 This function is useful to easily see which notes link to the current file.
 
-Result is not opened automaticaly.
+Result is not opened automatically.
 
 Steps:
  1. Get the filename from the current buffer.
@@ -358,7 +358,7 @@ Incremental search is turned off, and the filter is set to filenames only.
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--search-filename (thisStr &optional otherWindow)
   "Search for deft files with string THISSTR in filename.
-Open if there is only one result (in another window if OTHERWINDOW is non-nill)."
+Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
   ;; Sanitize the filter string
   (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
   ;; Call deft search on the filter string
@@ -476,7 +476,7 @@ Dashes are allowed.
   :group 'zetteldeft)
 #+END_SRC
 
-Note that this regular expression does not handle hashtags used in, for example, urls.
+Note that this regular expression does not handle hashtags used in, for example, URLs.
 
 **** =zetteldeft-link-indicator= prepends ID links
 
@@ -593,7 +593,7 @@ No file extension needed.
 
 The title is inserted in `org-mode' format (unless EMPTY is true)
 and the file name (without extension) is added to the kill ring.
-When `evil' is loaded, enter instert state."
+When `evil' is loaded, enter insert state."
   (interactive (list (read-string "name: ")))
   (let* ((zdId (zetteldeft-generate-id))
          (zdName (concat zdId " " str)))
@@ -660,7 +660,7 @@ Tags are filtered with `zetteldeft-tag-regex'."
 
 Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
-That file is then opend (in another window if requested).
+That file is then opened (in another window if requested).
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-avy-file-search (&optional otherWindow)
@@ -995,7 +995,7 @@ That's why we can make the existing regex more precise by stating that tags shou
 
 Open a given file in a temporary buffer.
 Loop a search for the tag regexp.
-When a tag is found, remove any whitespace from it and add it to the =zetteldeft--tag-list= if it isn't there already.
+When a tag is found, remove any white space from it and add it to the =zetteldeft--tag-list= if it isn't there already.
 Delete the found tag and search again.
 
 #+BEGIN_SRC emacs-lisp
@@ -1077,7 +1077,7 @@ this function."
   :group 'zetteldeft)
 #+END_SRC
 
-Including missing links is especially handy when you want to check wheter all notes with a certain tag are mentioned in a note, or simply to list notes with a specific tag that are not linked to yet.
+Including missing links is especially handy when you want to check whether all notes with a certain tag are mentioned in a note, or simply to list notes with a specific tag that are not linked to yet.
 Similar to the function above, filter out ID of the current note.
 In contrast to the function above, this one works with IDs rather than full paths.
 
@@ -1184,7 +1184,7 @@ A final caveat: don't put the file with the above code in you =deft= folder, or 
 
 Before we look at the functions, a note on limitations of the current implementation.
 
-1. *Over-enthousiastic inclusion*
+1. *Over-enthusiastic inclusion*
    Sometimes, a tag appears in a file without the need for it to be included.
    For example, a file with a list of all tags will also include the tag one wants.
    In the future, this might be resolved by filtering, for example with http://ergoemacs.org/emacs/elisp_filter_list.html.
@@ -1290,8 +1290,8 @@ In this section:
 
 Linking notes together in plain text is fun, but sometimes you want to visualize which notes are connected.
 
-The following functions attempt to provide said functionallity, but are in a very early stage of development.
-They generate an org source block for =graphviz=, which can then be executed to generate a pdf.
+The following functions attempt to provide said functionality, but are in a very early stage of development.
+They generate an org source block for =graphviz=, which can then be executed to generate a PDF.
 
 A brief introduction:
  - =zetteldeft-org-graph-search= creates a graph with all the notes containing a provided string.
@@ -1708,8 +1708,8 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 Some ideas for the future.
 
-- Export HTML with clickeable links between notes.
+- Export HTML with clickable links between notes.
 - Export markdown through =pandoc=.
-- Create a minor mode to higlight links & tags and display clickeable links.
+- Create a minor mode to highlight links & tags and display clickable links.
 - Saved searches, somewhere easily accessible.
    

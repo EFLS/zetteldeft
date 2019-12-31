@@ -42,6 +42,8 @@
 (unless (require 'avy nil 'no-error)
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
+(require 'thingatpt)
+
 (declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
@@ -76,7 +78,6 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag: string starting with §, # or @
  - or a word."
- (require 'thingatpt)
  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
         (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
    (cond
@@ -102,7 +103,7 @@ If there is only one result, open that file (unless DNTOPN is true)."
 
 (defun zetteldeft--search-filename (thisStr &optional otherWindow)
   "Search for deft files with string THISSTR in filename.
-Open if there is only one result (in another window if OTHERWINDOW is non-nill)."
+Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
   ;; Sanitize the filter string
   (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
   ;; Call deft search on the filter string
@@ -194,7 +195,7 @@ No file extension needed.
 
 The title is inserted in `org-mode' format (unless EMPTY is true)
 and the file name (without extension) is added to the kill ring.
-When `evil' is loaded, enter instert state."
+When `evil' is loaded, enter insert state."
   (interactive (list (read-string "name: ")))
   (let* ((zdId (zetteldeft-generate-id))
          (zdName (concat zdId " " str)))
