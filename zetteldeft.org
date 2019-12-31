@@ -211,12 +211,15 @@ Some declaration.
 *** Requirements
 
 =deft= is required, obviously, and =avy= is needed for some utility functions.
+=thingatpt= is needed to easily search & jump.
 
 #+BEGIN_SRC emacs-lisp
 (require 'deft)
 
 (unless (require 'avy nil 'no-error)
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
+
+(require 'thingatpt)
 #+END_SRC
 
 Since february 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
@@ -312,7 +315,6 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag: string starting with §, # or @
  - or a word."
- (require 'thingatpt)
  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
         (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
    (cond
