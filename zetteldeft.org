@@ -78,11 +78,10 @@ Whichever way you go, load up the package by adding the package to your load pat
 (require 'zetteldeft)
 #+END_SRC
 
-Or, if you use =use-package=, do something like:
+Or, if you use MELPA & =use-package=, installing is easy with
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package zetteldeft
-  :load-path "~/git/zetteldeft/"
   :after deft)
 #+END_SRC
 
