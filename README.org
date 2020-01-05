@@ -3,7 +3,7 @@
 
 [[http://melpa.org/#/zetteldeft][file:http://melpa.org/packages/zetteldeft-badge.svg]]
 
-The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aims to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
 Introduction, documentation, and code can be found in this single =.org= file [[https://github.com/EFLS/zetteldeft/blob/master/zetteldeft.org][here]].
 But please, read this in a more convenient format over at [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
