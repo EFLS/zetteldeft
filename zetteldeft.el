@@ -316,7 +316,7 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 ZDFILE should be a full path to a note."
   (let ((baseName (file-name-base zdFile)))
     (replace-regexp-in-string
-     (concat zetteldeft-id-regex "+[[:space:]]")
+     (concat zetteldeft-id-regex "[[:space:]]")
      "" baseName)))
 
 (defun zetteldeft-file-rename ()
