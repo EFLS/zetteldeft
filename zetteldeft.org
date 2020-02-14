@@ -63,15 +63,32 @@ It is inspired by the popular Notational Velocity.
 Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] and [[http://notational.net][notational.net]].
 
 ** Installing =zetteldeft=
+*** Installing with MELPA and =use-package=
+
+If you use MELPA & =use-package=, installing is easy.
+Simply add
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package zetteldeft
+  :after deft)
+#+END_SRC
+
+to your =init.el=.
+
+Next, configure =deft= as suggested in section [[#suggested-deft]] and add keybindings as per section [[#suggested-kb]].
+
 *** =spacemacs= installation
+
 Installing and enabling =zetteldeft= with the default configuration is straightforward with =spacemacs=:
 
- - Add the =deft= layer to your =.spacemacs= file and enable =zetteldeft= support:
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq-default dotspacemacs-configuration-layers
-  '((deft :variables deft-zetteldeft t)))
-#+END_SRC
-- Configure =deft= according to Section [[sec:deft-setup]]
+ 1. Add the =deft= layer to your =.spacemacs= file and enable =zetteldeft= support.
+    This will set default keybindings as shared in section [[#kb-spacemacs]].
+   #+BEGIN_SRC emacs-lisp :tangle no
+   (setq-default dotspacemacs-configuration-layers
+     '((deft :variables deft-zetteldeft t)))
+   #+END_SRC
+
+ 2. Configure =deft= according to section [[#deft-setup]].
 
 *** Installing directly from source
 
@@ -90,14 +107,8 @@ Whichever way you go, load up the package by adding the package to your load pat
 (require 'zetteldeft)
 #+END_SRC
 
-Or, if you use MELPA & =use-package=, installing is easy with
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package zetteldeft
-  :after deft)
-#+END_SRC
-
 and you're good to go!
+
 Well, not quite.
 First you must read on about the basics of =zetteldeft=.
 You'll also want some keybindings. Check out the [[sec:suggested-setup][suggested setup]] below.
