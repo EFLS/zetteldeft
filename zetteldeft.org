@@ -78,6 +78,9 @@ to your =init.el=.
 Next, configure =deft= as suggested in section [[#suggested-deft]] and add keybindings as per section [[#suggested-kb]].
 
 *** =spacemacs= installation
+:PROPERTIES:
+:CUSTOM_ID: install-spacemacs
+:END:
 
 Installing and enabling =zetteldeft= with the default configuration is straightforward with =spacemacs=:
 
@@ -1629,33 +1632,44 @@ It uses =general.el= for modal editing with =evil= and configures =deft= and =ze
 #+END_SRC
 
 *** Keybindings for =spacemacs=
+:PROPERTIES:
+:CUSTOM_ID: kb-spacemacs
+:END:
 
-Keybindings are defined in =deft= layer for =spacemacs=, and are reproduced below for reference. Some keybindings are
-globally available and some are only available when in an =org-mode= buffer.
-**** Global keys
+For =spacemacs=, keybindings are defined in the =deft= layer and activated when =deft-zetteldeft= is =t= (see instructions [[#install-spacemacs][above]]).
+These keybindings are reproduced below for reference.
+Some keys are available globally and some only when in an =org-mode= buffer.
 
-| Key binding   | Called function              |
-|---------------+------------------------------|
+#+CAPTION: Global keys
+| Key binding | Function                   |
+|-------------+----------------------------|
 | =SPC a n z n= | =zetteldeft-new-file=        |
 | =SPC a n z T= | =zetteldeft-tag-buffer=      |
 | =SPC a n z s= | =zetteldeft-search-at-point= |
 | =SPC a n z o= | =zetteldeft-find-file=       |
 
-**** In org-mode
+#+CAPTION: Org-mode keys
+| Key binding | Function                               |
+|-------------+----------------------------------------|
+| =SPC m z c=   | =zetteldeft-search-current-id=           |
+| =SPC m z f=   | =zetteldeft-follow-link=                 |
+| =SPC m z t=   | =zetteldeft-avy-tag-search=              |
+| =SPC m z N=   | =zetteldeft-new-file-and-link=           |
+| =SPC m z r=   | =zetteldeft-file-rename=                 |
+| =SPC m z i=   | =zetteldeft-find-file-id-insert=         |
+| =SPC m z I=   | =zetteldeft-find-file-full-title-insert= |
+| =SPC m z s=   | =zetteldeft-search-at-point=             |
+| =SPC m z l=   | =zetteldeft-avy-link-search=             |
+| =SPC m z F=   | =zetteldeft-avy-file-search-ace-window=  |
+| =SPC m z o=   | =zetteldeft-find-file=                   |
 
-| Key binding | Called function                          |
-|-------------+------------------------------------------|
-| =SPC m z c= | =zetteldeft-search-current-id=           |
-| =SPC m z f= | =zetteldeft-follow-link=                 |
-| =SPC m z t= | =zetteldeft-avy-tag-search=              |
-| =SPC m z N= | =zetteldeft-new-file-and-link=           |
-| =SPC m z r= | =zetteldeft-file-rename=                 |
-| =SPC m z i= | =zetteldeft-find-file-id-insert=         |
-| =SPC m z I= | =zetteldeft-find-file-full-title-insert= |
-| =SPC m z s= | =zetteldeft-search-at-point=             |
-| =SPC m z l= | =zetteldeft-avy-link-search=             |
-| =SPC m z F= | =zetteldeft-avy-file-search-ace-window=  |
-| =SPC m z o= | =zetteldeft-find-file=                   |
+If these don't suit you, or you would like to add different keys, doing so is trivial.
+For example:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(spacemacs/declare-prefix "d" "deft")
+(spacemacs/set-leader-keys "df" 'zetteldeft-follow-link)
+#+END_SRC
 
 ** Suggested =deft= setup
 :PROPERTIES:
