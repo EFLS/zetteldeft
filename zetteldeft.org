@@ -19,7 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *14 Feb 2020*: Documentation updates for usage with =spacemacs=.
+ - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
  - *30 Dec*: Minor fixes for MELPA.
  - *23 Nov*: Update suggested keybindings.
  - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
@@ -88,7 +88,7 @@ Installing and enabling =zetteldeft= with the default configuration is straightf
      '((deft :variables deft-zetteldeft t)))
    #+END_SRC
 
- 2. Configure =deft= according to section [[#deft-setup]].
+ 2. Configure =deft= according to section [[#suggested-deft]].
 
 *** Installing directly from source
 
@@ -111,7 +111,7 @@ and you're good to go!
 
 Well, not quite.
 First you must read on about the basics of =zetteldeft=.
-You'll also want some keybindings. Check out the [[sec:suggested-setup][suggested setup]] below.
+You'll also want some keybindings. Check out the [[#suggested-setup][suggested setup]] below.
 
 ** Basic concepts
 
@@ -124,7 +124,7 @@ This unique id can be used to *link* notes together.
 A link consists of the =§= character followed by the id.
 For example: =§2018-07-09-2115= should link to the file above.
 A link can appear anywhere in the text.
-See [[sec:id-links][below]] for advanced information about IDs and links.
+See [[#id-links][below]] for advanced information about IDs and links.
 
 When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zetteldeft-search-current-id= and =zetteldeft-avy-link-search= respectively
 
@@ -150,8 +150,8 @@ Combined with the power of =avy= to jump to any character on screen, use these t
 To open the note behind a link, use =zetteldeft-follow-link=.
 
 Want more functionality?
-How about showing a [[sec:list-tags][list of tags]] or [[sec:gathering-notes][gathering notes]] with a certain search string?
-Or maybe a [[sec:visuals][graph]] visualizing how notes are linked?
+How about showing a [[#list-tags][list of tags]] or [[#gathering-notes][gathering notes]] with a certain search string?
+Or maybe a [[#visuals][graph]] visualizing how notes are linked?
 
 Still hungry?
 I'm welcoming both contributions and suggestions.
@@ -163,7 +163,7 @@ While there are many, these should be enough to get you started.
 Here is an overview.
 
 Note that the package itself does /not/ define any keybindings.
-You'll need to set up those yourself, but defaults are suggested at [[sec:suggested-kb][the end of this document]].
+You'll need to set up those yourself, but defaults are suggested at [[#suggested-kb][the end of this document]].
 Keybindings in the overview below are preceded by =C-c d= or =SPC d=, depending on the setup.
 
 | Function                       | Description                     | Keybinding |
@@ -409,7 +409,10 @@ The code searches for the given string and returns =deft-current-files=.
 
 *** IDs, links and tags
 **** A note on nomenclature, IDs and links
-     <<sec:id-links>>
+:PROPERTIES:
+:CUSTOM_ID: id-links
+:END:
+
 
 In zetteldeft, the concepts of "links" and "IDs" have related meanings, but in the documentation they are not synonyms.
 
@@ -945,7 +948,9 @@ Throws an error when either none or multiple files are found."
 #+END_SRC
 
 ** Listing all tags
-   <<sec:list-tags>>
+:PROPERTIES:
+:CUSTOM_ID: list-tags
+:END:
 
 =zetteldeft--get-all-tags= puts all tags in =zetteldeft--tag-list= and returns them.
 
@@ -1031,7 +1036,9 @@ Delete the found tag and search again.
 #+END_SRC
 
 ** Gathering notes
-   <<sec:gathering-notes>>
+:PROPERTIES:
+:CUSTOM_ID: gathering-notes
+:END:
 :toc:
 
 In this section:
@@ -1293,7 +1300,9 @@ Even better would be: without any of the lines starting with =#= at the beginnin
 #+END_SRC
 
 ** Creating visuals
-   <<sec:visuals>>
+:PROPERTIES:
+:CUSTOM_ID: visuals
+:END:
 :toc:
 
 In this section:
@@ -1542,14 +1551,18 @@ That's all folks!
 #+END_SRC
 
 * Suggested setup
-  <<sec:suggested-setup>>
+:PROPERTIES:
+:CUSTOM_ID: suggested-setup
+:END:
 
 The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
 
 None of these code blocks are tangled into the =.el= file, they are here merely as a guide.
 
 ** Suggested =zeteldeft= keybindings
-   <<sec:suggested-kb>>
+:PROPERTIES:
+:CUSTOM_ID: suggested-kb
+:END:
 
 The =zetteldeft= package doesn't come with any keybindings.
 You'll have to set those up yourself.
@@ -1645,7 +1658,9 @@ globally available and some are only available when in an =org-mode= buffer.
 | =SPC m z o= | =zetteldeft-find-file=                   |
 
 ** Suggested =deft= setup
-   <<sec:deft-setup>>
+:PROPERTIES:
+:CUSTOM_ID: suggested-deft
+:END:
 *** Notes & extensions
 
 Note extensions are =md=, =txt= and =org=.
