@@ -1,12 +1,12 @@
 #+title: Zetteldeft
 #+author: EFLS
-#+date: 2018-2019
+#+date: 2018-2020
 :headers:
 # By default, each block of code should tangle & evaluate silently
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle zetteldeft.el
 :end:
 :export:
-#+OPTIONS: date:nil toc:nil H:4
+#+OPTIONS: date:nil toc:nil H:4 tags:nil
 #+EXPORT_FILE_NAME: ./docs/index
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
 :end:
@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
  - *30 Dec*: Minor fixes for MELPA.
  - *23 Nov*: Update suggested keybindings.
  - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
@@ -61,7 +62,38 @@ Anyway, here we go.
 It is inspired by the popular Notational Velocity.
 Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] and [[http://notational.net][notational.net]].
 
-** How to use this source
+** Installing =zetteldeft=
+*** Installing with MELPA and =use-package=
+
+If you use MELPA & =use-package=, installing is easy.
+Simply add
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package zetteldeft
+  :after deft)
+#+END_SRC
+
+to your =init.el=.
+
+Next, configure =deft= as suggested in section [[#suggested-deft]] and add keybindings as per section [[#suggested-kb]].
+
+*** =spacemacs= installation
+:PROPERTIES:
+:CUSTOM_ID: install-spacemacs
+:END:
+
+Installing and enabling =zetteldeft= with the default configuration is straightforward with =spacemacs=:
+
+ 1. Add the =deft= layer to your =.spacemacs= file and enable =zetteldeft= support.
+    This will set default keybindings as shared in section [[#kb-spacemacs]].
+   #+BEGIN_SRC emacs-lisp :tangle no
+   (setq-default dotspacemacs-configuration-layers
+     '((deft :variables deft-zetteldeft t)))
+   #+END_SRC
+
+ 2. Configure =deft= according to section [[#suggested-deft]].
+
+*** Installing directly from source
 
 This package requires:
  - =deft=, obviously
@@ -78,17 +110,11 @@ Whichever way you go, load up the package by adding the package to your load pat
 (require 'zetteldeft)
 #+END_SRC
 
-Or, if you use MELPA & =use-package=, installing is easy with
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package zetteldeft
-  :after deft)
-#+END_SRC
-
 and you're good to go!
+
 Well, not quite.
 First you must read on about the basics of =zetteldeft=.
-You'll also want some keybindings. Check out the [[id:A1DD85BF-24F3-49A6-A5AA-ADE5F58F0F2C][suggested setup]] below.
+You'll also want some keybindings. Check out the [[#suggested-setup][suggested setup]] below.
 
 ** Basic concepts
 
@@ -101,7 +127,7 @@ This unique id can be used to *link* notes together.
 A link consists of the =§= character followed by the id.
 For example: =§2018-07-09-2115= should link to the file above.
 A link can appear anywhere in the text.
-See [[id:0B9AFBF6-6F5D-4607-9FB1-B1DD42BF2C46][below]] for advanced information about IDs and links.
+See [[#id-links][below]] for advanced information about IDs and links.
 
 When searching =deft= with the *id* as a filter, you'll find both the original note (with the id in its name) and all the notes that link to this note (with the id in its body). Do so with =zetteldeft-search-current-id= and =zetteldeft-avy-link-search= respectively
 
@@ -127,8 +153,8 @@ Combined with the power of =avy= to jump to any character on screen, use these t
 To open the note behind a link, use =zetteldeft-follow-link=.
 
 Want more functionality?
-How about showing a [[id:FC450309-4237-478F-BCC4-B8B773C35DA9][list of tags]] or [[id:4B6C921E-F6EF-438A-B53D-C0A1629D424F][gathering notes]] with a certain search string?
-Or maybe a [[id:23BFEC36-C43E-4BAA-92C5-C0A7DA909754][graph]] visualizing how notes are linked?
+How about showing a [[#list-tags][list of tags]] or [[#gathering-notes][gathering notes]] with a certain search string?
+Or maybe a [[#visuals][graph]] visualizing how notes are linked?
 
 Still hungry?
 I'm welcoming both contributions and suggestions.
@@ -140,7 +166,7 @@ While there are many, these should be enough to get you started.
 Here is an overview.
 
 Note that the package itself does /not/ define any keybindings.
-You'll need to set up those yourself, but defaults are suggested at [[id:A220934C-8D39-47F5-8E38-86FBC064AF2D][the end of this document]].
+You'll need to set up those yourself, but defaults are suggested at [[#suggested-kb][the end of this document]].
 Keybindings in the overview below are preceded by =C-c d= or =SPC d=, depending on the setup.
 
 | Function                       | Description                     | Keybinding |
@@ -387,8 +413,9 @@ The code searches for the given string and returns =deft-current-files=.
 *** IDs, links and tags
 **** A note on nomenclature, IDs and links
 :PROPERTIES:
-:ID:       0B9AFBF6-6F5D-4607-9FB1-B1DD42BF2C46
+:CUSTOM_ID: id-links
 :END:
+
 
 In zetteldeft, the concepts of "links" and "IDs" have related meanings, but in the documentation they are not synonyms.
 
@@ -925,7 +952,7 @@ Throws an error when either none or multiple files are found."
 
 ** Listing all tags
 :PROPERTIES:
-:ID:       FC450309-4237-478F-BCC4-B8B773C35DA9
+:CUSTOM_ID: list-tags
 :END:
 
 =zetteldeft--get-all-tags= puts all tags in =zetteldeft--tag-list= and returns them.
@@ -1013,7 +1040,7 @@ Delete the found tag and search again.
 
 ** Gathering notes
 :PROPERTIES:
-:ID:       4B6C921E-F6EF-438A-B53D-C0A1629D424F
+:CUSTOM_ID: gathering-notes
 :END:
 :toc:
 
@@ -1277,7 +1304,7 @@ Even better would be: without any of the lines starting with =#= at the beginnin
 
 ** Creating visuals
 :PROPERTIES:
-:ID:       23BFEC36-C43E-4BAA-92C5-C0A7DA909754
+:CUSTOM_ID: visuals
 :END:
 :toc:
 
@@ -1528,7 +1555,7 @@ That's all folks!
 
 * Suggested setup
 :PROPERTIES:
-:ID:       A1DD85BF-24F3-49A6-A5AA-ADE5F58F0F2C
+:CUSTOM_ID: suggested-setup
 :END:
 
 The following assumes =deft= is loaded manually in your dotfile, it merely configures the package.
@@ -1537,7 +1564,7 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 
 ** Suggested =zeteldeft= keybindings
 :PROPERTIES:
-:ID:       A220934C-8D39-47F5-8E38-86FBC064AF2D
+:CUSTOM_ID: suggested-kb
 :END:
 
 The =zetteldeft= package doesn't come with any keybindings.
@@ -1605,34 +1632,49 @@ It uses =general.el= for modal editing with =evil= and configures =deft= and =ze
 #+END_SRC
 
 *** Keybindings for =spacemacs=
+:PROPERTIES:
+:CUSTOM_ID: kb-spacemacs
+:END:
 
-Suggested keybindings for =spacemacs=.
+For =spacemacs=, keybindings are defined in the =deft= layer and activated when =deft-zetteldeft= is =t= (see instructions [[#install-spacemacs][above]]).
+These keybindings are reproduced below for reference.
+Some keys are available globally and some only when in an =org-mode= buffer.
 
-These can be called from anywhere behind =SPC d=.
+#+CAPTION: Global keys
+| Key binding | Function                   |
+|-------------+----------------------------|
+| =SPC a n z n= | =zetteldeft-new-file=        |
+| =SPC a n z T= | =zetteldeft-tag-buffer=      |
+| =SPC a n z s= | =zetteldeft-search-at-point= |
+| =SPC a n z o= | =zetteldeft-find-file=       |
+
+#+CAPTION: Org-mode keys
+| Key binding | Function                               |
+|-------------+----------------------------------------|
+| =SPC m z c=   | =zetteldeft-search-current-id=           |
+| =SPC m z f=   | =zetteldeft-follow-link=                 |
+| =SPC m z t=   | =zetteldeft-avy-tag-search=              |
+| =SPC m z N=   | =zetteldeft-new-file-and-link=           |
+| =SPC m z r=   | =zetteldeft-file-rename=                 |
+| =SPC m z i=   | =zetteldeft-find-file-id-insert=         |
+| =SPC m z I=   | =zetteldeft-find-file-full-title-insert= |
+| =SPC m z s=   | =zetteldeft-search-at-point=             |
+| =SPC m z l=   | =zetteldeft-avy-link-search=             |
+| =SPC m z F=   | =zetteldeft-avy-file-search-ace-window=  |
+| =SPC m z o=   | =zetteldeft-find-file=                   |
+
+If these don't suit you, or you would like to add different keys, doing so is trivial.
+For example:
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (spacemacs/declare-prefix "d" "deft")
-
-(spacemacs/set-leader-keys "dd" 'deft)
-(spacemacs/set-leader-keys "dR" 'deft-refresh)
-(spacemacs/set-leader-keys "dD" 'zetteldeft-deft-new-search)
-(spacemacs/set-leader-keys "ds" 'zetteldeft-search-at-point)
-(spacemacs/set-leader-keys "dc" 'zetteldeft-search-current-id)
 (spacemacs/set-leader-keys "df" 'zetteldeft-follow-link)
-(spacemacs/set-leader-keys "dF" 'zetteldeft-avy-file-search-ace-window)
-(spacemacs/set-leader-keys "dl" 'zetteldeft-avy-link-search)
-(spacemacs/set-leader-keys "dt" 'zetteldeft-avy-tag-search)
-(spacemacs/set-leader-keys "dT" 'zetteldeft-tag-buffer)
-(spacemacs/set-leader-keys "di" 'zetteldeft-find-file-id-insert)
-(spacemacs/set-leader-keys "dI" 'zetteldeft-find-file-full-title-insert)
-(spacemacs/set-leader-keys "do" 'zetteldeft-find-file)
-(spacemacs/set-leader-keys "dn" 'zetteldeft-new-file)
-(spacemacs/set-leader-keys "dN" 'zetteldeft-new-file-and-link)
-(spacemacs/set-leader-keys "dr" 'zetteldeft-file-rename)
-(spacemacs/set-leader-keys "dx" 'zetteldeft-count-words)
 #+END_SRC
 
 ** Suggested =deft= setup
+:PROPERTIES:
+:CUSTOM_ID: suggested-deft
+:END:
 *** Notes & extensions
 
 Note extensions are =md=, =txt= and =org=.
