@@ -1,6 +1,6 @@
 ;;; zetteldeft.el --- Turn deft into a zettelkasten system -*- lexical-binding: t -*-
 
-;; Copyright (C) 2018-2019  EFLS
+;; Copyright (C) 2018-2020  EFLS
 
 ;; Author: EFLS <Elias Storms>
 ;; URL: https://efls.github.io/zetteldeft/
@@ -76,18 +76,21 @@ Open if there is only one result."
   "Return the thing at point.
 This can be
  - a link: a string between [[ brackets ]],
- - a tag: string starting with §, # or @
+ - a tag matching `zetteldeft-tag-regex',
+ - a link matching `zetteldeft-link-indicator' and
+    `zettteldeft-id-regex',
  - or a word."
- (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (htag-re (concat "\\(["
-                         zetteldeft-link-indicator
-                         "#@][[:alnum:]_-]+\\)")))
+ (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
+        (link-id-re (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (htag-re zetteldeft-tag-regex))
    (cond
-    ((thing-at-point-looking-at link-re)
+    ((thing-at-point-looking-at link-brackets-re)
       (match-string-no-properties 1))
-     ((thing-at-point-looking-at htag-re)
-      (match-string-no-properties 1))
-     (t (thing-at-point 'word t)))))
+    ((thing-at-point-looking-at link-id-re)
+      (match-string-no-properties 0))
+    ((thing-at-point-looking-at htag-re)
+      (match-string-no-properties 0))
+    (t (thing-at-point 'word t)))))
 
 (defun zetteldeft--search-global (str &optional dntOpn)
   "Search deft with STR as filter.
@@ -247,8 +250,8 @@ Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
 Tags are filtered with `zetteldeft-tag-regex'."
   (interactive)
   (save-excursion
-    (avy-jump zetteldeft-tag-regex)
-    (zetteldeft-search-at-point)))
+    (when (consp (avy-jump zetteldeft-tag-regex))
+      (zetteldeft-search-at-point))))
 
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.

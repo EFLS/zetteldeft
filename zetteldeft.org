@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
  - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
  - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
  - *30 Dec*: Minor fixes for MELPA.
