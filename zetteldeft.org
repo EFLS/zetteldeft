@@ -736,10 +736,13 @@ Open that file (in another window if OTHERWINDOW)."
   (unless zetteldeft-link-indicator
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (zetteldeft--search-filename
-      (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (zetteldeft--search-filename
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 #+END_SRC
+
+Function =avy-goto-char= returns a cons cell if the character is found and otherwise returns =t=.
+That's why the =(when (consp= is needed.
 
 Let's also define a function to open a file in another window.
 Selection of the window occurs via =ace-window=.
@@ -762,11 +765,11 @@ When only one window is active, split it first."
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (require 'ace-window)
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
-      (when (eq 1 (length (window-list))) (split-window))
-      (select-window (aw-select "Select window..."))
-      (zetteldeft--search-filename ID))))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
+        (when (eq 1 (length (window-list))) (split-window))
+        (select-window (aw-select "Select window..."))
+        (zetteldeft--search-filename ID)))))
 #+END_SRC
 
 **** =zetteldeft-avy-link-search= selects and searches links with =avy=
@@ -787,8 +790,9 @@ Opens immediately if there is only one result."
   (unless zetteldeft-link-indicator
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (zetteldeft--search-global (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (zetteldeft--search-global
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 #+END_SRC
 
 *** Utility functions
