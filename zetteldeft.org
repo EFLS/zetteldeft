@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
  - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
  - *30 Dec*: Minor fixes for MELPA.
  - *23 Nov*: Update suggested keybindings.
@@ -76,6 +77,8 @@ Simply add
 to your =init.el=.
 
 Next, configure =deft= as suggested in section [[#suggested-deft]] and add keybindings as per section [[#suggested-kb]].
+
+An installation of =avy= is required, as it is used for some functions that make following links easier.
 
 *** =spacemacs= installation
 :PROPERTIES:
@@ -195,7 +198,7 @@ Some declaration.
 #+BEGIN_SRC emacs-lisp
 ;;; zetteldeft.el --- Turn deft into a zettelkasten system -*- lexical-binding: t -*-
 
-;; Copyright (C) 2018-2019  EFLS
+;; Copyright (C) 2018-2020  EFLS
 
 ;; Author: EFLS <Elias Storms>
 ;; URL: https://efls.github.io/zetteldeft/
@@ -555,7 +558,7 @@ Dashes are allowed.
   :group 'zetteldeft)
 #+END_SRC
 
-Note that this regular expression does not handle hashtags used in, for example, URLs.
+Note that this regular may trip over =#= symbols used in URLS.
 
 **** =zetteldeft--lift-id= filters the ID from a string
 
@@ -689,7 +692,7 @@ Creates new deft file with id and STR as name."
 
 This is a wrapper function to follow links to a file.
 When point is in a link, open the note it links to.
-When point is not in a link, =avy= to jump to and open a selected link.
+When point is not in a link, call =avy= to jump to and open a selected link.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-follow-link ()
@@ -774,7 +777,7 @@ When only one window is active, split it first."
 
 **** =zetteldeft-avy-link-search= selects and searches links with =avy=
 
-Use avy to jump to a link search for its ID in deft.
+Use avy to jump to a link and search for its ID in deft.
 This means that each note containing this ID is found.
 If you want to open the note with the ID as its name (i.e., follow a link), use =zetteldeft-avy-file-search=.
 
@@ -1146,7 +1149,7 @@ this function."
   :group 'zetteldeft)
 #+END_SRC
 
-Including missing links is especially handy when you want to check whether all notes with a certain tag are mentioned in a note, or simply to list notes with a specific tag that are not linked to yet.
+Including missing links is especially handy when you want to check whether all notes with a certain tag are mentioned in a note, or simply to list notes with a specific tag that are not linked to yet (in the current note).
 Similar to the function above, filter out ID of the current note.
 In contrast to the function above, this one works with IDs rather than full paths.
 
