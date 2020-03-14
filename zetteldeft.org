@@ -328,7 +328,8 @@ Returns the thing at point as string.
 
 Tries to get, in the following order:
  - links between =[[=
- - hashtags: =§=, =#= or =@=
+ - hashtags beginning with =#= or =@=
+ - links starting with the =zetteldeft-link-indicator=
  - words
 
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
@@ -341,7 +342,9 @@ This can be
  - a tag: string starting with §, # or @
  - or a word."
  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
+        (htag-re (concat "\\(["
+                         zetteldeft-link-indicator
+                         "#@][[:alnum:]_-]+\\)")))
    (cond
     ((thing-at-point-looking-at link-re)
       (match-string-no-properties 1))
