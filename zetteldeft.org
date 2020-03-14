@@ -521,10 +521,25 @@ Set it so that it matches strings generated with
 `zetteldeft-id-format'."
   :type 'string
   :group 'zetteldeft
-  :set 'zetteldeft--font-lock-setup)
+  :set 'zetteldeft--id-font-lock-setup)
 #+END_SRC
 
 If you use a ="%Y%m%d%H%M"= format for note naming, you might want to set the regular expression to ="20[0-9]\\{10\\}"= so that it matches any string starting with =20= followed by 10 other digits.
+
+**** =zetteldeft-link-indicator= prepends ID links
+
+To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
+By default, this is set to =§=, but it can be changed (or nil).
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-link-indicator "§"
+  "String to indicate zetteldeft links.
+String prepended to IDs to easily identify them as links to zetteldeft notes.
+This variable should be a string containing only one character."
+  :type 'string
+  :group 'zetteldeft
+  :set 'zetteldeft--id-font-lock-setup)
+#+END_SRC
 
 **** =zetteldeft-tag-regex= for finding tags
 
@@ -541,21 +556,6 @@ Dashes are allowed.
 #+END_SRC
 
 Note that this regular expression does not handle hashtags used in, for example, URLs.
-
-**** =zetteldeft-link-indicator= prepends ID links
-
-To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
-By default, this is set to =§=, but it can be changed (or nil).
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-link-indicator "§"
-  "String to indicate zetteldeft links.
-String prepended to IDs to easily identify them as links to zetteldeft notes.
-This variable should be a string containing only one character."
-  :type 'string
-  :group 'zetteldeft
-  :set 'zetteldeft--font-lock-setup)
-#+END_SRC
 
 **** =zetteldeft--lift-id= filters the ID from a string
 
