@@ -7,13 +7,15 @@
 :end:
 :export:
 #+OPTIONS: date:nil toc:nil H:4 tags:nil
-#+EXPORT_FILE_NAME: ./docs/index
+#+EXPORT_FILE_NAME: ./docs/zetteldeft
 #+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
 :end:
 
 * Introduction                                 :ignore:
 
 This document contains all the source code to a set of functions for =emacs= which aim to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
+
+A concice presentation about the package can be found in [[./index.org][Introducing Zetteldeft]].
 
 Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get the source.
 Read on for an introduction and some documentation.
@@ -67,6 +69,9 @@ It is inspired by the popular Notational Velocity.
 Check out [[https://jblevins.org/projects/deft/][jblevins.org/projects/deft/]] and [[http://notational.net][notational.net]].
 
 ** Installing =zetteldeft=
+:PROPERTIES:
+:CUSTOM_ID: install
+:END:
 *** Installing with MELPA and =use-package=
 
 If you use MELPA & =use-package=, installing is easy.
@@ -1639,7 +1644,7 @@ The following assumes =deft= is loaded manually in your dotfile, it merely confi
 
 None of these code blocks are tangled into the =.el= file, they are here merely as a guide.
 
-** Suggested =zeteldeft= keybindings
+** Suggested =zetteldeft= keybindings
 :PROPERTIES:
 :CUSTOM_ID: suggested-kb
 :END:

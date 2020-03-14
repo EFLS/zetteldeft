@@ -1,13 +1,61 @@
-/*
- --------------------------------
- This style borrows heavily from Kungsgeten's personal page,
- and a little from Hugo theme 'one'.
- --------------------------------
- */
+/* 
+   This stylesheet is based on Kungsgeten's personal page, 
+   and borrows some more from Hugo theme 'one'.
+*/
 
-/* Importing fonts
-   Alegreay, Alegreya Sans, Alegreya Sans SC, Cousine */
-@import url("https://fonts.googleapis.com/css?family=Alegreya|Alegreya+SC|Alegreya+Sans|Alegreya+Sans+SC|Cousine");
+/* ----- */
+/* Fonts */
+/* ----- */
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Regular.otf);
+    font-style: normal;
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Italic.otf);
+    font-style: italic;
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Black.otf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'sans';
+    src: url(fonts/IBMPlexSans-Regular.otf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'sans';
+    src: url(fonts/IBMPlexSans-Bold.otf);
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'sans-light';
+    src: url(fonts/IBMPlexSans-Regular.otf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mono';
+    src: url(fonts/IBMPlexMono-Text.otf);
+    font-style: normal;
+    font-weight: 100;
+}
+
+/* 
+    BODY
+*/
 
 html {
   padding: 0;
@@ -16,16 +64,27 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Alegreya", serif;
-  font-size: 18px;
+  font-family: 'merriweather', serif;
+  font-size: 14px;
+  line-height: 1.5;
   color: #21211a;
   background-color: #f3f3e7;
 }
 @media screen and (min-width: 530px) {
   body {
-    font-size: 21px;
+    font-size: 20px;
   }
 }
+
+p {
+    margin-top: 20px;
+}
+
+p + p {
+    margin-top: 10px;
+    /* text-indent: 10em; */
+}
+
 section {
   margin-top: 1em;
 }
@@ -38,27 +97,38 @@ section p + p {
 
 /* Quotes */
 blockquote {
-	  border-left: 3px solid #0594cb;
-	  margin-left: 20px;
-	  padding-left: 20px;
+    border-left: 3px solid #0594cb;
+    text-indent: 0em;
+    margin-left: 1em;
+    padding-left: 1em;
 }
 
 /* Heading 1 - Title */
 h1 {
-    font-family: 'Alegreya SC';
-    text-transform: lowercase;
+    font-family: 'sans', sans-serif;
     font-size: 200%;
+    font-weight: bold;
     line-height: 1.1;
-	  text-align: left;
+    text-align: left;
  /* Margins & padding */
-    margin-top: 2.5rem;
+    margin-top: 1rem;
     margin-bottom: 1em;
     padding-top: 1.5em;
+}
+.title {
+    margin-top: 0rem;
+    margin-bottom: 10pt;
+}
+.subtitle {
+  font-family: 'sans', sans-serif;
+  font-weight: normal;
+  font-size: 120%;
+  margin-bottom: 50px;
 }
 
 /* Heading 2 */
 h2 {
-    font-family: 'Alegreya Sans', sans-serif;
+    font-family: 'sans', sans-serif;
     font-size: 130%;
     line-height: 1.1;
     hyphens: none;
@@ -74,56 +144,41 @@ h2 {
 /* Other headings */
 h3,
 h4 {
-   font-family: 'Alegreya Sans', sans-serif;
+   font-family: 'sans', sans-serif;
 }
 h3 {
    margin-top: 1.5em;
    margin-bottom: 0.2rem;
 }
-h2.footnotes {
-  font-family: "Alegreya SC";
-  font-size: 100%;
-  border-bottom: none;
-  border-top: 2px solid #d7d7cd;
-  padding: 0.5rem 0
-}
-.blogcategory h2 {
-  border-bottom: 2px solid #d7d7cd;
-  margin-bottom: 0.5em;
-}
-.blogcategory ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin-left: 2.5em;
-  text-indent: -2.5em;
-}
-.blogcategory h3 {
-  font-size: 1em;
-  padding: 0;
-  margin: 0;
-}
-.todo,
-.done {
-  margin-right: 0.3em;
-  border: 1px solid #b0b09a;
-  padding: 2px;
-}
-.todo {
-  color: #00f;
-}
-.timestamp {
-  color: #b0b09a;
-}
+
 header {
   margin: 10px;
 }
+
+/* Captions */
+
+figcaption {
+    font-family: 'sans-light', sans-serif;
+    font-size: 80%;
+    text-align: center;
+}
+
+/* Table */
+caption.t-above {
+    font-family: sans;
+}
+
+.table-number{
+    display: none;
+}
+
+/* Links */
 a {
   color: #21211a;
-  -webkit-transition: 0.3s;
-  -moz-transition: 0.3s;
-  -ms-transition: 0.3s;
-  -o-transition: 0.3s;
-  transition: 0.3s;
+}
+.org-ul {
+    list-style-type: '- ';
+    padding-left: 1.5em;
 }
 a:hover {
   background-color: #d3d3a8;
@@ -149,16 +204,16 @@ a:hover {
 /* TOC */
 #table-of-contents a {
   text-decoration: none;
-  font-family: "Alegreya", serif;
+  font-family: 'sans-light', serif;
 }
 #table-of-contents ul {
-  font-family: "Alegreya SC";
+  font-family: 'sans', serif;
   list-style-type: none;
   padding-left: 1em;
 }
 pre,
 code {
-  font-family: "Cousine", monospace;
+  font-family: 'mono', monospace;
 }
 pre {
   font-size: 60%;
@@ -172,9 +227,11 @@ pre {
   }
 }
 code {
-  font-size: 85%;
+  font-size: 100%;
   background-color: #e6e6da;
   border: 1px solid #ccc;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 table {
   margin: auto;
@@ -191,28 +248,22 @@ td {
 tr:nth-child(odd) {
   background-color: #f2f2f2;
 }
+
+/* Tables */
+
 th {
-  background-color: #dadada;
-  padding: 0.3em 0;
-  border-bottom: 2px solid;
-  border-top: 2px solid;
+    background-color: #dadada;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 2px solid;
+    border-top: 2px solid;
 }
+
 .underline {
-  font-family: "Alegreya SC", sans-serif;
+  font-family: 'sans', sans-serif;
   text-transform: lowercase;
   letter-spacing: 0.5px;
   text-decoration: none;
-}
-.title {
-  margin: 0px;
-}
-.subtitle {
-  font-family: 'Alegreya';
-  text-transform: initial;
-  font-style: italic;
-  font-weight: normal;
-  font-size: 70%;
-  margin: 0;
 }
 #preamble {
   background-color: #e3e3c7;
@@ -250,54 +301,46 @@ sup {
   top: -0.4em;
 }
 
+/* --------- */
 /* Footnotes */
+/* --------- */
+
+/* Footnote header */
+.footnotes {
+  font-family: 'sans', sans-serif;
+  font-size: 100%;
+  border-bottom: none;
+  border-top: 2px solid #d7d7cd;
+  padding: 0.5rem 0
+}		  
+
+/* Full footnote */
+.footdef {
+    margin-left: 1rem;
+    text-indent: -1rem;
+    margin-bottom: 1em;
+}
+
+/* Footnote references & numbers */
 .footref::before,
 .footnum::before {
-  content: "[";
+  content: "";
 }
 .footref::after,
 .footnum::after {
-  content: "]";
+  content: "";
 }
 
-/* Sidenotes (currently not in use) */
-.sidenote {
-  display: none;
-  position: absolute;
-  left: calc(50% + 560px / 2 + 30px);
-  width: 238px;
-  text-indent: 0;
-  font-size: 85%;
+figure {
+  margin: 2em 1em;
 }
-.sidenote figure {
-  padding: 0;
-  margin: 0;
+
+img {
+    max-width: 100%;
+    height:auto;
 }
-.sidenote img {
-  max-width: sidenote-width;
-  width: 100%;
-  height: auto;
-}
-.sidenote p.footpara:not(:first-child) {
-  display: block;
-}
-@media screen and (min-width: 900px) {
-  #content.has-sidenotes #footnotes {
-    display: none;
-  }
-  #content.has-sidenotes .sidenote {
-    display: inline;
-  }
-  #content.has-sidenotes {
-    position: relative;
-    left: -13%;
-  }
-}
-@media screen and (min-width: 1150px) {
-  #content.has-sidenotes {
-    left: 0;
-  }
-}
+
+/* Figure numbers */
 .figure-number {
   display: none;
 }
