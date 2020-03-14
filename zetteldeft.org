@@ -328,7 +328,8 @@ Returns the thing at point as string.
 
 Tries to get, in the following order:
  - links between =[[=
- - hashtags: =§=, =#= or =@=
+ - hashtags beginning with =#= or =@=
+ - links starting with the =zetteldeft-link-indicator=
  - words
 
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
@@ -341,7 +342,9 @@ This can be
  - a tag: string starting with §, # or @
  - or a word."
  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
+        (htag-re (concat "\\(["
+                         zetteldeft-link-indicator
+                         "#@][[:alnum:]_-]+\\)")))
    (cond
     ((thing-at-point-looking-at link-re)
       (match-string-no-properties 1))
@@ -429,6 +432,38 @@ For example: =§2019-01-20-1433=.
 This identifying character can be changed by setting the =zetteldeft-link-indicator= variable and is =§= by default.
 Note that if this variable is set to nil, the =zetteldeft-avy-link-search= and =zetteldeft-avy-file-search= functions will not work.
 
+**** Helper function =zetteldeft--id-font-lock-setup=
+
+Before the customization, let's declare a helper function that adds a =font-lock= keyword for =org-mode= specifically.
+The function below -- courtesy of [[https://github.com/bymoz089][bymoz089]] -- is called when =zetteldeft-link-indicator= or =zetteldeft-id-regex= are customized.
+
+The function
+ 1. Removes existing keywords from the font-lock setup
+ 2. Sets the variable and value
+ 3. Adds them as font-lock keywords
+
+To highlight links, =zetteldeft-id-regex= prepended by =zetteldeft-link-indicator=.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--id-font-lock-setup (var val)
+  "Add font-lock highlighting for zetteldeft links.
+Called when `zetteldeft-link-indicator' or
+`zetteldeft-id-regex' are customized."
+  (when (and (boundp 'zetteldeft-link-indicator)
+             (boundp 'zetteldeft-id-regex))
+     (font-lock-remove-keywords 'org-mode
+        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+           . font-lock-warning-face))))
+  (set-default var val)
+  (when (and (boundp 'zetteldeft-id-regex)
+             (boundp 'zetteldeft-link-indicator))
+     (font-lock-add-keywords 'org-mode
+        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+           . font-lock-warning-face)))))
+#+END_SRC
+
+Note that highlighting is not working in org comments.
+
 **** =zetteldeft-id-format= for generating ID strings
 
 Format used to generate ids.
@@ -477,16 +512,34 @@ The default regex dictates that a zetteldeft ID should consist of:
  1. a series of exactly 4 numbers
  2. followed by exactly 3 sets of a dash and two or more numbers
 
+When customized, the function =zetteldeft--id-font-lock-setup= is so that the zetteldeft id is fontified correctly.
+
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
   "The regular expression used to search for zetteldeft IDs.
 Set it so that it matches strings generated with
 `zetteldeft-id-format'."
   :type 'string
-  :group 'zetteldeft)
+  :group 'zetteldeft
+  :set 'zetteldeft--id-font-lock-setup)
 #+END_SRC
 
 If you use a ="%Y%m%d%H%M"= format for note naming, you might want to set the regular expression to ="20[0-9]\\{10\\}"= so that it matches any string starting with =20= followed by 10 other digits.
+
+**** =zetteldeft-link-indicator= prepends ID links
+
+To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
+By default, this is set to =§=, but it can be changed (or nil).
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-link-indicator "§"
+  "String to indicate zetteldeft links.
+String prepended to IDs to easily identify them as links to zetteldeft notes.
+This variable should be a string containing only one character."
+  :type 'string
+  :group 'zetteldeft
+  :set 'zetteldeft--id-font-lock-setup)
+#+END_SRC
 
 **** =zetteldeft-tag-regex= for finding tags
 
@@ -503,20 +556,6 @@ Dashes are allowed.
 #+END_SRC
 
 Note that this regular expression does not handle hashtags used in, for example, URLs.
-
-**** =zetteldeft-link-indicator= prepends ID links
-
-To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
-By default, this is set to =§=, but it can be changed (or nil).
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-link-indicator "§"
-  "String to indicate zetteldeft links.
-String prepended to IDs to easily identify them as links to zetteldeft notes.
-This variable should be a string containing only one character."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
 
 **** =zetteldeft--lift-id= filters the ID from a string
 
@@ -697,10 +736,13 @@ Open that file (in another window if OTHERWINDOW)."
   (unless zetteldeft-link-indicator
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (zetteldeft--search-filename
-      (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow)))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (zetteldeft--search-filename
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 #+END_SRC
+
+Function =avy-goto-char= returns a cons cell if the character is found and otherwise returns =t=.
+That's why the =(when (consp= is needed.
 
 Let's also define a function to open a file in another window.
 Selection of the window occurs via =ace-window=.
@@ -723,11 +765,11 @@ When only one window is active, split it first."
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (require 'ace-window)
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
-      (when (eq 1 (length (window-list))) (split-window))
-      (select-window (aw-select "Select window..."))
-      (zetteldeft--search-filename ID))))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
+        (when (eq 1 (length (window-list))) (split-window))
+        (select-window (aw-select "Select window..."))
+        (zetteldeft--search-filename ID)))))
 #+END_SRC
 
 **** =zetteldeft-avy-link-search= selects and searches links with =avy=
@@ -748,8 +790,9 @@ Opens immediately if there is only one result."
   (unless zetteldeft-link-indicator
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (avy-goto-char (string-to-char zetteldeft-link-indicator))
-    (zetteldeft--search-global (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))))
+    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+      (zetteldeft--search-global
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 #+END_SRC
 
 *** Utility functions
@@ -1529,20 +1572,6 @@ Does this for all links stored in `zetteldeft--graph-links'."
     (when oneLink
       (zetteldeft--graph-insert-title oneLink))))
 #+END_SRC
-
-** Aesthetics
-*** Highlighting zetteldeft links
-
-To highlight zetteldeft links, let's add a =font-lock= keyword to =org-mode=.
-
-The regex used for highlighting is the =zetteldeft-id-regex= prepended by =zetteldeft-link-indicator=.
-
-#+BEGIN_SRC emacs-lisp
-(font-lock-add-keywords 'org-mode
-  `((,(concat zetteldeft-link-indicator zetteldeft-id-regex) . font-lock-warning-face)))
-#+END_SRC
-
-For some reason, highlighting is not working in org comments.
 
 ** End of package
 
