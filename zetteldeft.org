@@ -331,8 +331,8 @@ Returns the thing at point as string.
 
 Tries to get, in the following order:
  - links between =[[=
- - hashtags beginning with =#= or =@=
- - links starting with the =zetteldeft-link-indicator=
+ - hashtags according to =zetteldeft-tag-regex=
+ - links according to the =zetteldeft-link-indicator= and =zetteldeft-id-regex=
  - words
 
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
@@ -342,18 +342,21 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
   "Return the thing at point.
 This can be
  - a link: a string between [[ brackets ]],
- - a tag: string starting with §, # or @
+ - a tag matching `zetteldeft-tag-regex',
+ - a link matching `zetteldeft-link-indicator' and
+    `zettteldeft-id-regex',
  - or a word."
- (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (htag-re (concat "\\(["
-                         zetteldeft-link-indicator
-                         "#@][[:alnum:]_-]+\\)")))
+ (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
+        (link-id-re (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (htag-re zetteldeft-tag-regex))
    (cond
-    ((thing-at-point-looking-at link-re)
+    ((thing-at-point-looking-at link-brackets-re)
       (match-string-no-properties 1))
-     ((thing-at-point-looking-at htag-re)
-      (match-string-no-properties 1))
-     (t (thing-at-point 'word t)))))
+    ((thing-at-point-looking-at link-id-re)
+      (match-string-no-properties 0))
+    ((thing-at-point-looking-at htag-re)
+      (match-string-no-properties 0))
+    (t (thing-at-point 'word t)))))
 #+END_SRC
 
 **** =zetteldeft--search-global= for string
