@@ -80,8 +80,8 @@ This can be
  - or a word."
  (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
         (htag-re (concat "\\(["
-			 zetteldeft-link-indicator
-			 "#@][[:alnum:]_-]+\\)")))
+                         zetteldeft-link-indicator
+                         "#@][[:alnum:]_-]+\\)")))
    (cond
     ((thing-at-point-looking-at link-re)
       (match-string-no-properties 1))
@@ -121,6 +121,22 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
     (deft-filter srch t)
     deft-current-files))
 
+(defun zetteldeft--id-font-lock-setup (var val)
+  "Add font-lock highlighting for zetteldeft links.
+Called when `zetteldeft-link-indicator' or
+`zetteldeft-id-regex' are customized."
+  (when (and (boundp 'zetteldeft-link-indicator)
+             (boundp 'zetteldeft-id-regex))
+     (font-lock-remove-keywords 'org-mode
+        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+           . font-lock-warning-face))))
+  (set-default var val)
+  (when (and (boundp 'zetteldeft-id-regex)
+             (boundp 'zetteldeft-link-indicator))
+     (font-lock-add-keywords 'org-mode
+        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+           . font-lock-warning-face)))))
+
 (defcustom zetteldeft-id-format "%Y-%m-%d-%H%M"
   "Format used when generating zetteldeft IDs.
 
@@ -139,29 +155,13 @@ function to see which placeholders can be used."
   "Generate an ID in the format of `zetteldeft-id-format'."
   (format-time-string zetteldeft-id-format))
 
-(defun zetteldeft-font-lock-setup (var val)
-  "change link font-lock after customizing involved variables"
-  (when (and (boundp 'zetteldeft-link-indicator)
-	     (boundp 'zetteldeft-id-regex))
-      (font-lock-remove-keywords 'org-mode
-				 `((,(concat zetteldeft-link-indicator
-					     zetteldeft-id-regex)
-				    . font-lock-warning-face))))
-  (set-default var val)
-  (when (and (boundp 'zetteldeft-id-regex)
-	     (boundp 'zetteldeft-link-indicator))
-    (font-lock-add-keywords 'org-mode
-			    `((,(concat zetteldeft-link-indicator
-					zetteldeft-id-regex)
-			       . font-lock-warning-face)))))
-
 (defcustom zetteldeft-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
   "The regular expression used to search for zetteldeft IDs.
 Set it so that it matches strings generated with
 `zetteldeft-id-format'."
   :type 'string
   :group 'zetteldeft
-  :set 'zetteldeft-font-lock-setup)
+  :set 'zetteldeft--id-font-lock-setup)
 
 (defcustom zetteldeft-link-indicator "§"
   "String to indicate zetteldeft links.
@@ -169,7 +169,7 @@ String prepended to IDs to easily identify them as links to zetteldeft notes.
 This variable should be a string containing only one character."
   :type 'string
   :group 'zetteldeft
-  :set 'zetteldeft-font-lock-setup)
+  :set 'zetteldeft--id-font-lock-setup)
 
 (defcustom zetteldeft-tag-regex "[#@][a-z-]+"
   "Regular expression for zetteldeft tags."
@@ -260,7 +260,7 @@ Open that file (in another window if OTHERWINDOW)."
   (save-excursion
     (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
       (zetteldeft--search-filename
-       (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 
 (declare-function aw-select "ace-window")
 
@@ -276,9 +276,9 @@ When only one window is active, split it first."
   (save-excursion
     (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
       (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
-	(when (eq 1 (length (window-list))) (split-window))
-	(select-window (aw-select "Select window..."))
-	(zetteldeft--search-filename ID)))))
+        (when (eq 1 (length (window-list))) (split-window))
+        (select-window (aw-select "Select window..."))
+        (zetteldeft--search-filename ID)))))
 
 (defun zetteldeft-avy-link-search ()
   "Use `avy' to perform a deft search on a zetteldeft link.
@@ -289,7 +289,8 @@ Opens immediately if there is only one result."
     (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
     (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
-      (zetteldeft--search-global (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
+      (zetteldeft--search-global
+        (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
 (defun zetteldeft-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
