@@ -496,6 +496,10 @@ function to see which placeholders can be used."
 Another popular option would be to set this value to ="%Y%m%d%H%M"=, so that a similar ID is generated without any dashes.
 See below for a corresponding regular expression.
 
+Note that the default setup means that IDs are not unique when you make multiple notes per minute.
+If you plan to do so, extend the =zetteldeft-id-format= and add =%S= to include seconds.
+These IDs should still be recognized by the default =zetteldeft-id-regex= below.
+
 While we're at it, lets tell =deft= to use this format when creating new files.
 For good measure: I advise creating new notes in the =zetteldeft= system with =zetteldeft-new-file= or =zetteldeft-new-file-and-link= as defined below, rather than through =deft= itself.
 
