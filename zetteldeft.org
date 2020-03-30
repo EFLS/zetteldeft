@@ -95,13 +95,17 @@ An installation of =avy= is required, as it is used for some functions that make
 Installing and enabling =zetteldeft= with the default configuration is straightforward with =spacemacs=:
 
  1. Add the =deft= layer to your =.spacemacs= file and enable =zetteldeft= support.
-    This will set default keybindings as shared in section [[#kb-spacemacs]].
+    Locate =dotspacemacs-configuration-layers= in your =.spacemacs= and add the variables as suggested below.
+    This should install both =deft= and =zetteldeft= and load them in correct order,
+    and set default keybindings as shared in section [[#kb-spacemacs]].
    #+BEGIN_SRC emacs-lisp :tangle no
    (setq-default dotspacemacs-configuration-layers
      '((deft :variables deft-zetteldeft t)))
    #+END_SRC
 
- 2. Configure =deft= according to section [[#suggested-deft]].
+ 2. You can further configure =deft= according to section [[#suggested-deft]].
+    Do this the =spacemacs= way, i.e. in =dotspacemacs/user-config=.
+    Simply add =(setq ...)= there.
 
 *** Installing directly from source
 
