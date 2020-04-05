@@ -1688,7 +1688,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 :END:
 
 The setup below is the one I use personally.
-It uses =general.el= for modal editing with =evil= and configures =deft= and =zetteldeft= functions behind leader key =SPC d=.
+It relies on =general.el= for modal editing with =evil= and configures =deft= and =zetteldeft= functions behind leader key =SPC d=.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (general-define-key
@@ -1725,7 +1725,7 @@ For =spacemacs=, keybindings are defined in the =deft= layer and activated when 
 These keybindings are reproduced below for reference.
 Some keys are available globally and some only when in an =org-mode= buffer.
 
-#+CAPTION: Global keys
+#+CAPTION: Global keys for spacemacs
 | Key binding | Function                   |
 |-------------+----------------------------|
 | =SPC a n z n= | =zetteldeft-new-file=        |
@@ -1733,7 +1733,7 @@ Some keys are available globally and some only when in an =org-mode= buffer.
 | =SPC a n z s= | =zetteldeft-search-at-point= |
 | =SPC a n z o= | =zetteldeft-find-file=       |
 
-#+CAPTION: Org-mode keys
+#+CAPTION: Org-mode keys for spacemacs
 | Key binding | Function                               |
 |-------------+----------------------------------------|
 | =SPC m z c=   | =zetteldeft-search-current-id=           |
