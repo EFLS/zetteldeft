@@ -5,7 +5,7 @@
 ;; Author: EFLS <Elias Storms>
 ;; URL: https://efls.github.io/zetteldeft/
 ;; Keywords: deft zettelkasten zetteldeft wp files
-;; Version: 0.2
+;; Version: 0.3
 ;; Package-Requires: ((emacs "25.1") (deft "0.8"))
 
 ;; This file is not part of Emacs
@@ -636,6 +636,27 @@ Does this for all links stored in `zetteldeft--graph-links'."
     ;; Sometimes, a 'nil' list item is present. Ignore those.
     (when oneLink
       (zetteldeft--graph-insert-title oneLink))))
+
+(defun zetteldeft-set-classic-keybindings ()
+  "Sets global keybindings for `zetteldeft'."
+  (interactive)
+  (global-set-key (kbd "C-c d d") 'deft)
+  (global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
+  (global-set-key (kbd "C-c d R") 'deft-refresh)
+  (global-set-key (kbd "C-c d s") 'zetteldeft-search-at-point)
+  (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
+  (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
+  (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
+  (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
+  (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+  (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
+  (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
+  (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
+  (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
+  (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
+  (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here
