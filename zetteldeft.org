@@ -19,6 +19,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
  - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
  - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
  - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
@@ -72,12 +73,17 @@ Simply add
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package zetteldeft
-  :after deft)
+  :after deft
+  :init
+    (zetteldeft-set-classic-keybindings))
 #+END_SRC
 
 to your =init.el=.
 
-Next, configure =deft= as suggested in section [[#suggested-deft]] and add keybindings as per section [[#suggested-kb]].
+The =zetteldeft-set-classic-keybindings= sets up some defaults as per section [[#suggested-kb]].
+If you prefer =evil= style bindings, leave out this function call and take a look at [[#kb-general]].
+
+For the best experience, configure =deft= as suggested in section [[#suggested-deft]].
 
 An installation of =avy= is required, as it is used for some functions that make following links easier.
 
@@ -1584,6 +1590,41 @@ Does this for all links stored in `zetteldeft--graph-links'."
       (zetteldeft--graph-insert-title oneLink))))
 #+END_SRC
 
+** Helper function to set keybindings
+:PROPERTIES:
+:CUSTOM_ID: kb-defaults
+:END:
+
+Since =zetteldeft= doesn't provide its own minor mode, keybindings should be global.
+
+The function below sets up some defaults.
+While I'd suggest people integrate these with their personal setup, this function lowers the bar for entry.
+
+Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-kb]].
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft-set-classic-keybindings ()
+  "Sets global keybindings for `zetteldeft'."
+  (interactive)
+  (global-set-key (kbd "C-c d d") 'deft)
+  (global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
+  (global-set-key (kbd "C-c d R") 'deft-refresh)
+  (global-set-key (kbd "C-c d s") 'zetteldeft-search-at-point)
+  (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
+  (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
+  (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
+  (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
+  (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+  (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
+  (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
+  (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
+  (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
+  (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
+  (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
+#+END_SRC
+
 ** End of package
 
 That's all folks!
@@ -1607,40 +1648,44 @@ None of these code blocks are tangled into the =.el= file, they are here merely 
 :CUSTOM_ID: suggested-kb
 :END:
 
-The =zetteldeft= package doesn't come with any keybindings.
-You'll have to set those up yourself.
+Since it doesn't provide a minor mode, =zetteldeft= package doesn't have it's own keymap and doesn't set any keys by default.
+It does, however, provide a function to do that for you:
+=zetteldeft-set-classic-keybindings=.
 
-Below are some suggestions.
-Don't know where to start?
-Simply copy the "Classical keybindings".
+Calling this will bind some keys behind =C-c d=.
+To set something else, simply copy this code and do your own thing.
+
+Later paragraphs in this section suggest different setups, namely bindings for =evil= and integration with =spacemacs=.
 
 *** Classical keybindings behind =C-c d=
 
-Let's bind some keys behind =C-c d=.
+Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-defaults]]):
 
-I suggest =d= for deft for mnemonic reasons, but you can of course replace this as you like.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(global-set-key (kbd "C-c d d") 'deft)
-(global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
-(global-set-key (kbd "C-c d R") 'deft-refresh)
-(global-set-key (kbd "C-c d s") 'zetteldeft-search-at-point)
-(global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
-(global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
-(global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
-(global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
-(global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
-(global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
-(global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
-(global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
-(global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
-(global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
-(global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
-(global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
-(global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
-#+END_SRC
+#+CAPTION: Classic keys
+| Key binding | Function                               |
+|-------------+----------------------------------------|
+| =C-c d d=     | =deft=                                   |
+| =C-c d D=     | =zetteldeft-deft-new-search=             |
+| =C-c d R=     | =deft-refresh=                           |
+| =C-c d s=     | =zetteldeft-search-at-point=             |
+| =C-c d c=     | =zetteldeft-search-current-id=           |
+| =C-c d f=     | =zetteldeft-follow-link=                 |
+| =C-c d F=     | =zetteldeft-avy-file-search-ace-window=  |
+| =C-c d l=     | =zetteldeft-avy-link-search=             |
+| =C-c d t=     | =zetteldeft-avy-tag-search=              |
+| =C-c d T=     | =zetteldeft-tag-buffer=                  |
+| =C-c d i=     | =zetteldeft-find-file-id-insert=         |
+| =C-c d I=     | =zetteldeft-find-file-full-title-insert= |
+| =C-c d o=     | =zetteldeft-find-file=                   |
+| =C-c d n=     | =zetteldeft-new-file=                    |
+| =C-c d N=     | =zetteldeft-new-file-and-link=           |
+| =C-c d r=     | =zetteldeft-file-rename=                 |
+| =C-c d x=     | =zetteldeft-count-words=                 |
 
 *** Keybindings for =evil= with =general=
+:PROPERTIES:
+:CUSTOM_ID: kb-general
+:END:
 
 The setup below is the one I use personally.
 It uses =general.el= for modal editing with =evil= and configures =deft= and =zetteldeft= functions behind leader key =SPC d=.
