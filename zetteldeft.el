@@ -49,8 +49,6 @@
   (display-warning 'zetteldeft
     "Function `avy-jump' not available. Please update `avy'"))
 
-(declare-function avy-goto-char "avy")
-
 (defgroup zetteldeft nil
   "A zettelkasten on top of deft."
   :group 'deft
@@ -255,13 +253,12 @@ Tags are filtered with `zetteldeft-tag-regex'."
 
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
-Links are found via `zetteldeft-link-indicator'
+Links are found via `zetteldeft-link-indicator' and `zetteldeft-id-regex'.
 Open that file (in another window if OTHERWINDOW)."
   (interactive)
-  (unless zetteldeft-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+    (when (consp (avy-jump (concat zetteldeft-link-indicator
+                                   zetteldeft-id-regex)))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 
@@ -269,15 +266,14 @@ Open that file (in another window if OTHERWINDOW)."
 
 (defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
-When there is only one search result, as there should be,
-open that file in a window selected through `ace-window'.
-When only one window is active, split it first."
+Similar to `zetteldeft-avy-file-search', but with window selection.
+When only one window is active, split it first.
+When more windows are active, select one via `ace-window'."
   (interactive)
-  (unless zetteldeft-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (require 'ace-window)
   (save-excursion
-    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+    (when (consp (avy-jump (concat zetteldeft-link-indicator
+                                   zetteldeft-id-regex)))
       (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
         (when (eq 1 (length (window-list))) (split-window))
         (select-window (aw-select "Select window..."))
@@ -285,13 +281,13 @@ When only one window is active, split it first."
 
 (defun zetteldeft-avy-link-search ()
   "Use `avy' to perform a deft search on a zetteldeft link.
-Links are found via `zetteldeft-link-indicator'.
+Similar to `zetteldeft-avy-file-search' but performs a full
+text search for the link ID instead of filenames only.
 Opens immediately if there is only one result."
   (interactive)
-  (unless zetteldeft-link-indicator
-    (user-error "Zetteldeft avy functions won't work when `zetteldeft-link-indicator' is nil"))
   (save-excursion
-    (when (consp (avy-goto-char (string-to-char zetteldeft-link-indicator)))
+    (when (consp (avy-jump (concat zetteldeft-link-indicator
+                                   zetteldeft-id-regex)))
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
