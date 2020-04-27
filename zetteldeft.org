@@ -75,7 +75,7 @@ Simply add
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package zetteldeft
   :after deft
-  :init
+  :config
     (zetteldeft-set-classic-keybindings))
 #+END_SRC
 

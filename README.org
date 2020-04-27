@@ -14,7 +14,7 @@ If you use =use-package=, installing is as easy as
 #+begin_src emacs-lisp
 (use-package zetteldeft
   :after deft
-  :init
+  :config
     (zetteldeft-set-classic-keybindings))
 #+end_src
 
