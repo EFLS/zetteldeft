@@ -21,11 +21,9 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
  - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-inidicator= is nil.
  - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
- - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
- - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
- - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
 
 Older changes are mentioned in the [[#changelog][changelog]] below.
 
@@ -337,11 +335,13 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
- - a link matching `zetteldeft-link-indicator' and
-    `zettteldeft-id-regex',
+ - a link matching `zetteldeft-link-indicator',
+    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (link-id-re (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (link-id-re (concat zetteldeft-link-indicator
+                            zetteldeft-id-regex
+                            zetteldeft-link-suffix))
         (htag-re zetteldeft-tag-regex))
    (cond
     ((thing-at-point-looking-at link-brackets-re)
@@ -450,15 +450,21 @@ To highlight links, =zetteldeft-id-regex= prepended by =zetteldeft-link-indicato
 Called when `zetteldeft-link-indicator' or
 `zetteldeft-id-regex' are customized."
   (when (and (boundp 'zetteldeft-link-indicator)
-             (boundp 'zetteldeft-id-regex))
+             (boundp 'zetteldeft-id-regex)
+             (boundp 'zetteldeft-link-suffix))
      (font-lock-remove-keywords 'org-mode
-        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+        `((,(concat zetteldeft-link-indicator
+                    zetteldeft-id-regex
+                    zetteldeft-link-suffix)
            . font-lock-warning-face))))
   (set-default var val)
   (when (and (boundp 'zetteldeft-id-regex)
-             (boundp 'zetteldeft-link-indicator))
+             (boundp 'zetteldeft-link-indicator)
+             (boundp 'zetteldeft-link-suffix))
      (font-lock-add-keywords 'org-mode
-        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+        `((,(concat zetteldeft-link-indicator
+                    zetteldeft-id-regex
+                    zetteldeft-link-suffix)
            . font-lock-warning-face)))))
 #+END_SRC
 
@@ -545,6 +551,24 @@ This variable should be a string containing only one character."
   :set 'zetteldeft--id-font-lock-setup)
 #+END_SRC
 
+**** =zetteldeft-link-suffix= is appended to ID links
+
+For further customizability, let's also introduce a suffix.
+This will be appended to links.
+
+By default, this is set to an empty string.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-link-suffix ""
+  "String to append to zetteldeft links.
+To disable, set to empty string rather than to nil."
+  :type 'string
+  :group 'zetteldeft
+  :set 'zetteldeft--id-font-lock-setup)
+#+END_SRC
+
+Users who prefer Markdown notes and interoperability with The Archive, might want to set this to =]]=, and the =zetteldeft-link-indicator= to =[[=.
+
 **** =zetteldeft-tag-regex= for finding tags
 
 This regular expression indicates what tags can look like.
@@ -617,7 +641,9 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file))))
+  (insert (concat zetteldeft-link-indicator
+                  (zetteldeft--lift-id file)
+                  zetteldeft-link-suffix)))
 #+END_SRC
 
 **** =zetteldeft-find-file-full-title-insert= inserts id and title
@@ -632,7 +658,9 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (file-name-base file))))
+  (insert (concat zetteldeft-link-indicator
+                  (file-name-base file)
+                  zetteldeft-link-suffix)))
 #+END_SRC
 
 *** New file creation
@@ -684,7 +712,10 @@ Either provide a name as argument, or enter one in the mini-buffer.
   "Insert generated id with `zetteldeft-id-format' appended with STR.
 Creates new deft file with id and STR as name."
   (interactive (list (read-string "name: ")))
-  (insert zetteldeft-link-indicator (zetteldeft-generate-id) " " str)
+  (insert zetteldeft-link-indicator
+          (zetteldeft-generate-id)
+          zetteldeft-link-suffix
+          " " str)
   (zetteldeft-new-file str))
 #+END_SRC
 
@@ -701,7 +732,9 @@ When point is not in a link, call =avy= to jump to and open a selected link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
   (if (thing-at-point-looking-at
-        (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (concat zetteldeft-link-indicator
+                zetteldeft-id-regex
+                zetteldeft-link-suffix))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
     (zetteldeft-avy-file-search)))
@@ -732,7 +765,7 @@ Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
 That file is then opened (in another window if requested).
 
-Links are found by concatenating =zetteldeft-link-indicator= and =zetteldeftd-id-regex=.
+Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-su.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-avy-file-search (&optional otherWindow)
@@ -742,7 +775,8 @@ Open that file (in another window if OTHERWINDOW)."
   (interactive)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 #+END_SRC
@@ -770,7 +804,8 @@ When more windows are active, select one via `ace-window'."
   (require 'ace-window)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
         (when (eq 1 (length (window-list))) (split-window))
         (select-window (aw-select "Select window..."))
@@ -792,7 +827,8 @@ Opens immediately if there is only one result."
   (interactive)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 #+END_SRC
@@ -962,7 +998,7 @@ Add the ID from the current file to the kill ring.
 Steps:
  1. Get the filename from the buffer
  2. Strip the ID from it.
- 3. Prepend the ID with =zetteldeft-link-indicator= to create a full link.
+ 3. Wrap the ID with =zetteldeft-link-indicator= and =zetteldeft-link-suffix= to create a full link.
  4. Result can be empty string when no id is detected in the filename.
 
 #+BEGIN_SRC emacs-lisp
@@ -973,7 +1009,8 @@ kill ring."
   (interactive)
   (zetteldeft--check)
   (let ((ID (concat zetteldeft-link-indicator
-                    (zetteldeft--lift-id (file-name-base (buffer-file-name))))))
+                    (zetteldeft--lift-id (file-name-base (buffer-file-name)))
+                    zetteldeft-link-suffix)))
     (kill-new ID)
     (message "%s" ID)))
 #+END_SRC
@@ -1179,7 +1216,10 @@ zetteldeft directory."
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
           (setq zdID (zetteldeft--id-to-full-title zdID))
-          (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
+          (insert " - " (concat zetteldeft-link-indicator
+                                zdID
+                                zetteldeft-link-suffix
+                                "\n")))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 #+END_SRC
@@ -1191,7 +1231,9 @@ Inserts for given file a link id and title as a list entry.
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - " (concat zetteldeft-link-indicator (file-name-base zdFile)) "\n"))
+  (insert " - " (concat zetteldeft-link-indicator
+                        (file-name-base zdFile)
+                        zetteldeft-link-suffix) "\n"))
 #+END_SRC
 
 *** Compiling a single =org=
@@ -1518,7 +1560,8 @@ The following function should achieve that.
             (zetteldeft--lift-file-title deftFile)))
         (zdId    (zetteldeft--lift-id deftFile)))
     (insert "  \"" zdId "\""
-            " [label = \"" zdTitle " (" zetteldeft-link-indicator zdId ")\"")
+            " [label = \"" zdTitle " ("
+            zetteldeft-link-indicator zdId zetteldeft-link-suffix ")\"")
     (insert "]" "\n"))
   (zetteldeft--graph-store-link deftFile))
 #+END_SRC
@@ -1822,7 +1865,11 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 An overview of changes, in addition to those mentioned at the top of this document:
 
- - *30 Dec 2020*: Minor fixes for MELPA.
+ - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
+ - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
+ - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
+
+ - *30 Dec 2019*: Minor fixes for MELPA.
  - *23 Nov*: Update suggested keybindings.
  - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
  - *9 Nov*: Rename internal functions & prepare for MELPA.
