@@ -117,8 +117,12 @@ To *insert a link* to a note, you can use
  - or =C-c d I= if you want to include the title of your destination (which calls =zetteldeft-find-file-full-title-insert=).
 
 Hit =C-c d f= (or =zetteldeft-follow-link=) to *follow a link* to a note.
-All link indicators, those =§= symbols, will be replaced by a character that you can type to follow a link of your choice.
+All link indicators, those =§= symbols, will be replaced different characters (thanks to the Avy package).
+Pick one to follow a link.
 If only one link is available, or if point is in a link, it will be selected automatically.
+
+Use =C-c d F= to open a link in a separate window of choice.
+This is especially useful when browsing your own notes, looking for new ideas and connections.
 
 To quickly *open* one of the notes in your Zettelkasten, use =C-c d o= (or =zetteldeft-find-file=) and search the titles.
 Or simply hit =C-c d D= to open Deft and start a full text search.
@@ -186,12 +190,12 @@ Ideas on how to extend or replace it are more than welcome.
 *** Intro                                                          :ignore:
 
 This section will take you through an example Zetteldeft setup and installation.
-It asumes basic Emacs knowledge, so I'm going to guess you understand that the code below should go in your =init.el= (or equivalent).
+It assumes basic Emacs knowledge, so I'm going to guess you understand that the code below should go in your =init.el= (or equivalent).
 
 It also assumes that you have =use-package= installed, that you use [[http://melpa.org/#/][MELPA]] to install Emacs packages, and that you'll write notes in =org-mode=.
 
 Prefer Markdown?
-Thats easy enough to change in the example below.
+That's easy enough to change in the example below.
 
 For different methods of installation, please refer to the [[file:zetteldeft.org::#install][documentation]].
 
