@@ -164,7 +164,7 @@ Personally, I prefer vim style bindings behind a leader key, set up with general
 | =C-c d r= | =zetteldeft-file-rename=                 |
 | =C-c d x= | =zetteldeft-count-words=                 |
 
-* Sneak peak at more advanced features
+* Sneak peek at more advanced features
 
 As emphasized above, any Zettelkasten system relies on its author for links between notes.
 There are, however, some features in Zetteldeft that help you with this.
