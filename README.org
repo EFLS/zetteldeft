@@ -7,7 +7,7 @@ The =zetteldeft.org= file in this repository contains documented code for a set 
 
 To learn key concepts and basic functions of thic package, check out an introduction here: [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
 
-Documentation, code and further technical details can be found in the =.org= file of this repository, or can be read in a more convenient format over at [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft/zetteldeft.html]].
+Documentation, code and further technical details can be found in the =.org= file of this repository, or can be read in a more convenient format over at [[https://efls.github.io/zetteldeft/][https://efls.github.io/zetteldeft/zetteldeft.html]].
 
 =zetteldeft= is available on [[https://melpa.org/#/zetteldeft][MELPA]].
 If you use =use-package=, installing is as easy as
