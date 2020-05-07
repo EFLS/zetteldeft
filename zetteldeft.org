@@ -26,25 +26,8 @@ Latest additions:
  - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
  - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
  - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
- - *30 Dec*: Minor fixes for MELPA.
- - *23 Nov*: Update suggested keybindings.
- - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
- - *9 Nov*: Rename internal functions & prepare for MELPA.
- - *30 May*: Rename =zetteldeft-string-after-title= to =zetteldeft-title-suffix= and add customizable =zetteldeft-title-prefix=.
- - *6 Apr*: Add =zetteldeft-follow-link= for convenience.
- - *28 Feb*: Update =zetteldeft-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
- - *16 Feb*: include customizable message =zetteldeft-list-links-missing= for when no missing links are found.
- - *14 Feb*: fix =zetteldeft-insert-list-links= and its brother =zetteldeft-insert-list-links-missing=.
- - *21 Jan*: introduction of customizable =zetteldeft-tag-regex=.
- - *20 Jan 2019*: replaced =§= with customizable =zetteldeft-link-indicator=.
- - *18 Dec*: insert not yet included links with =zetteldeft-insert-list-links-missing=.
- - *15 Nov*: open link in other window with =zetteldeft-avy-file-search-ace-window=.
- - *13 Nov*: functions to create =graphviz= added.
- - *4 Nov*: =zetteldeft--get-all-tags= and =zetteldeft-tag-buffer= find all tags
- - *21 Oct*: =zetteldeft= is now a package.
- - *10 Oct*: Insert contents of files with given search term with =zetteldeft-org-search-insert=.
- - *24 Sep*: Count the total number of words in your zetteldeft with =zetteldeft-count-words=.
- - *18 July*: Include a list of links with =zetteldeft-insert-list-links=, or a list of files with =zetteldeft-org-search-include=.
+
+Older changes are mentioned in the [[#changelog][changelog]] below.
 
 # Table of Contents
 #+TOC: headlines 2
@@ -1830,6 +1813,34 @@ In order to filter these from the deft summary, let's alter the regular expressi
 #+END_SRC
 
 Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
+
+* Changelog
+:PROPERTIES:
+:CUSTOM_ID: changelog
+:END:
+
+An overview of changes, in addition to those mentioned at the top of this document:
+
+ - *30 Dec 2020*: Minor fixes for MELPA.
+ - *23 Nov*: Update suggested keybindings.
+ - *10 Nov*: Rename namespace prefix =zd-= to =zetteldeft-= for MELPA compliance. This requires users to *update* their keybinding setups.
+ - *9 Nov*: Rename internal functions & prepare for MELPA.
+ - *30 May*: Rename =zetteldeft-string-after-title= to =zetteldeft-title-suffix= and add customizable =zetteldeft-title-prefix=.
+ - *6 Apr*: Add =zetteldeft-follow-link= for convenience.
+ - *28 Feb*: Update =zetteldeft-avy-tag-search= to use =avy-jump= since =avy--generic-jump= is obsolete.
+ - *16 Feb*: include customizable message =zetteldeft-list-links-missing= for when no missing links are found.
+ - *14 Feb*: fix =zetteldeft-insert-list-links= and its brother =zetteldeft-insert-list-links-missing=.
+ - *21 Jan*: introduction of customizable =zetteldeft-tag-regex=.
+ - *20 Jan 2019*: replaced =§= with customizable =zetteldeft-link-indicator=.
+
+ - *18 Dec*: insert not yet included links with =zetteldeft-insert-list-links-missing=.
+ - *15 Nov*: open link in other window with =zetteldeft-avy-file-search-ace-window=.
+ - *13 Nov*: functions to create =graphviz= added.
+ - *4 Nov*: =zetteldeft--get-all-tags= and =zetteldeft-tag-buffer= find all tags
+ - *21 Oct*: =zetteldeft= is now a package.
+ - *10 Oct*: Insert contents of files with given search term with =zetteldeft-org-search-insert=.
+ - *24 Sep*: Count the total number of words in your zetteldeft with =zetteldeft-count-words=.
+ - *18 July 2018*: Include a list of links with =zetteldeft-insert-list-links=, or a list of files with =zetteldeft-org-search-include=.
 
 * Brainstorm
 
