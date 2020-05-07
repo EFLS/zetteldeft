@@ -721,8 +721,9 @@ Avy uses =zetteldeft-tag-regex= as a regular expression.
 Tags are filtered with `zetteldeft-tag-regex'."
   (interactive)
   (save-excursion
+    (let ((avy-all-windows nil))
     (when (consp (avy-jump zetteldeft-tag-regex))
-      (zetteldeft-search-at-point))))
+      (zetteldeft-search-at-point)))))
 #+END_SRC
 
 **** =zetteldeft-avy-file-search= selects and follows links with =avy=
