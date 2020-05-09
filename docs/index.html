@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-05-01 Fri 11:38 -->
+<!-- 2020-05-09 Sat 11:52 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Introducing Zetteldeft</title>
@@ -277,28 +277,29 @@ And feel free to leave comments, for example via <a href="https://github.com/efl
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7526964">A Zettelkasten in Deft</a></li>
-<li><a href="#org9890853">Key concepts</a></li>
-<li><a href="#org6bffa00">Basic functions</a>
+<li><a href="#orge4c1390">A Zettelkasten in Deft</a></li>
+<li><a href="#orgd817a6a">Key concepts</a></li>
+<li><a href="#org73bfb18">Basic functions</a>
 <ul>
-<li><a href="#orgcb9c0b2">A quick introduction</a></li>
-<li><a href="#org9dc252b">An overview of keybindings</a></li>
+<li><a href="#org799c8b2">A quick introduction</a></li>
+<li><a href="#org0806b11">An overview of keybindings</a></li>
 </ul>
 </li>
-<li><a href="#orga98dbcf">Sneak peek at more advanced features</a></li>
-<li><a href="#org3d3f74c">Installing &amp; getting started</a>
+<li><a href="#orgf101106">Sneak peek at more advanced features</a></li>
+<li><a href="#orgd8393a8">Installing &amp; getting started</a>
 <ul>
-<li><a href="#orgd6cbc88">Installing Zetteldeft</a></li>
-<li><a href="#org7ad4cbe">Customization</a></li>
+<li><a href="#org01da6f5">Installing Zetteldeft</a></li>
+<li><a href="#org5fde577">Customization</a></li>
+<li><a href="#org99aaf5b">Using Zetteldeft with Markdown notes</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org7526964" class="outline-2">
-<h2 id="org7526964">A Zettelkasten in Deft</h2>
-<div class="outline-text-2" id="text-org7526964">
+<div id="outline-container-orge4c1390" class="outline-2">
+<h2 id="orge4c1390">A Zettelkasten in Deft</h2>
+<div class="outline-text-2" id="text-orge4c1390">
 <p>
 As the name suggests, Zetteldeft is inspired by the now famous Zettelkasten system first implemented by the German sociologist Niklas Luhmann long before Personal Computers made their appearance.
 </p>
@@ -315,9 +316,9 @@ In this text I want to briefly introduce what Zetteldeft is and mention its core
 </div>
 </div>
 
-<div id="outline-container-org9890853" class="outline-2">
-<h2 id="org9890853">Key concepts</h2>
-<div class="outline-text-2" id="text-org9890853">
+<div id="outline-container-orgd817a6a" class="outline-2">
+<h2 id="orgd817a6a">Key concepts</h2>
+<div class="outline-text-2" id="text-orgd817a6a">
 <p>
 Following the Zettelkasten philosophy, each note in Zetteldeft should either: (1) contain a core idea, (2) connect different ideas (and link to notes), (3) or contain a structured set of links to other notes.
 </p>
@@ -339,7 +340,7 @@ These links are indicated by prepending the <code>§</code> character to an ID:
 <code>§2018-07-07-2356</code> links to the file mentioned above.
 No other formatting is needed: a plain text <code>§</code> and the ID suffice to create a link.
 And don&rsquo;t worry, you won&rsquo;t have to type the <code>§</code> manually (or the ID for that matter).
-And yes, you can change this link indicator or even disable it if you wish.
+And yes, you can change this link indicator or even disable it if you wish (and include a suffix, if you so require).
 </p>
 
 
@@ -371,13 +372,13 @@ Well, you can guess.
 </div>
 </div>
 
-<div id="outline-container-org6bffa00" class="outline-2">
-<h2 id="org6bffa00">Basic functions</h2>
-<div class="outline-text-2" id="text-org6bffa00">
+<div id="outline-container-org73bfb18" class="outline-2">
+<h2 id="org73bfb18">Basic functions</h2>
+<div class="outline-text-2" id="text-org73bfb18">
 </div>
-<div id="outline-container-orgcb9c0b2" class="outline-3">
-<h3 id="orgcb9c0b2">A quick introduction</h3>
-<div class="outline-text-3" id="text-orgcb9c0b2">
+<div id="outline-container-org799c8b2" class="outline-3">
+<h3 id="org799c8b2">A quick introduction</h3>
+<div class="outline-text-3" id="text-org799c8b2">
 <p>
 Let&rsquo;s look at some basic functions you need to get started.
 </p>
@@ -404,6 +405,11 @@ If only one link is available, or if point is in a link, it will be selected aut
 </p>
 
 <p>
+Use <code>C-c d F</code> to open a link in a separate window of choice.
+This is especially useful when browsing your own notes, looking for new ideas and connections.
+</p>
+
+<p>
 To quickly <b>open</b> one of the notes in your Zettelkasten, use <code>C-c d o</code> (or <code>zetteldeft-find-file</code>) and search the titles.
 Or simply hit <code>C-c d D</code> to open Deft and start a full text search.
 </p>
@@ -423,9 +429,9 @@ There are many more functions, but these will be enough to get you started.
 </div>
 </div>
 
-<div id="outline-container-org9dc252b" class="outline-3">
-<h3 id="org9dc252b">An overview of keybindings</h3>
-<div class="outline-text-3" id="text-org9dc252b">
+<div id="outline-container-org0806b11" class="outline-3">
+<h3 id="org0806b11">An overview of keybindings</h3>
+<div class="outline-text-3" id="text-org0806b11">
 <p>
 As Zetteldeft does not launch a minor mode, no default keys are bound.
 You can set keys mentioned in this text by calling <code>zetteldeft-set-classic-keybindings</code>.
@@ -542,9 +548,9 @@ Personally, I prefer vim style bindings behind a leader key, set up with general
 </div>
 </div>
 
-<div id="outline-container-orga98dbcf" class="outline-2">
-<h2 id="orga98dbcf">Sneak peak at more advanced features</h2>
-<div class="outline-text-2" id="text-orga98dbcf">
+<div id="outline-container-orgf101106" class="outline-2">
+<h2 id="orgf101106">Sneak peek at more advanced features</h2>
+<div class="outline-text-2" id="text-orgf101106">
 <p>
 As emphasized above, any Zettelkasten system relies on its author for links between notes.
 There are, however, some features in Zetteldeft that help you with this.
@@ -580,16 +586,16 @@ Ideas on how to extend or replace it are more than welcome.
 </div>
 </div>
 
-<div id="outline-container-org3d3f74c" class="outline-2">
-<h2 id="org3d3f74c">Installing &amp; getting started</h2>
-<div class="outline-text-2" id="text-org3d3f74c">
+<div id="outline-container-orgd8393a8" class="outline-2">
+<h2 id="orgd8393a8">Installing &amp; getting started</h2>
+<div class="outline-text-2" id="text-orgd8393a8">
 </div>
-<div id="outline-container-orgd6cbc88" class="outline-3">
-<h3 id="orgd6cbc88">Installing Zetteldeft</h3>
-<div class="outline-text-3" id="text-orgd6cbc88">
+<div id="outline-container-org01da6f5" class="outline-3">
+<h3 id="org01da6f5">Installing Zetteldeft</h3>
+<div class="outline-text-3" id="text-org01da6f5">
 <p>
 This section will take you through an example Zetteldeft setup and installation.
-It asumes basic Emacs knowledge, so I&rsquo;m going to guess you understand that the code below should go in your <code>init.el</code> (or equivalent).
+It assumes basic Emacs knowledge, so I&rsquo;m going to guess you understand that the code below should go in your <code>init.el</code> (or equivalent).
 </p>
 
 <p>
@@ -598,7 +604,7 @@ It also assumes that you have <code>use-package</code> installed, that you use <
 
 <p>
 Prefer Markdown?
-Thats easy enough to change in the example below.
+That&rsquo;s easy enough to change in the example below.
 </p>
 
 <p>
@@ -606,9 +612,9 @@ For different methods of installation, please refer to the <a href="zetteldeft.h
 </p>
 </div>
 
-<div id="outline-container-org9e082a9" class="outline-4">
-<h4 id="org9e082a9">Deft</h4>
-<div class="outline-text-4" id="text-org9e082a9">
+<div id="outline-container-orgdae6971" class="outline-4">
+<h4 id="orgdae6971">Deft</h4>
+<div class="outline-text-4" id="text-orgdae6971">
 <p>
 Zetteldeft relies on Deft.
 Let&rsquo;s start with a basic setup.
@@ -634,9 +640,9 @@ The <code>deft-use-filename-as-title</code> ensures that we can see the note IDs
 </div>
 </div>
 
-<div id="outline-container-orgd6dbf4b" class="outline-4">
-<h4 id="orgd6dbf4b">Zetteldeft</h4>
-<div class="outline-text-4" id="text-orgd6dbf4b">
+<div id="outline-container-org38cc486" class="outline-4">
+<h4 id="org38cc486">Zetteldeft</h4>
+<div class="outline-text-4" id="text-org38cc486">
 <p>
 Installing Zetteldeft can be done in a similar fashion.
 </p>
@@ -659,9 +665,9 @@ That should be enough to get you started, really.
 </div>
 </div>
 
-<div id="outline-container-org8d29fb2" class="outline-4">
-<h4 id="org8d29fb2">Installation with Spacemacs</h4>
-<div class="outline-text-4" id="text-org8d29fb2">
+<div id="outline-container-org9081bef" class="outline-4">
+<h4 id="org9081bef">Installation with Spacemacs</h4>
+<div class="outline-text-4" id="text-org9081bef">
 <p>
 Installation with Spacemacs is easy.
 Locate <code>dotspacemacs-configuration-layers</code> in your <code>.spacemacs</code> and add the code like so.
@@ -681,9 +687,9 @@ Take a look in <a href="zetteldeft.html">the documentation</a> to see how keys a
 </div>
 </div>
 
-<div id="outline-container-org7ad4cbe" class="outline-3">
-<h3 id="org7ad4cbe">Customization</h3>
-<div class="outline-text-3" id="text-org7ad4cbe">
+<div id="outline-container-org5fde577" class="outline-3">
+<h3 id="org5fde577">Customization</h3>
+<div class="outline-text-3" id="text-org5fde577">
 <p>
 Some pointers for further customization:
 </p>
@@ -697,6 +703,51 @@ or set it to an empty string to remove it altogether,</li>
 <p>
 There&rsquo;s more to Zetteldeft, and to its customization, but that&rsquo;s all for this introduction.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org99aaf5b" class="outline-3">
+<h3 id="org99aaf5b">Using Zetteldeft with Markdown notes</h3>
+<div class="outline-text-3" id="text-org99aaf5b">
+<p>
+While Zetteldeft works nicely with Org-mode, you can call its functions from any mode.
+Many people keep Zettelkasten in Markdown, so let&rsquo;s explore how such a setup can be achieved.
+</p>
+
+<p>
+First, make sure <code>deft-extensions</code> is set correctly.
+If <code>md</code> is the first element on the list, new notes will be Markdown notes.
+Zetteldeft uses Deft to create new notes, so using <code>zetteldeft-new-file</code> should now create Markdown files.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> deft-extensions '(<span style="color: #4F894C;">"md"</span> <span style="color: #4F894C;">"org"</span> <span style="color: #4F894C;">"txt"</span>))
+</pre>
+</div>
+
+<p>
+In such Zettelkasten links are often wrapped in square brackets.
+This can be easily achieved by setting the <code>zetteldeft-link-indicator</code> and <code>zetteldeft-link-suffix</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> zetteldeft-link-indicator <span style="color: #4F894C;">"[["</span>
+      zetteldeft-link-suffix <span style="color: #4F894C;">"]]"</span>)
+</pre>
+</div>
+
+<p>
+To highlight links you need to set up font-lock keywords for <code>markdown-mode</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(font-lock-add-keywords 'markdown-mode
+   `((,(concat zetteldeft-link-indicator
+               zetteldeft-id-regex
+               zetteldeft-link-suffix)
+      . font-lock-warning-face)))))
+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -751,7 +802,7 @@ Quote from <sup><a id="fnr.1.100" class="footref" href="#fn.1">1</a></sup>.
 <div id="postamble" class="status">
 <p class='author'>Author: EFLS</p>
 
-    <p class='date'>Modified: 2020-05-01 Fri 11:37</p>
+    <p class='date'>Modified: 2020-05-09 Sat 11:51</p>
 
     <p class='creator'><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>

@@ -75,11 +75,13 @@ Open if there is only one result."
 This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
- - a link matching `zetteldeft-link-indicator' and
-    `zettteldeft-id-regex',
+ - a link matching `zetteldeft-link-indicator',
+    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (link-id-re (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (link-id-re (concat zetteldeft-link-indicator
+                            zetteldeft-id-regex
+                            zetteldeft-link-suffix))
         (htag-re zetteldeft-tag-regex))
    (cond
     ((thing-at-point-looking-at link-brackets-re)
@@ -127,15 +129,21 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
 Called when `zetteldeft-link-indicator' or
 `zetteldeft-id-regex' are customized."
   (when (and (boundp 'zetteldeft-link-indicator)
-             (boundp 'zetteldeft-id-regex))
+             (boundp 'zetteldeft-id-regex)
+             (boundp 'zetteldeft-link-suffix))
      (font-lock-remove-keywords 'org-mode
-        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+        `((,(concat zetteldeft-link-indicator
+                    zetteldeft-id-regex
+                    zetteldeft-link-suffix)
            . font-lock-warning-face))))
   (set-default var val)
   (when (and (boundp 'zetteldeft-id-regex)
-             (boundp 'zetteldeft-link-indicator))
+             (boundp 'zetteldeft-link-indicator)
+             (boundp 'zetteldeft-link-suffix))
      (font-lock-add-keywords 'org-mode
-        `((,(concat zetteldeft-link-indicator zetteldeft-id-regex)
+        `((,(concat zetteldeft-link-indicator
+                    zetteldeft-id-regex
+                    zetteldeft-link-suffix)
            . font-lock-warning-face)))))
 
 (defcustom zetteldeft-id-format "%Y-%m-%d-%H%M"
@@ -172,6 +180,13 @@ This variable should be a string containing only one character."
   :group 'zetteldeft
   :set 'zetteldeft--id-font-lock-setup)
 
+(defcustom zetteldeft-link-suffix ""
+  "String to append to zetteldeft links.
+To disable, set to empty string rather than to nil."
+  :type 'string
+  :group 'zetteldeft
+  :set 'zetteldeft--id-font-lock-setup)
+
 (defcustom zetteldeft-tag-regex "[#@][a-z-]+"
   "Regular expression for zetteldeft tags."
   :type 'string
@@ -198,14 +213,18 @@ This is done with the regular expression stored in
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file))))
+  (insert (concat zetteldeft-link-indicator
+                  (zetteldeft--lift-id file)
+                  zetteldeft-link-suffix)))
 
 (defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (file-name-base file))))
+  (insert (concat zetteldeft-link-indicator
+                  (file-name-base file)
+                  zetteldeft-link-suffix)))
 
 (declare-function evil-insert-state "evil")
 
@@ -230,7 +249,10 @@ When `evil' is loaded, enter insert state."
   "Insert generated id with `zetteldeft-id-format' appended with STR.
 Creates new deft file with id and STR as name."
   (interactive (list (read-string "name: ")))
-  (insert zetteldeft-link-indicator (zetteldeft-generate-id) " " str)
+  (insert zetteldeft-link-indicator
+          (zetteldeft-generate-id)
+          zetteldeft-link-suffix
+          " " str)
   (zetteldeft-new-file str))
 
 (defun zetteldeft-follow-link ()
@@ -238,7 +260,9 @@ Creates new deft file with id and STR as name."
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
   (if (thing-at-point-looking-at
-        (concat zetteldeft-link-indicator zetteldeft-id-regex))
+        (concat zetteldeft-link-indicator
+                zetteldeft-id-regex
+                zetteldeft-link-suffix))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
     (zetteldeft-avy-file-search)))
@@ -248,8 +272,9 @@ Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
 Tags are filtered with `zetteldeft-tag-regex'."
   (interactive)
   (save-excursion
+    (let ((avy-all-windows nil))
     (when (consp (avy-jump zetteldeft-tag-regex))
-      (zetteldeft-search-at-point))))
+      (zetteldeft-search-at-point)))))
 
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
@@ -258,7 +283,8 @@ Open that file (in another window if OTHERWINDOW)."
   (interactive)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 
@@ -273,7 +299,8 @@ When more windows are active, select one via `ace-window'."
   (require 'ace-window)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
         (when (eq 1 (length (window-list))) (split-window))
         (select-window (aw-select "Select window..."))
@@ -287,7 +314,8 @@ Opens immediately if there is only one result."
   (interactive)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex)))
+                                   zetteldeft-id-regex
+                                   zetteldeft-link-suffix)))
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
@@ -388,7 +416,8 @@ kill ring."
   (interactive)
   (zetteldeft--check)
   (let ((ID (concat zetteldeft-link-indicator
-                    (zetteldeft--lift-id (file-name-base (buffer-file-name))))))
+                    (zetteldeft--lift-id (file-name-base (buffer-file-name)))
+                    zetteldeft-link-suffix)))
     (kill-new ID)
     (message "%s" ID)))
 
@@ -477,13 +506,18 @@ zetteldeft directory."
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
           (setq zdID (zetteldeft--id-to-full-title zdID))
-          (insert " - " (concat zetteldeft-link-indicator zdID "\n")))
+          (insert " - " (concat zetteldeft-link-indicator
+                                zdID
+                                zetteldeft-link-suffix
+                                "\n")))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - " (concat zetteldeft-link-indicator (file-name-base zdFile)) "\n"))
+  (insert " - " (concat zetteldeft-link-indicator
+                        (file-name-base zdFile)
+                        zetteldeft-link-suffix) "\n"))
 
 (defun zetteldeft-org-search-include (zdSrch)
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
@@ -602,7 +636,8 @@ Any inserted ID is also stored in `zetteldeft--graph-links'."
             (zetteldeft--lift-file-title deftFile)))
         (zdId    (zetteldeft--lift-id deftFile)))
     (insert "  \"" zdId "\""
-            " [label = \"" zdTitle " (" zetteldeft-link-indicator zdId ")\"")
+            " [label = \"" zdTitle " ("
+            zetteldeft-link-indicator zdId zetteldeft-link-suffix ")\"")
     (insert "]" "\n"))
   (zetteldeft--graph-store-link deftFile))
 
