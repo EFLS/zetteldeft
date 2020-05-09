@@ -22,7 +22,7 @@ Read on for an introduction and some documentation.
 
 Latest additions:
  - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
- - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-inidicator= is nil.
+ - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-indicator= is =""=.
  - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
 
 Older changes are mentioned in the [[#changelog][changelog]] below.
@@ -1889,13 +1889,3 @@ An overview of changes, in addition to those mentioned at the top of this docume
  - *10 Oct*: Insert contents of files with given search term with =zetteldeft-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zetteldeft-count-words=.
  - *18 July 2018*: Include a list of links with =zetteldeft-insert-list-links=, or a list of files with =zetteldeft-org-search-include=.
-
-* Brainstorm
-
-Some ideas for the future.
-
-- Export HTML with clickable links between notes.
-- Export markdown through =pandoc=.
-- Create a minor mode to highlight links & tags and display clickable links.
-- Saved searches, somewhere easily accessible.
-   

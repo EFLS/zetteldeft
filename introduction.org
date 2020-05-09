@@ -248,7 +248,7 @@ Take a look in [[file:zetteldeft.org][the documentation]] to see how keys are bo
 ** Customization
 
 Some pointers for further customization:
- - alter =zetteldeft-link-inidicator= to change the prefix to links,
+ - alter =zetteldeft-link-indicator= to change the prefix to links,
    or set it to an empty string to remove it altogether,
  - change =zetteldeft-title-prefix= and =zetteldeft-title-suffix= to change how titles are appear,
  - you can modify =zetteldeft-id-format= to change how IDs are generated, but make sure to change =zetteldeft-id-regex= accordingly so that the new IDs can be detected.
