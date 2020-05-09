@@ -77,7 +77,7 @@ These links are indicated by prepending the =§= character to an ID:
 =§2018-07-07-2356= links to the file mentioned above.
 No other formatting is needed: a plain text =§= and the ID suffice to create a link.
 And don't worry, you won't have to type the =§= manually (or the ID for that matter).
-And yes, you can change this link indicator or even disable it if you wish.
+And yes, you can change this link indicator or even disable it if you wish (and include a suffix, if you so require).
 
 #+CAPTION: A note with links
 [[./img/screenshot.png]]
@@ -255,4 +255,34 @@ Some pointers for further customization:
    
 There's more to Zetteldeft, and to its customization, but that's all for this introduction.
 
+** Using Zetteldeft with Markdown notes
+
+While Zetteldeft works nicely with Org-mode, you can call its functions from any mode.
+Many people keep Zettelkasten in Markdown, so let's explore how such a setup can be achieved.
+
+First, make sure =deft-extensions= is set correctly.
+If =md= is the first element on the list, new notes will be Markdown notes.
+Zetteldeft uses Deft to create new notes, so using =zetteldeft-new-file= should now create Markdown files.
+
+#+begin_src emacs-lisp
+(setq deft-extensions '("md" "org" "txt"))
+#+end_src
+
+In such Zettelkasten links are often wrapped in square brackets.
+This can be easily achieved by setting the =zetteldeft-link-indicator= and =zetteldeft-link-suffix=.
+
+#+begin_src emacs-lisp
+(setq zetteldeft-link-indicator "[["
+      zetteldeft-link-suffix "]]")
+#+end_src
+
+To highlight links you need to set up font-lock keywords for =markdown-mode=.
+
+#+begin_src emacs-lisp
+(font-lock-add-keywords 'markdown-mode
+   `((,(concat zetteldeft-link-indicator
+               zetteldeft-id-regex
+               zetteldeft-link-suffix)
+      . font-lock-warning-face)))))
+#+end_src
 
