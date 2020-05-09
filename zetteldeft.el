@@ -223,8 +223,10 @@ This is done with the regular expression stored in
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
   (insert (concat zetteldeft-link-indicator
-                  (file-name-base file)
-                  zetteldeft-link-suffix)))
+                  (zetteldeft--lift-id (file-name-base file))
+                  zetteldeft-link-suffix
+                  " "
+                  (zetteldeft--lift-file-title (file-name-base file)))))
 
 (declare-function evil-insert-state "evil")
 
@@ -505,19 +507,26 @@ zetteldeft directory."
     ;; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
-          (setq zdID (zetteldeft--id-to-full-title zdID))
-          (insert " - " (concat zetteldeft-link-indicator
-                                zdID
-                                zetteldeft-link-suffix
-                                "\n")))
+          (insert " - "
+                  zetteldeft-link-indicator
+                  zdID
+                  zetteldeft-link-suffix
+                  " "
+                  (zetteldeft--lift-file-title
+                    (zetteldeft--id-to-full-title zdID))
+                  "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - " (concat zetteldeft-link-indicator
-                        (file-name-base zdFile)
-                        zetteldeft-link-suffix) "\n"))
+  (insert " - "
+          zetteldeft-link-indicator
+          (zetteldeft--lift-id (file-name-base zdFile))
+          zetteldeft-link-suffix
+          " "
+          (zetteldeft--lift-file-title (file-name-base zdFile))
+          "\n"))
 
 (defun zetteldeft-org-search-include (zdSrch)
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
