@@ -256,6 +256,9 @@ Some pointers for further customization:
 There's more to Zetteldeft, and to its customization, but that's all for this introduction.
 
 ** Using Zetteldeft with Markdown notes
+:PROPERTIES:
+:CUSTOM_ID: markdown
+:END:
 
 While Zetteldeft works nicely with Org-mode, you can call its functions from any mode.
 Many people keep Zettelkasten in Markdown, so let's explore how such a setup can be achieved.
@@ -280,9 +283,17 @@ To highlight links you need to set up font-lock keywords for =markdown-mode=.
 
 #+begin_src emacs-lisp
 (font-lock-add-keywords 'markdown-mode
-   `((,(concat zetteldeft-link-indicator
+   `((,zetteldeft-id-regex
+      . font-lock-warning-face)))
+#+end_src
+
+Alternatively, if you want to highlight the brackets as well, you need to escape them like so:
+
+#+begin_src emacs-lisp
+(font-lock-add-keywords 'markdown-mode
+   `((,(concat "\\[\\["
                zetteldeft-id-regex
-               zetteldeft-link-suffix)
-      . font-lock-warning-face)))))
+               "\\]\\]")
+      . font-lock-warning-face)))
 #+end_src
 
