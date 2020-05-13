@@ -1100,7 +1100,7 @@ That's why we can make the existing regex more precise by stating that tags shou
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--tag-format ()
-  "Adjust `zetteldeft-tag-regex' for better searchers."
+  "Adjust `zetteldeft-tag-regex' for more accurate results."
   (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 #+END_SRC
 

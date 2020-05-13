@@ -454,7 +454,7 @@ Throws an error when either none or multiple files are found."
   zetteldeft--tag-list)
 
 (defun zetteldeft--tag-format ()
-  "Adjust `zetteldeft-tag-regex' for better searchers."
+  "Adjust `zetteldeft-tag-regex' for more accurate results."
   (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 
 (defun zetteldeft--extract-tags (deftFile)
