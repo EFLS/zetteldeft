@@ -21,6 +21,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
  - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
  - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-indicator= is =""=.
  - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
@@ -1098,8 +1099,13 @@ Hashtags used in URLs are also found, for example.
 That's why we can make the existing regex more precise by stating that tags should be positioned either be at the beginning of a new line, or preceded by a space.
 
 #+BEGIN_SRC emacs-lisp
-(defconst zetteldeft--tag-format (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
+(defun zetteldeft--tag-format ()
+  "Adjust `zetteldeft-tag-regex' for better searchers."
+  (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 #+END_SRC
+
+This means that search results now (could) include a space in front of the tag.
+These spaces are removed in the =zetteldeft--extract-tags= function, when adding the found tags to the tag buffer.
 
 **** =zetteldeft--extract-tags= from a file
 
@@ -1113,13 +1119,13 @@ Delete the found tag and search again.
   "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'."
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward zetteldeft--tag-format nil t)
+    (while (re-search-forward (zetteldeft--tag-format) nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zetteldeft--tag-list if it isn't there already
         (unless (member foundTag zetteldeft--tag-list)
           (push foundTag zetteldeft--tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward zetteldeft--tag-format)))))
+      (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 #+END_SRC
 
 ** Gathering notes

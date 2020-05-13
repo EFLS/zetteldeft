@@ -453,19 +453,21 @@ Throws an error when either none or multiple files are found."
     (zetteldeft--extract-tags deftFile))
   zetteldeft--tag-list)
 
-(defconst zetteldeft--tag-format (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
+(defun zetteldeft--tag-format ()
+  "Adjust `zetteldeft-tag-regex' for better searchers."
+  (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 
 (defun zetteldeft--extract-tags (deftFile)
   "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'."
   (with-temp-buffer
     (insert-file-contents deftFile)
-    (while (re-search-forward zetteldeft--tag-format nil t)
+    (while (re-search-forward (zetteldeft--tag-format) nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zetteldeft--tag-list if it isn't there already
         (unless (member foundTag zetteldeft--tag-list)
           (push foundTag zetteldeft--tag-list)))
       ;; Remove found tag from buffer
-      (delete-region (point) (re-search-backward zetteldeft--tag-format)))))
+      (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 
 (defun zetteldeft-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
