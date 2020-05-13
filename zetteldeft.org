@@ -577,7 +577,7 @@ By default, tags start with a =#= or =@= and contain least one or more lower cas
 Dashes are allowed.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-regex "[#@][a-z-]+"
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
   "Regular expression for zetteldeft tags."
   :type 'string
   :group 'zetteldeft)

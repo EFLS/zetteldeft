@@ -187,7 +187,7 @@ To disable, set to empty string rather than to nil."
   :group 'zetteldeft
   :set 'zetteldeft--id-font-lock-setup)
 
-(defcustom zetteldeft-tag-regex "[#@][a-z-]+"
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
   "Regular expression for zetteldeft tags."
   :type 'string
   :group 'zetteldeft)
