@@ -183,21 +183,18 @@ a {
 a:hover {
   background-color: #d3d3a8;
 }
-#content,
-#postamble {
+#content {
   margin: auto;
   margin-bottom: 1.5em;
   padding: 0 0.5em;
 }
 @media screen and (min-width: 460px) {
-  #content,
-  #postamble {
+  #content {
     padding: 0 2em;
   }
 }
 @media screen and (min-width: 530px) {
-  #content,
-  #postamble {
+  #content {
     max-width: 750px;
   }
 }
@@ -265,7 +262,8 @@ th {
   letter-spacing: 0.5px;
   text-decoration: none;
 }
-#preamble {
+#preamble,
+#postamble {
   background-color: #e3e3c7;
 }
 #head {

@@ -5,11 +5,7 @@
 # By default, each block of code should tangle & evaluate silently
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle zetteldeft.el
 :end:
-:export:
-#+OPTIONS: date:nil toc:nil H:4 tags:nil
-#+EXPORT_FILE_NAME: ./docs/zetteldeft
-#+HTML_HEAD: <link rel='stylesheet' href='style.css' type='text/css'/>
-:end:
+#+HTML_HEAD: <link rel='stylesheet' href='./static/style.css' type='text/css'/>
 
 * Introduction                                 :ignore:
 

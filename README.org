@@ -1,5 +1,6 @@
 #+title: Zetteldeft
 #+author: EFLS
+#+HTML_HEAD: <link rel='stylesheet' href='./static/style.css' type='text/css'/>
 
 [[http://melpa.org/#/zetteldeft][file:http://melpa.org/packages/zetteldeft-badge.svg]]
 

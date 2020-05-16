@@ -1,0 +1,33 @@
+#+title: Documentation Export
+#+subtitle: Setup for Zetteldeft documentation export
+#+author: EFLS
+
+Let's use the power of =org-publish= to our advantage.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(add-to-list 'org-publish-project-alist
+  `("zetteldeft-doc"
+    ; default pages
+    :base-directory ,default-directory
+    :base-extension "org"
+    :publishing-directory ,(expand-file-name "docs" default-directory)
+    :publishing-function org-html-publish-to-html
+  ; exclude setup files (regexp)
+    :exclude "doc-export\.org"
+  ; org config
+    :headline-levels 4
+    :with-tags nil
+    :with-toc nil
+    :with-date nil
+  ; pre- and postamble
+    :html-preamble ,(with-temp-buffer
+                      (insert-file-contents 
+                        (expand-file-name "docs/static/html-preamble.html"
+                                          default-directory))
+                      (buffer-string))
+    :html-postamble ,(with-temp-buffer
+                      (insert-file-contents 
+                        (expand-file-name "docs/static/html-preamble.html"
+                                          default-directory))
+                      (buffer-string))))
+#+END_SRC
