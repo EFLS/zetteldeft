@@ -72,12 +72,12 @@ Work done personally by /you/, the author, so that your notes might breathe life
 In Zetteldeft, each note has a unique *identifier* or ID, based on the time and date of its creation, included at the beginning of its filename.
 This, fore example, is the name of a file in my Zettelkasten: =2018-07-07-2356 The zetteldeft idea.org=.
 
-In notes, we find *links* to other notes.
+Notes contain *links* to other notes.
 These links are indicated by prepending the =§= character to an ID:
 =§2018-07-07-2356= links to the file mentioned above.
 No other formatting is needed: a plain text =§= and the ID suffice to create a link.
 And don't worry, you won't have to type the =§= manually (or the ID for that matter).
-And yes, you can change this link indicator or even disable it if you wish (and include a suffix, if you so require).
+And yes, you can change this link indicator or even disable it (and include a link suffix, if you so require).
 
 #+CAPTION: A note with links
 [[./img/screenshot.png]]
@@ -277,6 +277,12 @@ This can be easily achieved by setting the =zetteldeft-link-indicator= and =zett
 #+begin_src emacs-lisp
 (setq zetteldeft-link-indicator "[["
       zetteldeft-link-suffix "]]")
+#+end_src
+
+To make sure that your Markdown notes start with correct title syntax, customize the =zetteldeft-title-prefix=.
+
+#+begin_src emacs-lisp
+(setq zetteldeft-title-prefix "# ")
 #+end_src
 
 To highlight links you need to set up font-lock keywords for =markdown-mode=.
