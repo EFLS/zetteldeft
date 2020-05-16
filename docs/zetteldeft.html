@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-05-09 Sat 11:51 -->
+<!-- 2020-05-16 Sat 13:07 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -191,7 +191,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel='stylesheet' href='style.css' type='text/css'/>
+<link rel='stylesheet' href='./static/style.css' type='text/css'/>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -240,6 +240,18 @@ for the JavaScript code in this tag.
 </script>
 </head>
 <body>
+<div id="preamble" class="status">
+<div id='head'>
+    <h1><b>Zetteldeft</b></h1>
+    <a>&mdash;</a>
+    <ul>
+        <li><a href='./index.html'>Introduction</a></li>
+        <li><a href='./zetteldeft.html'>Code</a></li>
+        <li><a href='https://eliasstorms.net' style='float: right'>by EFLS</a></li>
+        <li><a href='https://github.com/efls/zetteldeft' style='float: right'>on Github</a></li>
+    </ul>
+</div>
+</div>
 <div id="content">
 <header>
 <h1 class="title">Zetteldeft</h1>
@@ -261,8 +273,9 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>13 May</b>: Modified default <code>zetteldeft-tag-regex</code> to include <code>[:alnum:]</code> and improve <code>zetteldeft--tag-format</code>.</li>
 <li><b>09 May</b>: Introduced <code>zetteldeft-link-suffix</code>, which is <code>""</code> by default.</li>
-<li><b>15 Apr</b>: Replace <code>avy-goto-char</code> with <code>avy-jump</code>. <code>avy</code> functions now work even when <code>zetteldeft-link-inidicator</code> is nil.</li>
+<li><b>15 Apr</b>: Replace <code>avy-goto-char</code> with <code>avy-jump</code>. <code>avy</code> functions now work even when <code>zetteldeft-link-indicator</code> is <code>""</code>.</li>
 <li><b>05 Apr</b>: Add <code>zetteldeft-set-classic-keybindings</code> for convenience.</li>
 </ul>
 
@@ -274,24 +287,24 @@ Older changes are mentioned in the <a href="#changelog">changelog</a> below.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge75f25f">1. What?</a>
+<li><a href="#orgc3184e4">1. What?</a>
 <ul>
-<li><a href="#org527cbb6">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
+<li><a href="#orga1fd741">1.1. A Zettelkasten system for <code>emacs</code> based on <code>deft</code></a></li>
 <li><a href="#install">1.2. Installing <code>zetteldeft</code></a></li>
-<li><a href="#org0e0d6c1">1.3. Basic concepts</a></li>
-<li><a href="#orgcaa8a92">1.4. Basic actions</a></li>
-<li><a href="#org85611aa">1.5. An overview</a></li>
+<li><a href="#orgf70a169">1.3. Basic concepts</a></li>
+<li><a href="#orgfe52a4b">1.4. Basic actions</a></li>
+<li><a href="#org2122dd2">1.5. An overview</a></li>
 </ul>
 </li>
-<li><a href="#orgf09a929">2. The <code>zetteldeft</code> package</a>
+<li><a href="#org902247d">2. The <code>zetteldeft</code> package</a>
 <ul>
-<li><a href="#org837534d">2.1. Package preparation</a></li>
-<li><a href="#orgd3cb90c">2.2. Basic <code>zetteldeft</code> functions</a></li>
+<li><a href="#orgad8476c">2.1. Package preparation</a></li>
+<li><a href="#org22035aa">2.2. Basic <code>zetteldeft</code> functions</a></li>
 <li><a href="#list-tags">2.3. Listing all tags</a></li>
 <li><a href="#gathering-notes">2.4. Gathering notes</a></li>
 <li><a href="#visuals">2.5. Creating visuals</a></li>
 <li><a href="#kb-defaults">2.6. Helper function to set keybindings</a></li>
-<li><a href="#org99f23e0">2.7. End of package</a></li>
+<li><a href="#org0a93a33">2.7. End of package</a></li>
 </ul>
 </li>
 <li><a href="#suggested-setup">3. Suggested setup</a>
@@ -301,17 +314,16 @@ Older changes are mentioned in the <a href="#changelog">changelog</a> below.
 </ul>
 </li>
 <li><a href="#changelog">4. Changelog</a></li>
-<li><a href="#orga54c71a">5. Brainstorm</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-orge75f25f" class="outline-2">
-<h2 id="orge75f25f"><span class="section-number-2">1</span> What?</h2>
+<div id="outline-container-orgc3184e4" class="outline-2">
+<h2 id="orgc3184e4"><span class="section-number-2">1</span> What?</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org527cbb6" class="outline-3">
-<h3 id="org527cbb6"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
+<div id="outline-container-orga1fd741" class="outline-3">
+<h3 id="orga1fd741"><span class="section-number-3">1.1</span> A Zettelkasten system for <code>emacs</code> based on <code>deft</code></h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 This is my feeble attempt at recreating a Zettelkasten environment by extending the excellent <code>deft</code> package in <code>emacs</code>.<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
@@ -337,12 +349,12 @@ Anyway, here we go.
 </div>
 </div>
 
-<div id="outline-container-orgc3e0b58" class="outline-3">
+<div id="outline-container-org30b4b0d" class="outline-3">
 <h3 id="install"><span class="section-number-3">1.2</span> Installing <code>zetteldeft</code></h3>
 <div class="outline-text-3" id="text-install">
 </div>
-<div id="outline-container-org21d6812" class="outline-4">
-<h4 id="org21d6812"><span class="section-number-4">1.2.1</span> Installing with MELPA and <code>use-package</code></h4>
+<div id="outline-container-orgf396be4" class="outline-4">
+<h4 id="orgf396be4"><span class="section-number-4">1.2.1</span> Installing with MELPA and <code>use-package</code></h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 If you use MELPA &amp; <code>use-package</code>, installing is easy.
@@ -376,7 +388,7 @@ An installation of <code>avy</code> is required, as it is used for some function
 </div>
 </div>
 
-<div id="outline-container-orga09e376" class="outline-4">
+<div id="outline-container-org00e6d71" class="outline-4">
 <h4 id="install-spacemacs"><span class="section-number-4">1.2.2</span> <code>spacemacs</code> installation</h4>
 <div class="outline-text-4" id="text-install-spacemacs">
 <p>
@@ -403,8 +415,8 @@ Simply add <code>(setq ...)</code> there.</li>
 </div>
 </div>
 
-<div id="outline-container-org2eee26f" class="outline-4">
-<h4 id="org2eee26f"><span class="section-number-4">1.2.3</span> Installing directly from source</h4>
+<div id="outline-container-org23ebcc2" class="outline-4">
+<h4 id="org23ebcc2"><span class="section-number-4">1.2.3</span> Installing directly from source</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 This package requires:
@@ -445,8 +457,8 @@ You&rsquo;ll also want some keybindings. Check out the <a href="#suggested-setup
 </div>
 </div>
 
-<div id="outline-container-org0e0d6c1" class="outline-3">
-<h3 id="org0e0d6c1"><span class="section-number-3">1.3</span> Basic concepts</h3>
+<div id="outline-container-orgf70a169" class="outline-3">
+<h3 id="orgf70a169"><span class="section-number-3">1.3</span> Basic concepts</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 <b>Notes</b> reside in the <code>deft-directory</code>.
@@ -477,8 +489,8 @@ Tags make it easy to retrieve notes. They can appear anywhere in the note, but I
 </div>
 </div>
 
-<div id="outline-container-orgcaa8a92" class="outline-3">
-<h3 id="orgcaa8a92"><span class="section-number-3">1.4</span> Basic actions</h3>
+<div id="outline-container-orgfe52a4b" class="outline-3">
+<h3 id="orgfe52a4b"><span class="section-number-3">1.4</span> Basic actions</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Create a note with <code>zetteldeft-new-file</code> and provide a name.
@@ -523,8 +535,8 @@ Feel free to submit comments or pull requests on Github.
 </div>
 </div>
 
-<div id="outline-container-org85611aa" class="outline-3">
-<h3 id="org85611aa"><span class="section-number-3">1.5</span> An overview</h3>
+<div id="outline-container-org2122dd2" class="outline-3">
+<h3 id="org2122dd2"><span class="section-number-3">1.5</span> An overview</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 While there are many, these should be enough to get you started.
@@ -612,12 +624,12 @@ Read on, dear reader, for all of this and much more.
 </div>
 </div>
 
-<div id="outline-container-orgf09a929" class="outline-2">
-<h2 id="orgf09a929"><span class="section-number-2">2</span> The <code>zetteldeft</code> package</h2>
+<div id="outline-container-org902247d" class="outline-2">
+<h2 id="org902247d"><span class="section-number-2">2</span> The <code>zetteldeft</code> package</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org837534d" class="outline-3">
-<h3 id="org837534d"><span class="section-number-3">2.1</span> Package preparation</h3>
+<div id="outline-container-orgad8476c" class="outline-3">
+<h3 id="orgad8476c"><span class="section-number-3">2.1</span> Package preparation</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The required preamble and some other initial settings.
@@ -625,8 +637,8 @@ To know how this package works, please skip right past this to the next section.
 </p>
 </div>
 
-<div id="outline-container-org2a367c6" class="outline-4">
-<h4 id="org2a367c6"><span class="section-number-4">2.1.1</span> Preamble</h4>
+<div id="outline-container-orgcfba32c" class="outline-4">
+<h4 id="orgcfba32c"><span class="section-number-4">2.1.1</span> Preamble</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 Some declaration.
@@ -676,8 +688,8 @@ Some declaration.
 </div>
 </div>
 
-<div id="outline-container-orgb5f659e" class="outline-4">
-<h4 id="orgb5f659e"><span class="section-number-4">2.1.2</span> Requirements</h4>
+<div id="outline-container-org8a07e64" class="outline-4">
+<h4 id="org8a07e64"><span class="section-number-4">2.1.2</span> Requirements</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 <code>deft</code> is required, obviously, and <code>avy</code> is needed for some utility functions.
@@ -710,8 +722,8 @@ So let&rsquo;s check whether that function is available, and show a message when
 </div>
 </div>
 
-<div id="outline-container-orgb5c61a0" class="outline-4">
-<h4 id="orgb5c61a0"><span class="section-number-4">2.1.3</span> Customization</h4>
+<div id="outline-container-org30ef379" class="outline-4">
+<h4 id="org30ef379"><span class="section-number-4">2.1.3</span> Customization</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 For easy but minor customization options.
@@ -728,8 +740,8 @@ For easy but minor customization options.
 </div>
 </div>
 
-<div id="outline-container-orgd3cb90c" class="outline-3">
-<h3 id="orgd3cb90c"><span class="section-number-3">2.2</span> Basic <code>zetteldeft</code> functions</h3>
+<div id="outline-container-org22035aa" class="outline-3">
+<h3 id="org22035aa"><span class="section-number-3">2.2</span> Basic <code>zetteldeft</code> functions</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 
@@ -740,70 +752,70 @@ In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2b87d54">2.2.1. Search functions</a>
+<li><a href="#org10e93dd">2.2.1. Search functions</a>
 <ul>
-<li><a href="#orga5b8342">2.2.1.1. <code>zetteldeft-search-at-point</code> thing at point</a></li>
-<li><a href="#org94d2447">2.2.1.2. <code>zetteldeft-search-current-id</code> searches current id</a></li>
-<li><a href="#org8463dc2">2.2.1.3. <code>zetteldeft--get-thing-at-point</code> returns string</a></li>
-<li><a href="#org8bb1a90">2.2.1.4. <code>zetteldeft--search-global</code> for string</a></li>
-<li><a href="#org42847aa">2.2.1.5. <code>zetteldeft--search-filename</code> for string</a></li>
-<li><a href="#orgfffedf7">2.2.1.6. <code>zetteldeft--get-file-list</code> returns file list with search term</a></li>
+<li><a href="#org8d000e0">2.2.1.1. <code>zetteldeft-search-at-point</code> thing at point</a></li>
+<li><a href="#org5d1aa8a">2.2.1.2. <code>zetteldeft-search-current-id</code> searches current id</a></li>
+<li><a href="#orgbbbfa4f">2.2.1.3. <code>zetteldeft--get-thing-at-point</code> returns string</a></li>
+<li><a href="#org87583bf">2.2.1.4. <code>zetteldeft--search-global</code> for string</a></li>
+<li><a href="#orgfeb075e">2.2.1.5. <code>zetteldeft--search-filename</code> for string</a></li>
+<li><a href="#orgb652ad9">2.2.1.6. <code>zetteldeft--get-file-list</code> returns file list with search term</a></li>
 </ul>
 </li>
-<li><a href="#org1c2f5b9">2.2.2. IDs, links and tags</a>
+<li><a href="#org01acb1f">2.2.2. IDs, links and tags</a>
 <ul>
 <li><a href="#id-links">2.2.2.1. A note on nomenclature, IDs and links</a></li>
-<li><a href="#org592428e">2.2.2.2. Helper function <code>zetteldeft--id-font-lock-setup</code></a></li>
-<li><a href="#org35f0fa9">2.2.2.3. <code>zetteldeft-id-format</code> for generating ID strings</a></li>
-<li><a href="#org578b91e">2.2.2.4. <code>zetteldeft-id-regex</code> for finding IDs</a></li>
-<li><a href="#org2f6aca7">2.2.2.5. <code>zetteldeft-link-indicator</code> prepends ID links</a></li>
-<li><a href="#orgd57a1b6">2.2.2.6. <code>zetteldeft-link-suffix</code> is appended to ID links</a></li>
-<li><a href="#org61898d0">2.2.2.7. <code>zetteldeft-tag-regex</code> for finding tags</a></li>
-<li><a href="#org17a8684">2.2.2.8. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
+<li><a href="#org557fdbd">2.2.2.2. Helper function <code>zetteldeft--id-font-lock-setup</code></a></li>
+<li><a href="#org5f33ae1">2.2.2.3. <code>zetteldeft-id-format</code> for generating ID strings</a></li>
+<li><a href="#orgf8484a9">2.2.2.4. <code>zetteldeft-id-regex</code> for finding IDs</a></li>
+<li><a href="#orgb434e4f">2.2.2.5. <code>zetteldeft-link-indicator</code> prepends ID links</a></li>
+<li><a href="#orge35ef38">2.2.2.6. <code>zetteldeft-link-suffix</code> is appended to ID links</a></li>
+<li><a href="#org286971a">2.2.2.7. <code>zetteldeft-tag-regex</code> for finding tags</a></li>
+<li><a href="#org65df8d0">2.2.2.8. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
 </ul>
 </li>
-<li><a href="#org4d74619">2.2.3. Finding &amp; linking files from minibuffer</a>
+<li><a href="#org29233ad">2.2.3. Finding &amp; linking files from minibuffer</a>
 <ul>
-<li><a href="#orgaf49e1f">2.2.3.1. <code>zetteldeft-find-file</code> opens file from minibuffer</a></li>
-<li><a href="#org54f2c7f">2.2.3.2. <code>zetteldeft-find-file-id-insert</code> inserts file id</a></li>
-<li><a href="#orgf7d90bd">2.2.3.3. <code>zetteldeft-find-file-full-title-insert</code> inserts id and title</a></li>
+<li><a href="#org4794bdb">2.2.3.1. <code>zetteldeft-find-file</code> opens file from minibuffer</a></li>
+<li><a href="#org79686f0">2.2.3.2. <code>zetteldeft-find-file-id-insert</code> inserts file id</a></li>
+<li><a href="#org9c9da79">2.2.3.3. <code>zetteldeft-find-file-full-title-insert</code> inserts id and title</a></li>
 </ul>
 </li>
-<li><a href="#org3994395">2.2.4. New file creation</a>
+<li><a href="#orgd97fd77">2.2.4. New file creation</a>
 <ul>
-<li><a href="#orge482381">2.2.4.1. <code>zetteldeft-new-file</code> creates new file</a></li>
-<li><a href="#org406d38e">2.2.4.2. <code>zetteldeft-new-file-and-link</code> inserts generated id</a></li>
+<li><a href="#orgabcde39">2.2.4.1. <code>zetteldeft-new-file</code> creates new file</a></li>
+<li><a href="#org93aed29">2.2.4.2. <code>zetteldeft-new-file-and-link</code> inserts generated id</a></li>
 </ul>
 </li>
-<li><a href="#orgeceb6f9">2.2.5. Moving around with <code>avy</code></a>
+<li><a href="#org12e71d7">2.2.5. Moving around with <code>avy</code></a>
 <ul>
-<li><a href="#org1b75292">2.2.5.1. Following links with <code>zetteldeft-follow-link</code></a></li>
-<li><a href="#org6700d2c">2.2.5.2. <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></a></li>
-<li><a href="#org28533a9">2.2.5.3. <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></a></li>
-<li><a href="#org4057446">2.2.5.4. <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></a></li>
+<li><a href="#org6a5cc3f">2.2.5.1. Following links with <code>zetteldeft-follow-link</code></a></li>
+<li><a href="#org4f69112">2.2.5.2. <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></a></li>
+<li><a href="#orge7c9d77">2.2.5.3. <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></a></li>
+<li><a href="#orgba565c6">2.2.5.4. <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></a></li>
 </ul>
 </li>
-<li><a href="#orgffff73f">2.2.6. Utility functions</a>
+<li><a href="#org5e53b4d">2.2.6. Utility functions</a>
 <ul>
-<li><a href="#orgff1a37e">2.2.6.1. <code>zetteldeft-deft-new-search</code> starts a new deft search</a></li>
-<li><a href="#org6446999">2.2.6.2. <code>zetteldeft--check</code> checks if file is part of zetteldeft</a></li>
-<li><a href="#org6eadf15">2.2.6.3. <code>zetteldeft--insert-title</code> inserts file title</a></li>
-<li><a href="#orgf34e8d8">2.2.6.4. <code>zetteldeft--lift-file-title</code> returns file title from path</a></li>
-<li><a href="#orgf0cadab">2.2.6.5. <code>zetteldeft-file-rename</code> renames visited file</a></li>
-<li><a href="#org04b9b42">2.2.6.6. <code>zetteldeft-count-words</code> counts total number of words</a></li>
-<li><a href="#orgc73cc54">2.2.6.7. <code>zetteldeft-copy-id-current-file</code> copies id in filename</a></li>
-<li><a href="#orge17d715">2.2.6.8. <code>zetteldeft--id-to-full-title</code> returns title from ID</a></li>
+<li><a href="#orgc02c4ff">2.2.6.1. <code>zetteldeft-deft-new-search</code> starts a new deft search</a></li>
+<li><a href="#org8103bac">2.2.6.2. <code>zetteldeft--check</code> checks if file is part of zetteldeft</a></li>
+<li><a href="#orgb7df669">2.2.6.3. <code>zetteldeft--insert-title</code> inserts file title</a></li>
+<li><a href="#orgf670340">2.2.6.4. <code>zetteldeft--lift-file-title</code> returns file title from path</a></li>
+<li><a href="#org26c1a16">2.2.6.5. <code>zetteldeft-file-rename</code> renames visited file</a></li>
+<li><a href="#orgea4b502">2.2.6.6. <code>zetteldeft-count-words</code> counts total number of words</a></li>
+<li><a href="#org300ba6c">2.2.6.7. <code>zetteldeft-copy-id-current-file</code> copies id in filename</a></li>
+<li><a href="#orgcdc2b33">2.2.6.8. <code>zetteldeft--id-to-full-title</code> returns title from ID</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2b87d54" class="outline-4">
-<h4 id="org2b87d54"><span class="section-number-4">2.2.1</span> Search functions</h4>
+<div id="outline-container-org10e93dd" class="outline-4">
+<h4 id="org10e93dd"><span class="section-number-4">2.2.1</span> Search functions</h4>
 <div class="outline-text-4" id="text-2-2-1">
 </div>
-<div id="outline-container-orga5b8342" class="outline-5">
-<h5 id="orga5b8342"><span class="section-number-5">2.2.1.1</span> <code>zetteldeft-search-at-point</code> thing at point</h5>
+<div id="outline-container-org8d000e0" class="outline-5">
+<h5 id="org8d000e0"><span class="section-number-5">2.2.1.1</span> <code>zetteldeft-search-at-point</code> thing at point</h5>
 <div class="outline-text-5" id="text-2-2-1-1">
 <p>
 Search the thing at point.
@@ -827,8 +839,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-org94d2447" class="outline-5">
-<h5 id="org94d2447"><span class="section-number-5">2.2.1.2</span> <code>zetteldeft-search-current-id</code> searches current id</h5>
+<div id="outline-container-org5d1aa8a" class="outline-5">
+<h5 id="org5d1aa8a"><span class="section-number-5">2.2.1.2</span> <code>zetteldeft-search-current-id</code> searches current id</h5>
 <div class="outline-text-5" id="text-2-2-1-2">
 <p>
 Deft search on the id of the current file.
@@ -863,8 +875,8 @@ Steps:
 </div>
 </div>
 
-<div id="outline-container-org8463dc2" class="outline-5">
-<h5 id="org8463dc2"><span class="section-number-5">2.2.1.3</span> <code>zetteldeft--get-thing-at-point</code> returns string</h5>
+<div id="outline-container-orgbbbfa4f" class="outline-5">
+<h5 id="orgbbbfa4f"><span class="section-number-5">2.2.1.3</span> <code>zetteldeft--get-thing-at-point</code> returns string</h5>
 <div class="outline-text-5" id="text-2-2-1-3">
 <p>
 Returns the thing at point as string.
@@ -911,8 +923,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-org8bb1a90" class="outline-5">
-<h5 id="org8bb1a90"><span class="section-number-5">2.2.1.4</span> <code>zetteldeft--search-global</code> for string</h5>
+<div id="outline-container-org87583bf" class="outline-5">
+<h5 id="org87583bf"><span class="section-number-5">2.2.1.4</span> <code>zetteldeft--search-global</code> for string</h5>
 <div class="outline-text-5" id="text-2-2-1-4">
 <p>
 Search with deft for given string.
@@ -942,8 +954,8 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 </div>
 </div>
 
-<div id="outline-container-org42847aa" class="outline-5">
-<h5 id="org42847aa"><span class="section-number-5">2.2.1.5</span> <code>zetteldeft--search-filename</code> for string</h5>
+<div id="outline-container-orgfeb075e" class="outline-5">
+<h5 id="orgfeb075e"><span class="section-number-5">2.2.1.5</span> <code>zetteldeft--search-filename</code> for string</h5>
 <div class="outline-text-5" id="text-2-2-1-5">
 <p>
 Deft search on filename.
@@ -971,8 +983,8 @@ Incremental search is turned off, and the filter is set to filenames only.
 </div>
 </div>
 
-<div id="outline-container-orgfffedf7" class="outline-5">
-<h5 id="orgfffedf7"><span class="section-number-5">2.2.1.6</span> <code>zetteldeft--get-file-list</code> returns file list with search term</h5>
+<div id="outline-container-orgb652ad9" class="outline-5">
+<h5 id="orgb652ad9"><span class="section-number-5">2.2.1.6</span> <code>zetteldeft--get-file-list</code> returns file list with search term</h5>
 <div class="outline-text-5" id="text-2-2-1-6">
 <p>
 Get a list of the files with given search string.
@@ -998,11 +1010,11 @@ The code searches for the given string and returns <code>deft-current-files</cod
 </div>
 </div>
 
-<div id="outline-container-org1c2f5b9" class="outline-4">
-<h4 id="org1c2f5b9"><span class="section-number-4">2.2.2</span> IDs, links and tags</h4>
+<div id="outline-container-org01acb1f" class="outline-4">
+<h4 id="org01acb1f"><span class="section-number-4">2.2.2</span> IDs, links and tags</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
-<div id="outline-container-orge30d99c" class="outline-5">
+<div id="outline-container-org97ce05e" class="outline-5">
 <h5 id="id-links"><span class="section-number-5">2.2.2.1</span> A note on nomenclature, IDs and links</h5>
 <div class="outline-text-5" id="text-id-links">
 <p>
@@ -1027,8 +1039,8 @@ Note that if this variable is set to nil, the <code>zetteldeft-avy-link-search</
 </div>
 </div>
 
-<div id="outline-container-org592428e" class="outline-5">
-<h5 id="org592428e"><span class="section-number-5">2.2.2.2</span> Helper function <code>zetteldeft--id-font-lock-setup</code></h5>
+<div id="outline-container-org557fdbd" class="outline-5">
+<h5 id="org557fdbd"><span class="section-number-5">2.2.2.2</span> Helper function <code>zetteldeft--id-font-lock-setup</code></h5>
 <div class="outline-text-5" id="text-2-2-2-2">
 <p>
 Before the customization, let&rsquo;s declare a helper function that adds a <code>font-lock</code> keyword for <code>org-mode</code> specifically.
@@ -1079,8 +1091,8 @@ Note that highlighting is not working in org comments.
 </div>
 </div>
 
-<div id="outline-container-org35f0fa9" class="outline-5">
-<h5 id="org35f0fa9"><span class="section-number-5">2.2.2.3</span> <code>zetteldeft-id-format</code> for generating ID strings</h5>
+<div id="outline-container-org5f33ae1" class="outline-5">
+<h5 id="org5f33ae1"><span class="section-number-5">2.2.2.3</span> <code>zetteldeft-id-format</code> for generating ID strings</h5>
 <div class="outline-text-5" id="text-2-2-2-3">
 <p>
 Format used to generate ids.
@@ -1143,8 +1155,8 @@ Next up, a function to generate an ID string in the above format.
 </div>
 </div>
 
-<div id="outline-container-org578b91e" class="outline-5">
-<h5 id="org578b91e"><span class="section-number-5">2.2.2.4</span> <code>zetteldeft-id-regex</code> for finding IDs</h5>
+<div id="outline-container-orgf8484a9" class="outline-5">
+<h5 id="orgf8484a9"><span class="section-number-5">2.2.2.4</span> <code>zetteldeft-id-regex</code> for finding IDs</h5>
 <div class="outline-text-5" id="text-2-2-2-4">
 <p>
 The regular expression used to search for zetteldeft IDs as set in <code>zetteldeft-id-format</code>.
@@ -1179,8 +1191,8 @@ If you use a <code>"%Y%m%d%H%M"</code> format for note naming, you might want to
 </div>
 </div>
 
-<div id="outline-container-org2f6aca7" class="outline-5">
-<h5 id="org2f6aca7"><span class="section-number-5">2.2.2.5</span> <code>zetteldeft-link-indicator</code> prepends ID links</h5>
+<div id="outline-container-orgb434e4f" class="outline-5">
+<h5 id="orgb434e4f"><span class="section-number-5">2.2.2.5</span> <code>zetteldeft-link-indicator</code> prepends ID links</h5>
 <div class="outline-text-5" id="text-2-2-2-5">
 <p>
 To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
@@ -1200,8 +1212,8 @@ By default, this is set to <code>§</code>, but it can be changed (or nil).
 </div>
 </div>
 
-<div id="outline-container-orgd57a1b6" class="outline-5">
-<h5 id="orgd57a1b6"><span class="section-number-5">2.2.2.6</span> <code>zetteldeft-link-suffix</code> is appended to ID links</h5>
+<div id="outline-container-orge35ef38" class="outline-5">
+<h5 id="orge35ef38"><span class="section-number-5">2.2.2.6</span> <code>zetteldeft-link-suffix</code> is appended to ID links</h5>
 <div class="outline-text-5" id="text-2-2-2-6">
 <p>
 For further customizability, let&rsquo;s also introduce a suffix.
@@ -1228,8 +1240,8 @@ Users who prefer Markdown notes and interoperability with The Archive, might wan
 </div>
 </div>
 
-<div id="outline-container-org61898d0" class="outline-5">
-<h5 id="org61898d0"><span class="section-number-5">2.2.2.7</span> <code>zetteldeft-tag-regex</code> for finding tags</h5>
+<div id="outline-container-org286971a" class="outline-5">
+<h5 id="org286971a"><span class="section-number-5">2.2.2.7</span> <code>zetteldeft-tag-regex</code> for finding tags</h5>
 <div class="outline-text-5" id="text-2-2-2-7">
 <p>
 This regular expression indicates what tags can look like.
@@ -1241,7 +1253,7 @@ Dashes are allowed.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zetteldeft-tag-regex</span> <span style="color: #4F894C;">"[#@][a-z-]+"</span>
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zetteldeft-tag-regex</span> <span style="color: #4F894C;">"[#@][[:alnum:]_-]+"</span>
   <span style="color: #828b9b;">"Regular expression for zetteldeft tags."</span>
   <span style="color: #29838D;">:type</span> 'string
   <span style="color: #29838D;">:group</span> 'zetteldeft)
@@ -1254,8 +1266,8 @@ Note that this regular may trip over <code>#</code> symbols used in URLS.
 </div>
 </div>
 
-<div id="outline-container-org17a8684" class="outline-5">
-<h5 id="org17a8684"><span class="section-number-5">2.2.2.8</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
+<div id="outline-container-org65df8d0" class="outline-5">
+<h5 id="org65df8d0"><span class="section-number-5">2.2.2.8</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
 <div class="outline-text-5" id="text-2-2-2-8">
 <p>
 Return the zetteldeft ID from any string.
@@ -1297,12 +1309,12 @@ Here is a little test.
 </div>
 </div>
 
-<div id="outline-container-org4d74619" class="outline-4">
-<h4 id="org4d74619"><span class="section-number-4">2.2.3</span> Finding &amp; linking files from minibuffer</h4>
+<div id="outline-container-org29233ad" class="outline-4">
+<h4 id="org29233ad"><span class="section-number-4">2.2.3</span> Finding &amp; linking files from minibuffer</h4>
 <div class="outline-text-4" id="text-2-2-3">
 </div>
-<div id="outline-container-orgaf49e1f" class="outline-5">
-<h5 id="orgaf49e1f"><span class="section-number-5">2.2.3.1</span> <code>zetteldeft-find-file</code> opens file from minibuffer</h5>
+<div id="outline-container-org4794bdb" class="outline-5">
+<h5 id="org4794bdb"><span class="section-number-5">2.2.3.1</span> <code>zetteldeft-find-file</code> opens file from minibuffer</h5>
 <div class="outline-text-5" id="text-2-2-3-1">
 <p>
 Select file from the deft folder from the minibuffer.
@@ -1324,8 +1336,8 @@ Based on <code>deft-find-file</code>.
 </div>
 </div>
 
-<div id="outline-container-org54f2c7f" class="outline-5">
-<h5 id="org54f2c7f"><span class="section-number-5">2.2.3.2</span> <code>zetteldeft-find-file-id-insert</code> inserts file id</h5>
+<div id="outline-container-org79686f0" class="outline-5">
+<h5 id="org79686f0"><span class="section-number-5">2.2.3.2</span> <code>zetteldeft-find-file-id-insert</code> inserts file id</h5>
 <div class="outline-text-5" id="text-2-2-3-2">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code> (or <code>zetteldeft-link-indicator</code> to be precise).
@@ -1349,8 +1361,8 @@ Based on <code>deft-find-file</code>.
 </div>
 </div>
 
-<div id="outline-container-orgf7d90bd" class="outline-5">
-<h5 id="orgf7d90bd"><span class="section-number-5">2.2.3.3</span> <code>zetteldeft-find-file-full-title-insert</code> inserts id and title</h5>
+<div id="outline-container-org9c9da79" class="outline-5">
+<h5 id="org9c9da79"><span class="section-number-5">2.2.3.3</span> <code>zetteldeft-find-file-full-title-insert</code> inserts id and title</h5>
 <div class="outline-text-5" id="text-2-2-3-3">
 <p>
 Select file from minibuffer and insert its link, prepended by <code>§</code> (or <code>zetteldeft-link-indicator</code>).
@@ -1367,20 +1379,22 @@ Based on <code>deft-find-file</code>.
     (completing-read <span style="color: #4F894C;">"File to insert full title from: "</span>
       (deft-find-all-files-no-prefix))))
   (insert (concat zetteldeft-link-indicator
-                  (file-name-base file)
-                  zetteldeft-link-suffix)))
+                  (zetteldeft--lift-id (file-name-base file))
+                  zetteldeft-link-suffix
+                  <span style="color: #4F894C;">" "</span>
+                  (zetteldeft--lift-file-title (file-name-base file)))))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org3994395" class="outline-4">
-<h4 id="org3994395"><span class="section-number-4">2.2.4</span> New file creation</h4>
+<div id="outline-container-orgd97fd77" class="outline-4">
+<h4 id="orgd97fd77"><span class="section-number-4">2.2.4</span> New file creation</h4>
 <div class="outline-text-4" id="text-2-2-4">
 </div>
-<div id="outline-container-orge482381" class="outline-5">
-<h5 id="orge482381"><span class="section-number-5">2.2.4.1</span> <code>zetteldeft-new-file</code> creates new file</h5>
+<div id="outline-container-orgabcde39" class="outline-5">
+<h5 id="orgabcde39"><span class="section-number-5">2.2.4.1</span> <code>zetteldeft-new-file</code> creates new file</h5>
 <div class="outline-text-5" id="text-2-2-4-1">
 <p>
 Create new file with filename as <code>zetteldeft-id-format</code> and a string.
@@ -1431,8 +1445,8 @@ Note that the file is only actually created upon save.
 </div>
 </div>
 
-<div id="outline-container-org406d38e" class="outline-5">
-<h5 id="org406d38e"><span class="section-number-5">2.2.4.2</span> <code>zetteldeft-new-file-and-link</code> inserts generated id</h5>
+<div id="outline-container-org93aed29" class="outline-5">
+<h5 id="org93aed29"><span class="section-number-5">2.2.4.2</span> <code>zetteldeft-new-file-and-link</code> inserts generated id</h5>
 <div class="outline-text-5" id="text-2-2-4-2">
 <p>
 Generate an id, append a name, and generate a new file based on id and link.
@@ -1458,12 +1472,12 @@ Either provide a name as argument, or enter one in the mini-buffer.
 </div>
 </div>
 
-<div id="outline-container-orgeceb6f9" class="outline-4">
-<h4 id="orgeceb6f9"><span class="section-number-4">2.2.5</span> Moving around with <code>avy</code></h4>
+<div id="outline-container-org12e71d7" class="outline-4">
+<h4 id="org12e71d7"><span class="section-number-4">2.2.5</span> Moving around with <code>avy</code></h4>
 <div class="outline-text-4" id="text-2-2-5">
 </div>
-<div id="outline-container-org1b75292" class="outline-5">
-<h5 id="org1b75292"><span class="section-number-5">2.2.5.1</span> Following links with <code>zetteldeft-follow-link</code></h5>
+<div id="outline-container-org6a5cc3f" class="outline-5">
+<h5 id="org6a5cc3f"><span class="section-number-5">2.2.5.1</span> Following links with <code>zetteldeft-follow-link</code></h5>
 <div class="outline-text-5" id="text-2-2-5-1">
 <p>
 This is a wrapper function to follow links to a file.
@@ -1488,8 +1502,8 @@ When point is not in a link, call <code>avy</code> to jump to and open a selecte
 </div>
 </div>
 
-<div id="outline-container-org6700d2c" class="outline-5">
-<h5 id="org6700d2c"><span class="section-number-5">2.2.5.2</span> <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></h5>
+<div id="outline-container-org4f69112" class="outline-5">
+<h5 id="org4f69112"><span class="section-number-5">2.2.5.2</span> <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></h5>
 <div class="outline-text-5" id="text-2-2-5-2">
 <p>
 Use avy to jump to a tag and search for it.
@@ -1517,8 +1531,8 @@ Avy uses <code>zetteldeft-tag-regex</code> as a regular expression.
 </div>
 </div>
 
-<div id="outline-container-org28533a9" class="outline-5">
-<h5 id="org28533a9"><span class="section-number-5">2.2.5.3</span> <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></h5>
+<div id="outline-container-orge7c9d77" class="outline-5">
+<h5 id="orge7c9d77"><span class="section-number-5">2.2.5.3</span> <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></h5>
 <div class="outline-text-5" id="text-2-2-5-3">
 <p>
 Use avy to jump to a link and find the corresponding file.
@@ -1586,8 +1600,8 @@ When only one window is open, split it first.
 </div>
 </div>
 
-<div id="outline-container-org4057446" class="outline-5">
-<h5 id="org4057446"><span class="section-number-5">2.2.5.4</span> <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></h5>
+<div id="outline-container-orgba565c6" class="outline-5">
+<h5 id="orgba565c6"><span class="section-number-5">2.2.5.4</span> <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></h5>
 <div class="outline-text-5" id="text-2-2-5-4">
 <p>
 Use avy to jump to a link and search for its ID in deft.
@@ -1614,12 +1628,12 @@ If you want to open the note with the ID as its name (i.e., follow a link), use 
 </div>
 </div>
 
-<div id="outline-container-orgffff73f" class="outline-4">
-<h4 id="orgffff73f"><span class="section-number-4">2.2.6</span> Utility functions</h4>
+<div id="outline-container-org5e53b4d" class="outline-4">
+<h4 id="org5e53b4d"><span class="section-number-4">2.2.6</span> Utility functions</h4>
 <div class="outline-text-4" id="text-2-2-6">
 </div>
-<div id="outline-container-orgff1a37e" class="outline-5">
-<h5 id="orgff1a37e"><span class="section-number-5">2.2.6.1</span> <code>zetteldeft-deft-new-search</code> starts a new deft search</h5>
+<div id="outline-container-orgc02c4ff" class="outline-5">
+<h5 id="orgc02c4ff"><span class="section-number-5">2.2.6.1</span> <code>zetteldeft-deft-new-search</code> starts a new deft search</h5>
 <div class="outline-text-5" id="text-2-2-6-1">
 <p>
 The following function launches deft, clears the filter and enters <code>evil-insert-state</code> (when evil is used).
@@ -1637,8 +1651,8 @@ The following function launches deft, clears the filter and enters <code>evil-in
 </div>
 </div>
 
-<div id="outline-container-org6446999" class="outline-5">
-<h5 id="org6446999"><span class="section-number-5">2.2.6.2</span> <code>zetteldeft--check</code> checks if file is part of zetteldeft</h5>
+<div id="outline-container-org8103bac" class="outline-5">
+<h5 id="org8103bac"><span class="section-number-5">2.2.6.2</span> <code>zetteldeft--check</code> checks if file is part of zetteldeft</h5>
 <div class="outline-text-5" id="text-2-2-6-2">
 <p>
 A quick but necessary check to see whether the provided file is part of the deft directory.
@@ -1669,8 +1683,8 @@ The <code>file-truename</code> is there to make sure that <code>deft-directory</
 </div>
 </div>
 
-<div id="outline-container-org6eadf15" class="outline-5">
-<h5 id="org6eadf15"><span class="section-number-5">2.2.6.3</span> <code>zetteldeft--insert-title</code> inserts file title</h5>
+<div id="outline-container-orgb7df669" class="outline-5">
+<h5 id="orgb7df669"><span class="section-number-5">2.2.6.3</span> <code>zetteldeft--insert-title</code> inserts file title</h5>
 <div class="outline-text-5" id="text-2-2-6-3">
 <p>
 Easily insert the title of the current file.
@@ -1726,8 +1740,8 @@ It gets the base of the buffer file name, takes from it the file title (i.e. st
 </div>
 </div>
 
-<div id="outline-container-orgf34e8d8" class="outline-5">
-<h5 id="orgf34e8d8"><span class="section-number-5">2.2.6.4</span> <code>zetteldeft--lift-file-title</code> returns file title from path</h5>
+<div id="outline-container-orgf670340" class="outline-5">
+<h5 id="orgf670340"><span class="section-number-5">2.2.6.4</span> <code>zetteldeft--lift-file-title</code> returns file title from path</h5>
 <div class="outline-text-5" id="text-2-2-6-4">
 <p>
 Returns only the file title from a file, removing path, extension, and link ID.
@@ -1746,8 +1760,8 @@ Returns only the file title from a file, removing path, extension, and link ID.
 </div>
 </div>
 
-<div id="outline-container-orgf0cadab" class="outline-5">
-<h5 id="orgf0cadab"><span class="section-number-5">2.2.6.5</span> <code>zetteldeft-file-rename</code> renames visited file</h5>
+<div id="outline-container-org26c1a16" class="outline-5">
+<h5 id="org26c1a16"><span class="section-number-5">2.2.6.5</span> <code>zetteldeft-file-rename</code> renames visited file</h5>
 <div class="outline-text-5" id="text-2-2-6-5">
 <p>
 Rename the current file.
@@ -1805,8 +1819,8 @@ A <b>limitation</b> of this workflow is that it will not work when the <code>zet
 </div>
 </div>
 
-<div id="outline-container-org04b9b42" class="outline-5">
-<h5 id="org04b9b42"><span class="section-number-5">2.2.6.6</span> <code>zetteldeft-count-words</code> counts total number of words</h5>
+<div id="outline-container-orgea4b502" class="outline-5">
+<h5 id="orgea4b502"><span class="section-number-5">2.2.6.6</span> <code>zetteldeft-count-words</code> counts total number of words</h5>
 <div class="outline-text-5" id="text-2-2-6-6">
 <p>
 To count the total number of words, lets loop over all the files and count words in each.
@@ -1830,8 +1844,8 @@ The total is printed in the minibuffer.
 </div>
 </div>
 
-<div id="outline-container-orgc73cc54" class="outline-5">
-<h5 id="orgc73cc54"><span class="section-number-5">2.2.6.7</span> <code>zetteldeft-copy-id-current-file</code> copies id in filename</h5>
+<div id="outline-container-org300ba6c" class="outline-5">
+<h5 id="org300ba6c"><span class="section-number-5">2.2.6.7</span> <code>zetteldeft-copy-id-current-file</code> copies id in filename</h5>
 <div class="outline-text-5" id="text-2-2-6-7">
 <p>
 Add the ID from the current file to the kill ring.
@@ -1864,8 +1878,8 @@ Steps:
 </div>
 </div>
 
-<div id="outline-container-orge17d715" class="outline-5">
-<h5 id="orge17d715"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft--id-to-full-title</code> returns title from ID</h5>
+<div id="outline-container-orgcdc2b33" class="outline-5">
+<h5 id="orgcdc2b33"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft--id-to-full-title</code> returns title from ID</h5>
 <div class="outline-text-5" id="text-2-2-6-8">
 <p>
 Convert a zetteldeft ID into its full title.
@@ -1891,7 +1905,7 @@ The ID should lead to only one title, obviously, so an error is thrown when this
 </div>
 </div>
 
-<div id="outline-container-orgd9533b8" class="outline-3">
+<div id="outline-container-orge70e320" class="outline-3">
 <h3 id="list-tags"><span class="section-number-3">2.3</span> Listing all tags</h3>
 <div class="outline-text-3" id="text-list-tags">
 <p>
@@ -1903,8 +1917,8 @@ Use <code>zetteldeft-tag-buffer</code> to create a buffer with all tags.
 </p>
 </div>
 
-<div id="outline-container-org941bd19" class="outline-4">
-<h4 id="org941bd19"><span class="section-number-4">2.3.1</span> <code>zetteldeft-tag-buffer</code> puts all tags in a buffer</h4>
+<div id="outline-container-org29a54da" class="outline-4">
+<h4 id="org29a54da"><span class="section-number-4">2.3.1</span> <code>zetteldeft-tag-buffer</code> puts all tags in a buffer</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
 The name of the buffer we&rsquo;ll be using:
@@ -1938,8 +1952,8 @@ Move to the <code>zetteldeft--tag-buffer-name</code>
 </div>
 </div>
 
-<div id="outline-container-org1542ca3" class="outline-4">
-<h4 id="org1542ca3"><span class="section-number-4">2.3.2</span> <code>zetteldeft--get-all-tags</code> lists all tags</h4>
+<div id="outline-container-org71e73c0" class="outline-4">
+<h4 id="org71e73c0"><span class="section-number-4">2.3.2</span> <code>zetteldeft--get-all-tags</code> lists all tags</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 First, we need a variable to store the tags in.
@@ -1966,16 +1980,16 @@ Extracting tags with <code>zetteldeft--extract-tags</code>.
 </div>
 </div>
 
-<div id="outline-container-org7c07f35" class="outline-4">
-<h4 id="org7c07f35"><span class="section-number-4">2.3.3</span> Tag extracting functions</h4>
+<div id="outline-container-orgad8229d" class="outline-4">
+<h4 id="orgad8229d"><span class="section-number-4">2.3.3</span> Tag extracting functions</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 Some utility functions to achieve all of this.
 </p>
 </div>
 
-<div id="outline-container-org0864fc0" class="outline-5">
-<h5 id="org0864fc0"><span class="section-number-5">2.3.3.1</span> <code>zetteldeft--tag-format</code> adjusts the tag finding regex</h5>
+<div id="outline-container-org08c3f77" class="outline-5">
+<h5 id="org08c3f77"><span class="section-number-5">2.3.3.1</span> <code>zetteldeft--tag-format</code> adjusts the tag finding regex</h5>
 <div class="outline-text-5" id="text-2-3-3-1">
 <p>
 The regular expression used to filter out tags, <code>zetteldeft-tag-regex</code> works, but doesn&rsquo;t filter strictly enough.
@@ -1987,14 +2001,21 @@ That&rsquo;s why we can make the existing regex more precise by stating that tag
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defconst</span> <span style="color: #842879;">zetteldeft--tag-format</span> (concat <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">(</span><span style="color: #4F894C;">^</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">|</span><span style="color: #4F894C;">\s</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">)</span><span style="color: #4F894C;">"</span> zetteldeft-tag-regex))
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--tag-format</span> ()
+  <span style="color: #828b9b;">"Adjust `</span><span style="color: #97365B;">zetteldeft-tag-regex</span><span style="color: #828b9b;">' for more accurate results."</span>
+  (concat <span style="color: #4F894C;">"</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">(</span><span style="color: #4F894C;">^</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">|</span><span style="color: #4F894C;">\s</span><span style="color: #3B6EA8; font-weight: bold;">\\</span><span style="color: #3B6EA8; font-weight: bold;">)</span><span style="color: #4F894C;">"</span> zetteldeft-tag-regex))
 </pre>
 </div>
+
+<p>
+This means that search results now (could) include a space in front of the tag.
+These spaces are removed in the <code>zetteldeft--extract-tags</code> function, when adding the found tags to the tag buffer.
+</p>
 </div>
 </div>
 
-<div id="outline-container-org15dd1af" class="outline-5">
-<h5 id="org15dd1af"><span class="section-number-5">2.3.3.2</span> <code>zetteldeft--extract-tags</code> from a file</h5>
+<div id="outline-container-org3187a60" class="outline-5">
+<h5 id="org3187a60"><span class="section-number-5">2.3.3.2</span> <code>zetteldeft--extract-tags</code> from a file</h5>
 <div class="outline-text-5" id="text-2-3-3-2">
 <p>
 Open a given file in a temporary buffer.
@@ -2008,13 +2029,13 @@ Delete the found tag and search again.
   <span style="color: #828b9b;">"Find all tags in DEFTFILE and add them to `</span><span style="color: #97365B;">zetteldeft--tag-list</span><span style="color: #828b9b;">'."</span>
   (<span style="color: #3B6EA8;">with-temp-buffer</span>
     (insert-file-contents deftFile)
-    (<span style="color: #3B6EA8;">while</span> (re-search-forward zetteldeft--tag-format nil t)
+    (<span style="color: #3B6EA8;">while</span> (re-search-forward (zetteldeft--tag-format) nil t)
       (<span style="color: #3B6EA8;">let</span> ((foundTag (replace-regexp-in-string <span style="color: #4F894C;">" "</span> <span style="color: #4F894C;">""</span> (match-string 0))))
         <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Add found tag to zetteldeft--tag-list if it isn't there already</span>
         (<span style="color: #3B6EA8;">unless</span> (member foundTag zetteldeft--tag-list)
           (<span style="color: #3B6EA8;">push</span> foundTag zetteldeft--tag-list)))
       <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Remove found tag from buffer</span>
-      (delete-region (point) (re-search-backward zetteldeft--tag-format)))))
+      (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 </pre>
 </div>
 </div>
@@ -2022,7 +2043,7 @@ Delete the found tag and search again.
 </div>
 </div>
 
-<div id="outline-container-orgdb2e772" class="outline-3">
+<div id="outline-container-org4e32bac" class="outline-3">
 <h3 id="gathering-notes"><span class="section-number-3">2.4</span> Gathering notes</h3>
 <div class="outline-text-3" id="text-gathering-notes">
 <p>
@@ -2034,33 +2055,33 @@ In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge9b1b8c">2.4.1. On &lsquo;gathering notes&rsquo;</a></li>
-<li><a href="#orgd24b6f3">2.4.2. List of links</a>
+<li><a href="#orgc2276cb">2.4.1. On &lsquo;gathering notes&rsquo;</a></li>
+<li><a href="#orgfb2e358">2.4.2. List of links</a>
 <ul>
-<li><a href="#org96b2515">2.4.2.1. <code>zetteldeft-insert-list-links</code> generates list with tagged files</a></li>
-<li><a href="#org241a8e5">2.4.2.2. <code>zetteldeft-insert-list-links-missing</code> generates list with new links</a></li>
-<li><a href="#orgc087805">2.4.2.3. <code>zetteldeft--list-entry-file-link</code> includes a file link as list entry</a></li>
+<li><a href="#org4d29b85">2.4.2.1. <code>zetteldeft-insert-list-links</code> generates list with tagged files</a></li>
+<li><a href="#org7a1d72e">2.4.2.2. <code>zetteldeft-insert-list-links-missing</code> generates list with new links</a></li>
+<li><a href="#org85817b3">2.4.2.3. <code>zetteldeft--list-entry-file-link</code> includes a file link as list entry</a></li>
 </ul>
 </li>
-<li><a href="#org8be4a04">2.4.3. Compiling a single <code>org</code></a>
+<li><a href="#org9bb4e26">2.4.3. Compiling a single <code>org</code></a>
 <ul>
-<li><a href="#orgf22727c">2.4.3.1. Idea and example</a></li>
-<li><a href="#org00b0f83">2.4.3.2. <code>zetteldeft-org-search-include</code> generates <code>#+INCLUDE</code> syntax</a></li>
-<li><a href="#orgeb081f5">2.4.3.3. <code>zetteldeft-org-search-insert</code> generates titles &amp; file content</a></li>
+<li><a href="#org9c930f4">2.4.3.1. Idea and example</a></li>
+<li><a href="#org6cf192b">2.4.3.2. <code>zetteldeft-org-search-include</code> generates <code>#+INCLUDE</code> syntax</a></li>
+<li><a href="#org3176340">2.4.3.3. <code>zetteldeft-org-search-insert</code> generates titles &amp; file content</a></li>
 </ul>
 </li>
-<li><a href="#orgbe86b78">2.4.4. Helper functions</a>
+<li><a href="#orgdaa2e25">2.4.4. Helper functions</a>
 <ul>
-<li><a href="#org31850bd">2.4.4.1. <code>zetteldeft-insert-file-contents</code> returns the contents of a file</a></li>
-<li><a href="#org12fdd86">2.4.4.2. <code>zetteldeft--org-include-file</code> includes a file in <code>org</code> format</a></li>
-<li><a href="#org57357ed">2.4.4.3. <code>zetteldeft--org-insert-file</code> inserts a files content</a></li>
+<li><a href="#orgd558ff7">2.4.4.1. <code>zetteldeft-insert-file-contents</code> returns the contents of a file</a></li>
+<li><a href="#orgc6aa5b7">2.4.4.2. <code>zetteldeft--org-include-file</code> includes a file in <code>org</code> format</a></li>
+<li><a href="#org71336b6">2.4.4.3. <code>zetteldeft--org-insert-file</code> inserts a files content</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orge9b1b8c" class="outline-4">
-<h4 id="orge9b1b8c"><span class="section-number-4">2.4.1</span> On &lsquo;gathering notes&rsquo;</h4>
+<div id="outline-container-orgc2276cb" class="outline-4">
+<h4 id="orgc2276cb"><span class="section-number-4">2.4.1</span> On &lsquo;gathering notes&rsquo;</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 Sometimes you want to easily gather all notes with a certain tag or search term.
@@ -2083,12 +2104,12 @@ More documentation can be found below.
 </div>
 </div>
 
-<div id="outline-container-orgd24b6f3" class="outline-4">
-<h4 id="orgd24b6f3"><span class="section-number-4">2.4.2</span> List of links</h4>
+<div id="outline-container-orgfb2e358" class="outline-4">
+<h4 id="orgfb2e358"><span class="section-number-4">2.4.2</span> List of links</h4>
 <div class="outline-text-4" id="text-2-4-2">
 </div>
-<div id="outline-container-org96b2515" class="outline-5">
-<h5 id="org96b2515"><span class="section-number-5">2.4.2.1</span> <code>zetteldeft-insert-list-links</code> generates list with tagged files</h5>
+<div id="outline-container-org4d29b85" class="outline-5">
+<h5 id="org4d29b85"><span class="section-number-5">2.4.2.1</span> <code>zetteldeft-insert-list-links</code> generates list with tagged files</h5>
 <div class="outline-text-5" id="text-2-4-2-1">
 <p>
 Creates and inserts a list with links to all files with selected search term.
@@ -2119,8 +2140,8 @@ The <code>when</code> part is there so that this deletion is not attempted if th
 </div>
 </div>
 
-<div id="outline-container-org241a8e5" class="outline-5">
-<h5 id="org241a8e5"><span class="section-number-5">2.4.2.2</span> <code>zetteldeft-insert-list-links-missing</code> generates list with new links</h5>
+<div id="outline-container-org7a1d72e" class="outline-5">
+<h5 id="org7a1d72e"><span class="section-number-5">2.4.2.2</span> <code>zetteldeft-insert-list-links-missing</code> generates list with new links</h5>
 <div class="outline-text-5" id="text-2-4-2-2">
 <p>
 Does the same as the above function, but only inserts IDs that aren&rsquo;t already present in the current file.
@@ -2178,20 +2199,28 @@ The most immediate solution is for the user to be wary of this, remove any previ
     <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">finally find full title for each ID and insert it</span>
     (<span style="color: #3B6EA8;">if</span> zdFinalIDs
         (<span style="color: #3B6EA8;">dolist</span> (zdID zdFinalIDs)
-          (<span style="color: #3B6EA8;">setq</span> zdID (zetteldeft--id-to-full-title zdID))
-          (insert <span style="color: #4F894C;">" - "</span> (concat zetteldeft-link-indicator
-                                zdID
-                                zetteldeft-link-suffix
-                                <span style="color: #4F894C;">"\n"</span>)))
+          (insert <span style="color: #4F894C;">" - "</span>
+                  zetteldeft-link-indicator
+                  zdID
+                  zetteldeft-link-suffix
+                  <span style="color: #4F894C;">" "</span>
+                  (zetteldeft--lift-file-title
+                    (zetteldeft--id-to-full-title zdID))
+                  <span style="color: #4F894C;">"\n"</span>))
       <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">unless the list is empty, then insert a message</span>
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 </pre>
 </div>
+
+<p>
+The final <code>dolist</code> contains some ugliness to make things work with <code>zetteldeft-link-suffix</code>, in order to get the note&rsquo;s title without the link in it.
+Might need to be fixed sometime.
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgc087805" class="outline-5">
-<h5 id="orgc087805"><span class="section-number-5">2.4.2.3</span> <code>zetteldeft--list-entry-file-link</code> includes a file link as list entry</h5>
+<div id="outline-container-org85817b3" class="outline-5">
+<h5 id="org85817b3"><span class="section-number-5">2.4.2.3</span> <code>zetteldeft--list-entry-file-link</code> includes a file link as list entry</h5>
 <div class="outline-text-5" id="text-2-4-2-3">
 <p>
 Inserts for given file a link id and title as a list entry.
@@ -2200,25 +2229,29 @@ Inserts for given file a link id and title as a list entry.
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--list-entry-file-link</span> (zdFile)
   <span style="color: #828b9b;">"Insert ZDFILE as list entry."</span>
-  (insert <span style="color: #4F894C;">" - "</span> (concat zetteldeft-link-indicator
-                        (file-name-base zdFile)
-                        zetteldeft-link-suffix) <span style="color: #4F894C;">"\n"</span>))
+  (insert <span style="color: #4F894C;">" - "</span>
+          zetteldeft-link-indicator
+          (zetteldeft--lift-id (file-name-base zdFile))
+          zetteldeft-link-suffix
+          <span style="color: #4F894C;">" "</span>
+          (zetteldeft--lift-file-title (file-name-base zdFile))
+          <span style="color: #4F894C;">"\n"</span>))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8be4a04" class="outline-4">
-<h4 id="org8be4a04"><span class="section-number-4">2.4.3</span> Compiling a single <code>org</code></h4>
+<div id="outline-container-org9bb4e26" class="outline-4">
+<h4 id="org9bb4e26"><span class="section-number-4">2.4.3</span> Compiling a single <code>org</code></h4>
 <div class="outline-text-4" id="text-2-4-3">
 </div>
-<div id="outline-container-orgf22727c" class="outline-5">
-<h5 id="orgf22727c"><span class="section-number-5">2.4.3.1</span> Idea and example</h5>
+<div id="outline-container-org9c930f4" class="outline-5">
+<h5 id="org9c930f4"><span class="section-number-5">2.4.3.1</span> Idea and example</h5>
 <div class="outline-text-5" id="text-2-4-3-1">
 </div>
 <ol class="org-ol">
-<li><a id="orgdd7a22b"></a>Including notes with given search term<br>
+<li><a id="org77cfcf0"></a>Including notes with given search term<br>
 <div class="outline-text-6" id="text-2-4-3-1-1">
 <p>
 The following explains what <code>zetteldeft-org-search-include</code> does, but the concept is more or less the same for <code>zetteldeft-org-search-insert</code>.
@@ -2262,7 +2295,7 @@ All functions are documented below.
 </div>
 </li>
 
-<li><a id="org6ddaf0e"></a>Semi-automated example<br>
+<li><a id="org67027a3"></a>Semi-automated example<br>
 <div class="outline-text-6" id="text-2-4-3-1-2">
 <p>
 You could, for example, add the following code to a document and execute (or evaluate) it from within <code>org-mode</code>.
@@ -2300,7 +2333,7 @@ A final caveat: don&rsquo;t put the file with the above code in you <code>deft</
 </div>
 </li>
 
-<li><a id="org1a7523f"></a>Issues &amp; things to note<br>
+<li><a id="org42de848"></a>Issues &amp; things to note<br>
 <div class="outline-text-6" id="text-2-4-3-1-3">
 <p>
 Before we look at the functions, a note on limitations of the current implementation.
@@ -2327,8 +2360,8 @@ As a solution, use <code>org-sort</code> manually after running <code>zetteldeft
 </ol>
 </div>
 
-<div id="outline-container-org00b0f83" class="outline-5">
-<h5 id="org00b0f83"><span class="section-number-5">2.4.3.2</span> <code>zetteldeft-org-search-include</code> generates <code>#+INCLUDE</code> syntax</h5>
+<div id="outline-container-org6cf192b" class="outline-5">
+<h5 id="org6cf192b"><span class="section-number-5">2.4.3.2</span> <code>zetteldeft-org-search-include</code> generates <code>#+INCLUDE</code> syntax</h5>
 <div class="outline-text-5" id="text-2-4-3-2">
 <p>
 Asks user for a search string and inserts headers and <code>#+INCLUDE</code> code for all files with said tag.
@@ -2347,8 +2380,8 @@ When used on <code>#tag</code>, make sure to include the <code>#</code> manually
 </div>
 </div>
 
-<div id="outline-container-orgeb081f5" class="outline-5">
-<h5 id="orgeb081f5"><span class="section-number-5">2.4.3.3</span> <code>zetteldeft-org-search-insert</code> generates titles &amp; file content</h5>
+<div id="outline-container-org3176340" class="outline-5">
+<h5 id="org3176340"><span class="section-number-5">2.4.3.3</span> <code>zetteldeft-org-search-insert</code> generates titles &amp; file content</h5>
 <div class="outline-text-5" id="text-2-4-3-3">
 <p>
 Very similar to the previous function, but rather than writing syntax to include files, insert their contents directly.
@@ -2368,12 +2401,12 @@ Very similar to the previous function, but rather than writing syntax to include
 </div>
 </div>
 
-<div id="outline-container-orgbe86b78" class="outline-4">
-<h4 id="orgbe86b78"><span class="section-number-4">2.4.4</span> Helper functions</h4>
+<div id="outline-container-orgdaa2e25" class="outline-4">
+<h4 id="orgdaa2e25"><span class="section-number-4">2.4.4</span> Helper functions</h4>
 <div class="outline-text-4" id="text-2-4-4">
 </div>
-<div id="outline-container-org31850bd" class="outline-5">
-<h5 id="org31850bd"><span class="section-number-5">2.4.4.1</span> <code>zetteldeft-insert-file-contents</code> returns the contents of a file</h5>
+<div id="outline-container-orgd558ff7" class="outline-5">
+<h5 id="orgd558ff7"><span class="section-number-5">2.4.4.1</span> <code>zetteldeft-insert-file-contents</code> returns the contents of a file</h5>
 <div class="outline-text-5" id="text-2-4-4-1">
 <p>
 Returns the contents of a file.
@@ -2395,8 +2428,8 @@ Returns the contents of a file.
 </div>
 </div>
 
-<div id="outline-container-org12fdd86" class="outline-5">
-<h5 id="org12fdd86"><span class="section-number-5">2.4.4.2</span> <code>zetteldeft--org-include-file</code> includes a file in <code>org</code> format</h5>
+<div id="outline-container-orgc6aa5b7" class="outline-5">
+<h5 id="orgc6aa5b7"><span class="section-number-5">2.4.4.2</span> <code>zetteldeft--org-include-file</code> includes a file in <code>org</code> format</h5>
 <div class="outline-text-5" id="text-2-4-4-2">
 <p>
 Inserts the title as a new header, with the <code>#+INCLUDE</code> line below.
@@ -2416,8 +2449,8 @@ Includes only from the second line onward, so that any <code>#+TITLE</code> line
 </div>
 </div>
 
-<div id="outline-container-org57357ed" class="outline-5">
-<h5 id="org57357ed"><span class="section-number-5">2.4.4.3</span> <code>zetteldeft--org-insert-file</code> inserts a files content</h5>
+<div id="outline-container-org71336b6" class="outline-5">
+<h5 id="org71336b6"><span class="section-number-5">2.4.4.3</span> <code>zetteldeft--org-insert-file</code> inserts a files content</h5>
 <div class="outline-text-5" id="text-2-4-4-3">
 <p>
 For a file, insert its title and contents (without first 3 lines).
@@ -2442,7 +2475,7 @@ Even better would be: without any of the lines starting with <code>#</code> at t
 </div>
 </div>
 
-<div id="outline-container-org81768bb" class="outline-3">
+<div id="outline-container-org454a8b5" class="outline-3">
 <h3 id="visuals"><span class="section-number-3">2.5</span> Creating visuals</h3>
 <div class="outline-text-3" id="text-visuals">
 <p>
@@ -2454,34 +2487,34 @@ In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org456b075">2.5.1. Introducing graphs</a></li>
-<li><a href="#orgfdcb4b2">2.5.2. Customizable elements</a>
+<li><a href="#orge68058a">2.5.1. Introducing graphs</a></li>
+<li><a href="#orgba1445b">2.5.2. Customizable elements</a>
 <ul>
-<li><a href="#org5c87e95">2.5.2.1. <code>zetteldeft-graph-syntax-begin</code> provides opening syntax</a></li>
-<li><a href="#org39a431c">2.5.2.2. <code>zetteldeft-graph-syntax-end</code> provides closing syntax</a></li>
+<li><a href="#org0fd5fe0">2.5.2.1. <code>zetteldeft-graph-syntax-begin</code> provides opening syntax</a></li>
+<li><a href="#orgdd3fc4a">2.5.2.2. <code>zetteldeft-graph-syntax-end</code> provides closing syntax</a></li>
 </ul>
 </li>
-<li><a href="#orga3607c4">2.5.3. Graph functions</a>
+<li><a href="#orgd559dc7">2.5.3. Graph functions</a>
 <ul>
-<li><a href="#orge1148da">2.5.3.1. <code>zetteldeft-org-graph-search</code> creates graph from search string</a></li>
-<li><a href="#org0d683df">2.5.3.2. <code>zetteldeft-org-graph-note</code> creates graph from note</a></li>
+<li><a href="#org4f00f30">2.5.3.1. <code>zetteldeft-org-graph-search</code> creates graph from search string</a></li>
+<li><a href="#org5f765c4">2.5.3.2. <code>zetteldeft-org-graph-note</code> creates graph from note</a></li>
 </ul>
 </li>
-<li><a href="#org5210716">2.5.4. Building blocks</a>
+<li><a href="#orgbdef742">2.5.4. Building blocks</a>
 <ul>
-<li><a href="#orge2424f8">2.5.4.1. <code>zetteldeft--extract-links</code> pulls links from a file</a></li>
-<li><a href="#org669dd3f">2.5.4.2. <code>zetteldeft--graph-insert-links</code> inserts graphviz links</a></li>
-<li><a href="#orgdd463da">2.5.4.3. <code>zetteldeft--graph-insert-title</code> inserts graphviz title line</a></li>
-<li><a href="#orga293d24">2.5.4.4. <code>zetteldeft--graph-store-link</code> stores provided notes</a></li>
-<li><a href="#orge4b248c">2.5.4.5. <code>zetteldeft--graph-insert-additional-links</code> inserts stored links</a></li>
-<li><a href="#org36feb82">2.5.4.6. <code>zetteldeft--graph-insert-all-titles</code> inserts all stored titles</a></li>
+<li><a href="#org3d170d0">2.5.4.1. <code>zetteldeft--extract-links</code> pulls links from a file</a></li>
+<li><a href="#orge34cc99">2.5.4.2. <code>zetteldeft--graph-insert-links</code> inserts graphviz links</a></li>
+<li><a href="#org15b7993">2.5.4.3. <code>zetteldeft--graph-insert-title</code> inserts graphviz title line</a></li>
+<li><a href="#orgcbb3c67">2.5.4.4. <code>zetteldeft--graph-store-link</code> stores provided notes</a></li>
+<li><a href="#org2c27ecb">2.5.4.5. <code>zetteldeft--graph-insert-additional-links</code> inserts stored links</a></li>
+<li><a href="#org9be339e">2.5.4.6. <code>zetteldeft--graph-insert-all-titles</code> inserts all stored titles</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org456b075" class="outline-4">
-<h4 id="org456b075"><span class="section-number-4">2.5.1</span> Introducing graphs</h4>
+<div id="outline-container-orge68058a" class="outline-4">
+<h4 id="orge68058a"><span class="section-number-4">2.5.1</span> Introducing graphs</h4>
 <div class="outline-text-4" id="text-2-5-1">
 <p>
 Linking notes together in plain text is fun, but sometimes you want to visualize which notes are connected.
@@ -2517,16 +2550,16 @@ It&rsquo;s worth noting, again, that this is very provisional.
 </div>
 </div>
 
-<div id="outline-container-orgfdcb4b2" class="outline-4">
-<h4 id="orgfdcb4b2"><span class="section-number-4">2.5.2</span> Customizable elements</h4>
+<div id="outline-container-orgba1445b" class="outline-4">
+<h4 id="orgba1445b"><span class="section-number-4">2.5.2</span> Customizable elements</h4>
 <div class="outline-text-4" id="text-2-5-2">
 <p>
 We begin by setting up some customizable parts: syntax that should go at the start and the end of the <code>org-mode</code> source blocks that will be generated.
 </p>
 </div>
 
-<div id="outline-container-org5c87e95" class="outline-5">
-<h5 id="org5c87e95"><span class="section-number-5">2.5.2.1</span> <code>zetteldeft-graph-syntax-begin</code> provides opening syntax</h5>
+<div id="outline-container-org0fd5fe0" class="outline-5">
+<h5 id="org0fd5fe0"><span class="section-number-5">2.5.2.1</span> <code>zetteldeft-graph-syntax-begin</code> provides opening syntax</h5>
 <div class="outline-text-5" id="text-2-5-2-1">
 <p>
 Within graphviz, I advise to use <code>fdp</code>, <code>twopi</code> (which overlaps more) or <code>circo</code> as layouts.
@@ -2544,8 +2577,8 @@ Within graphviz, I advise to use <code>fdp</code>, <code>twopi</code> (which ove
 </div>
 </div>
 
-<div id="outline-container-org39a431c" class="outline-5">
-<h5 id="org39a431c"><span class="section-number-5">2.5.2.2</span> <code>zetteldeft-graph-syntax-end</code> provides closing syntax</h5>
+<div id="outline-container-orgdd3fc4a" class="outline-5">
+<h5 id="orgdd3fc4a"><span class="section-number-5">2.5.2.2</span> <code>zetteldeft-graph-syntax-end</code> provides closing syntax</h5>
 <div class="outline-text-5" id="text-2-5-2-2">
 <p>
 This merely closes the source block.
@@ -2563,12 +2596,12 @@ This merely closes the source block.
 </div>
 </div>
 
-<div id="outline-container-orga3607c4" class="outline-4">
-<h4 id="orga3607c4"><span class="section-number-4">2.5.3</span> Graph functions</h4>
+<div id="outline-container-orgd559dc7" class="outline-4">
+<h4 id="orgd559dc7"><span class="section-number-4">2.5.3</span> Graph functions</h4>
 <div class="outline-text-4" id="text-2-5-3">
 </div>
-<div id="outline-container-orge1148da" class="outline-5">
-<h5 id="orge1148da"><span class="section-number-5">2.5.3.1</span> <code>zetteldeft-org-graph-search</code> creates graph from search string</h5>
+<div id="outline-container-org4f00f30" class="outline-5">
+<h5 id="org4f00f30"><span class="section-number-5">2.5.3.1</span> <code>zetteldeft-org-graph-search</code> creates graph from search string</h5>
 <div class="outline-text-5" id="text-2-5-3-1">
 <p>
 An org code block with <code>graphviz</code> code for a <code>graph.pdf</code>.
@@ -2611,8 +2644,8 @@ Now for the function itself.
 </div>
 </div>
 
-<div id="outline-container-org0d683df" class="outline-5">
-<h5 id="org0d683df"><span class="section-number-5">2.5.3.2</span> <code>zetteldeft-org-graph-note</code> creates graph from note</h5>
+<div id="outline-container-org5f765c4" class="outline-5">
+<h5 id="org5f765c4"><span class="section-number-5">2.5.3.2</span> <code>zetteldeft-org-graph-note</code> creates graph from note</h5>
 <div class="outline-text-5" id="text-2-5-3-2">
 <p>
 Insert an org source code block for a graphviz presentation of a note and its connections.
@@ -2645,12 +2678,12 @@ When called interactively, select a file from the completion interface.
 </div>
 </div>
 
-<div id="outline-container-org5210716" class="outline-4">
-<h4 id="org5210716"><span class="section-number-4">2.5.4</span> Building blocks</h4>
+<div id="outline-container-orgbdef742" class="outline-4">
+<h4 id="orgbdef742"><span class="section-number-4">2.5.4</span> Building blocks</h4>
 <div class="outline-text-4" id="text-2-5-4">
 </div>
-<div id="outline-container-orge2424f8" class="outline-5">
-<h5 id="orge2424f8"><span class="section-number-5">2.5.4.1</span> <code>zetteldeft--extract-links</code> pulls links from a file</h5>
+<div id="outline-container-org3d170d0" class="outline-5">
+<h5 id="org3d170d0"><span class="section-number-5">2.5.4.1</span> <code>zetteldeft--extract-links</code> pulls links from a file</h5>
 <div class="outline-text-5" id="text-2-5-4-1">
 <p>
 Very similar to the <code>zetteldeft--extract-tags</code> function, but returns links instead of storing them.
@@ -2675,8 +2708,8 @@ Very similar to the <code>zetteldeft--extract-tags</code> function, but returns 
 </div>
 </div>
 
-<div id="outline-container-org669dd3f" class="outline-5">
-<h5 id="org669dd3f"><span class="section-number-5">2.5.4.2</span> <code>zetteldeft--graph-insert-links</code> inserts graphviz links</h5>
+<div id="outline-container-orge34cc99" class="outline-5">
+<h5 id="orge34cc99"><span class="section-number-5">2.5.4.2</span> <code>zetteldeft--graph-insert-links</code> inserts graphviz links</h5>
 <div class="outline-text-5" id="text-2-5-4-2">
 <p>
 Insert the sanitized ID from the file, followed by an arrow and all of the links.
@@ -2703,8 +2736,8 @@ Store both the deft file provided and any found files in <code>zetteldeft--graph
 </div>
 </div>
 
-<div id="outline-container-orgdd463da" class="outline-5">
-<h5 id="orgdd463da"><span class="section-number-5">2.5.4.3</span> <code>zetteldeft--graph-insert-title</code> inserts graphviz title line</h5>
+<div id="outline-container-org15b7993" class="outline-5">
+<h5 id="org15b7993"><span class="section-number-5">2.5.4.3</span> <code>zetteldeft--graph-insert-title</code> inserts graphviz title line</h5>
 <div class="outline-text-5" id="text-2-5-4-3">
 <p>
 Titles have to be inserted in the correct <code>graphviz</code> format, like so:
@@ -2740,8 +2773,8 @@ The title is taken from the file string and any additional quotes removed.
 </div>
 </div>
 
-<div id="outline-container-orga293d24" class="outline-5">
-<h5 id="orga293d24"><span class="section-number-5">2.5.4.4</span> <code>zetteldeft--graph-store-link</code> stores provided notes</h5>
+<div id="outline-container-orgcbb3c67" class="outline-5">
+<h5 id="orgcbb3c67"><span class="section-number-5">2.5.4.4</span> <code>zetteldeft--graph-store-link</code> stores provided notes</h5>
 <div class="outline-text-5" id="text-2-5-4-4">
 <p>
 For future reference, linked files are stored in <code>zetteldeft--graph-links</code>.
@@ -2770,8 +2803,8 @@ Simply providing an ID works too, if you provide the second argument as true.
 </div>
 </div>
 
-<div id="outline-container-orge4b248c" class="outline-5">
-<h5 id="orge4b248c"><span class="section-number-5">2.5.4.5</span> <code>zetteldeft--graph-insert-additional-links</code> inserts stored links</h5>
+<div id="outline-container-org2c27ecb" class="outline-5">
+<h5 id="org2c27ecb"><span class="section-number-5">2.5.4.5</span> <code>zetteldeft--graph-insert-additional-links</code> inserts stored links</h5>
 <div class="outline-text-5" id="text-2-5-4-5">
 <p>
 Insert links stored in the <code>zetteldeft--graph-links</code> list.
@@ -2789,8 +2822,8 @@ Except the first list item, as this is considered the base file already included
 </div>
 </div>
 
-<div id="outline-container-org36feb82" class="outline-5">
-<h5 id="org36feb82"><span class="section-number-5">2.5.4.6</span> <code>zetteldeft--graph-insert-all-titles</code> inserts all stored titles</h5>
+<div id="outline-container-org9be339e" class="outline-5">
+<h5 id="org9be339e"><span class="section-number-5">2.5.4.6</span> <code>zetteldeft--graph-insert-all-titles</code> inserts all stored titles</h5>
 <div class="outline-text-5" id="text-2-5-4-6">
 <p>
 Insert all titles stored in <code>zetteldeft--graph-links</code>.
@@ -2812,7 +2845,7 @@ Insert all titles stored in <code>zetteldeft--graph-links</code>.
 </div>
 </div>
 
-<div id="outline-container-org383f1e4" class="outline-3">
+<div id="outline-container-orgc7f6df6" class="outline-3">
 <h3 id="kb-defaults"><span class="section-number-3">2.6</span> Helper function to set keybindings</h3>
 <div class="outline-text-3" id="text-kb-defaults">
 <p>
@@ -2854,8 +2887,8 @@ Other setups, for <code>evil</code> or <code>spacemacs</code>, are suggested in 
 </div>
 </div>
 
-<div id="outline-container-org99f23e0" class="outline-3">
-<h3 id="org99f23e0"><span class="section-number-3">2.7</span> End of package</h3>
+<div id="outline-container-org0a93a33" class="outline-3">
+<h3 id="org0a93a33"><span class="section-number-3">2.7</span> End of package</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 That&rsquo;s all folks!
@@ -2870,7 +2903,7 @@ That&rsquo;s all folks!
 </div>
 </div>
 
-<div id="outline-container-orgb1142de" class="outline-2">
+<div id="outline-container-org161b4d6" class="outline-2">
 <h2 id="suggested-setup"><span class="section-number-2">3</span> Suggested setup</h2>
 <div class="outline-text-2" id="text-suggested-setup">
 <p>
@@ -2882,7 +2915,7 @@ None of these code blocks are tangled into the <code>.el</code> file, they are h
 </p>
 </div>
 
-<div id="outline-container-orgcee8068" class="outline-3">
+<div id="outline-container-orged67d66" class="outline-3">
 <h3 id="suggested-kb"><span class="section-number-3">3.1</span> Suggested <code>zetteldeft</code> keybindings</h3>
 <div class="outline-text-3" id="text-suggested-kb">
 <p>
@@ -2901,8 +2934,8 @@ Later paragraphs in this section suggest different setups, namely bindings for <
 </p>
 </div>
 
-<div id="outline-container-orgd775bc8" class="outline-4">
-<h4 id="orgd775bc8"><span class="section-number-4">3.1.1</span> Classical keybindings behind <code>C-c d</code></h4>
+<div id="outline-container-org49388dd" class="outline-4">
+<h4 id="org49388dd"><span class="section-number-4">3.1.1</span> Classical keybindings behind <code>C-c d</code></h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 Calling <code>zetteldeft-set-classic-keybindings</code> will set the following (see <a href="#kb-defaults">2.6</a>):
@@ -3012,7 +3045,7 @@ Calling <code>zetteldeft-set-classic-keybindings</code> will set the following (
 </div>
 </div>
 
-<div id="outline-container-org2b480f8" class="outline-4">
+<div id="outline-container-org3acc35d" class="outline-4">
 <h4 id="kb-general"><span class="section-number-4">3.1.2</span> Keybindings for <code>evil</code> with <code>general</code></h4>
 <div class="outline-text-4" id="text-kb-general">
 <p>
@@ -3049,7 +3082,7 @@ It relies on <code>general.el</code> for modal editing with <code>evil</code> an
 </div>
 </div>
 
-<div id="outline-container-org993e5d7" class="outline-4">
+<div id="outline-container-orgb89c105" class="outline-4">
 <h4 id="kb-spacemacs"><span class="section-number-4">3.1.3</span> Keybindings for <code>spacemacs</code></h4>
 <div class="outline-text-4" id="text-kb-spacemacs">
 <p>
@@ -3181,12 +3214,12 @@ For example:
 </div>
 </div>
 
-<div id="outline-container-org43df193" class="outline-3">
+<div id="outline-container-orgdb4049b" class="outline-3">
 <h3 id="suggested-deft"><span class="section-number-3">3.2</span> Suggested <code>deft</code> setup</h3>
 <div class="outline-text-3" id="text-suggested-deft">
 </div>
-<div id="outline-container-orgcbecbfd" class="outline-4">
-<h4 id="orgcbecbfd"><span class="section-number-4">3.2.1</span> Notes &amp; extensions</h4>
+<div id="outline-container-org8d3f6dd" class="outline-4">
+<h4 id="org8d3f6dd"><span class="section-number-4">3.2.1</span> Notes &amp; extensions</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 Note extensions are <code>md</code>, <code>txt</code> and <code>org</code>.
@@ -3200,8 +3233,8 @@ First of this list is the default for new notes.
 </div>
 </div>
 
-<div id="outline-container-org1955166" class="outline-4">
-<h4 id="org1955166"><span class="section-number-4">3.2.2</span> Set <code>deft-directory</code></h4>
+<div id="outline-container-org75732b0" class="outline-4">
+<h4 id="org75732b0"><span class="section-number-4">3.2.2</span> Set <code>deft-directory</code></h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 Search the deft directory recursively, to include subdirectories.
@@ -3215,8 +3248,8 @@ Search the deft directory recursively, to include subdirectories.
 </div>
 </div>
 
-<div id="outline-container-orga13c131" class="outline-4">
-<h4 id="orga13c131"><span class="section-number-4">3.2.3</span> Additional <code>deft</code> functions</h4>
+<div id="outline-container-org3a10cec" class="outline-4">
+<h4 id="org3a10cec"><span class="section-number-4">3.2.3</span> Additional <code>deft</code> functions</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <p>
 Some personal additions.
@@ -3265,8 +3298,8 @@ To select results from the item list without leaving the <code>insert</code> sta
 </div>
 </div>
 
-<div id="outline-container-org931ea11" class="outline-4">
-<h4 id="org931ea11"><span class="section-number-4">3.2.4</span> Ignore more <code>org-mode</code> metadata</h4>
+<div id="outline-container-orgbc327c4" class="outline-4">
+<h4 id="orgbc327c4"><span class="section-number-4">3.2.4</span> Ignore more <code>org-mode</code> metadata</h4>
 <div class="outline-text-4" id="text-3-2-4">
 <p>
 I tend to write <code>org-mode</code> titles with <code>#+title:</code> (i.e., uncapitalized). Also other <code>org-mode</code> code at the beginning is written in lower case.
@@ -3293,7 +3326,7 @@ Its original value was <code>\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)</code>.
 </div>
 </div>
 
-<div id="outline-container-org743ab98" class="outline-2">
+<div id="outline-container-orgee04620" class="outline-2">
 <h2 id="changelog"><span class="section-number-2">4</span> Changelog</h2>
 <div class="outline-text-2" id="text-changelog">
 <p>
@@ -3328,22 +3361,6 @@ An overview of changes, in addition to those mentioned at the top of this docume
 </ul>
 </div>
 </div>
-
-<div id="outline-container-orga54c71a" class="outline-2">
-<h2 id="orga54c71a"><span class="section-number-2">5</span> Brainstorm</h2>
-<div class="outline-text-2" id="text-5">
-<p>
-Some ideas for the future.
-</p>
-
-<ul class="org-ul">
-<li>Export HTML with clickable links between notes.</li>
-<li>Export markdown through <code>pandoc</code>.</li>
-<li>Create a minor mode to highlight links &amp; tags and display clickable links.</li>
-<li>Saved searches, somewhere easily accessible.</li>
-</ul>
-</div>
-</div>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
@@ -3358,11 +3375,16 @@ Check out <a href="https://jblevins.org/projects/deft/">jblevins.org/projects/de
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class='author'>Author: EFLS</p>
-
-    <p class='date'>Modified: 2020-05-09 Sat 11:51</p>
-
-    <p class='creator'><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<div id='head'>
+    <h1><b>Zetteldeft</b></h1>
+    <a>&mdash;</a>
+    <ul>
+        <li><a href='./index.html'>Introduction</a></li>
+        <li><a href='./zetteldeft.html'>Code</a></li>
+        <li><a href='https://eliasstorms.net' style='float: right'>by EFLS</a></li>
+        <li><a href='https://github.com/efls/zetteldeft' style='float: right'>on Github</a></li>
+    </ul>
+</div>
 </div>
 </body>
 </html>
