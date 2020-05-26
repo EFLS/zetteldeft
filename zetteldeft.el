@@ -229,7 +229,6 @@ When `evil' is loaded, enter insert state."
   (interactive (list (read-string "name: ")))
   (let* ((zdId (zetteldeft-generate-id))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
-  (deft-filter str t)
   (deft-new-file-named zdName)
   (kill-new zdName)
   (unless empty (zetteldeft--insert-title str))
@@ -346,7 +345,8 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
-  (let (contents title)
+  (let ((deft-use-filename-as-title nil)
+	contents title)
     (with-current-buffer (get-buffer-create "*Zetteldeft temp*")
       (insert-file-contents zdFile nil nil nil t)
       (setq contents (concat (buffer-string))))
