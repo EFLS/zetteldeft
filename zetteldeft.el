@@ -369,21 +369,6 @@ Takes CUSPROMPT, FN-GEN and UPDATE-TITLE to customise behaviour."
       (if update-title (zetteldeft-update-title-in-file new-name) nil)
       (deft-refresh))))
 
-(defun zetteldeft-file-rename ()
-  "Rename the current file via the deft function.
-Use this on files in the `deft-directory'."
-  (interactive)
-  (zetteldeft--rename
-   (lambda (old-filename) (let (old-name prompt-text)
-			    (setq old-name (deft-base-filename old-filename))
-			    (setq prompt-text (concat "Rename " old-name " to (without extension): "))
-			    `((,@prompt-text) (,@old-name))))
-   (lambda (_old-filename new-name) (let ((deft-dir (file-name-as-directory deft-directory))
-					 new-filename)
-				     (setq new-filename (concat deft-dir new-name "." deft-default-extension))
-				     new-filename))
-   nil))
-
 (defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.
 Does so by looking for `zetteldeft-title-prefix'.
@@ -395,7 +380,7 @@ Replaces current title with TITLE."
         (delete-region (line-beginning-position) (line-end-position))
         (zetteldeft--insert-title title)))))
 
-(defun zetteldeft-change-title-and-file-name ()
+(defun zetteldeft-file-rename ()
   "Change current file's title, and use the new title to rename the file."
   (interactive)
   (zetteldeft--rename
