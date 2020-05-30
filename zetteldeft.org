@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
  - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
  - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
  - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-indicator= is =""=.
@@ -669,11 +670,13 @@ Based on =deft-find-file=.
 
 Create new file with filename as =zetteldeft-id-format= and a string.
 
-Either provide a name as argument, or (when called interactively) enter one in the mini-buffer.
-Unless an additional parameter is provided, the title (prepended by =zetteldeft-title-prefix= and appended by =zetteldeft-title-suffix=) is automatically added.
+Either provide a title as argument, or (when called interactively) enter one in the mini-buffer.
 
-When =evil= is used, enter the insert state as well.
-The full name is added to the kill ring.
+Additionally:
+ - generate an ID (unless one is provided as optional argument)
+ - insert a title in the newly created file, wrapped in =zetteldeft-title-prefix= and =zetteldeft-title-suffix=
+ - when =evil= is loaded, enter the insert state
+ - add a full link to the kill ring
 
 First, let's make sure =emacs= knows where to find =evil-insert-state=.
 
@@ -681,43 +684,48 @@ First, let's make sure =emacs= knows where to find =evil-insert-state=.
 (declare-function evil-insert-state "evil")
 #+END_SRC
 
-Note that the file is only actually created upon save.
+Now for the function itself.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft-new-file (str &optional empty)
+(defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
 Filename is `zetteldeft-id-format' appended by STR.
 No file extension needed.
 
-The title is inserted in `org-mode' format (unless EMPTY is true)
-and the file name (without extension) is added to the kill ring.
-When `evil' is loaded, enter insert state."
-  (interactive (list (read-string "name: ")))
-  (let* ((zdId (zetteldeft-generate-id))
+Unless EMPTY is non-nil, a file title will be inserted,
+wrapped in `zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
+Filename (without extension) is added to the kill ring.
+When `evil' is loaded, change to insert state."
+  (interactive (list (read-string "Note title: ")))
+  (let* ((zdId (or id
+                   (zetteldeft-generate-id)))
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zetteldeft--insert-title))
+  (zetteldeft--insert-title)
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
 
+Note that the file is only actually created when =save-buffer= is called.
+
 **** =zetteldeft-new-file-and-link= inserts generated id
 
-Generate an id, append a name, and generate a new file based on id and link.
+Similar to the previous function, but also insert a link to the newly created note.
 
-Either provide a name as argument, or enter one in the mini-buffer.
+The generated ID is passed to =zetteldeft-new-file=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-new-file-and-link (str)
-  "Insert generated id with `zetteldeft-id-format' appended with STR.
-Creates new deft file with id and STR as name."
-  (interactive (list (read-string "name: ")))
-  (insert zetteldeft-link-indicator
-          (zetteldeft-generate-id)
-          zetteldeft-link-suffix
-          " " str)
-  (zetteldeft-new-file str))
+  "Create a new note and insert a link to it.
+Similar to `zetteldeft-new-file', but insert a link to the new file."
+  (interactive (list (read-string "Note title: ")))
+  (let ((zdId (zetteldeft-generate-id)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            " " str)
+    (zetteldeft-new-file str zdId)))
 #+END_SRC
 
 *** Moving around with =avy=
