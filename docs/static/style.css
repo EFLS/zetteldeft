@@ -265,6 +265,7 @@ th {
 #preamble,
 #postamble {
   background-color: #e3e3c7;
+  padding: 3px 0px;
 }
 #head {
   margin: auto;
