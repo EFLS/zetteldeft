@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-05-16 Sat 13:13 -->
+<!-- 2020-05-31 Sun 20:55 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -243,7 +243,7 @@ for the JavaScript code in this tag.
 <div id="preamble" class="status">
 <div id='head'>
     <h1><b>Zetteldeft</b></h1>
-    <a>&mdash;</a>
+    &mdash;
     <ul>
         <li><a href='./index.html'>Introduction</a></li>
         <li><a href='./zetteldeft.html'>Code</a></li>
@@ -1034,7 +1034,11 @@ For example: <code>§2019-01-20-1433</code>.
 
 <p>
 This identifying character can be changed by setting the <code>zetteldeft-link-indicator</code> variable and is <code>§</code> by default.
-Note that if this variable is set to nil, the <code>zetteldeft-avy-link-search</code> and <code>zetteldeft-avy-file-search</code> functions will not work.
+</p>
+
+<p>
+Set it to an empty string (i.e. <code>""</code>) to disable the indicator.
+See also <code>zetteldeft-link-suffix</code> (which is empty by default) if you prefer a closure to the links.
 </p>
 </div>
 </div>
@@ -1541,7 +1545,7 @@ That file is then opened (in another window if requested).
 </p>
 
 <p>
-Links are found by concatenating <code>zetteldeft-link-indicator</code>, <code>zetteldeftd-id-regex</code> and =zetteldeft-link-su.
+Links are found by concatenating <code>zetteldeft-link-indicator</code>, <code>zetteldeftd-id-regex</code> and <code>zetteldeft-link-suffix</code>.
 </p>
 
 <div class="org-src-container">
@@ -1560,12 +1564,16 @@ Links are found by concatenating <code>zetteldeft-link-indicator</code>, <code>z
 </div>
 
 <p>
-Function <code>avy-jump</code> returns a cons cell if the character is found and otherwise returns <code>t</code>.
-That&rsquo;s why the <code>(when (consp</code> is needed.
+Some notes:
 </p>
+<ul class="org-ul">
+<li>Function <code>avy-jump</code> returns a cons cell if the character is found and otherwise returns <code>t</code>.
+That&rsquo;s why the <code>(when (consp</code> is needed.</li>
+<li>The optional <code>otherWindow</code> is passed to <code>zetteldeft--search-filename</code>, and from there to <code>deft-open-file</code>.</li>
+</ul>
 
 <p>
-Let&rsquo;s also define a function to open a file in another window.
+Let&rsquo;s also define a function to open a file in another window of choice.
 Selection of the window occurs via <code>ace-window</code>.
 </p>
 
@@ -3377,7 +3385,7 @@ Check out <a href="https://jblevins.org/projects/deft/">jblevins.org/projects/de
 <div id="postamble" class="status">
 <div id='head'>
     <h1><b>Zetteldeft</b></h1>
-    <a>&mdash;</a>
+    &mdash;
     <ul>
         <li><a href='./index.html'>Introduction</a></li>
         <li><a href='./zetteldeft.html'>Code</a></li>
