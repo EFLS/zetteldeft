@@ -427,7 +427,9 @@ A link is an ID prepended by a character to easily identify it as a link.
 For example: =§2019-01-20-1433=.
 
 This identifying character can be changed by setting the =zetteldeft-link-indicator= variable and is =§= by default.
-Note that if this variable is set to nil, the =zetteldeft-avy-link-search= and =zetteldeft-avy-file-search= functions will not work.
+
+Set it to an empty string (i.e. =""=) to disable the indicator.
+See also =zetteldeft-link-suffix= (which is empty by default) if you prefer a closure to the links.
 
 **** Helper function =zetteldeft--id-font-lock-setup=
 
@@ -764,7 +766,7 @@ Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
 That file is then opened (in another window if requested).
 
-Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-su.
+Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-suffix=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-avy-file-search (&optional otherWindow)
@@ -780,10 +782,12 @@ Open that file (in another window if OTHERWINDOW)."
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 #+END_SRC
 
-Function =avy-jump= returns a cons cell if the character is found and otherwise returns =t=.
-That's why the =(when (consp= is needed.
+Some notes:
+ - Function =avy-jump= returns a cons cell if the character is found and otherwise returns =t=.
+   That's why the =(when (consp= is needed.
+ - The optional =otherWindow= is passed to =zetteldeft--search-filename=, and from there to =deft-open-file=.
 
-Let's also define a function to open a file in another window.
+Let's also define a function to open a file in another window of choice.
 Selection of the window occurs via =ace-window=.
 
 #+BEGIN_SRC emacs-lisp
