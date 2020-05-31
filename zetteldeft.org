@@ -764,7 +764,7 @@ Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
 That file is then opened (in another window if requested).
 
-Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-su.
+Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-suffix=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-avy-file-search (&optional otherWindow)
