@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-05-31 Sun 20:55 -->
+<!-- 2020-06-04 Thu 08:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -273,6 +273,7 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>04 June</b>: Change <code>zetteldeft-new-file-and-link</code> so that it doesn&rsquo;t generate an ID. Change <code>zetteldeft-new-file</code> so that it can take an ID (and drop the <i>EMPTY</i> option).</li>
 <li><b>13 May</b>: Modified default <code>zetteldeft-tag-regex</code> to include <code>[:alnum:]</code> and improve <code>zetteldeft--tag-format</code>.</li>
 <li><b>09 May</b>: Introduced <code>zetteldeft-link-suffix</code>, which is <code>""</code> by default.</li>
 <li><b>15 Apr</b>: Replace <code>avy-goto-char</code> with <code>avy-jump</code>. <code>avy</code> functions now work even when <code>zetteldeft-link-indicator</code> is <code>""</code>.</li>
@@ -1405,14 +1406,18 @@ Create new file with filename as <code>zetteldeft-id-format</code> and a string.
 </p>
 
 <p>
-Either provide a name as argument, or (when called interactively) enter one in the mini-buffer.
-Unless an additional parameter is provided, the title (prepended by <code>zetteldeft-title-prefix</code> and appended by <code>zetteldeft-title-suffix</code>) is automatically added.
+Either provide a title as argument, or (when called interactively) enter one in the mini-buffer.
 </p>
 
 <p>
-When <code>evil</code> is used, enter the insert state as well.
-The full name is added to the kill ring.
+Additionally:
 </p>
+<ul class="org-ul">
+<li>generate an ID (unless one is provided as optional argument)</li>
+<li>insert a title in the newly created file, wrapped in <code>zetteldeft-title-prefix</code> and <code>zetteldeft-title-suffix</code></li>
+<li>when <code>evil</code> is loaded, enter the insert state</li>
+<li>add a full link to the kill ring</li>
+</ul>
 
 <p>
 First, let&rsquo;s make sure <code>emacs</code> knows where to find <code>evil-insert-state</code>.
@@ -1424,28 +1429,34 @@ First, let&rsquo;s make sure <code>emacs</code> knows where to find <code>evil-i
 </div>
 
 <p>
-Note that the file is only actually created upon save.
+Now for the function itself.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-new-file</span> (str <span style="color: #9A7500;">&amp;optional</span> empty)
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-new-file</span> (str <span style="color: #9A7500;">&amp;optional</span> id)
   <span style="color: #828b9b;">"Create a new deft file.</span>
 <span style="color: #828b9b;">Filename is `</span><span style="color: #97365B;">zetteldeft-id-format</span><span style="color: #828b9b;">' appended by STR.</span>
 <span style="color: #828b9b;">No file extension needed.</span>
 
-<span style="color: #828b9b;">The title is inserted in `</span><span style="color: #97365B;">org-mode</span><span style="color: #828b9b;">' format (unless EMPTY is true)</span>
-<span style="color: #828b9b;">and the file name (without extension) is added to the kill ring.</span>
-<span style="color: #828b9b;">When `</span><span style="color: #97365B;">evil</span><span style="color: #828b9b;">' is loaded, enter insert state."</span>
-  (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"name: "</span>)))
-  (<span style="color: #3B6EA8;">let*</span> ((zdId (zetteldeft-generate-id))
+<span style="color: #828b9b;">Unless EMPTY is non-nil, a file title will be inserted,</span>
+<span style="color: #828b9b;">wrapped in `</span><span style="color: #97365B;">zetteldeft-title-prefix</span><span style="color: #828b9b;">' and `</span><span style="color: #97365B;">zetteldeft-title-suffix</span><span style="color: #828b9b;">'.</span>
+<span style="color: #828b9b;">Filename (without extension) is added to the kill ring.</span>
+<span style="color: #828b9b;">When `</span><span style="color: #97365B;">evil</span><span style="color: #828b9b;">' is loaded, change to insert state."</span>
+  (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"Note title: "</span>)))
+  (<span style="color: #3B6EA8;">let*</span> ((zdId (<span style="color: #3B6EA8;">or</span> id
+                   (zetteldeft-generate-id)))
          (zdName (concat zdId <span style="color: #4F894C;">" "</span> str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (<span style="color: #3B6EA8;">unless</span> empty (zetteldeft--insert-title))
+  (zetteldeft--insert-title)
   (save-buffer)
   (<span style="color: #3B6EA8;">when</span> (<span style="color: #3B6EA8;">featurep</span> '<span style="color: #97365B;">evil</span>) (evil-insert-state))))
 </pre>
 </div>
+
+<p>
+Note that the file is only actually created when <code>save-buffer</code> is called.
+</p>
 </div>
 </div>
 
@@ -1453,23 +1464,24 @@ Note that the file is only actually created upon save.
 <h5 id="org93aed29"><span class="section-number-5">2.2.4.2</span> <code>zetteldeft-new-file-and-link</code> inserts generated id</h5>
 <div class="outline-text-5" id="text-2-2-4-2">
 <p>
-Generate an id, append a name, and generate a new file based on id and link.
+Similar to the previous function, but also insert a link to the newly created note.
 </p>
 
 <p>
-Either provide a name as argument, or enter one in the mini-buffer.
+The generated ID is passed to <code>zetteldeft-new-file</code>.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-new-file-and-link</span> (str)
-  <span style="color: #828b9b;">"Insert generated id with `</span><span style="color: #97365B;">zetteldeft-id-format</span><span style="color: #828b9b;">' appended with STR.</span>
-<span style="color: #828b9b;">Creates new deft file with id and STR as name."</span>
-  (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"name: "</span>)))
-  (insert zetteldeft-link-indicator
-          (zetteldeft-generate-id)
-          zetteldeft-link-suffix
-          <span style="color: #4F894C;">" "</span> str)
-  (zetteldeft-new-file str))
+  <span style="color: #828b9b;">"Create a new note and insert a link to it.</span>
+<span style="color: #828b9b;">Similar to `</span><span style="color: #97365B;">zetteldeft-new-file</span><span style="color: #828b9b;">', but insert a link to the new file."</span>
+  (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"Note title: "</span>)))
+  (<span style="color: #3B6EA8;">let</span> ((zdId (zetteldeft-generate-id)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            <span style="color: #4F894C;">" "</span> str)
+    (zetteldeft-new-file str zdId)))
 </pre>
 </div>
 </div>

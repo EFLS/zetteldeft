@@ -230,32 +230,35 @@ This is done with the regular expression stored in
 
 (declare-function evil-insert-state "evil")
 
-(defun zetteldeft-new-file (str &optional empty)
+(defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
 Filename is `zetteldeft-id-format' appended by STR.
 No file extension needed.
 
-The title is inserted in `org-mode' format (unless EMPTY is true)
-and the file name (without extension) is added to the kill ring.
-When `evil' is loaded, enter insert state."
-  (interactive (list (read-string "name: ")))
-  (let* ((zdId (zetteldeft-generate-id))
+Unless EMPTY is non-nil, a file title will be inserted,
+wrapped in `zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
+Filename (without extension) is added to the kill ring.
+When `evil' is loaded, change to insert state."
+  (interactive (list (read-string "Note title: ")))
+  (let* ((zdId (or id
+                   (zetteldeft-generate-id)))
          (zdName (concat zdId " " str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zetteldeft--insert-title))
+  (zetteldeft--insert-title)
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
 (defun zetteldeft-new-file-and-link (str)
-  "Insert generated id with `zetteldeft-id-format' appended with STR.
-Creates new deft file with id and STR as name."
-  (interactive (list (read-string "name: ")))
-  (insert zetteldeft-link-indicator
-          (zetteldeft-generate-id)
-          zetteldeft-link-suffix
-          " " str)
-  (zetteldeft-new-file str))
+  "Create a new note and insert a link to it.
+Similar to `zetteldeft-new-file', but insert a link to the new file."
+  (interactive (list (read-string "Note title: ")))
+  (let ((zdId (zetteldeft-generate-id)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            " " str)
+    (zetteldeft-new-file str zdId)))
 
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
