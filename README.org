@@ -8,6 +8,8 @@ The =zetteldeft.org= file in this repository contains documented code for a set 
 
 To learn key concepts and basic functions of thic package, check out an introduction here: [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
 
+Or learn how to install and use Zetteldeft by cloning the =zd-tutorial= repository available at https://github.com/EFLS/zd-tutorial.
+
 Documentation, code and further technical details can be found in the =.org= file of this repository, or can be read in a more convenient format over at [[https://efls.github.io/zetteldeft/zetteldeft.html][efls.github.io/zetteldeft/zetteldeft.html]].
 
 =zetteldeft= is available on [[https://melpa.org/#/zetteldeft][MELPA]].

@@ -22,6 +22,11 @@ Just want source?
 Take a look at this [[file:zetteldeft.org]["literate code"]], which contains both source and documentation,
 or simply refer to the [[https://github.com/efls/zetteldeft][Github repository]].
 
+Would you rather get familiar with Zetteldeft via an interactive tutorial?
+Check out the =zd-tutorial= repository on [[https://github.com/EFLS/zd-tutorial][Github]].
+Clone it and get started!
+Installation instructions included.
+
 For an introduction, please read on.
 One last note: I hope to make this a living document, so expect changes and additions.
 And feel free to leave comments, for example via [[https://github.com/efls/zetteldeft][Github]], [[https://twitter.com/EFLS0][Twitter]], or (preferably) [[https://mastodon.social/@EFLS][Mastodon]].
