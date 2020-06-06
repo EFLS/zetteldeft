@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-06-04 Thu 08:31 -->
+<!-- 2020-06-06 Sat 20:30 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -2743,16 +2743,20 @@ Store both the deft file provided and any found files in <code>zetteldeft--graph
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--graph-insert-links</span> (deftFile)
   <span style="color: #828b9b;">"Insert links in DEFTFILE in dot graph syntax on a single line.</span>
 <span style="color: #828b9b;">Any inserted ID is also stored in `</span><span style="color: #97365B;">zetteldeft--graph-links</span><span style="color: #828b9b;">'."</span>
-  (insert <span style="color: #4F894C;">"  \""</span>
-          (zetteldeft--lift-id deftFile)
-          <span style="color: #4F894C;">"\" -- {"</span>)
-  (<span style="color: #3B6EA8;">dolist</span> (oneLink (zetteldeft--extract-links deftFile))
-    (zetteldeft--graph-store-link oneLink t)
-    (insert <span style="color: #4F894C;">"\""</span> oneLink <span style="color: #4F894C;">"\" "</span>))
-  (insert <span style="color: #4F894C;">"}\n"</span>)
-  (zetteldeft--graph-store-link deftFile))
+  (<span style="color: #3B6EA8;">let</span> ((zdId (zetteldeft--lift-id deftFile)))
+    (<span style="color: #3B6EA8;">when</span> zdId
+      (insert <span style="color: #4F894C;">"  \""</span> zdId <span style="color: #4F894C;">"\" -- {"</span>)
+      (<span style="color: #3B6EA8;">dolist</span> (oneLink (zetteldeft--extract-links deftFile))
+        (zetteldeft--graph-store-link oneLink t)
+        (insert <span style="color: #4F894C;">"\""</span> oneLink <span style="color: #4F894C;">"\" "</span>))
+      (insert <span style="color: #4F894C;">"}\n"</span>)
+      (zetteldeft--graph-store-link deftFile))))
 </pre>
 </div>
+
+<p>
+Only do all of these things if a Zetteldeft ID is found in the filename, or else <code>insert</code> won&rsquo;t work (as <code>zdID</code> will be nil).
+</p>
 </div>
 </div>
 
@@ -2779,11 +2783,12 @@ The following function should achieve that.
           (replace-regexp-in-string <span style="color: #4F894C;">"\""</span> <span style="color: #4F894C;">""</span>
             (zetteldeft--lift-file-title deftFile)))
         (zdId    (zetteldeft--lift-id deftFile)))
-    (insert <span style="color: #4F894C;">"  \""</span> zdId <span style="color: #4F894C;">"\""</span>
-            <span style="color: #4F894C;">" [label = \""</span> zdTitle <span style="color: #4F894C;">" ("</span>
-            zetteldeft-link-indicator zdId zetteldeft-link-suffix <span style="color: #4F894C;">")\""</span>)
-    (insert <span style="color: #4F894C;">"]"</span> <span style="color: #4F894C;">"\n"</span>))
-  (zetteldeft--graph-store-link deftFile))
+    (<span style="color: #3B6EA8;">when</span> zdId
+      (insert <span style="color: #4F894C;">"  \""</span> zdId <span style="color: #4F894C;">"\""</span>
+              <span style="color: #4F894C;">" [label = \""</span> zdTitle <span style="color: #4F894C;">" ("</span>
+              zetteldeft-link-indicator zdId zetteldeft-link-suffix <span style="color: #4F894C;">")\""</span>)
+      (insert <span style="color: #4F894C;">"]"</span> <span style="color: #4F894C;">"\n"</span>))
+    (zetteldeft--graph-store-link deftFile)))
 </pre>
 </div>
 

@@ -634,14 +634,14 @@ STR should be the search the resulting notes of which should be included in the 
 (defun zetteldeft--graph-insert-links (deftFile)
   "Insert links in DEFTFILE in dot graph syntax on a single line.
 Any inserted ID is also stored in `zetteldeft--graph-links'."
-  (insert "  \""
-          (zetteldeft--lift-id deftFile)
-          "\" -- {")
-  (dolist (oneLink (zetteldeft--extract-links deftFile))
-    (zetteldeft--graph-store-link oneLink t)
-    (insert "\"" oneLink "\" "))
-  (insert "}\n")
-  (zetteldeft--graph-store-link deftFile))
+  (let ((zdId (zetteldeft--lift-id deftFile)))
+    (when zdId
+      (insert "  \"" zdId "\" -- {")
+      (dolist (oneLink (zetteldeft--extract-links deftFile))
+        (zetteldeft--graph-store-link oneLink t)
+        (insert "\"" oneLink "\" "))
+      (insert "}\n")
+      (zetteldeft--graph-store-link deftFile))))
 
 (defun zetteldeft--graph-insert-title (deftFile)
   "Insert the DEFTFILE title definition in a one line dot graph format."
@@ -649,11 +649,12 @@ Any inserted ID is also stored in `zetteldeft--graph-links'."
           (replace-regexp-in-string "\"" ""
             (zetteldeft--lift-file-title deftFile)))
         (zdId    (zetteldeft--lift-id deftFile)))
-    (insert "  \"" zdId "\""
-            " [label = \"" zdTitle " ("
-            zetteldeft-link-indicator zdId zetteldeft-link-suffix ")\"")
-    (insert "]" "\n"))
-  (zetteldeft--graph-store-link deftFile))
+    (when zdId
+      (insert "  \"" zdId "\""
+              " [label = \"" zdTitle " ("
+              zetteldeft-link-indicator zdId zetteldeft-link-suffix ")\"")
+      (insert "]" "\n"))
+    (zetteldeft--graph-store-link deftFile)))
 
 (defun zetteldeft--graph-store-link (deftFile &optional idToFile)
   "Push DEFTFILE to zetteldeft--graph-links unless it's already there.
