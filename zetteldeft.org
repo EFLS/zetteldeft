@@ -282,6 +282,7 @@ Search the thing at point.
 Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblevin/deft/issues/52#issuecomment-401766828][Github]].
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-search-at-point ()
   "Search via `deft' with `thing-at-point' as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
@@ -306,6 +307,7 @@ Steps:
  3. Search with resulting string.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-search-current-id ()
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
@@ -618,6 +620,7 @@ Select file from the deft folder from the minibuffer.
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-find-file (file)
   "Open deft file FILE."
   (interactive
@@ -633,6 +636,7 @@ Select file from minibuffer and insert its link, prepended by =§= (or =zettelde
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
   (interactive (list
@@ -650,6 +654,7 @@ Select file from minibuffer and insert its link, prepended by =§= (or =zettelde
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
@@ -682,6 +687,7 @@ First, let's make sure =emacs= knows where to find =evil-insert-state=.
 Note that the file is only actually created upon save.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-new-file (str &optional empty)
   "Create a new deft file.
 Filename is `zetteldeft-id-format' appended by STR.
@@ -707,6 +713,7 @@ Generate an id, append a name, and generate a new file based on id and link.
 Either provide a name as argument, or enter one in the mini-buffer.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-new-file-and-link (str)
   "Insert generated id with `zetteldeft-id-format' appended with STR.
 Creates new deft file with id and STR as name."
@@ -726,6 +733,7 @@ When point is in a link, open the note it links to.
 When point is not in a link, call =avy= to jump to and open a selected link.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
@@ -748,6 +756,7 @@ The search term should include the =#= as tag identifier, so it's as easy as jum
 Avy uses =zetteldeft-tag-regex= as a regular expression.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-avy-tag-search ()
   "Call on avy to jump to a tag.
 Tags are filtered with `zetteldeft-tag-regex'."
@@ -767,6 +776,7 @@ That file is then opened (in another window if requested).
 Links are found by concatenating =zetteldeft-link-indicator=, =zetteldeftd-id-regex= and =zetteldeft-link-su.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
 Links are found via `zetteldeft-link-indicator' and `zetteldeft-id-regex'.
@@ -794,6 +804,7 @@ When only one window is open, split it first.
 =ace-window= will select the other window automatically when only two are available.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
 Similar to `zetteldeft-avy-file-search', but with window selection.
@@ -818,6 +829,7 @@ This means that each note containing this ID is found.
 If you want to open the note with the ID as its name (i.e., follow a link), use =zetteldeft-avy-file-search=.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-avy-link-search ()
   "Use `avy' to perform a deft search on a zetteldeft link.
 Similar to `zetteldeft-avy-file-search' but performs a full
@@ -838,6 +850,7 @@ Opens immediately if there is only one result."
 The following function launches deft, clears the filter and enters =evil-insert-state= (when evil is used).
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
   (interactive)
@@ -933,6 +946,7 @@ Based on the function =deft-rename-file= with only minor changes in the way =old
 The function should also update the title declaration at the top of the file, if =zetteldeft-title-prefix= is used.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-file-rename ()
   "Rename the current file via the deft function.
 Use this on files in the `deft-directory'."
@@ -977,6 +991,7 @@ To count the total number of words, lets loop over all the files and count words
 The total is printed in the minibuffer.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
   (interactive)
@@ -1001,6 +1016,7 @@ Steps:
  4. Result can be empty string when no id is detected in the filename.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-copy-id-current-file ()
   "Copy current ID.
 Add the id from the filename the buffer is currently visiting to the
@@ -1053,6 +1069,7 @@ And some code to create that buffer.
 Move to the =zetteldeft--tag-buffer-name=
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-tag-buffer ()
   "Switch to the *zetteldeft-tag-buffer* and list tags."
   (interactive)
@@ -1160,6 +1177,7 @@ To achieve this, get the full file name of the current buffer, and remove it fro
 The =when= part is there so that this deletion is not attempted if the current buffer is not visiting a file.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
@@ -1197,6 +1215,7 @@ A fundamental *shortcoming* of this piece of code, is that after it is executed,
 The most immediate solution is for the user to be wary of this, remove any previously inserted links, save the buffer and refresh the deft cache with =deft-refresh= before calling this function.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-insert-list-links-missing (zdSrch)
   "Insert a list of links to all deft files with a search string ZDSRCH.
 In contrast to `zetteldeft-insert-list-links' only include links not
@@ -1332,6 +1351,7 @@ Asks user for a search string and inserts headers and =#+INCLUDE= code for all f
 When used on =#tag=, make sure to include the =#= manually.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-org-search-include (zdSrch)
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
 Prompt for search string when called interactively."
@@ -1345,6 +1365,7 @@ Prompt for search string when called interactively."
 Very similar to the previous function, but rather than writing syntax to include files, insert their contents directly.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-org-search-insert (zdSrch)
   "Insert the contents of all files containing ZDSRCH.
 Files are separated by `org-mode' headers with corresponding titles.
@@ -1477,6 +1498,7 @@ The links are temporarily stored in =zetteldeft--graph-links=.
 Now for the function itself.
 
 #+BEGIN_SRC emacs-lisp :results silent
+;;;###autoload
 (defun zetteldeft-org-graph-search (str)
   "Insert org source block for graph with zd search results.
 STR should be the search the resulting notes of which should be included in the graph."
@@ -1501,6 +1523,7 @@ When links are added, they are also stored in =zetteldeft--graph-links= which is
 When called interactively, select a file from the completion interface.
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
   (interactive (list
@@ -1645,6 +1668,7 @@ While I'd suggest people integrate these with their personal setup, this functio
 Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-kb]].
 
 #+BEGIN_SRC emacs-lisp
+;;;###autoload
 (defun zetteldeft-set-classic-keybindings ()
   "Sets global keybindings for `zetteldeft'."
   (interactive)
