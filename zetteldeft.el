@@ -287,6 +287,7 @@ Tags are filtered with `zetteldeft-tag-regex'."
     (when (consp (avy-jump zetteldeft-tag-regex))
       (zetteldeft-search-at-point)))))
 
+;;;###autoload
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
 Links are found via `zetteldeft-link-indicator' and `zetteldeft-id-regex'.
@@ -424,7 +425,6 @@ Does so by looking for `zetteldeft-title-prefix'."
     (message
       "Your zettelkasten contains %s notes with %s words in total."
       (length deft-all-files) numWords)))
-
 
 ;;;###autoload
 (defun zetteldeft-copy-id-current-file ()
