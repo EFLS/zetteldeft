@@ -345,29 +345,30 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
-  (let ((deft-use-filename-as-title nil)
-	contents title)
-    (with-current-buffer (get-buffer-create "*Zetteldeft temp*")
+  (let ((deft-use-filename-as-title nil))
+    (deft-parse-title zdFile (with-temp-buffer
       (insert-file-contents zdFile nil nil nil t)
-      (setq contents (concat (buffer-string))))
-    (setq title (deft-parse-title zdFile contents))
-    (kill-buffer "*Zetteldeft temp*")
-    title))
+       (buffer-string)))))
 
-(defun zetteldeft--rename (cusprompt fn-gen update-title)
-  "Generic function to rename a file.
-Takes CUSPROMPT, FN-GEN and UPDATE-TITLE to customise behaviour."
+(defun zetteldeft--rename-file-and-title (cusprompt fn-gen update-title)
+  "Generic function to rename a file and optionally update title.
+Takes CUSPROMPT, FN-GEN and UPDATE-TITLE to customise behaviour.
+CUSPROMPT should be a function that takes the old filename and returns the
+prompt text.
+FN-GEN should be a function that takes the old filename and prompt response,
+and returns the new filename.
+UPDATE-TITLE determines whether the prompt response should be used to replace
+the title."
   (zetteldeft--check)
-  (let ((old-filename (buffer-file-name))
-	prompt-pars new-name new-filename)
+  (let ((old-filename (buffer-file-name)))
     (when old-filename
-      (setq prompt-pars (funcall cusprompt old-filename))
-      (setq new-name (read-string (car prompt-pars) (cdr prompt-pars)))
-      (setq new-filename (funcall fn-gen old-filename new-name))
-      (rename-file old-filename new-filename)
-      (deft-update-visiting-buffers old-filename new-filename)
-      (if update-title (zetteldeft-update-title-in-file new-name) nil)
-      (deft-refresh))))
+      (let* ((prompt-pars (funcall cusprompt old-filename))
+	     (new-name (read-string (car prompt-pars) (cdr prompt-pars)))
+	     (new-filename (funcall fn-gen old-filename new-name)))
+	(rename-file old-filename new-filename)
+	(deft-update-visiting-buffers old-filename new-filename)
+	(if update-title (zetteldeft-update-title-in-file new-name) nil)
+	(deft-refresh)))))
 
 (defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.
@@ -383,16 +384,20 @@ Replaces current title with TITLE."
 (defun zetteldeft-file-rename ()
   "Change current file's title, and use the new title to rename the file."
   (interactive)
-  (zetteldeft--rename
-   (lambda (old-filename) (let (old-title prompt-text)
-			    (setq old-title (zetteldeft--lift-file-title old-filename))
-			    (setq prompt-text (concat "Change " old-title " to: "))
-			    `((,@prompt-text) (,@old-title))))
-   (lambda (old-filename new-name) (let (old-id old-extension new-filename)
-				     (setq old-id (zetteldeft--lift-id old-filename))
-				     (setq old-extension (zetteldeft--identify-extension old-filename))
-				     (setq new-filename (concat (file-name-sans-extension (deft-absolute-filename (concat old-id zetteldeft-id-filename-separator new-name))) "." old-extension))
-				     new-filename))
+  (zetteldeft--rename-file-and-title
+   (lambda (old-filename)
+     (let* ((old-title (zetteldeft--lift-file-title old-filename))
+	    (prompt-text (concat "Change " old-title " to: ")))
+       `((,@prompt-text) (,@old-title))))
+   (lambda (old-filename new-name)
+     (let* ((old-id (zetteldeft--lift-id old-filename))
+	    (old-extension (zetteldeft--identify-extension old-filename))
+	    (new-filename (file-name-sans-extension
+			    (deft-absolute-filename (concat
+						     old-id
+						     zetteldeft-id-filename-separator
+						     new-name)))))
+       (concat new-filename "." old-extension)))
    t))
 
 (defun zetteldeft--identify-extension (filename)
@@ -406,15 +411,15 @@ Handles multiple file extensions, if extension exists in deft-extensions."
   "Rename the current file.
 Allows modification of entire filename."
   (interactive)
-  (zetteldeft--rename
-   (lambda (old-filename) (let (old-name prompt-text)
-			    (setq old-name (file-name-nondirectory old-filename))
-			    (setq prompt-text (concat "Rename " old-name " to: "))
-			    `((,@prompt-text) (,@old-name))))
-   (lambda (_old-filename new-name) (let ((deft-dir (file-name-as-directory deft-directory))
-					 new-filename)
-				     (setq new-filename (concat deft-dir new-name))
-				     new-filename))
+  (zetteldeft--rename-file-and-title
+   (lambda (old-filename)
+     (let* ((old-name (file-name-nondirectory old-filename))
+	    (prompt-text (concat "Rename " old-name " to: ")))
+       `((,@prompt-text) (,@old-name))))
+   (lambda (_old-filename new-name)
+     (let* ((deft-dir (file-name-as-directory deft-directory))
+	   (new-filename (concat deft-dir new-name)))
+       new-filename))
    nil))
 
 (defun zetteldeft-count-words ()
