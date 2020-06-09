@@ -403,8 +403,10 @@ Replaces current title with TITLE."
 (defun zetteldeft--identify-extension (filename)
   "Identify the extension of the provided FILENAME.
 Handles multiple file extensions, if extension exists in deft-extensions."
-  (let (extension)
-      (setq extension (-reduce-from (lambda (a x) (if (string-match (concat x "$") filename) x a)) nil (--sort (< (length it) (length other)) deft-extensions)))
+  (let* ((extension (-reduce-from
+		     (lambda (a x) (if (string-match (concat x "$") filename) x a))
+		     nil
+		     (--sort (< (length it) (length other)) deft-extensions))))
       (if extension extension (file-name-extension filename))))
 
 (defun zetteldeft-file-rename-full ()
