@@ -1663,6 +1663,8 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
 (defun zetteldeft-set-classic-keybindings ()
   "Sets global keybindings for `zetteldeft'."
   (interactive)
+  (define-prefix-command 'zetteldeft-prefix)
+  (global-set-key (kbd "C-c d") 'zetteldeft-prefix)
   (global-set-key (kbd "C-c d d") 'deft)
   (global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
   (global-set-key (kbd "C-c d R") 'deft-refresh)
