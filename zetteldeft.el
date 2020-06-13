@@ -54,6 +54,7 @@
   :group 'deft
   :link '(url-link "https://efls.github.io/zetteldeft"))
 
+;;;###autoload
 (defun zetteldeft-search-at-point ()
   "Search via `deft' with `thing-at-point' as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
@@ -63,6 +64,7 @@ Thing can be a double-bracketed link, a hashtag, or a word."
        (zetteldeft--search-global string t)
      (user-error "No search term at point"))))
 
+;;;###autoload
 (defun zetteldeft-search-current-id ()
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
@@ -201,6 +203,7 @@ This is done with the regular expression stored in
     (when (re-search-forward zetteldeft-id-regex nil t -1)
       (match-string 0))))
 
+;;;###autoload
 (defun zetteldeft-find-file (file)
   "Open deft file FILE."
   (interactive
@@ -208,6 +211,7 @@ This is done with the regular expression stored in
             (deft-find-all-files-no-prefix))))
   (deft-find-file file))
 
+;;;###autoload
 (defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
   (interactive (list
@@ -217,6 +221,7 @@ This is done with the regular expression stored in
                   (zetteldeft--lift-id file)
                   zetteldeft-link-suffix)))
 
+;;;###autoload
 (defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
@@ -230,6 +235,7 @@ This is done with the regular expression stored in
 
 (declare-function evil-insert-state "evil")
 
+;;;###autoload
 (defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
 Filename is `zetteldeft-id-format' appended by STR.
@@ -249,6 +255,7 @@ When `evil' is loaded, change to insert state."
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
+;;;###autoload
 (defun zetteldeft-new-file-and-link (str)
   "Create a new note and insert a link to it.
 Similar to `zetteldeft-new-file', but insert a link to the new file."
@@ -260,6 +267,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
             " " str)
     (zetteldeft-new-file str zdId)))
 
+;;;###autoload
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
@@ -272,6 +280,7 @@ Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
     (zetteldeft-avy-file-search)))
 
+;;;###autoload
 (defun zetteldeft-avy-tag-search ()
   "Call on avy to jump to a tag.
 Tags are filtered with `zetteldeft-tag-regex'."
@@ -281,6 +290,7 @@ Tags are filtered with `zetteldeft-tag-regex'."
     (when (consp (avy-jump zetteldeft-tag-regex))
       (zetteldeft-search-at-point)))))
 
+;;;###autoload
 (defun zetteldeft-avy-file-search (&optional otherWindow)
  "Use `avy' to follow a zetteldeft link.
 Links are found via `zetteldeft-link-indicator' and `zetteldeft-id-regex'.
@@ -295,6 +305,7 @@ Open that file (in another window if OTHERWINDOW)."
 
 (declare-function aw-select "ace-window")
 
+;;;###autoload
 (defun zetteldeft-avy-file-search-ace-window ()
   "Use `avy' to follow a zetteldeft link in another window.
 Similar to `zetteldeft-avy-file-search', but with window selection.
@@ -311,6 +322,7 @@ When more windows are active, select one via `ace-window'."
         (select-window (aw-select "Select window..."))
         (zetteldeft--search-filename ID)))))
 
+;;;###autoload
 (defun zetteldeft-avy-link-search ()
   "Use `avy' to perform a deft search on a zetteldeft link.
 Similar to `zetteldeft-avy-file-search' but performs a full
@@ -324,6 +336,7 @@ Opens immediately if there is only one result."
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
+;;;###autoload
 (defun zetteldeft-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
   (interactive)
@@ -372,6 +385,7 @@ ZDFILE should be a full path to a note."
      (concat zetteldeft-id-regex "[[:space:]]")
      "" baseName)))
 
+;;;###autoload
 (defun zetteldeft-file-rename ()
   "Rename the current file via the deft function.
 Use this on files in the `deft-directory'."
@@ -402,6 +416,7 @@ Does so by looking for `zetteldeft-title-prefix'."
         (delete-region (line-beginning-position) (line-end-position))
         (zetteldeft--insert-title)))))
 
+;;;###autoload
 (defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
   (interactive)
@@ -414,6 +429,7 @@ Does so by looking for `zetteldeft-title-prefix'."
       "Your zettelkasten contains %s notes with %s words in total."
       (length deft-all-files) numWords)))
 
+;;;###autoload
 (defun zetteldeft-copy-id-current-file ()
   "Copy current ID.
 Add the id from the filename the buffer is currently visiting to the
@@ -437,6 +453,7 @@ Throws an error when either none or multiple files are found."
 
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
+;;;###autoload
 (defun zetteldeft-tag-buffer ()
   "Switch to the *zetteldeft-tag-buffer* and list tags."
   (interactive)
@@ -472,6 +489,7 @@ Throws an error when either none or multiple files are found."
       ;; Remove found tag from buffer
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 
+;;;###autoload
 (defun zetteldeft-insert-list-links (zdSrch)
   "Search for ZDSRCH and insert a list of zetteldeft links to all results."
   (interactive (list (read-string "search string: ")))
@@ -490,6 +508,7 @@ this function."
   :type 'string
   :group 'zetteldeft)
 
+;;;###autoload
 (defun zetteldeft-insert-list-links-missing (zdSrch)
   "Insert a list of links to all deft files with a search string ZDSRCH.
 In contrast to `zetteldeft-insert-list-links' only include links not
@@ -533,6 +552,7 @@ zetteldeft directory."
           (zetteldeft--lift-file-title (file-name-base zdFile))
           "\n"))
 
+;;;###autoload
 (defun zetteldeft-org-search-include (zdSrch)
   "Insert `org-mode' syntax to include all files containing ZDSRCH.
 Prompt for search string when called interactively."
@@ -540,6 +560,7 @@ Prompt for search string when called interactively."
   (dolist (zdFile (zetteldeft--get-file-list zdSrch))
     (zetteldeft--org-include-file zdFile)))
 
+;;;###autoload
 (defun zetteldeft-org-search-insert (zdSrch)
   "Insert the contents of all files containing ZDSRCH.
 Files are separated by `org-mode' headers with corresponding titles.
@@ -590,6 +611,7 @@ Optional: leave out first REMOVELINES lines."
 
 (defvar zetteldeft--graph-links)
 
+;;;###autoload
 (defun zetteldeft-org-graph-search (str)
   "Insert org source block for graph with zd search results.
 STR should be the search the resulting notes of which should be included in the graph."
@@ -604,6 +626,7 @@ STR should be the search the resulting notes of which should be included in the 
     (zetteldeft--graph-insert-all-titles))
   (insert zetteldeft-graph-syntax-end))
 
+;;;###autoload
 (defun zetteldeft-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
   (interactive (list
@@ -683,9 +706,12 @@ Does this for all links stored in `zetteldeft--graph-links'."
     (when oneLink
       (zetteldeft--graph-insert-title oneLink))))
 
+;;;###autoload
 (defun zetteldeft-set-classic-keybindings ()
   "Sets global keybindings for `zetteldeft'."
   (interactive)
+  (define-prefix-command 'zetteldeft-prefix)
+  (global-set-key (kbd "C-c d") 'zetteldeft-prefix)
   (global-set-key (kbd "C-c d d") 'deft)
   (global-set-key (kbd "C-c d D") 'zetteldeft-deft-new-search)
   (global-set-key (kbd "C-c d R") 'deft-refresh)
