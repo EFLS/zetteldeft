@@ -348,26 +348,6 @@ ZDFILE should be a full path to a note."
       (insert-file-contents zdFile nil nil nil t)
        (buffer-string)))))
 
-(defun zetteldeft--rename-file-and-title (cusprompt fn-gen update-title)
-  "Generic function to rename a file and optionally update title.
-Takes CUSPROMPT, FN-GEN and UPDATE-TITLE to customise behaviour.
-CUSPROMPT should be a function that takes the old filename and returns the
-prompt text.
-FN-GEN should be a function that takes the old filename and prompt response,
-and returns the new filename.
-UPDATE-TITLE determines whether the prompt response should be used to replace
-the title."
-  (zetteldeft--check)
-  (let ((old-filename (buffer-file-name)))
-    (when old-filename
-      (let* ((prompt-pars (funcall cusprompt old-filename))
-	     (new-name (read-string (car prompt-pars) (cdr prompt-pars)))
-	     (new-filename (funcall fn-gen old-filename new-name)))
-	(rename-file old-filename new-filename)
-	(deft-update-visiting-buffers old-filename new-filename)
-	(if update-title (zetteldeft-update-title-in-file new-name) nil)
-	(deft-refresh)))))
-
 (defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.
 Does so by looking for `zetteldeft-title-prefix'.
@@ -382,21 +362,24 @@ Replaces current title with TITLE."
 (defun zetteldeft-file-rename ()
   "Change current file's title, and use the new title to rename the file."
   (interactive)
-  (zetteldeft--rename-file-and-title
-   (lambda (old-filename)
-     (let* ((old-title (zetteldeft--lift-file-title old-filename))
-	    (prompt-text (concat "Change " old-title " to: ")))
-       `((,@prompt-text) (,@old-title))))
-   (lambda (old-filename new-name)
-     (let* ((old-id (zetteldeft--lift-id old-filename))
-	    (old-extension (zetteldeft--identify-extension old-filename))
-	    (new-filename (file-name-sans-extension
-			    (deft-absolute-filename (concat
-						     old-id
-						     zetteldeft-id-filename-separator
-						     new-name)))))
-       (concat new-filename "." old-extension)))
-   t))
+  (zetteldeft--check)
+  (let ((old-filename (buffer-file-name)))
+    (when old-filename
+      (let* ((old-title (zetteldeft--lift-file-title old-filename))
+	     (prompt-text (concat "Change " old-title " to: "))
+	     (new-name (read-string prompt-text old-title))
+	     (old-id (zetteldeft--lift-id old-filename))
+	     (old-extension (zetteldeft--identify-extension old-filename))
+	     (new-filename-sans-ext (file-name-sans-extension
+				     (deft-absolute-filename (concat
+							      old-id
+							      zetteldeft-id-filename-separator
+							      new-name))))
+	     (new-filename (concat new-filename-sans-ext "." old-extension)))
+	(rename-file old-filename new-filename)
+	(deft-update-visiting-buffers old-filename new-filename)
+        (zetteldeft-update-title-in-file new-name)
+	(deft-refresh)))))
 
 (defun zetteldeft--identify-extension (filename)
   "Identify the extension of the provided FILENAME.
@@ -411,16 +394,17 @@ Handles multiple file extensions, if extension exists in deft-extensions."
   "Rename the current file.
 Allows modification of entire filename."
   (interactive)
-  (zetteldeft--rename-file-and-title
-   (lambda (old-filename)
-     (let* ((old-name (file-name-nondirectory old-filename))
-	    (prompt-text (concat "Rename " old-name " to: ")))
-       `((,@prompt-text) (,@old-name))))
-   (lambda (_old-filename new-name)
-     (let* ((deft-dir (file-name-as-directory deft-directory))
-	   (new-filename (concat deft-dir new-name)))
-       new-filename))
-   nil))
+  (zetteldeft--check)
+  (let ((old-filename (buffer-file-name)))
+    (when old-filename
+      (let* ((old-name (file-name-nondirectory old-filename))
+	     (prompt-text (concat "Rename " old-name " to: "))
+	     (new-name (read-string prompt-text old-name))
+	     (deft-dir (file-name-as-directory deft-directory))
+	     (new-filename (concat deft-dir new-name)))
+	(rename-file old-filename new-filename)
+	(deft-update-visiting-buffers old-filename new-filename)
+	(deft-refresh)))))
 
 (defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
