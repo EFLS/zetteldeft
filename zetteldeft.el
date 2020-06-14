@@ -6,7 +6,7 @@
 ;; URL: https://efls.github.io/zetteldeft/
 ;; Keywords: deft zettelkasten zetteldeft wp files
 ;; Version: 0.2
-;; Package-Requires: ((emacs "25.1") (deft "0.8") (dash "2.17.0"))
+;; Package-Requires: ((emacs "25.1") (deft "0.8"))
 
 ;; This file is not part of Emacs
 
@@ -43,8 +43,6 @@
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
 (require 'thingatpt)
-
-(require 'dash)
 
 (declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
@@ -403,10 +401,10 @@ Replaces current title with TITLE."
 (defun zetteldeft--identify-extension (filename)
   "Identify the extension of the provided FILENAME.
 Handles multiple file extensions, if extension exists in deft-extensions."
-  (let* ((extension (-reduce-from
+  (let* ((extension (cl-reduce
 		     (lambda (a x) (if (string-match (concat x "$") filename) x a))
-		     nil
-		     (--sort (< (length it) (length other)) deft-extensions))))
+		     (cl-sort deft-extensions (lambda (it other) (< (length it) (length other))))
+		     :initial-value nil)))
       (if extension extension (file-name-extension filename))))
 
 (defun zetteldeft-file-rename-full ()
