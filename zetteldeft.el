@@ -369,26 +369,14 @@ Replaces current title with TITLE."
 	     (prompt-text (concat "Change " old-title " to: "))
 	     (new-name (read-string prompt-text old-title))
 	     (old-id (zetteldeft--lift-id old-filename))
-	     (old-extension (zetteldeft--identify-extension old-filename))
-	     (new-filename-sans-ext (file-name-sans-extension
-				     (deft-absolute-filename (concat
-							      old-id
-							      zetteldeft-id-filename-separator
-							      new-name))))
-	     (new-filename (concat new-filename-sans-ext "." old-extension)))
+	     (new-filename (deft-absolute-filename (concat
+						    old-id
+						    zetteldeft-id-filename-separator
+						    new-name))))
 	(rename-file old-filename new-filename)
 	(deft-update-visiting-buffers old-filename new-filename)
         (zetteldeft-update-title-in-file new-name)
 	(deft-refresh)))))
-
-(defun zetteldeft--identify-extension (filename)
-  "Identify the extension of the provided FILENAME.
-Handles multiple file extensions, if extension exists in deft-extensions."
-  (let* ((extension (cl-reduce
-		     (lambda (a x) (if (string-match (concat x "$") filename) x a))
-		     (cl-sort deft-extensions (lambda (it other) (< (length it) (length other))))
-		     :initial-value nil)))
-      (if extension extension (file-name-extension filename))))
 
 (defun zetteldeft-file-rename-full ()
   "Rename the current file.
