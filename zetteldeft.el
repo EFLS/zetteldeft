@@ -209,12 +209,12 @@ This is done with the regular expression stored in
       (deft-find-all-files-no-prefix))))
   (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file) " " (zetteldeft--lift-file-title (concat deft-directory file)))))
 
-(declare-function evil-insert-state "evil")
-
 (defcustom zetteldeft-id-filename-separator " "
-  "String to separate zetteldeft ID from filename"
+  "String to separate zetteldeft ID from filename."
   :type 'string
   :group 'zetteldeft)
+
+(declare-function evil-insert-state "evil")
 
 (defun zetteldeft-new-file (str &optional empty)
   "Create a new deft file.
@@ -348,17 +348,6 @@ ZDFILE should be a full path to a note."
       (insert-file-contents zdFile nil nil nil t)
        (buffer-string)))))
 
-(defun zetteldeft-update-title-in-file (title)
-  "Update the title of the current file, if present.
-Does so by looking for `zetteldeft-title-prefix'.
-Replaces current title with TITLE."
-  (save-excursion
-    (let ((zetteldeft-title-suffix ""))
-      (goto-char (point-min))
-      (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
-        (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title title)))))
-
 (defun zetteldeft-file-rename ()
   "Change current file's title, and use the new title to rename the file."
   (interactive)
@@ -377,6 +366,17 @@ Replaces current title with TITLE."
 	(deft-update-visiting-buffers old-filename new-filename)
         (zetteldeft-update-title-in-file new-name)
 	(deft-refresh)))))
+
+(defun zetteldeft-update-title-in-file (title)
+  "Update the title of the current file, if present.
+Does so by looking for `zetteldeft-title-prefix'.
+Replaces current title with TITLE."
+  (save-excursion
+    (let ((zetteldeft-title-suffix ""))
+      (goto-char (point-min))
+      (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+        (delete-region (line-beginning-position) (line-end-position))
+        (zetteldeft--insert-title title)))))
 
 (defun zetteldeft-file-rename-full ()
   "Rename the current file.

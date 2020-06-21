@@ -635,10 +635,21 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (file-name-base file))))
+  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file) " " (zetteldeft--lift-file-title (concat deft-directory file)))))
 #+END_SRC
 
 *** New file creation
+**** =zetteldeft-id-filename-separator= separates id from rest of filename
+
+The string inserted between an ID and the rest of the filename.
+By default, this is set to " ", but it can be changed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-id-filename-separator " "
+  "String to separate zetteldeft ID from filename."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
 **** =zetteldeft-new-file= creates new file
 
 Create new file with filename as =zetteldeft-id-format= and a string.
@@ -668,10 +679,10 @@ and the file name (without extension) is added to the kill ring.
 When `evil' is loaded, enter insert state."
   (interactive (list (read-string "name: ")))
   (let* ((zdId (zetteldeft-generate-id))
-         (zdName (concat zdId " " str)))
+         (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (unless empty (zetteldeft--insert-title))
+  (unless empty (zetteldeft--insert-title str))
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
@@ -871,13 +882,13 @@ Now the function itself.
 It gets the base of the buffer file name, takes from it the file title (i.e. strips the link id at the beginning), and inserts the remaining string.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--insert-title ()
-  "Insert filename of current zd note, stripped from its ID.
+(defun zetteldeft--insert-title (title)
+  "Insert TITLE as title in file.
 Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'."
   (zetteldeft--check)
   (insert
     zetteldeft-title-prefix
-    (zetteldeft--lift-file-title (file-name-base (buffer-file-name)))
+    title
     zetteldeft-title-suffix))
 #+END_SRC
 
@@ -889,13 +900,13 @@ Returns only the file title from a file, removing path, extension, and link ID.
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
-  (let ((baseName (file-name-base zdFile)))
-    (replace-regexp-in-string
-     (concat zetteldeft-id-regex "[[:space:]]")
-     "" baseName)))
+  (let ((deft-use-filename-as-title nil))
+    (deft-parse-title zdFile (with-temp-buffer
+      (insert-file-contents zdFile nil nil nil t)
+       (buffer-string)))))
 #+END_SRC
 
-**** =zetteldeft-file-rename= renames visited file
+**** =zetteldeft-file-rename= updates title and renames visited file
 
 Rename the current file.
 Based on the function =deft-rename-file= with only minor changes in the way =old-filename= is set: from current buffer rather than from =deft= search buffer.
@@ -904,24 +915,23 @@ The function should also update the title declaration at the top of the file, if
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-file-rename ()
-  "Rename the current file via the deft function.
-Use this on files in the `deft-directory'."
+  "Change current file's title, and use the new title to rename the file."
   (interactive)
   (zetteldeft--check)
-    (let ((old-filename (buffer-file-name))
-          (deft-dir (file-name-as-directory deft-directory))
-          new-filename old-name new-name)
-      (when old-filename
-        (setq old-name (deft-base-filename old-filename))
-        (setq new-name (read-string
-                        (concat "Rename " old-name " to (without extension): ")
-                        old-name))
-        (setq new-filename
-              (concat deft-dir new-name "." deft-default-extension))
-        (rename-file old-filename new-filename)
-        (deft-update-visiting-buffers old-filename new-filename)
-        (zetteldeft-update-title-in-file)
-        (deft-refresh))))
+  (let ((old-filename (buffer-file-name)))
+    (when old-filename
+      (let* ((old-title (zetteldeft--lift-file-title old-filename))
+	     (prompt-text (concat "Change " old-title " to: "))
+	     (new-name (read-string prompt-text old-title))
+	     (old-id (zetteldeft--lift-id old-filename))
+	     (new-filename (deft-absolute-filename (concat
+						    old-id
+						    zetteldeft-id-filename-separator
+						    new-name))))
+	(rename-file old-filename new-filename)
+	(deft-update-visiting-buffers old-filename new-filename)
+        (zetteldeft-update-title-in-file new-name)
+	(deft-refresh)))))
 #+END_SRC
 
 To update the title of the currently visited file, the following function is used.
@@ -930,15 +940,38 @@ It simply looks for the =zetteldeft-title-prefix=, deletes that line, and replac
 A *limitation* of this workflow is that it will not work when the =zetteldeft-title-prefix= has a new line in it.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft-update-title-in-file ()
+(defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.
-Does so by looking for `zetteldeft-title-prefix'."
+Does so by looking for `zetteldeft-title-prefix'.
+Replaces current title with TITLE."
   (save-excursion
     (let ((zetteldeft-title-suffix ""))
       (goto-char (point-min))
       (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title)))))
+        (zetteldeft--insert-title title)))))
+#+END_SRC
+
+**** =zetteldeft-file-rename-full= renames visited file
+
+This function allows for direct modification of a filename, without changing the file's title.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft-file-rename-full ()
+  "Rename the current file.
+Allows modification of entire filename."
+  (interactive)
+  (zetteldeft--check)
+  (let ((old-filename (buffer-file-name)))
+    (when old-filename
+      (let* ((old-name (file-name-nondirectory old-filename))
+	     (prompt-text (concat "Rename " old-name " to: "))
+	     (new-name (read-string prompt-text old-name))
+	     (deft-dir (file-name-as-directory deft-directory))
+	     (new-filename (concat deft-dir new-name)))
+	(rename-file old-filename new-filename)
+	(deft-update-visiting-buffers old-filename new-filename)
+	(deft-refresh)))))
 #+END_SRC
 
 **** =zetteldeft-count-words= counts total number of words
