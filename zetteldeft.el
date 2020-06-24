@@ -207,7 +207,11 @@ This is done with the regular expression stored in
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file) " " (zetteldeft--lift-file-title (concat deft-directory file)))))
+  (insert (concat zetteldeft-link-indicator
+                  (zetteldeft--lift-id file)
+                  " "
+                  (zetteldeft--lift-file-title
+                   (concat deft-directory file)))))
 
 (defcustom zetteldeft-id-filename-separator " "
   "String to separate zetteldeft ID from filename."
@@ -345,8 +349,8 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 ZDFILE should be a full path to a note."
   (let ((deft-use-filename-as-title nil))
     (deft-parse-title zdFile (with-temp-buffer
-      (insert-file-contents zdFile nil nil nil t)
-       (buffer-string)))))
+                               (insert-file-contents zdFile)
+                               (buffer-string)))))
 
 (defun zetteldeft-file-rename ()
   "Change current file's title, and use the new title to rename the file."
@@ -355,17 +359,18 @@ ZDFILE should be a full path to a note."
   (let ((old-filename (buffer-file-name)))
     (when old-filename
       (let* ((old-title (zetteldeft--lift-file-title old-filename))
-	     (prompt-text (concat "Change " old-title " to: "))
-	     (new-name (read-string prompt-text old-title))
-	     (old-id (zetteldeft--lift-id old-filename))
-	     (new-filename (deft-absolute-filename (concat
-						    old-id
-						    zetteldeft-id-filename-separator
-						    new-name))))
-	(rename-file old-filename new-filename)
-	(deft-update-visiting-buffers old-filename new-filename)
+             (prompt-text (concat "Change " old-title " to: "))
+             (new-name (read-string prompt-text old-title))
+             (id (or (zetteldeft--lift-id (file-name-base old-filename))
+                     (zetteldeft-generate-id)))
+             (new-filename (deft-absolute-filename (concat
+                                                    id
+                                                    zetteldeft-id-filename-separator
+                                                    new-name))))
+        (rename-file old-filename new-filename)
+        (deft-update-visiting-buffers old-filename new-filename)
         (zetteldeft-update-title-in-file new-name)
-	(deft-refresh)))))
+        (deft-refresh)))))
 
 (defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.

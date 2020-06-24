@@ -630,12 +630,16 @@ Select file from minibuffer and insert its link, prepended by =§= (or =zettelde
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft-find-file-full-title-insert (file)
-  "Find deft file FILE and insert a link with title."
-  (interactive (list
-    (completing-read "File to insert full title from: "
-      (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator (zetteldeft--lift-id file) " " (zetteldeft--lift-file-title (concat deft-directory file)))))
+  (defun zetteldeft-find-file-full-title-insert (file)
+    "Find deft file FILE and insert a link with title."
+    (interactive (list
+      (completing-read "File to insert full title from: "
+        (deft-find-all-files-no-prefix))))
+    (insert (concat zetteldeft-link-indicator
+                    (zetteldeft--lift-id file)
+                    " "
+                    (zetteldeft--lift-file-title
+                     (concat deft-directory file)))))
 #+END_SRC
 
 *** New file creation
@@ -897,13 +901,13 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 Returns only the file title from a file, removing path, extension, and link ID.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--lift-file-title (zdFile)
-  "Return the title of a zetteldeft note.
-ZDFILE should be a full path to a note."
-  (let ((deft-use-filename-as-title nil))
-    (deft-parse-title zdFile (with-temp-buffer
-      (insert-file-contents zdFile nil nil nil t)
-       (buffer-string)))))
+  (defun zetteldeft--lift-file-title (zdFile)
+    "Return the title of a zetteldeft note.
+  ZDFILE should be a full path to a note."
+    (let ((deft-use-filename-as-title nil))
+      (deft-parse-title zdFile (with-temp-buffer
+                                 (insert-file-contents zdFile)
+                                 (buffer-string)))))
 #+END_SRC
 
 **** =zetteldeft-file-rename= updates title and renames visited file
@@ -914,24 +918,25 @@ Based on the function =deft-rename-file= with only minor changes in the way =old
 The function should also update the title declaration at the top of the file, if =zetteldeft-title-prefix= is used.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft-file-rename ()
-  "Change current file's title, and use the new title to rename the file."
-  (interactive)
-  (zetteldeft--check)
-  (let ((old-filename (buffer-file-name)))
-    (when old-filename
-      (let* ((old-title (zetteldeft--lift-file-title old-filename))
-	     (prompt-text (concat "Change " old-title " to: "))
-	     (new-name (read-string prompt-text old-title))
-	     (old-id (zetteldeft--lift-id old-filename))
-	     (new-filename (deft-absolute-filename (concat
-						    old-id
-						    zetteldeft-id-filename-separator
-						    new-name))))
-	(rename-file old-filename new-filename)
-	(deft-update-visiting-buffers old-filename new-filename)
-        (zetteldeft-update-title-in-file new-name)
-	(deft-refresh)))))
+  (defun zetteldeft-file-rename ()
+    "Change current file's title, and use the new title to rename the file."
+    (interactive)
+    (zetteldeft--check)
+    (let ((old-filename (buffer-file-name)))
+      (when old-filename
+        (let* ((old-title (zetteldeft--lift-file-title old-filename))
+               (prompt-text (concat "Change " old-title " to: "))
+               (new-name (read-string prompt-text old-title))
+               (id (or (zetteldeft--lift-id (file-name-base old-filename))
+                       (zetteldeft-generate-id)))
+               (new-filename (deft-absolute-filename (concat
+                                                      id
+                                                      zetteldeft-id-filename-separator
+                                                      new-name))))
+          (rename-file old-filename new-filename)
+          (deft-update-visiting-buffers old-filename new-filename)
+          (zetteldeft-update-title-in-file new-name)
+          (deft-refresh)))))
 #+END_SRC
 
 To update the title of the currently visited file, the following function is used.
