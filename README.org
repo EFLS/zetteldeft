@@ -1,23 +1,26 @@
 #+title: Zetteldeft
 #+author: EFLS
+#+HTML_HEAD: <link rel='stylesheet' href='./static/style.css' type='text/css'/>
 
 [[http://melpa.org/#/zetteldeft][file:http://melpa.org/packages/zetteldeft-badge.svg]]
 
 The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aims to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
-Introduction, documentation, and code can be found in this single =.org= file [[https://github.com/EFLS/zetteldeft/blob/master/zetteldeft.org][here]].
-But please, read this in a more convenient format over at [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
+To learn key concepts and basic functions of thic package, check out an introduction here: [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
+
+Or learn how to install and use Zetteldeft by cloning the =zd-tutorial= repository available at https://github.com/EFLS/zd-tutorial.
+
+Documentation, code and further technical details can be found in the =.org= file of this repository, or can be read in a more convenient format over at [[https://efls.github.io/zetteldeft/zetteldeft.html][efls.github.io/zetteldeft/zetteldeft.html]].
 
 =zetteldeft= is available on [[https://melpa.org/#/zetteldeft][MELPA]].
 If you use =use-package=, installing is as easy as
 
 #+begin_src emacs-lisp
 (use-package zetteldeft
-  :after deft)
+  :after deft
+  :config
+    (zetteldeft-set-classic-keybindings))
 #+end_src
 
-Although I do recommend reading some of the [[https://efls.github.io/zetteldeft][documentation]] before diving in.
-Start with "Basic concepts."
-
 Please note that this was originally written for personal use and that I'm far from an =emacs lisp= expert.
-That said, contributions and feedback is more than welcome.
+That said, contributions and feedback are more than welcome.

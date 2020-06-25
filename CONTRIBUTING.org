@@ -1,0 +1,21 @@
+#+title: Contributing to Zetteldeft
+
+Comments and contributions to Zetteldeft are more than welcome.
+
+Reach out [[https://mastodon.social/@EFLS][via Mastodon]], file an issue over [[https://github.com/EFLS/zetteldeft][on Github]], or submit a pull request to get your code included.
+
+If you want to contribute code, please keep in mind that Zetteldeft is maintained in the =zetteldeft.org= file.
+The =zetteldeft.el= is then created from the =zetteldeft.org= -- or, in Org-mode jargon, "tangled".
+
+Please respect this order of things if you can, by making changes to the =.org= file (rather than to the =.el= file directly).
+Alter the code in the source blocks, or create new source blocks like so:
+
+#+begin_src org-mode
+#+begin_src emacs-lisp
+(message "Code goes here")
+#+end_src
+#+end_src
+
+You can add some documentation if you like, but this is not necessary.
+
+If you run into any issue, don't hesitate to reach out.

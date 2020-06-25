@@ -1,0 +1,308 @@
+#+title: Introducing Zetteldeft
+#+subtitle: A Zettelkasten for Emacs
+#+author: EFLS
+#+date: 2018-2020
+#+OPTIONS: num:nil
+#+EXPORT_FILE_NAME: ./docs/index
+#+HTML_HEAD: <link rel='stylesheet' href='./static/style.css' type='text/css'/>
+
+* Introduction                                                       :ignore:
+
+Zetteldeft is an extension of the Deft package for Emacs.
+Building on Deft's search functionality, Zetteldeft provides a way to create and manage links between short notes.
+
+In the spirit of Zettelkasten, Zetteldeft maintains a flat hierarchy at the level of files, but invites authors to create structure and meaning via links and tags.
+The result is a free-form note taking system of linked notes and ideas.
+Or, as the original Zettelkasten creator Niklas Luhmann would call it: a partner in communication.[fn:lhcs]
+
+I've been maintaining this code for personal use since 2018,[fn:innp] and have been sharing its code on Github for a while now.
+So after all this time, it's high time for a proper introduction of this package.
+
+Just want source?
+Take a look at this [[file:zetteldeft.org]["literate code"]], which contains both source and documentation,
+or simply refer to the [[https://github.com/efls/zetteldeft][Github repository]].
+
+Would you rather get familiar with Zetteldeft via an interactive tutorial?
+Check out the =zd-tutorial= repository on [[https://github.com/EFLS/zd-tutorial][Github]].
+Clone it and get started!
+Installation instructions included.
+
+For an introduction, please read on.
+One last note: I hope to make this a living document, so expect changes and additions.
+And feel free to leave comments, for example via [[https://github.com/efls/zetteldeft][Github]], [[https://twitter.com/EFLS0][Twitter]], or (preferably) [[https://mastodon.social/@EFLS][Mastodon]].
+
+#+TOC: headlines 2
+
+
+[fn:lhcs] Luhmann was first and foremost a social theorist who developed a unique systems theory.
+In one of his writings, he compares his Zettelkasten to a "communicative system".
+Available here in English translation:
+http://luhmann.surge.sh/communicating-with-slip-boxes.
+
+[fn:innp] Please beware that I'm no programmer.
+Zetteldeft is written in Emacs Lisp, the only language I can claim to have ever programmed in outside of school, but can't claim to know well.
+I use Emacs mainly for writing, both personal and academic, and have fallen in love with its extensibility.
+My overall experience resonates strongly with this story [[https://www.gnu.org/gnu/rms-lisp.en.html][shared by Richard Stallman]]:
+
+#+begin_quote
+Multics Emacs proved to be a great success -- programming new editing commands was so convenient that even the secretaries in his [Bernie Greenberg] office started learning how to use it.
+They used a manual someone had written which showed how to extend Emacs, but didn't say it was a programming.
+So the secretaries, who believed they couldn't do programming, weren't scared off.
+They read the manual, discovered they could do useful things and they learned to program.
+#+end_quote
+
+* A Zettelkasten in Deft
+
+As the name suggests, Zetteldeft is inspired by the now famous Zettelkasten system first implemented by the German sociologist Niklas Luhmann long before Personal Computers made their appearance.
+
+In our digital times, however, a Zettelkasten note-taking system looks a lot like (though is not the same as) a personal wiki for your notes.
+This introduction won't attempt to explain what a Zettelkasten is or what you might use it for.
+To that end, the internet provides various resources, such as the great [[https://www.zettelkasten.de][zettelkasten.de]] and their community.[fn:insp]
+
+In this text I want to briefly introduce what Zetteldeft is and mention its core features, so that you can check it out if you'd like.
+
+
+[fn:insp] Zetteldeft is inspired by /The Archive/, created by the guys at [[https://www.zettelkasten.de][zettelkasten.de]].
+
+* Key concepts
+
+Following the Zettelkasten philosophy, each note in Zetteldeft should either: (1) contain a core idea, (2) connect different ideas (and link to notes), (3) or contain a structured set of links to other notes.
+
+How you do that is completely up to you, but links between notes are key.
+And, it should be emphasized, links require /work/.
+Work done personally by /you/, the author, so that your notes might breathe life.[fn:lhtw]
+
+In Zetteldeft, each note has a unique *identifier* or ID, based on the time and date of its creation, included at the beginning of its filename.
+This, fore example, is the name of a file in my Zettelkasten: =2018-07-07-2356 The zetteldeft idea.org=.
+
+Notes contain *links* to other notes.
+These links are indicated by prepending the =§= character to an ID:
+=§2018-07-07-2356= links to the file mentioned above.
+No other formatting is needed: a plain text =§= and the ID suffice to create a link.
+And don't worry, you won't have to type the =§= manually (or the ID for that matter).
+And yes, you can change this link indicator or even disable it (and include a link suffix, if you so require).
+
+#+CAPTION: A note with links
+[[./img/screenshot.png]]
+
+The ID combined with Deft's full text search allow to
+ 1. retrieve a note via its identifier (by searching file titles),
+ 2. find out which notes link to a given note (via a full text search).
+
+That's pretty much all there is to it, for the basics at least.
+All of this is done in plain text.
+Org-mode by default, but it really is formatting agnostic.
+
+A way to further organize your notes, is to use tags, indicated with a =#=.
+In my Zettelkasten, for example, I use =#zetteldeft= for all notes related to...
+Well, you can guess.
+
+
+[fn:lhtw] Or, in the words of Luhmann himself:
+
+#+begin_quote
+It is impossible to think without writing; at least it is impossible in any sophisticated or networked (/anschlußfähig/) fashion.
+#+end_quote 
+
+Quote from [fn:lhcs].
+
+* Basic functions
+** A quick introduction
+
+Let's look at some basic functions you need to get started.
+
+*Create* a note with =C-c d n= (or =zetteldeft-new-file=).
+Enter a title and you're set.
+Zetteldeft will generate a note ID and include it in its filename.
+
+To *insert a link* to a note, you can use
+ - =C-c d i= (or =zetteldeft-find-file-id-insert=),
+ - or =C-c d I= if you want to include the title of your destination (which calls =zetteldeft-find-file-full-title-insert=).
+
+Hit =C-c d f= (or =zetteldeft-follow-link=) to *follow a link* to a note.
+All link indicators, those =§= symbols, will be replaced different characters (thanks to the Avy package).
+Pick one to follow a link.
+If only one link is available, or if point is in a link, it will be selected automatically.
+
+Use =C-c d F= to open a link in a separate window of choice.
+This is especially useful when browsing your own notes, looking for new ideas and connections.
+
+To quickly *open* one of the notes in your Zettelkasten, use =C-c d o= (or =zetteldeft-find-file=) and search the titles.
+Or simply hit =C-c d D= to open Deft and start a full text search.
+
+To quickly find out which notes *refer* to the current note, use =C-c d c= (which is =zetteldeft-search-current-id=).
+
+To search a *tag*, hit =C-c d t= and select a highlighted tag, similar to how you follow a link.
+To generate a *list* of tags currently in your Zettelkasten, use =C-c d T=.
+
+There are many more functions, but these will be enough to get you started.
+
+** An overview of keybindings
+
+As Zetteldeft does not launch a minor mode, no default keys are bound.
+You can set keys mentioned in this text by calling =zetteldeft-set-classic-keybindings=.
+
+For different setups with similar bindings, check the [[file:zetteldeft.org][literate source]].
+Personally, I prefer vim style bindings behind a leader key, set up with general,
+[[file:zetteldeft.org::#kb-general][like so]].
+
+#+CAPTION: Classic keybindings
+| Key     | Function                               |
+|---------+----------------------------------------|
+| =C-c d d= | =deft=                                   |
+| =C-c d D= | =zetteldeft-deft-new-search=             |
+| =C-c d R= | =deft-refresh=                           |
+| =C-c d s= | =zetteldeft-search-at-point=             |
+| =C-c d c= | =zetteldeft-search-current-id=           |
+| =C-c d f= | =zetteldeft-follow-link=                 |
+| =C-c d F= | =zetteldeft-avy-file-search-ace-window=  |
+| =C-c d l= | =zetteldeft-avy-link-search=             |
+| =C-c d t= | =zetteldeft-avy-tag-search=              |
+| =C-c d T= | =zetteldeft-tag-buffer=                  |
+| =C-c d i= | =zetteldeft-find-file-id-insert=         |
+| =C-c d I= | =zetteldeft-find-file-full-title-insert= |
+| =C-c d o= | =zetteldeft-find-file=                   |
+| =C-c d n= | =zetteldeft-new-file=                    |
+| =C-c d N= | =zetteldeft-new-file-and-link=           |
+| =C-c d r= | =zetteldeft-file-rename=                 |
+| =C-c d x= | =zetteldeft-count-words=                 |
+
+* Sneak peek at more advanced features
+
+As emphasized above, any Zettelkasten system relies on its author for links between notes.
+There are, however, some features in Zetteldeft that help you with this.
+For this introduction, I won't go into detail, but more information is found in the full [[file:zetteldeft.org][Zetteldeft.org]].
+
+There is =zetteldeft-insert-list-links= to automatically generate a list of links to notes containing a provided search term.
+Or use =zetteldeft-insert-list-links-missing= if you only want to include those notes that /don't/ yet appear in the current note.
+
+Zetteldeft is not limited to Org-mode, but integrates well with source code blocks to, for example, automate generating the lists mentioned above.
+
+With the help of =graphviz=, we can even draw graphical representations of links between notes.
+Check out =zetteldeft-org-graph-search= and =zetteldeft-org-graph-note= [[file:zetteldeft.org::#visuals][in the documentation]].
+It generates something like this:
+
+#+CAPTION: Example of a graph generated with graphviz.
+[[./img/zetteldeft-graph.jpg]]
+
+This feature is fairly crude but easily hackable.
+Ideas on how to extend or replace it are more than welcome.
+
+* Installing & getting started
+** Installing Zetteldeft
+*** Intro                                                          :ignore:
+
+This section will take you through an example Zetteldeft setup and installation.
+It assumes basic Emacs knowledge, so I'm going to guess you understand that the code below should go in your =init.el= (or equivalent).
+
+It also assumes that you have =use-package= installed, that you use [[http://melpa.org/#/][MELPA]] to install Emacs packages, and that you'll write notes in =org-mode=.
+
+Prefer Markdown?
+That's easy enough to change in the example below.
+
+For different methods of installation, please refer to the [[file:zetteldeft.org::#install][documentation]].
+
+*** Deft
+
+Zetteldeft relies on Deft.
+Let's start with a basic setup.
+
+#+begin_src emacs-lisp
+(use-package deft
+  :ensure t
+  :custom
+    (deft-extensions '("org" "md" "txt"))
+    (deft-directory "~/notes")
+    (deft-use-filename-as-title t))
+#+end_src
+
+Note that none of these settings are strictly required, apart from changing the default =deft-directory=.
+
+The =deft-use-filename-as-title= ensures that we can see the note IDs from the deft buffer, but this can be disabled if you prefer.
+
+*** Zetteldeft
+
+Installing Zetteldeft can be done in a similar fashion.
+
+Let's start bare bones:
+
+#+BEGIN_SRC emacs-lisp
+(use-package zetteldeft
+  :ensure t
+  :after deft
+  :config (zetteldeft-set-classic-keybindings))
+#+END_SRC
+
+That should be enough to get you started, really.
+
+*** Installation with Spacemacs
+
+Installation with Spacemacs is easy.
+Locate =dotspacemacs-configuration-layers= in your =.spacemacs= and add the code like so.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default dotspacemacs-configuration-layers
+  '((deft :variables deft-zetteldeft t)))
+#+END_SRC
+
+This should take care of keybindings as well.
+Take a look in [[file:zetteldeft.org][the documentation]] to see how keys are bound.
+
+** Customization
+
+Some pointers for further customization:
+ - alter =zetteldeft-link-indicator= to change the prefix to links,
+   or set it to an empty string to remove it altogether,
+ - change =zetteldeft-title-prefix= and =zetteldeft-title-suffix= to change how titles are appear,
+ - you can modify =zetteldeft-id-format= to change how IDs are generated, but make sure to change =zetteldeft-id-regex= accordingly so that the new IDs can be detected.
+   
+There's more to Zetteldeft, and to its customization, but that's all for this introduction.
+
+** Using Zetteldeft with Markdown notes
+:PROPERTIES:
+:CUSTOM_ID: markdown
+:END:
+
+While Zetteldeft works nicely with Org-mode, you can call its functions from any mode.
+Many people keep Zettelkasten in Markdown, so let's explore how such a setup can be achieved.
+
+First, make sure =deft-extensions= is set correctly.
+If =md= is the first element on the list, new notes will be Markdown notes.
+Zetteldeft uses Deft to create new notes, so using =zetteldeft-new-file= should now create Markdown files.
+
+#+begin_src emacs-lisp
+(setq deft-extensions '("md" "org" "txt"))
+#+end_src
+
+In such Zettelkasten links are often wrapped in square brackets.
+This can be easily achieved by setting the =zetteldeft-link-indicator= and =zetteldeft-link-suffix=.
+
+#+begin_src emacs-lisp
+(setq zetteldeft-link-indicator "[["
+      zetteldeft-link-suffix "]]")
+#+end_src
+
+To make sure that your Markdown notes start with correct title syntax, customize the =zetteldeft-title-prefix=.
+
+#+begin_src emacs-lisp
+(setq zetteldeft-title-prefix "# ")
+#+end_src
+
+To highlight links you need to set up font-lock keywords for =markdown-mode=.
+
+#+begin_src emacs-lisp
+(font-lock-add-keywords 'markdown-mode
+   `((,zetteldeft-id-regex
+      . font-lock-warning-face)))
+#+end_src
+
+Alternatively, if you want to highlight the brackets as well, you need to escape them like so:
+
+#+begin_src emacs-lisp
+(font-lock-add-keywords 'markdown-mode
+   `((,(concat "\\[\\["
+               zetteldeft-id-regex
+               "\\]\\]")
+      . font-lock-warning-face)))
+#+end_src
+

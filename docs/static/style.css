@@ -1,0 +1,345 @@
+/* 
+   This stylesheet is based on Kungsgeten's personal page, 
+   and borrows some more from Hugo theme 'one'.
+*/
+
+/* ----- */
+/* Fonts */
+/* ----- */
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Regular.otf);
+    font-style: normal;
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Italic.otf);
+    font-style: italic;
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'merriweather';
+    src: url(fonts/Merriweather-Black.otf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'sans';
+    src: url(fonts/IBMPlexSans-Regular.otf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'sans';
+    src: url(fonts/IBMPlexSans-Bold.otf);
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'sans-light';
+    src: url(fonts/IBMPlexSans-Regular.otf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mono';
+    src: url(fonts/IBMPlexMono-Text.otf);
+    font-style: normal;
+    font-weight: 100;
+}
+
+/* 
+    BODY
+*/
+
+html {
+  padding: 0;
+  margin: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'merriweather', serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #21211a;
+  background-color: #f3f3e7;
+}
+@media screen and (min-width: 530px) {
+  body {
+    font-size: 20px;
+  }
+}
+
+p {
+    margin-top: 20px;
+}
+
+p + p {
+    margin-top: 10px;
+    /* text-indent: 10em; */
+}
+
+section {
+  margin-top: 1em;
+}
+section p {
+  margin: 0.15em 0;
+}
+section p + p {
+  text-indent: 1.5em;
+}
+
+/* Quotes */
+blockquote {
+    border-left: 3px solid #0594cb;
+    text-indent: 0em;
+    margin-left: 1em;
+    padding-left: 1em;
+}
+
+/* Heading 1 - Title */
+h1 {
+    font-family: 'sans', sans-serif;
+    font-size: 200%;
+    font-weight: bold;
+    line-height: 1.1;
+    text-align: left;
+ /* Margins & padding */
+    margin-top: 1rem;
+    margin-bottom: 1em;
+    padding-top: 1.5em;
+}
+.title {
+    margin-top: 0rem;
+    margin-bottom: 10pt;
+}
+.subtitle {
+  font-family: 'sans', sans-serif;
+  font-weight: normal;
+  font-size: 120%;
+  margin-bottom: 50px;
+}
+
+/* Heading 2 */
+h2 {
+    font-family: 'sans', sans-serif;
+    font-size: 130%;
+    line-height: 1.1;
+    hyphens: none;
+ /* Margins & padding */
+    margin-top: 2.5rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.02em;
+ /* With small border */
+    border-bottom: 2px solid #d7d7cd;
+    margin-bottom: 0.5em;
+}
+
+/* Other headings */
+h3,
+h4 {
+   font-family: 'sans', sans-serif;
+}
+h3 {
+   margin-top: 1.5em;
+   margin-bottom: 0.2rem;
+}
+
+header {
+  margin: 10px;
+}
+
+/* Captions */
+
+figcaption {
+    font-family: 'sans-light', sans-serif;
+    font-size: 80%;
+    text-align: center;
+}
+
+/* Table */
+caption.t-above {
+    font-family: sans;
+}
+
+.table-number{
+    display: none;
+}
+
+/* Links */
+a {
+  color: #21211a;
+}
+.org-ul {
+    list-style-type: '- ';
+    padding-left: 1.5em;
+}
+a:hover {
+  background-color: #d3d3a8;
+}
+#content {
+  margin: auto;
+  margin-bottom: 1.5em;
+  padding: 0 0.5em;
+}
+@media screen and (min-width: 460px) {
+  #content {
+    padding: 0 2em;
+  }
+}
+@media screen and (min-width: 530px) {
+  #content {
+    max-width: 750px;
+  }
+}
+/* TOC */
+#table-of-contents a {
+  text-decoration: none;
+  font-family: 'sans-light', serif;
+}
+#table-of-contents ul {
+  font-family: 'sans', serif;
+  list-style-type: none;
+  padding-left: 1em;
+}
+pre,
+code {
+  font-family: 'mono', monospace;
+}
+pre {
+  font-size: 60%;
+  background-color: #fff;
+  padding: 3pt;
+  margin: 1.2em 0em;
+}
+@media screen and (min-width: 460px) {
+  pre {
+    margin: 1.2em -2.3em;
+  }
+}
+code {
+  font-size: 100%;
+  background-color: #e6e6da;
+  border: 1px solid #ccc;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+table {
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+table + table {
+  margin-top: 2em;
+}
+th,
+td {
+  padding: 0 0.25em;
+}
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+/* Tables */
+
+th {
+    background-color: #dadada;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 2px solid;
+    border-top: 2px solid;
+}
+
+.underline {
+  font-family: 'sans', sans-serif;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+}
+#preamble,
+#postamble {
+  background-color: #e3e3c7;
+  padding: 3px 0px;
+}
+#head {
+  margin: auto;
+}
+#head a {
+  text-decoration: none;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+@media screen and (min-width: 530px) {
+  #head {
+    max-width: 750px;
+  }
+}
+#head >h1 {
+  font-size: 120%;
+  font-weight: normal;
+  display: inline;
+}
+#head >ul {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#head >ul li {
+  display: inline;
+}
+sup {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+
+/* --------- */
+/* Footnotes */
+/* --------- */
+
+/* Footnote header */
+.footnotes {
+  font-family: 'sans', sans-serif;
+  font-size: 100%;
+  border-bottom: none;
+  border-top: 2px solid #d7d7cd;
+  padding: 0.5rem 0
+}		  
+
+/* Full footnote */
+.footdef {
+    margin-left: 1rem;
+    text-indent: -1rem;
+    margin-bottom: 1em;
+}
+
+/* Footnote references & numbers */
+.footref::before,
+.footnum::before {
+  content: "";
+}
+.footref::after,
+.footnum::after {
+  content: "";
+}
+
+figure {
+  margin: 2em 1em;
+}
+
+img {
+    max-width: 100%;
+    height:auto;
+}
+
+/* Figure numbers */
+.figure-number {
+  display: none;
+}
