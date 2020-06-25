@@ -383,22 +383,6 @@ Replaces current title with TITLE."
         (delete-region (line-beginning-position) (line-end-position))
         (zetteldeft--insert-title title)))))
 
-(defun zetteldeft-file-rename-full ()
-  "Rename the current file.
-Allows modification of entire filename."
-  (interactive)
-  (zetteldeft--check)
-  (let ((old-filename (buffer-file-name)))
-    (when old-filename
-      (let* ((old-name (file-name-nondirectory old-filename))
-	     (prompt-text (concat "Rename " old-name " to: "))
-	     (new-name (read-string prompt-text old-name))
-	     (deft-dir (file-name-as-directory deft-directory))
-	     (new-filename (concat deft-dir new-name)))
-	(rename-file old-filename new-filename)
-	(deft-update-visiting-buffers old-filename new-filename)
-	(deft-refresh)))))
-
 (defun zetteldeft-count-words ()
   "Prints total number of words and notes in the minibuffer."
   (interactive)

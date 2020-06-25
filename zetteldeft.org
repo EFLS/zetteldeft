@@ -957,28 +957,6 @@ Replaces current title with TITLE."
         (zetteldeft--insert-title title)))))
 #+END_SRC
 
-**** =zetteldeft-file-rename-full= renames visited file
-
-This function allows for direct modification of a filename, without changing the file's title.
-
-#+BEGIN_SRC emacs-lisp
-(defun zetteldeft-file-rename-full ()
-  "Rename the current file.
-Allows modification of entire filename."
-  (interactive)
-  (zetteldeft--check)
-  (let ((old-filename (buffer-file-name)))
-    (when old-filename
-      (let* ((old-name (file-name-nondirectory old-filename))
-	     (prompt-text (concat "Rename " old-name " to: "))
-	     (new-name (read-string prompt-text old-name))
-	     (deft-dir (file-name-as-directory deft-directory))
-	     (new-filename (concat deft-dir new-name)))
-	(rename-file old-filename new-filename)
-	(deft-update-visiting-buffers old-filename new-filename)
-	(deft-refresh)))))
-#+END_SRC
-
 **** =zetteldeft-count-words= counts total number of words
 
 To count the total number of words, lets loop over all the files and count words in each.
