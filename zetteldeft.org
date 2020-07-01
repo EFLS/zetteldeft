@@ -663,11 +663,11 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator
-                  (zetteldeft--lift-id (file-name-base file))
-                  zetteldeft-link-suffix
-                  " "
-                  (zetteldeft--lift-file-title (file-name-base file)))))
+  (insert zetteldeft-link-indicator
+          (zetteldeft--lift-id file)
+          zetteldeft-link-suffix
+          " "
+          (zetteldeft--lift-file-title (concat deft-directory file))))
 #+END_SRC
 
 *** New file creation
