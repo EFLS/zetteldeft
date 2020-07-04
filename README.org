@@ -6,7 +6,7 @@
 
 The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aims to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
-To learn key concepts and basic functions of thic package, check out an introduction here: [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
+To learn key concepts and basic functions of this package, check out an introduction here: [[https://efls.github.io/zetteldeft/][efls.github.io/zetteldeft]].
 
 Or learn how to install and use Zetteldeft by cloning the =zd-tutorial= repository available at https://github.com/EFLS/zd-tutorial.
 
