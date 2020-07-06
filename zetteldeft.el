@@ -233,6 +233,11 @@ This is done with the regular expression stored in
                   " "
                   (zetteldeft--lift-file-title (file-name-base file)))))
 
+(defcustom zetteldeft-id-filename-separator " "
+  "String to separate zetteldeft ID from filename."
+  :type 'string
+  :group 'zetteldeft)
+
 (declare-function evil-insert-state "evil")
 
 ;;;###autoload
@@ -241,17 +246,17 @@ This is done with the regular expression stored in
 Filename is `zetteldeft-id-format' appended by STR.
 No file extension needed.
 
-Unless EMPTY is non-nil, a file title will be inserted,
-wrapped in `zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
+A file title will be inserted, wrapped in
+`zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
 Filename (without extension) is added to the kill ring.
 When `evil' is loaded, change to insert state."
   (interactive (list (read-string "Note title: ")))
   (let* ((zdId (or id
                    (zetteldeft-generate-id)))
-         (zdName (concat zdId " " str)))
+         (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
-  (zetteldeft--insert-title)
+  (zetteldeft--insert-title str)
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
@@ -368,53 +373,55 @@ Don't forget to add `\\n' at the beginning to start a new line."
   :type 'string
   :group 'zetteldeft)
 
-(defun zetteldeft--insert-title ()
-  "Insert filename of current zd note, stripped from its ID.
+(defun zetteldeft--insert-title (title)
+  "Insert TITLE as title in file.
 Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'."
   (zetteldeft--check)
   (insert
     zetteldeft-title-prefix
-    (zetteldeft--lift-file-title (file-name-base (buffer-file-name)))
+    title
     zetteldeft-title-suffix))
 
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
-  (let ((baseName (file-name-base zdFile)))
-    (replace-regexp-in-string
-     (concat zetteldeft-id-regex "[[:space:]]")
-     "" baseName)))
+  (let ((deft-use-filename-as-title nil))
+    (deft-parse-title zdFile (with-temp-buffer
+                               (insert-file-contents zdFile)
+                               (buffer-string)))))
 
 ;;;###autoload
 (defun zetteldeft-file-rename ()
-  "Rename the current file via the deft function.
+  "Change current file's title, and use the new title to rename the file.
 Use this on files in the `deft-directory'."
   (interactive)
   (zetteldeft--check)
-    (let ((old-filename (buffer-file-name))
-          (deft-dir (file-name-as-directory deft-directory))
-          new-filename old-name new-name)
-      (when old-filename
-        (setq old-name (deft-base-filename old-filename))
-        (setq new-name (read-string
-                        (concat "Rename " old-name " to (without extension): ")
-                        old-name))
-        (setq new-filename
-              (concat deft-dir new-name "." deft-default-extension))
+  (let ((old-filename (buffer-file-name)))
+    (when old-filename
+      (let* ((old-title (zetteldeft--lift-file-title old-filename))
+             (prompt-text (concat "Change " old-title " to: "))
+             (new-name (read-string prompt-text old-title))
+             (id (or (zetteldeft--lift-id (file-name-base old-filename))
+                     (zetteldeft-generate-id)))
+             (new-filename (deft-absolute-filename (concat
+                                                    id
+                                                    zetteldeft-id-filename-separator
+                                                    new-name))))
         (rename-file old-filename new-filename)
         (deft-update-visiting-buffers old-filename new-filename)
-        (zetteldeft-update-title-in-file)
-        (deft-refresh))))
+        (zetteldeft-update-title-in-file new-name)
+        (deft-refresh)))))
 
-(defun zetteldeft-update-title-in-file ()
+(defun zetteldeft-update-title-in-file (title)
   "Update the title of the current file, if present.
-Does so by looking for `zetteldeft-title-prefix'."
+Does so by looking for `zetteldeft-title-prefix'.
+Replaces current title with TITLE."
   (save-excursion
     (let ((zetteldeft-title-suffix ""))
       (goto-char (point-min))
       (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
         (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title)))))
+        (zetteldeft--insert-title title)))))
 
 ;;;###autoload
 (defun zetteldeft-count-words ()
