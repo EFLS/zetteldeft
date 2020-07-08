@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-06-06 Sat 20:29 -->
+<!-- 2020-07-08 Wed 10:35 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zetteldeft</title>
+<title>Contributing to Zetteldeft</title>
 <meta name="generator" content="Org mode">
-<meta name="author" content="EFLS">
+<meta name="author" content="Elias Storms">
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -191,7 +191,6 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel='stylesheet' href='./static/style.css' type='text/css'/>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -254,46 +253,40 @@ for the JavaScript code in this tag.
 </div>
 <div id="content">
 <header>
-<h1 class="title">Zetteldeft</h1>
-</header>
-<figure>
-<a href="http://melpa.org/#/zetteldeft"><object type="image/svg+xml" data="http://melpa.org/packages/zetteldeft-badge.svg" class="org-svg">
-Sorry, your browser does not support SVG.</object></a>
-
-</figure>
-
-<p>
-The <code>zetteldeft.org</code> file in this repository contains documented code for a set of functions for <code>emacs</code>, which aims to extend the <code>deft</code> package and turn it into a (very very) basic Zettelkasten note-taking system.
+<h1 class="title">Contributing to Zetteldeft</h1>
+</header><p>
+Comments and contributions to Zetteldeft are more than welcome.
 </p>
 
 <p>
-To learn key concepts and basic functions of this package, check out an introduction here: <a href="https://efls.github.io/zetteldeft/">efls.github.io/zetteldeft</a>.
+Reach out <a href="https://mastodon.social/@EFLS">via Mastodon</a>, file an issue over <a href="https://github.com/EFLS/zetteldeft">on Github</a>, or submit a pull request to get your code included.
 </p>
 
 <p>
-Or learn how to install and use Zetteldeft by cloning the <code>zd-tutorial</code> repository available at <a href="https://github.com/EFLS/zd-tutorial">https://github.com/EFLS/zd-tutorial</a>.
+If you want to contribute code, please keep in mind that Zetteldeft is maintained in the <code>zetteldeft.org</code> file.
+The <code>zetteldeft.el</code> is then created from the <code>zetteldeft.org</code> &#x2013; or, in Org-mode jargon, &lsquo;tangled&rsquo;.
 </p>
 
 <p>
-Documentation, code and further technical details can be found in the <code>.org</code> file of this repository, or can be read in a more convenient format over at <a href="https://efls.github.io/zetteldeft/zetteldeft.html">efls.github.io/zetteldeft/zetteldeft.html</a>.
-</p>
-
-<p>
-<code>zetteldeft</code> is available on <a href="https://melpa.org/#/zetteldeft">MELPA</a>.
-If you use <code>use-package</code>, installing is as easy as
+Please respect this order of things if you can, by making changes to the <code>.org</code> file (rather than to the <code>.el</code> file directly).
+Alter the code in the source blocks, or create new source blocks like so:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">use-package</span> <span style="color: #97365B;">zetteldeft</span>
-  <span style="color: #29838D;">:after</span> deft
-  <span style="color: #29838D;">:config</span>
-    (zetteldeft-set-classic-keybindings))
+<pre class="src src-org-mode">#+begin_src emacs-lisp
+(message "Code goes here")
 </pre>
 </div>
+<p>
+#+end_src
+</p>
 
 <p>
-Please note that this was originally written for personal use and that I&rsquo;m far from an <code>emacs lisp</code> expert.
-That said, contributions and feedback are more than welcome.
+You can add some documentation if you like, but this is not necessary.
+</p>
+
+<p>
+If you run into any issue, don&rsquo;t hesitate to reach out.
 </p>
 </div>
 <div id="postamble" class="status">

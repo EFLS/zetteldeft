@@ -17,11 +17,11 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
  - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
  - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
  - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
  - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-indicator= is =""=.
- - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
 
 Older changes are mentioned in the [[#changelog][changelog]] below.
 
@@ -1942,6 +1942,7 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 An overview of changes, in addition to those mentioned at the top of this document:
 
+ - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
  - *14 Mar*: Simplified =zetteldeft--get-thing-at-point= to better work with customized tags.
  - *14 Mar*: Fixed font-lock when customizing the id indicator (thanks to [[https://github.com/bymoz089][bymoz089]]).
  - *14 Feb 2020*: Documentation updates for usage with =spacemacs= (thanks to [[https://github.com/brunosmmm][brunosmmm]]).
