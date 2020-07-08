@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *08 July*: Add =ace-window= as top level requirement.
  - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
  - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
  - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
@@ -97,6 +98,7 @@ Installing and enabling =zetteldeft= with the default configuration is straightf
 This package requires:
  - =deft=, obviously
  - =avy= to jump & search
+ - =ace-window= to follow a link in a window of choice
 
 From the [[https://github.com/EFLS/zetteldeft][Github repository]], either
  - download the =zetteldeft.el= file,
@@ -200,7 +202,7 @@ Some declaration.
 ;; URL: https://efls.github.io/zetteldeft/
 ;; Keywords: deft zettelkasten zetteldeft wp files
 ;; Version: 0.3
-;; Package-Requires: ((emacs "25.1") (deft "0.8"))
+;; Package-Requires: ((emacs "25.1") (deft "0.8") (ace-window "0.7.0"))
 
 ;; This file is not part of Emacs
 
@@ -236,6 +238,7 @@ Some declaration.
 
 =deft= is required, obviously, and =avy= is needed for some utility functions.
 =thingatpt= is needed to easily search & jump.
+=ace-window= is used to follow links in another window.
 
 #+BEGIN_SRC emacs-lisp
 (require 'deft)
@@ -244,6 +247,8 @@ Some declaration.
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
 (require 'thingatpt)
+
+(require 'ace-window)
 #+END_SRC
 
 Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
@@ -836,7 +841,6 @@ Similar to `zetteldeft-avy-file-search', but with window selection.
 When only one window is active, split it first.
 When more windows are active, select one via `ace-window'."
   (interactive)
-  (require 'ace-window)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
                                    zetteldeft-id-regex

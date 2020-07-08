@@ -6,7 +6,7 @@
 ;; URL: https://efls.github.io/zetteldeft/
 ;; Keywords: deft zettelkasten zetteldeft wp files
 ;; Version: 0.3
-;; Package-Requires: ((emacs "25.1") (deft "0.8"))
+;; Package-Requires: ((emacs "25.1") (deft "0.8") (ace-window "0.7.0"))
 
 ;; This file is not part of Emacs
 
@@ -43,6 +43,8 @@
   (user-error "Avy not installed, required for zetteldeft-avy-* functions"))
 
 (require 'thingatpt)
+
+(require 'ace-window)
 
 (declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
@@ -317,7 +319,6 @@ Similar to `zetteldeft-avy-file-search', but with window selection.
 When only one window is active, split it first.
 When more windows are active, select one via `ace-window'."
   (interactive)
-  (require 'ace-window)
   (save-excursion
     (when (consp (avy-jump (concat zetteldeft-link-indicator
                                    zetteldeft-id-regex
