@@ -82,7 +82,7 @@ No other formatting is needed: a plain text =§= and the ID suffice to create a 
 And don't worry, you won't have to type the =§= manually (or the ID for that matter).
 And yes, you can change this link indicator or even disable it (and include a link suffix, if you so require).
 
-#+CAPTION: A note with links
+#+CAPTION: A note with links. The note shown is part of [[https://github.com/efls/zd-tutorial][zd-tutorial]]
 [[./img/screenshot.png]]
 
 The ID combined with Deft's full text search allow to
