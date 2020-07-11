@@ -1303,7 +1303,7 @@ Inserts for given file a link id and title as a list entry.
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix
           " "
-          (zetteldeft--lift-file-title (file-name-base zdFile))
+          (zetteldeft--lift-file-title zdFile)
           "\n"))
 #+END_SRC
 
