@@ -559,7 +559,7 @@ zetteldeft directory."
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix
           " "
-          (zetteldeft--lift-file-title (file-name-base zdFile))
+          (zetteldeft--lift-file-title zdFile)
           "\n"))
 
 ;;;###autoload
