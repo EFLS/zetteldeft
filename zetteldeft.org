@@ -560,18 +560,19 @@ Below is an custom ID function that generates an ID based on the current time fo
 (setq zetteldeft-custom-id-function #'my-time-based-id-example)
 #+END_SRC
 
-Custom ID functions can produce IDs in any format, not just time-based ones. The following (non-working) example code illustrates this:
+Custom ID functions can produce IDs in any format, not just time-based ones.
+The following (non-working) example code illustrates this:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-  ;; Hypothetical custom function defined in init.el
-  (defun my-arbitrary-id-example (title &optional filename)
-    "Generate an ID exactly the way I like it"
-    (if filename
-        (cryptographic-hash filename)
-      (random-anagram title)))
+;; Hypothetical custom function defined in init.el
+(defun my-arbitrary-id-example (title &optional filename)
+  "Generate an ID exactly the way I like it"
+  (if filename
+      (cryptographic-hash filename)
+    (random-anagram title)))
 
-  ;; Tell zetteldeft to use the custom ID function
-  (setq zetteldeft-custom-id-function #'my-arbitrary-id-example)
+;; Tell zetteldeft to use the custom ID function
+(setq zetteldeft-custom-id-function #'my-arbitrary-id-example)
 #+END_SRC
 
 If you set =zetteldeft-custom-id-function=, be sure that the values your function generates are matched by =zetteldeft-id-regex=, so that the IDs can be found by Zetteldeft.
