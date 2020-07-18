@@ -151,7 +151,7 @@ Called when `zetteldeft-link-indicator' or
            . font-lock-warning-face)))))
 
 (defcustom zetteldeft-id-format "%Y-%m-%d-%H%M"
-  "Format used when generating zetteldeft IDs.
+  "Format used when generating time-based zetteldeft IDs.
 
 Be warned: the regexp to find IDs is set separately.
 If you change this value, set `zetteldeft-id-regex' so that
