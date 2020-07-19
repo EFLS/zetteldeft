@@ -1068,21 +1068,21 @@ kill ring."
     (message "%s" ID)))
 #+END_SRC
 
-**** =zetteldeft--id-to-full-title= returns title from ID
+**** =zetteldeft--id-to-full-path= returns title from ID
 
 Convert a zetteldeft ID into its full title.
 
 The ID should lead to only one title, obviously, so an error is thrown when this is not the case.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--id-to-full-title (zdID)
+(defun zetteldeft--id-to-full-path (zdID)
   "Return full title from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
   (unless (eq (length deft-current-files) 1)
     (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
-  (file-name-base (car deft-current-files)))
+  (car deft-current-files))
 #+END_SRC
 
 ** Listing all tags
@@ -1282,7 +1282,7 @@ zetteldeft directory."
                   zetteldeft-link-suffix
                   " "
                   (zetteldeft--lift-file-title
-                    (zetteldeft--id-to-full-title zdID))
+                    (zetteldeft--id-to-full-path zdID))
                   "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
