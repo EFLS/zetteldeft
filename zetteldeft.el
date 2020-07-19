@@ -452,14 +452,14 @@ kill ring."
     (kill-new ID)
     (message "%s" ID)))
 
-(defun zetteldeft--id-to-full-title (zdID)
+(defun zetteldeft--id-to-full-path (zdID)
   "Return full title from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
   (unless (eq (length deft-current-files) 1)
     (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
-  (file-name-base (car deft-current-files)))
+  (car deft-current-files))
 
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
@@ -547,7 +547,7 @@ zetteldeft directory."
                   zetteldeft-link-suffix
                   " "
                   (zetteldeft--lift-file-title
-                    (zetteldeft--id-to-full-title zdID))
+                    (zetteldeft--id-to-full-path zdID))
                   "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
@@ -559,7 +559,7 @@ zetteldeft directory."
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix
           " "
-          (zetteldeft--lift-file-title (file-name-base zdFile))
+          (zetteldeft--lift-file-title zdFile)
           "\n"))
 
 ;;;###autoload
