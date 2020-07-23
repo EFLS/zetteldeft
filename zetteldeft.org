@@ -534,7 +534,7 @@ When left =nil=, default time-based IDs are generated.
 (defcustom zetteldeft-custom-id-function nil
   "User-defined function to generate an ID.
 The specified function must accept arguments for note `TITLE'
-and &optional `FILENAME'."
+and &optional `FILENAME'. The returned ID must be a string."
   :type 'function
   :group 'zetteldeft)
 #+END_SRC
@@ -544,7 +544,7 @@ The second argument will be passed only when a new ID is being generated for an 
 The function may use or ignore its argument values as desired.
 
 Let's look at an example.
-Below is an custom ID function that generates an ID based on the current time for new notes, and based on the file's last-updated time for existing notes not yet having an ID:
+Below is a custom ID function that generates an ID based on the current time for new notes, and based on the file's last-updated time for existing notes not yet having an ID:
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; Hypothetical custom function defined in init.el

@@ -173,7 +173,7 @@ function to see which placeholders can be used."
 (defcustom zetteldeft-custom-id-function nil
   "User-defined function to generate an ID.
 The specified function must accept arguments for note `TITLE'
-and &optional `FILENAME'."
+and &optional `FILENAME'. The returned ID must be a string."
   :type 'function
   :group 'zetteldeft)
 
