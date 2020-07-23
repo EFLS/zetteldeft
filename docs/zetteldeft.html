@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-07-08 Wed 10:40 -->
+<!-- 2020-07-23 Thu 22:55 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -273,11 +273,11 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>23 July</b>: Add customizable <code>zetteldeft-custom-id-function</code> for ID generation.</li>
+<li><b>08 July</b>: Add <code>ace-window</code> as top level requirement.</li>
 <li><b>06 July</b>: Separate filename from title and respect <code>deft-file-naming-rules</code>, thanks to PR by natdash.</li>
 <li><b>04 June</b>: Change <code>zetteldeft-new-file-and-link</code> so that it doesn&rsquo;t generate an ID. Change <code>zetteldeft-new-file</code> so that it can take an ID (and drop the <i>EMPTY</i> option).</li>
 <li><b>13 May</b>: Modified default <code>zetteldeft-tag-regex</code> to include <code>[:alnum:]</code> and improve <code>zetteldeft--tag-format</code>.</li>
-<li><b>09 May</b>: Introduced <code>zetteldeft-link-suffix</code>, which is <code>""</code> by default.</li>
-<li><b>15 Apr</b>: Replace <code>avy-goto-char</code> with <code>avy-jump</code>. <code>avy</code> functions now work even when <code>zetteldeft-link-indicator</code> is <code>""</code>.</li>
 </ul>
 
 <p>
@@ -425,6 +425,7 @@ This package requires:
 <ul class="org-ul">
 <li><code>deft</code>, obviously</li>
 <li><code>avy</code> to jump &amp; search</li>
+<li><code>ace-window</code> to follow a link in a window of choice</li>
 </ul>
 
 <p>
@@ -654,7 +655,7 @@ Some declaration.
 <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">URL: https://efls.github.io/zetteldeft/</span>
 <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Keywords: deft zettelkasten zetteldeft wp files</span>
 <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Version: 0.3</span>
-<span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Package-Requires: ((emacs "25.1") (deft "0.8"))</span>
+<span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Package-Requires: ((emacs "25.1") (deft "0.8") (ace-window "0.7.0"))</span>
 
 <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">This file is not part of Emacs</span>
 
@@ -695,6 +696,7 @@ Some declaration.
 <p>
 <code>deft</code> is required, obviously, and <code>avy</code> is needed for some utility functions.
 <code>thingatpt</code> is needed to easily search &amp; jump.
+<code>ace-window</code> is used to follow links in another window.
 </p>
 
 <div class="org-src-container">
@@ -704,6 +706,8 @@ Some declaration.
   (<span style="color: #9A7500;">user-error</span> <span style="color: #4F894C;">"Avy not installed, required for zetteldeft-avy-* functions"</span>))
 
 (<span style="color: #3B6EA8;">require</span> '<span style="color: #97365B;">thingatpt</span>)
+
+(<span style="color: #3B6EA8;">require</span> '<span style="color: #97365B;">ace-window</span>)
 </pre>
 </div>
 
@@ -767,12 +771,13 @@ In this section:
 <ul>
 <li><a href="#id-links">2.2.2.1. A note on nomenclature, IDs and links</a></li>
 <li><a href="#org557fdbd">2.2.2.2. Helper function <code>zetteldeft--id-font-lock-setup</code></a></li>
-<li><a href="#org5f33ae1">2.2.2.3. <code>zetteldeft-id-format</code> for generating ID strings</a></li>
-<li><a href="#orgf8484a9">2.2.2.4. <code>zetteldeft-id-regex</code> for finding IDs</a></li>
-<li><a href="#orgb434e4f">2.2.2.5. <code>zetteldeft-link-indicator</code> prepends ID links</a></li>
-<li><a href="#orge35ef38">2.2.2.6. <code>zetteldeft-link-suffix</code> is appended to ID links</a></li>
-<li><a href="#org286971a">2.2.2.7. <code>zetteldeft-tag-regex</code> for finding tags</a></li>
-<li><a href="#org65df8d0">2.2.2.8. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
+<li><a href="#orgf55906d">2.2.2.3. <code>zetteldeft-id-format</code> for generating time-based ID strings</a></li>
+<li><a href="#org7da55b6">2.2.2.4. <code>zetteldeft-custom-id-function</code> for fine-grained control over ID formatting</a></li>
+<li><a href="#orgf8484a9">2.2.2.5. <code>zetteldeft-id-regex</code> for finding IDs</a></li>
+<li><a href="#orgb434e4f">2.2.2.6. <code>zetteldeft-link-indicator</code> prepends ID links</a></li>
+<li><a href="#orge35ef38">2.2.2.7. <code>zetteldeft-link-suffix</code> is appended to ID links</a></li>
+<li><a href="#org286971a">2.2.2.8. <code>zetteldeft-tag-regex</code> for finding tags</a></li>
+<li><a href="#org65df8d0">2.2.2.9. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
 </ul>
 </li>
 <li><a href="#org29233ad">2.2.3. Finding &amp; linking files from minibuffer</a>
@@ -806,7 +811,7 @@ In this section:
 <li><a href="#orgccc3768">2.2.6.5. <code>zetteldeft-file-rename</code> updates title and renames visited file</a></li>
 <li><a href="#orgea4b502">2.2.6.6. <code>zetteldeft-count-words</code> counts total number of words</a></li>
 <li><a href="#org300ba6c">2.2.6.7. <code>zetteldeft-copy-id-current-file</code> copies id in filename</a></li>
-<li><a href="#orgcdc2b33">2.2.6.8. <code>zetteldeft--id-to-full-title</code> returns title from ID</a></li>
+<li><a href="#org0a22b37">2.2.6.8. <code>zetteldeft--id-to-full-path</code> returns title from ID</a></li>
 </ul>
 </li>
 </ul>
@@ -1026,13 +1031,15 @@ In zetteldeft, the concepts of &lsquo;links&rsquo; and &lsquo;IDs&rsquo; have re
 </p>
 
 <p>
-An ID refers to the unique numeric string identifying each note.
+An <b>ID</b> refers to the unique, generated string included in the filename, identifying each note.
+By default, IDs are numeric and time-based.
 For example: <code>2019-01-20-1433</code>.
 These are generated by <code>zetteldeft-generate-id</code>.
+(To customize how IDs are generated, take a look at the variable <code>zetteldeft-custom-id-function</code>.)
 </p>
 
 <p>
-A link is an ID prepended by a character to easily identify it as a link.
+A <b>link</b> is an ID prepended by a character to easily identify it as a link.
 For example: <code>§2019-01-20-1433</code>.
 </p>
 
@@ -1099,11 +1106,11 @@ Note that highlighting is not working in org comments.
 </div>
 </div>
 
-<div id="outline-container-org5f33ae1" class="outline-5">
-<h5 id="org5f33ae1"><span class="section-number-5">2.2.2.3</span> <code>zetteldeft-id-format</code> for generating ID strings</h5>
+<div id="outline-container-orgf55906d" class="outline-5">
+<h5 id="orgf55906d"><span class="section-number-5">2.2.2.3</span> <code>zetteldeft-id-format</code> for generating time-based ID strings</h5>
 <div class="outline-text-5" id="text-2-2-2-3">
 <p>
-Format used to generate ids.
+Format used to generate time-based IDs.
 </p>
 
 <p>
@@ -1116,7 +1123,7 @@ If you customize this value, make sure to edit the <code>zetteldeft-id-regex</co
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zetteldeft-id-format</span> <span style="color: #4F894C;">"%Y-%m-%d-%H%M"</span>
-  <span style="color: #828b9b;">"Format used when generating zetteldeft IDs.</span>
+  <span style="color: #828b9b;">"Format used when generating time-based zetteldeft IDs.</span>
 
 <span style="color: #828b9b;">Be warned: the regexp to find IDs is set separately.</span>
 <span style="color: #828b9b;">If you change this value, set `</span><span style="color: #97365B;">zetteldeft-id-regex</span><span style="color: #828b9b;">' so that</span>
@@ -1151,21 +1158,91 @@ For good measure: I advise creating new notes in the <code>zetteldeft</code> sys
 </div>
 
 <p>
-Next up, a function to generate an ID string in the above format.
+Next up, a function to generate an ID string in the above format, unless a custom ID generator function is specified (i.e., <code>zetteldeft-custom-id-function</code> refers to a function).
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-generate-id</span> ()
-  <span style="color: #828b9b;">"Generate an ID in the format of `</span><span style="color: #97365B;">zetteldeft-id-format</span><span style="color: #828b9b;">'."</span>
-  (format-time-string zetteldeft-id-format))
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-generate-id</span> (title <span style="color: #9A7500;">&amp;optional</span> filename)
+  <span style="color: #828b9b;">"Generate an ID using `</span><span style="color: #97365B;">zetteldeft-custom-id-function</span><span style="color: #828b9b;">' or `</span><span style="color: #97365B;">zetteldeft-id-format</span><span style="color: #828b9b;">'."</span>
+  (<span style="color: #3B6EA8;">if-let</span> ((f zetteldeft-custom-id-function))
+      (funcall f title filename)
+    (format-time-string zetteldeft-id-format)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf8484a9" class="outline-5">
-<h5 id="orgf8484a9"><span class="section-number-5">2.2.2.4</span> <code>zetteldeft-id-regex</code> for finding IDs</h5>
+<div id="outline-container-org7da55b6" class="outline-5">
+<h5 id="org7da55b6"><span class="section-number-5">2.2.2.4</span> <code>zetteldeft-custom-id-function</code> for fine-grained control over ID formatting</h5>
 <div class="outline-text-5" id="text-2-2-2-4">
+<p>
+For full control over the output of <code>zetteldeft-generate-id</code>, you can set the variable <code>zetteldeft-custom-id-function</code> to a function of your choice.
+When left <code>nil</code>, default time-based IDs are generated.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zetteldeft-custom-id-function</span> nil
+  <span style="color: #828b9b;">"User-defined function to generate an ID.</span>
+<span style="color: #828b9b;">The specified function must accept arguments for note `</span><span style="color: #97365B;">TITLE</span><span style="color: #828b9b;">'</span>
+<span style="color: #828b9b;">and &amp;optional `</span><span style="color: #97365B;">FILENAME</span><span style="color: #828b9b;">'. The returned ID must be a string."</span>
+  <span style="color: #29838D;">:type</span> 'function
+  <span style="color: #29838D;">:group</span> 'zetteldeft)
+</pre>
+</div>
+
+<p>
+The function indicated by <code>zetteldeft-custom-id-function</code> must accept arguments for <code>title</code> and optional <code>filename</code>.
+The second argument will be passed only when a new ID is being generated for an existing note that does not already have an ID (for example, one created outside of zetteldeft).
+The function may use or ignore its argument values as desired.
+</p>
+
+<p>
+Let&rsquo;s look at an example.
+Below is a custom ID function that generates an ID based on the current time for new notes, and based on the file&rsquo;s last-updated time for existing notes not yet having an ID:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Hypothetical custom function defined in init.el</span>
+(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">my-time-based-id-example</span> (title <span style="color: #9A7500;">&amp;optional</span> filename)
+  <span style="color: #828b9b;">"Generate an ID using a note's last-updated time if available"</span>
+  (<span style="color: #3B6EA8;">if</span> filename
+      (<span style="color: #3B6EA8;">let</span> ((last-updated (file-attribute-modification-time
+                           (file-attributes filename))))
+        (format-time-string zetteldeft-id-format last-updated))
+    (format-time-string zetteldeft-id-format)))
+
+<span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Tell zetteldeft to use the custom ID function</span>
+(<span style="color: #3B6EA8;">setq</span> zetteldeft-custom-id-function #'my-time-based-id-example)
+</pre>
+</div>
+
+<p>
+Custom ID functions can produce IDs in any format, not just time-based ones.
+The following (non-working) example code illustrates this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Hypothetical custom function defined in init.el</span>
+(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">my-arbitrary-id-example</span> (title <span style="color: #9A7500;">&amp;optional</span> filename)
+  <span style="color: #828b9b;">"Generate an ID exactly the way I like it"</span>
+  (<span style="color: #3B6EA8;">if</span> filename
+      (cryptographic-hash filename)
+    (random-anagram title)))
+
+<span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Tell zetteldeft to use the custom ID function</span>
+(<span style="color: #3B6EA8;">setq</span> zetteldeft-custom-id-function #'my-arbitrary-id-example)
+</pre>
+</div>
+
+<p>
+If you set <code>zetteldeft-custom-id-function</code>, be sure that the values your function generates are matched by <code>zetteldeft-id-regex</code>, so that the IDs can be found by Zetteldeft.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf8484a9" class="outline-5">
+<h5 id="orgf8484a9"><span class="section-number-5">2.2.2.5</span> <code>zetteldeft-id-regex</code> for finding IDs</h5>
+<div class="outline-text-5" id="text-2-2-2-5">
 <p>
 The regular expression used to search for zetteldeft IDs as set in <code>zetteldeft-id-format</code>.
 </p>
@@ -1200,8 +1277,8 @@ If you use a <code>"%Y%m%d%H%M"</code> format for note naming, you might want to
 </div>
 
 <div id="outline-container-orgb434e4f" class="outline-5">
-<h5 id="orgb434e4f"><span class="section-number-5">2.2.2.5</span> <code>zetteldeft-link-indicator</code> prepends ID links</h5>
-<div class="outline-text-5" id="text-2-2-2-5">
+<h5 id="orgb434e4f"><span class="section-number-5">2.2.2.6</span> <code>zetteldeft-link-indicator</code> prepends ID links</h5>
+<div class="outline-text-5" id="text-2-2-2-6">
 <p>
 To make it easier to distinguish links to zetteldeft notes, the ID can be prepended with a symbol.
 By default, this is set to <code>§</code>, but it can be changed (or nil).
@@ -1221,8 +1298,8 @@ By default, this is set to <code>§</code>, but it can be changed (or nil).
 </div>
 
 <div id="outline-container-orge35ef38" class="outline-5">
-<h5 id="orge35ef38"><span class="section-number-5">2.2.2.6</span> <code>zetteldeft-link-suffix</code> is appended to ID links</h5>
-<div class="outline-text-5" id="text-2-2-2-6">
+<h5 id="orge35ef38"><span class="section-number-5">2.2.2.7</span> <code>zetteldeft-link-suffix</code> is appended to ID links</h5>
+<div class="outline-text-5" id="text-2-2-2-7">
 <p>
 For further customizability, let&rsquo;s also introduce a suffix.
 This will be appended to links.
@@ -1249,8 +1326,8 @@ Users who prefer Markdown notes and interoperability with The Archive, might wan
 </div>
 
 <div id="outline-container-org286971a" class="outline-5">
-<h5 id="org286971a"><span class="section-number-5">2.2.2.7</span> <code>zetteldeft-tag-regex</code> for finding tags</h5>
-<div class="outline-text-5" id="text-2-2-2-7">
+<h5 id="org286971a"><span class="section-number-5">2.2.2.8</span> <code>zetteldeft-tag-regex</code> for finding tags</h5>
+<div class="outline-text-5" id="text-2-2-2-8">
 <p>
 This regular expression indicates what tags can look like.
 </p>
@@ -1275,8 +1352,8 @@ Note that this regular may trip over <code>#</code> symbols used in URLS.
 </div>
 
 <div id="outline-container-org65df8d0" class="outline-5">
-<h5 id="org65df8d0"><span class="section-number-5">2.2.2.8</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
-<div class="outline-text-5" id="text-2-2-2-8">
+<h5 id="org65df8d0"><span class="section-number-5">2.2.2.9</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
+<div class="outline-text-5" id="text-2-2-2-9">
 <p>
 Return the zetteldeft ID from any string.
 </p>
@@ -1470,7 +1547,7 @@ Now for the function itself.
 <span style="color: #828b9b;">When `</span><span style="color: #97365B;">evil</span><span style="color: #828b9b;">' is loaded, change to insert state."</span>
   (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"Note title: "</span>)))
   (<span style="color: #3B6EA8;">let*</span> ((zdId (<span style="color: #3B6EA8;">or</span> id
-                   (zetteldeft-generate-id)))
+                   (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
@@ -1503,7 +1580,7 @@ The generated ID is passed to <code>zetteldeft-new-file</code>.
   <span style="color: #828b9b;">"Create a new note and insert a link to it.</span>
 <span style="color: #828b9b;">Similar to `</span><span style="color: #97365B;">zetteldeft-new-file</span><span style="color: #828b9b;">', but insert a link to the new file."</span>
   (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"Note title: "</span>)))
-  (<span style="color: #3B6EA8;">let</span> ((zdId (zetteldeft-generate-id)))
+  (<span style="color: #3B6EA8;">let</span> ((zdId (zetteldeft-generate-id str)))
     (insert zetteldeft-link-indicator
             zdId
             zetteldeft-link-suffix
@@ -1637,7 +1714,6 @@ When only one window is open, split it first.
 <span style="color: #828b9b;">When only one window is active, split it first.</span>
 <span style="color: #828b9b;">When more windows are active, select one via `</span><span style="color: #97365B;">ace-window</span><span style="color: #828b9b;">'."</span>
   (<span style="color: #3B6EA8;">interactive</span>)
-  (<span style="color: #3B6EA8;">require</span> '<span style="color: #97365B;">ace-window</span>)
   (<span style="color: #3B6EA8;">save-excursion</span>
     (<span style="color: #3B6EA8;">when</span> (consp (avy-jump (concat zetteldeft-link-indicator
                                    zetteldeft-id-regex
@@ -1835,7 +1911,7 @@ This means that <code>zetteldeft-file-rename</code> can be used to easily genera
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">  <span style="color: #8b94a5;">;;;</span><span style="color: #8b94a5;">###autoload</span>
+<pre class="src src-emacs-lisp"><span style="color: #8b94a5;">;;;</span><span style="color: #8b94a5;">###</span><span style="color: #9A7500;">autoload</span>
 (<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-file-rename</span> ()
   <span style="color: #828b9b;">"Change current file's title, and use the new title to rename the file.</span>
 <span style="color: #828b9b;">Use this on files in the `</span><span style="color: #97365B;">deft-directory</span><span style="color: #828b9b;">'.</span>
@@ -1846,15 +1922,15 @@ This means that <code>zetteldeft-file-rename</code> can be used to easily genera
     (<span style="color: #3B6EA8;">when</span> old-filename
       (<span style="color: #3B6EA8;">let*</span> ((old-title (zetteldeft--lift-file-title old-filename))
              (prompt-text (concat <span style="color: #4F894C;">"Change "</span> old-title <span style="color: #4F894C;">" to: "</span>))
-             (new-name (read-string prompt-text old-title))
+             (new-title (read-string prompt-text old-title))
              (id (<span style="color: #3B6EA8;">or</span> (zetteldeft--lift-id (file-name-base old-filename))
-                     (zetteldeft-generate-id)))
+                     (zetteldeft-generate-id new-title old-filename)))
              (new-filename
                (deft-absolute-filename
-                 (concat id zetteldeft-id-filename-separator new-name))))
+                 (concat id zetteldeft-id-filename-separator new-title))))
         (rename-file old-filename new-filename)
         (deft-update-visiting-buffers old-filename new-filename)
-        (zetteldeft-update-title-in-file new-name)
+        (zetteldeft-update-title-in-file new-title)
         (deft-refresh)))))
 </pre>
 </div>
@@ -1945,8 +2021,8 @@ Steps:
 </div>
 </div>
 
-<div id="outline-container-orgcdc2b33" class="outline-5">
-<h5 id="orgcdc2b33"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft--id-to-full-title</code> returns title from ID</h5>
+<div id="outline-container-org0a22b37" class="outline-5">
+<h5 id="org0a22b37"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft--id-to-full-path</code> returns title from ID</h5>
 <div class="outline-text-5" id="text-2-2-6-8">
 <p>
 Convert a zetteldeft ID into its full title.
@@ -1957,14 +2033,14 @@ The ID should lead to only one title, obviously, so an error is thrown when this
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--id-to-full-title</span> (zdID)
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--id-to-full-path</span> (zdID)
   <span style="color: #828b9b;">"Return full title from given zetteldeft ID ZDID.</span>
 <span style="color: #828b9b;">Throws an error when either none or multiple files are found."</span>
   (<span style="color: #3B6EA8;">let</span> ((deft-filter-only-filenames t))
     (deft-filter zdID t))
   (<span style="color: #3B6EA8;">unless</span> (eq (length deft-current-files) 1)
     (<span style="color: #9A7500;">user-error</span> <span style="color: #4F894C;">"ID Error. Either no or multiple zetteldeft files found with ID %s"</span> zdID))
-  (file-name-base (car deft-current-files)))
+  (car deft-current-files))
 </pre>
 </div>
 </div>
@@ -2275,7 +2351,7 @@ The most immediate solution is for the user to be wary of this, remove any previ
                   zetteldeft-link-suffix
                   <span style="color: #4F894C;">" "</span>
                   (zetteldeft--lift-file-title
-                    (zetteldeft--id-to-full-title zdID))
+                    (zetteldeft--id-to-full-path zdID))
                   <span style="color: #4F894C;">"\n"</span>))
       <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">unless the list is empty, then insert a message</span>
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
@@ -2304,7 +2380,7 @@ Inserts for given file a link id and title as a list entry.
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix
           <span style="color: #4F894C;">" "</span>
-          (zetteldeft--lift-file-title (file-name-base zdFile))
+          (zetteldeft--lift-file-title zdFile)
           <span style="color: #4F894C;">"\n"</span>))
 </pre>
 </div>
@@ -3416,6 +3492,8 @@ An overview of changes, in addition to those mentioned at the top of this docume
 </p>
 
 <ul class="org-ul">
+<li><b>09 May</b>: Introduced <code>zetteldeft-link-suffix</code>, which is <code>""</code> by default.</li>
+<li><b>15 Apr</b>: Replace <code>avy-goto-char</code> with <code>avy-jump</code>. <code>avy</code> functions now work even when <code>zetteldeft-link-indicator</code> is <code>""</code>.</li>
 <li><b>05 Apr</b>: Add <code>zetteldeft-set-classic-keybindings</code> for convenience.</li>
 <li><b>14 Mar</b>: Simplified <code>zetteldeft--get-thing-at-point</code> to better work with customized tags.</li>
 <li><b>14 Mar</b>: Fixed font-lock when customizing the id indicator (thanks to <a href="https://github.com/bymoz089">bymoz089</a>).</li>
