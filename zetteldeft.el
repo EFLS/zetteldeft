@@ -151,7 +151,7 @@ Called when `zetteldeft-link-indicator' or
            . font-lock-warning-face)))))
 
 (defcustom zetteldeft-id-format "%Y-%m-%d-%H%M"
-  "Format used when generating zetteldeft IDs.
+  "Format used when generating time-based zetteldeft IDs.
 
 Be warned: the regexp to find IDs is set separately.
 If you change this value, set `zetteldeft-id-regex' so that
@@ -164,9 +164,18 @@ function to see which placeholders can be used."
 
 (setq deft-new-file-format zetteldeft-id-format)
 
-(defun zetteldeft-generate-id ()
-  "Generate an ID in the format of `zetteldeft-id-format'."
-  (format-time-string zetteldeft-id-format))
+(defun zetteldeft-generate-id (title &optional filename)
+  "Generate an ID using `zetteldeft-custom-id-function' or `zetteldeft-id-format'."
+  (if-let ((f zetteldeft-custom-id-function))
+      (funcall f title filename)
+    (format-time-string zetteldeft-id-format)))
+
+(defcustom zetteldeft-custom-id-function nil
+  "User-defined function to generate an ID.
+The specified function must accept arguments for note `TITLE'
+and &optional `FILENAME'. The returned ID must be a string."
+  :type 'function
+  :group 'zetteldeft)
 
 (defcustom zetteldeft-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{3\\}"
   "The regular expression used to search for zetteldeft IDs.
@@ -254,7 +263,7 @@ Filename (without extension) is added to the kill ring.
 When `evil' is loaded, change to insert state."
   (interactive (list (read-string "Note title: ")))
   (let* ((zdId (or id
-                   (zetteldeft-generate-id)))
+                   (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
   (kill-new zdName)
@@ -267,7 +276,7 @@ When `evil' is loaded, change to insert state."
   "Create a new note and insert a link to it.
 Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
-  (let ((zdId (zetteldeft-generate-id)))
+  (let ((zdId (zetteldeft-generate-id str)))
     (insert zetteldeft-link-indicator
             zdId
             zetteldeft-link-suffix
@@ -404,15 +413,15 @@ When the file has no Zetteldeft ID, one is generated and included in the new nam
     (when old-filename
       (let* ((old-title (zetteldeft--lift-file-title old-filename))
              (prompt-text (concat "Change " old-title " to: "))
-             (new-name (read-string prompt-text old-title))
+             (new-title (read-string prompt-text old-title))
              (id (or (zetteldeft--lift-id (file-name-base old-filename))
-                     (zetteldeft-generate-id)))
+                     (zetteldeft-generate-id new-title old-filename)))
              (new-filename
                (deft-absolute-filename
-                 (concat id zetteldeft-id-filename-separator new-name))))
+                 (concat id zetteldeft-id-filename-separator new-title))))
         (rename-file old-filename new-filename)
         (deft-update-visiting-buffers old-filename new-filename)
-        (zetteldeft-update-title-in-file new-name)
+        (zetteldeft-update-title-in-file new-title)
         (deft-refresh)))))
 
 (defun zetteldeft-update-title-in-file (title)
