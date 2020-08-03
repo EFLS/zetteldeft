@@ -954,15 +954,15 @@ Signal a user error if it is not.
 The =file-truename= is there to make sure that =deft-directory= is first expanded to an absolute path before comparing it to the file name of the current buffer (which is already an absolute path).
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--check ()
-  "Check if the currently visited file is in `zetteldeft' territory:
-whether it has `deft-directory' somewhere in its path."
-  (unless (buffer-file-name)
-    (user-error "Buffer not visiting a file"))
-  (unless (string-match-p
-            (regexp-quote (file-truename deft-directory))
-            (buffer-file-name))
-    (user-error "Not in zetteldeft territory")))
+  (defun zetteldeft--check ()
+    "Check if the currently visited file is in `zetteldeft' territory:
+    whether it has `deft-directory' somewhere in its path."
+    (unless (buffer-file-name)
+      (user-error "Buffer not visiting a file"))
+    (unless (string-match-p
+	     (regexp-quote (file-truename deft-directory))
+	     (file-truename (buffer-file-name)))
+      (user-error "Not in zetteldeft territory")))
 #+END_SRC
 
 **** =zetteldeft--insert-title= inserts file title
