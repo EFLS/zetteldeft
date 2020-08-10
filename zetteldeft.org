@@ -961,7 +961,7 @@ whether it has `deft-directory' somewhere in its path."
     (user-error "Buffer not visiting a file"))
   (unless (string-match-p
             (regexp-quote (file-truename deft-directory))
-            (buffer-file-name))
+            (file-truename (buffer-file-name)))
     (user-error "Not in zetteldeft territory")))
 #+END_SRC
 
