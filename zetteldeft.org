@@ -1137,13 +1137,13 @@ kill ring."
 
 **** =zetteldeft--id-to-full-path= returns title from ID
 
-Convert a zetteldeft ID into its full title.
+Convert a zetteldeft ID into its full path.
 
-The ID should lead to only one title, obviously, so an error is thrown when this is not the case.
+The ID should lead to only one file, obviously, so an error is thrown when this is not the case.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--id-to-full-path (zdID)
-  "Return full title from given zetteldeft ID ZDID.
+  "Return full path from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
