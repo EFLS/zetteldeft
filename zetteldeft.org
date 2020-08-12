@@ -317,8 +317,8 @@ Steps:
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
   (interactive)
-  (zetteldeft--check)
-  (zetteldeft--search-global (zetteldeft--lift-id (file-name-base (buffer-file-name))) t))
+  (zetteldeft--search-global
+    (zetteldeft--current-id) t))
 #+END_SRC
 
 **** =zetteldeft--get-thing-at-point= returns string
@@ -963,6 +963,18 @@ whether it has `deft-directory' somewhere in its path."
             (regexp-quote (file-truename deft-directory))
             (file-truename (buffer-file-name)))
     (user-error "Not in zetteldeft territory")))
+#+END_SRC
+
+**** =zetteldeft--current-id= retrieves currentn id
+
+Easy enough.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--current-id ()
+  "Retrieve ID from current file."
+  (zetteldeft--check)
+  (zetteldeft--lift-id
+    (file-name-base (buffer-file-name))))
 #+END_SRC
 
 **** =zetteldeft--insert-title= inserts file title
