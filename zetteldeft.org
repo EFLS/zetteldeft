@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
  - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
  - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
  - *08 July*: Add =ace-window= as top level requirement.
@@ -807,6 +808,47 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
             zetteldeft-link-suffix
             " " str)
     (zetteldeft-new-file str zdId)))
+#+END_SRC
+
+**** =zetteldeft-new-file-and-backlink= links and backlinks
+
+A further extension includes both a link and a backlink:
+ + a link in the original note
+ + a backlink in the new note
+
+This obviously only works when the new note is branched out from within a Zetteldeft note (which is verified by =zetteldeft--check=).
+
+For such a backlink, we need a prefix.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-backlink-prefix "# Backlink: "
+  "Prefix string included before a back link.
+Formatted for `org-mode' by default."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Store a link, generate one, and we're done.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-new-file-and-backlink (str)
+  "Create a new note and insert link and backlink."
+  (interactive (list (read-string "Note title: ")))
+  (let ((ogId (zetteldeft--current-id))
+        (zdId (zetteldeft-generate-id str)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            " " str)
+    (zetteldeft-new-file str zdId)
+    (newline)
+    (insert zetteldeft-backlink-prefix
+            zetteldeft-link-indicator
+            ogId
+            " "
+            (zetteldeft--lift-file-title
+              (zetteldeft--id-to-full-path ogId)))))
 #+END_SRC
 
 *** Moving around with =avy=
