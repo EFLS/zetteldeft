@@ -71,8 +71,8 @@ Thing can be a double-bracketed link, a hashtag, or a word."
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
   (interactive)
-  (zetteldeft--check)
-  (zetteldeft--search-global (zetteldeft--lift-id (file-name-base (buffer-file-name))) t))
+  (zetteldeft--search-global
+    (zetteldeft--current-id) t))
 
 (defun zetteldeft--get-thing-at-point ()
   "Return the thing at point.
@@ -283,6 +283,31 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
             " " str)
     (zetteldeft-new-file str zdId)))
 
+(defcustom zetteldeft-backlink-prefix "# Backlink: "
+  "Prefix string included before a back link.
+Formatted for `org-mode' by default."
+  :type 'string
+  :group 'zetteldeft)
+
+;;;###autoload
+(defun zetteldeft-new-file-and-backlink (str)
+  "Create a new note and insert link and backlink."
+  (interactive (list (read-string "Note title: ")))
+  (let ((ogId (zetteldeft--current-id))
+        (zdId (zetteldeft-generate-id str)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            " " str)
+    (zetteldeft-new-file str zdId)
+    (newline)
+    (insert zetteldeft-backlink-prefix
+            zetteldeft-link-indicator
+            ogId
+            " "
+            (zetteldeft--lift-file-title
+              (zetteldeft--id-to-full-path ogId)))))
+
 ;;;###autoload
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
@@ -368,6 +393,12 @@ whether it has `deft-directory' somewhere in its path."
             (regexp-quote (file-truename deft-directory))
             (file-truename (buffer-file-name)))
     (user-error "Not in zetteldeft territory")))
+
+(defun zetteldeft--current-id ()
+  "Retrieve ID from current file."
+  (zetteldeft--check)
+  (zetteldeft--lift-id
+    (file-name-base (buffer-file-name))))
 
 (defcustom zetteldeft-title-prefix "#+TITLE: "
   "Prefix string included when `zetteldeft--insert-title' is called.
@@ -462,7 +493,7 @@ kill ring."
     (message "%s" ID)))
 
 (defun zetteldeft--id-to-full-path (zdID)
-  "Return full title from given zetteldeft ID ZDID.
+  "Return full path from given zetteldeft ID ZDID.
 Throws an error when either none or multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
@@ -474,19 +505,23 @@ Throws an error when either none or multiple files are found."
 
 ;;;###autoload
 (defun zetteldeft-tag-buffer ()
-  "Switch to the *zetteldeft-tag-buffer* and list tags."
+  "Switch to the `zetteldeft-tag-buffer' and list tags."
   (interactive)
   (switch-to-buffer zetteldeft--tag-buffer-name)
   (erase-buffer)
-  (dolist (zdTag (zetteldeft--get-all-tags))
-    (insert (format "%s \n" zdTag)))
-  (unless (eq major-mode 'org-mode) (org-mode))
-  (sort-lines nil (point-min) (point-max)))
+  (let ((tagList (zetteldeft--get-all-tags)))
+    (dolist (zdTag (plist-get-keys tagList))
+      (insert (format "%s (%d) \n"
+                      zdTag
+                      (lax-plist-get tagList zdTag))))
+    (unless (eq major-mode 'org-mode) (org-mode))
+    (sort-lines nil (point-min) (point-max))))
 
-(defvar zetteldeft--tag-list)
+(defvar zetteldeft--tag-list nil
+  "A temporary property list to store all tags.")
 
 (defun zetteldeft--get-all-tags ()
-  "Return a list of all the tags found in zetteldeft files."
+  "Return a plist of all the tags found in zetteldeft files."
   (setq zetteldeft--tag-list (list))
   (dolist (deftFile deft-all-files)
     (zetteldeft--extract-tags deftFile))
@@ -497,16 +532,26 @@ Throws an error when either none or multiple files are found."
   (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
 
 (defun zetteldeft--extract-tags (deftFile)
-  "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'."
+  "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'.
+Increase counters as we go."
   (with-temp-buffer
     (insert-file-contents deftFile)
     (while (re-search-forward (zetteldeft--tag-format) nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zetteldeft--tag-list if it isn't there already
-        (unless (member foundTag zetteldeft--tag-list)
-          (push foundTag zetteldeft--tag-list)))
+        (zetteldeft--tag-count foundTag))
       ;; Remove found tag from buffer
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
+
+(defun zetteldeft--tag-count (zdTag)
+  (let ((tagCount (lax-plist-get zetteldeft--tag-list zdTag)))
+    (if tagCount
+        ; if the tag was there already, inc by 1
+        (setq zetteldeft--tag-list
+          (lax-plist-put zetteldeft--tag-list zdTag (1+ tagCount)))
+      ; if tag was not there yet, add & set to 1
+      (setq zetteldeft--tag-list
+        (lax-plist-put zetteldeft--tag-list zdTag 1)))))
 
 ;;;###autoload
 (defun zetteldeft-insert-list-links (zdSrch)

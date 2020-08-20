@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-07-23 Thu 22:55 -->
+<!-- 2020-08-20 Thu 20:32 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -273,6 +273,7 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>20 Aug</b>: Update <code>zetteldeft-tag-buffer</code> to include tag frequency.</li>
 <li><b>23 July</b>: Add customizable <code>zetteldeft-custom-id-function</code> for ID generation.</li>
 <li><b>08 July</b>: Add <code>ace-window</code> as top level requirement.</li>
 <li><b>06 July</b>: Separate filename from title and respect <code>deft-file-naming-rules</code>, thanks to PR by natdash.</li>
@@ -792,6 +793,7 @@ In this section:
 <li><a href="#orgc4cf9a0">2.2.4.1. <code>zetteldeft-id-filename-separator</code> separates id from rest of filename</a></li>
 <li><a href="#orgabcde39">2.2.4.2. <code>zetteldeft-new-file</code> creates new file</a></li>
 <li><a href="#org93aed29">2.2.4.3. <code>zetteldeft-new-file-and-link</code> inserts generated id</a></li>
+<li><a href="#orgf011756">2.2.4.4. <code>zetteldeft-new-file-and-backlink</code> links and backlinks</a></li>
 </ul>
 </li>
 <li><a href="#org12e71d7">2.2.5. Moving around with <code>avy</code></a>
@@ -806,12 +808,13 @@ In this section:
 <ul>
 <li><a href="#orgc02c4ff">2.2.6.1. <code>zetteldeft-deft-new-search</code> starts a new deft search</a></li>
 <li><a href="#org8103bac">2.2.6.2. <code>zetteldeft--check</code> checks if file is part of zetteldeft</a></li>
-<li><a href="#orgb7df669">2.2.6.3. <code>zetteldeft--insert-title</code> inserts file title</a></li>
-<li><a href="#orgf670340">2.2.6.4. <code>zetteldeft--lift-file-title</code> returns file title from path</a></li>
-<li><a href="#orgccc3768">2.2.6.5. <code>zetteldeft-file-rename</code> updates title and renames visited file</a></li>
-<li><a href="#orgea4b502">2.2.6.6. <code>zetteldeft-count-words</code> counts total number of words</a></li>
-<li><a href="#org300ba6c">2.2.6.7. <code>zetteldeft-copy-id-current-file</code> copies id in filename</a></li>
-<li><a href="#org0a22b37">2.2.6.8. <code>zetteldeft--id-to-full-path</code> returns title from ID</a></li>
+<li><a href="#orgfa89e07">2.2.6.3. <code>zetteldeft--current-id</code> retrieves currentn id</a></li>
+<li><a href="#orgb7df669">2.2.6.4. <code>zetteldeft--insert-title</code> inserts file title</a></li>
+<li><a href="#orgf670340">2.2.6.5. <code>zetteldeft--lift-file-title</code> returns file title from path</a></li>
+<li><a href="#orgccc3768">2.2.6.6. <code>zetteldeft-file-rename</code> updates title and renames visited file</a></li>
+<li><a href="#orgea4b502">2.2.6.7. <code>zetteldeft-count-words</code> counts total number of words</a></li>
+<li><a href="#org300ba6c">2.2.6.8. <code>zetteldeft-copy-id-current-file</code> copies id in filename</a></li>
+<li><a href="#org0a22b37">2.2.6.9. <code>zetteldeft--id-to-full-path</code> returns title from ID</a></li>
 </ul>
 </li>
 </ul>
@@ -877,8 +880,8 @@ Steps:
   <span style="color: #828b9b;">"Search deft with the id of the current file as filter.</span>
 <span style="color: #828b9b;">Open if there is only one result."</span>
   (<span style="color: #3B6EA8;">interactive</span>)
-  (zetteldeft--check)
-  (zetteldeft--search-global (zetteldeft--lift-id (file-name-base (buffer-file-name))) t))
+  (zetteldeft--search-global
+    (zetteldeft--current-id) t))
 </pre>
 </div>
 </div>
@@ -1590,6 +1593,62 @@ The generated ID is passed to <code>zetteldeft-new-file</code>.
 </div>
 </div>
 </div>
+
+<div id="outline-container-orgf011756" class="outline-5">
+<h5 id="orgf011756"><span class="section-number-5">2.2.4.4</span> <code>zetteldeft-new-file-and-backlink</code> links and backlinks</h5>
+<div class="outline-text-5" id="text-2-2-4-4">
+<p>
+A further extension includes both a link and a backlink:
+</p>
+<ul class="org-ul">
+<li>a link in the original note</li>
+<li>a backlink in the new note</li>
+</ul>
+
+<p>
+This obviously only works when the new note is branched out from within a Zetteldeft note (which is verified by <code>zetteldeft--check</code>).
+</p>
+
+<p>
+For such a backlink, we need a prefix.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defcustom</span> <span style="color: #842879;">zetteldeft-backlink-prefix</span> <span style="color: #4F894C;">"# Backlink: "</span>
+  <span style="color: #828b9b;">"Prefix string included before a back link.</span>
+<span style="color: #828b9b;">Formatted for `</span><span style="color: #97365B;">org-mode</span><span style="color: #828b9b;">' by default."</span>
+  <span style="color: #29838D;">:type</span> 'string
+  <span style="color: #29838D;">:group</span> 'zetteldeft)
+</pre>
+</div>
+
+<p>
+Store a link, generate one, and we&rsquo;re done.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8b94a5;">;;;</span><span style="color: #8b94a5;">###</span><span style="color: #9A7500;">autoload</span>
+(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-new-file-and-backlink</span> (str)
+  <span style="color: #828b9b;">"Create a new note and insert link and backlink."</span>
+  (<span style="color: #3B6EA8;">interactive</span> (list (read-string <span style="color: #4F894C;">"Note title: "</span>)))
+  (<span style="color: #3B6EA8;">let</span> ((ogId (zetteldeft--current-id))
+        (zdId (zetteldeft-generate-id str)))
+    (insert zetteldeft-link-indicator
+            zdId
+            zetteldeft-link-suffix
+            <span style="color: #4F894C;">" "</span> str)
+    (zetteldeft-new-file str zdId)
+    (newline)
+    (insert zetteldeft-backlink-prefix
+            zetteldeft-link-indicator
+            ogId
+            <span style="color: #4F894C;">" "</span>
+            (zetteldeft--lift-file-title
+              (zetteldeft--id-to-full-path ogId)))))
+</pre>
+</div>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org12e71d7" class="outline-4">
@@ -1805,16 +1864,34 @@ The <code>file-truename</code> is there to make sure that <code>deft-directory</
     (<span style="color: #9A7500;">user-error</span> <span style="color: #4F894C;">"Buffer not visiting a file"</span>))
   (<span style="color: #3B6EA8;">unless</span> (string-match-p
             (regexp-quote (file-truename deft-directory))
-            (buffer-file-name))
+            (file-truename (buffer-file-name)))
     (<span style="color: #9A7500;">user-error</span> <span style="color: #4F894C;">"Not in zetteldeft territory"</span>)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb7df669" class="outline-5">
-<h5 id="orgb7df669"><span class="section-number-5">2.2.6.3</span> <code>zetteldeft--insert-title</code> inserts file title</h5>
+<div id="outline-container-orgfa89e07" class="outline-5">
+<h5 id="orgfa89e07"><span class="section-number-5">2.2.6.3</span> <code>zetteldeft--current-id</code> retrieves currentn id</h5>
 <div class="outline-text-5" id="text-2-2-6-3">
+<p>
+Easy enough.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--current-id</span> ()
+  <span style="color: #828b9b;">"Retrieve ID from current file."</span>
+  (zetteldeft--check)
+  (zetteldeft--lift-id
+    (file-name-base (buffer-file-name))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb7df669" class="outline-5">
+<h5 id="orgb7df669"><span class="section-number-5">2.2.6.4</span> <code>zetteldeft--insert-title</code> inserts file title</h5>
+<div class="outline-text-5" id="text-2-2-6-4">
 <p>
 Easily insert the title of the current file.
 Used for generating a new file and renaming a file.
@@ -1870,8 +1947,8 @@ It gets the base of the buffer file name, takes from it the file title (i.e. st
 </div>
 
 <div id="outline-container-orgf670340" class="outline-5">
-<h5 id="orgf670340"><span class="section-number-5">2.2.6.4</span> <code>zetteldeft--lift-file-title</code> returns file title from path</h5>
-<div class="outline-text-5" id="text-2-2-6-4">
+<h5 id="orgf670340"><span class="section-number-5">2.2.6.5</span> <code>zetteldeft--lift-file-title</code> returns file title from path</h5>
+<div class="outline-text-5" id="text-2-2-6-5">
 <p>
 Returns the file title from a file, relying on Deft to do so, thus respecting Deft title rules.
 </p>
@@ -1896,8 +1973,8 @@ For this to work, we need to make sure <code>deft-use-filename-as-title</code> i
 </div>
 
 <div id="outline-container-orgccc3768" class="outline-5">
-<h5 id="orgccc3768"><span class="section-number-5">2.2.6.5</span> <code>zetteldeft-file-rename</code> updates title and renames visited file</h5>
-<div class="outline-text-5" id="text-2-2-6-5">
+<h5 id="orgccc3768"><span class="section-number-5">2.2.6.6</span> <code>zetteldeft-file-rename</code> updates title and renames visited file</h5>
+<div class="outline-text-5" id="text-2-2-6-6">
 <p>
 Rename the current note.
 Prompt for a new title,
@@ -1961,8 +2038,8 @@ A <b>limitation</b> of this workflow is that it will not work when the <code>zet
 </div>
 
 <div id="outline-container-orgea4b502" class="outline-5">
-<h5 id="orgea4b502"><span class="section-number-5">2.2.6.6</span> <code>zetteldeft-count-words</code> counts total number of words</h5>
-<div class="outline-text-5" id="text-2-2-6-6">
+<h5 id="orgea4b502"><span class="section-number-5">2.2.6.7</span> <code>zetteldeft-count-words</code> counts total number of words</h5>
+<div class="outline-text-5" id="text-2-2-6-7">
 <p>
 To count the total number of words, lets loop over all the files and count words in each.
 The total is printed in the minibuffer.
@@ -1987,8 +2064,8 @@ The total is printed in the minibuffer.
 </div>
 
 <div id="outline-container-org300ba6c" class="outline-5">
-<h5 id="org300ba6c"><span class="section-number-5">2.2.6.7</span> <code>zetteldeft-copy-id-current-file</code> copies id in filename</h5>
-<div class="outline-text-5" id="text-2-2-6-7">
+<h5 id="org300ba6c"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft-copy-id-current-file</code> copies id in filename</h5>
+<div class="outline-text-5" id="text-2-2-6-8">
 <p>
 Add the ID from the current file to the kill ring.
 </p>
@@ -2022,19 +2099,19 @@ Steps:
 </div>
 
 <div id="outline-container-org0a22b37" class="outline-5">
-<h5 id="org0a22b37"><span class="section-number-5">2.2.6.8</span> <code>zetteldeft--id-to-full-path</code> returns title from ID</h5>
-<div class="outline-text-5" id="text-2-2-6-8">
+<h5 id="org0a22b37"><span class="section-number-5">2.2.6.9</span> <code>zetteldeft--id-to-full-path</code> returns title from ID</h5>
+<div class="outline-text-5" id="text-2-2-6-9">
 <p>
-Convert a zetteldeft ID into its full title.
+Convert a zetteldeft ID into its full path.
 </p>
 
 <p>
-The ID should lead to only one title, obviously, so an error is thrown when this is not the case.
+The ID should lead to only one file, obviously, so an error is thrown when this is not the case.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--id-to-full-path</span> (zdID)
-  <span style="color: #828b9b;">"Return full title from given zetteldeft ID ZDID.</span>
+  <span style="color: #828b9b;">"Return full path from given zetteldeft ID ZDID.</span>
 <span style="color: #828b9b;">Throws an error when either none or multiple files are found."</span>
   (<span style="color: #3B6EA8;">let</span> ((deft-filter-only-filenames t))
     (deft-filter zdID t))
@@ -2052,11 +2129,11 @@ The ID should lead to only one title, obviously, so an error is thrown when this
 <h3 id="list-tags"><span class="section-number-3">2.3</span> Listing all tags</h3>
 <div class="outline-text-3" id="text-list-tags">
 <p>
-<code>zetteldeft--get-all-tags</code> puts all tags in <code>zetteldeft--tag-list</code> and returns them.
+Let&rsquo;s display all tags in Zetteldeft.
 </p>
 
 <p>
-Use <code>zetteldeft-tag-buffer</code> to create a buffer with all tags.
+With <code>zetteldeft-tag-buffer</code> they are all gathered in a buffer, including how often they appear.
 </p>
 </div>
 
@@ -2077,20 +2154,30 @@ And some code to create that buffer.
 </p>
 
 <p>
-Move to the <code>zetteldeft--tag-buffer-name</code>
+It works like so:
 </p>
+<ol class="org-ol">
+<li>Move to the <code>zetteldeft--tag-buffer-name</code> and clear it.</li>
+<li>Gather all tags in a property list, as strings with an integer counting how often they appear.
+This is what <code>zetteldeft--get-all-tags</code> achieves.</li>
+<li>Loop through that list and print strings and counts.</li>
+<li>Sort results alphabetically.</li>
+</ol>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #8b94a5;">;;;</span><span style="color: #8b94a5;">###</span><span style="color: #9A7500;">autoload</span>
 (<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft-tag-buffer</span> ()
-  <span style="color: #828b9b;">"Switch to the *zetteldeft-tag-buffer* and list tags."</span>
+  <span style="color: #828b9b;">"Switch to the `</span><span style="color: #97365B;">zetteldeft-tag-buffer</span><span style="color: #828b9b;">' and list tags."</span>
   (<span style="color: #3B6EA8;">interactive</span>)
   (switch-to-buffer zetteldeft--tag-buffer-name)
   (erase-buffer)
-  (<span style="color: #3B6EA8;">dolist</span> (zdTag (zetteldeft--get-all-tags))
-    (insert (format <span style="color: #4F894C;">"%s \n"</span> zdTag)))
-  (<span style="color: #3B6EA8;">unless</span> (eq major-mode 'org-mode) (org-mode))
-  (sort-lines nil (point-min) (point-max)))
+  (<span style="color: #3B6EA8;">let</span> ((tagList (zetteldeft--get-all-tags)))
+    (<span style="color: #3B6EA8;">dolist</span> (zdTag (plist-get-keys tagList))
+      (insert (format <span style="color: #4F894C;">"%s (%d) \n"</span>
+                      zdTag
+                      (lax-plist-get tagList zdTag))))
+    (<span style="color: #3B6EA8;">unless</span> (eq major-mode 'org-mode) (org-mode))
+    (sort-lines nil (point-min) (point-max))))
 </pre>
 </div>
 </div>
@@ -2104,7 +2191,8 @@ First, we need a variable to store the tags in.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defvar</span> <span style="color: #842879;">zetteldeft--tag-list</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defvar</span> <span style="color: #842879;">zetteldeft--tag-list</span> nil
+  <span style="color: #828b9b;">"A temporary property list to store all tags."</span>)
 </pre>
 </div>
 
@@ -2112,9 +2200,14 @@ First, we need a variable to store the tags in.
 Extracting tags with <code>zetteldeft--extract-tags</code>.
 </p>
 
+<ol class="org-ol">
+<li>Loop through all files in Zetteldeft and extract tags from them</li>
+<li>Return this list</li>
+</ol>
+
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--get-all-tags</span> ()
-  <span style="color: #828b9b;">"Return a list of all the tags found in zetteldeft files."</span>
+  <span style="color: #828b9b;">"Return a plist of all the tags found in zetteldeft files."</span>
   (<span style="color: #3B6EA8;">setq</span> zetteldeft--tag-list (list))
   (<span style="color: #3B6EA8;">dolist</span> (deftFile deft-all-files)
     (zetteldeft--extract-tags deftFile))
@@ -2162,24 +2255,51 @@ These spaces are removed in the <code>zetteldeft--extract-tags</code> function, 
 <h5 id="org3187a60"><span class="section-number-5">2.3.3.2</span> <code>zetteldeft--extract-tags</code> from a file</h5>
 <div class="outline-text-5" id="text-2-3-3-2">
 <p>
-Open a given file in a temporary buffer.
-Loop a search for the tag regexp.
-When a tag is found, remove any white space from it and add it to the <code>zetteldeft--tag-list</code> if it isn&rsquo;t there already.
-Delete the found tag and search again.
+To extract tags from a single file:
 </p>
+<ol class="org-ol">
+<li>Open a given file in a temporary buffer.</li>
+<li>Loop a search for the tag regexp.</li>
+<li>When a tag is found, remove any white space from it and add it to the list and increase its count with <code>zetteldeft--tag-count</code>.</li>
+<li>Delete the found tag and search again.</li>
+</ol>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--extract-tags</span> (deftFile)
-  <span style="color: #828b9b;">"Find all tags in DEFTFILE and add them to `</span><span style="color: #97365B;">zetteldeft--tag-list</span><span style="color: #828b9b;">'."</span>
+  <span style="color: #828b9b;">"Find all tags in DEFTFILE and add them to `</span><span style="color: #97365B;">zetteldeft--tag-list</span><span style="color: #828b9b;">'.</span>
+<span style="color: #828b9b;">Increase counters as we go."</span>
   (<span style="color: #3B6EA8;">with-temp-buffer</span>
     (insert-file-contents deftFile)
     (<span style="color: #3B6EA8;">while</span> (re-search-forward (zetteldeft--tag-format) nil t)
       (<span style="color: #3B6EA8;">let</span> ((foundTag (replace-regexp-in-string <span style="color: #4F894C;">" "</span> <span style="color: #4F894C;">""</span> (match-string 0))))
         <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Add found tag to zetteldeft--tag-list if it isn't there already</span>
-        (<span style="color: #3B6EA8;">unless</span> (member foundTag zetteldeft--tag-list)
-          (<span style="color: #3B6EA8;">push</span> foundTag zetteldeft--tag-list)))
+        (zetteldeft--tag-count foundTag))
       <span style="color: #8b94a5;">;; </span><span style="color: #8b94a5;">Remove found tag from buffer</span>
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfbf5f66" class="outline-5">
+<h5 id="orgfbf5f66"><span class="section-number-5">2.3.3.3</span> <code>zetteldeft--tag-count</code> increases count of a tag in plist</h5>
+<div class="outline-text-5" id="text-2-3-3-3">
+<p>
+Check if a provided tag is already in the tag property list.
+If it isn&rsquo;t add it and set counter to 1.
+If it is, increase its counter.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">defun</span> <span style="color: #29838D;">zetteldeft--tag-count</span> (zdTag)
+  (<span style="color: #3B6EA8;">let</span> ((tagCount (lax-plist-get zetteldeft--tag-list zdTag)))
+    (<span style="color: #3B6EA8;">if</span> tagCount
+        <span style="color: #8b94a5;">; </span><span style="color: #8b94a5;">if the tag was there already, inc by 1</span>
+        (<span style="color: #3B6EA8;">setq</span> zetteldeft--tag-list
+          (lax-plist-put zetteldeft--tag-list zdTag (1+ tagCount)))
+      <span style="color: #8b94a5;">; </span><span style="color: #8b94a5;">if tag was not there yet, add &amp; set to 1</span>
+      (<span style="color: #3B6EA8;">setq</span> zetteldeft--tag-list
+        (lax-plist-put zetteldeft--tag-list zdTag 1)))))
 </pre>
 </div>
 </div>
@@ -3514,7 +3634,7 @@ An overview of changes, in addition to those mentioned at the top of this docume
 <li><b>18 Dec</b>: insert not yet included links with <code>zetteldeft-insert-list-links-missing</code>.</li>
 <li><b>15 Nov</b>: open link in other window with <code>zetteldeft-avy-file-search-ace-window</code>.</li>
 <li><b>13 Nov</b>: functions to create <code>graphviz</code> added.</li>
-<li><b>4 Nov</b>: <code>zetteldeft--get-all-tags</code> and <code>zetteldeft-tag-buffer</code> find all tags</li>
+<li><b>4 Nov</b>: add <code>zetteldeft-tag-buffer</code> to find all tags</li>
 <li><b>21 Oct</b>: <code>zetteldeft</code> is now a package.</li>
 <li><b>10 Oct</b>: Insert contents of files with given search term with <code>zetteldeft-org-search-insert</code>.</li>
 <li><b>24 Sep</b>: Count the total number of words in your zetteldeft with <code>zetteldeft-count-words</code>.</li>
