@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
  - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
  - *08 July*: Add =ace-window= as top level requirement.
  - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
@@ -1157,9 +1158,9 @@ Throws an error when either none or multiple files are found."
 :CUSTOM_ID: list-tags
 :END:
 
-=zetteldeft--get-all-tags= puts all tags in =zetteldeft--tag-list= and returns them.
+Let's display all tags in Zetteldeft.
 
-Use =zetteldeft-tag-buffer= to create a buffer with all tags.
+With =zetteldeft-tag-buffer= they are all gathered in a buffer, including how often they appear.
 
 *** =zetteldeft-tag-buffer= puts all tags in a buffer
 
@@ -1171,19 +1172,27 @@ The name of the buffer we'll be using:
 
 And some code to create that buffer.
 
-Move to the =zetteldeft--tag-buffer-name=
+It works like so:
+ 1. Move to the =zetteldeft--tag-buffer-name= and clear it.
+ 2. Gather all tags in a property list, as strings with an integer counting how often they appear.
+    This is what =zetteldeft--get-all-tags= achieves.
+ 3. Loop through that list and print strings and counts.
+ 4. Sort results alphabetically.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-tag-buffer ()
-  "Switch to the *zetteldeft-tag-buffer* and list tags."
+  "Switch to the `zetteldeft-tag-buffer' and list tags."
   (interactive)
   (switch-to-buffer zetteldeft--tag-buffer-name)
   (erase-buffer)
-  (dolist (zdTag (zetteldeft--get-all-tags))
-    (insert (format "%s \n" zdTag)))
-  (unless (eq major-mode 'org-mode) (org-mode))
-  (sort-lines nil (point-min) (point-max)))
+  (let ((tagList (zetteldeft--get-all-tags)))
+    (dolist (zdTag (plist-get-keys tagList))
+      (insert (format "%s (%d) \n"
+                      zdTag
+                      (lax-plist-get tagList zdTag))))
+    (unless (eq major-mode 'org-mode) (org-mode))
+    (sort-lines nil (point-min) (point-max))))
 #+END_SRC
 
 *** =zetteldeft--get-all-tags= lists all tags
@@ -1191,14 +1200,18 @@ Move to the =zetteldeft--tag-buffer-name=
 First, we need a variable to store the tags in.
 
 #+BEGIN_SRC emacs-lisp
-(defvar zetteldeft--tag-list)
+(defvar zetteldeft--tag-list nil
+  "A temporary property list to store all tags.")
 #+END_SRC
 
 Extracting tags with =zetteldeft--extract-tags=.
 
+ 1. Loop through all files in Zetteldeft and extract tags from them
+ 2. Return this list
+
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--get-all-tags ()
-  "Return a list of all the tags found in zetteldeft files."
+  "Return a plist of all the tags found in zetteldeft files."
   (setq zetteldeft--tag-list (list))
   (dolist (deftFile deft-all-files)
     (zetteldeft--extract-tags deftFile))
@@ -1227,24 +1240,43 @@ These spaces are removed in the =zetteldeft--extract-tags= function, when adding
 
 **** =zetteldeft--extract-tags= from a file
 
-Open a given file in a temporary buffer.
-Loop a search for the tag regexp.
-When a tag is found, remove any white space from it and add it to the =zetteldeft--tag-list= if it isn't there already.
-Delete the found tag and search again.
+To extract tags from a single file:
+ 1. Open a given file in a temporary buffer.
+ 2. Loop a search for the tag regexp.
+ 3. When a tag is found, remove any white space from it and add it to the list and increase its count with =zetteldeft--tag-count=.
+ 4. Delete the found tag and search again.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--extract-tags (deftFile)
-  "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'."
+  "Find all tags in DEFTFILE and add them to `zetteldeft--tag-list'.
+Increase counters as we go."
   (with-temp-buffer
     (insert-file-contents deftFile)
     (while (re-search-forward (zetteldeft--tag-format) nil t)
       (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
         ;; Add found tag to zetteldeft--tag-list if it isn't there already
-        (unless (member foundTag zetteldeft--tag-list)
-          (push foundTag zetteldeft--tag-list)))
+        (zetteldeft--tag-count foundTag))
       ;; Remove found tag from buffer
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 #+END_SRC
+
+**** =zetteldeft--tag-count= increases count of a tag in plist
+
+Check if a provided tag is already in the tag property list.
+If it isn't add it and set counter to 1.
+If it is, increase its counter.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--tag-count (zdTag)
+  (let ((tagCount (lax-plist-get zetteldeft--tag-list zdTag)))
+    (if tagCount
+        ; if the tag was there already, inc by 1
+        (setq zetteldeft--tag-list
+          (lax-plist-put zetteldeft--tag-list zdTag (1+ tagCount)))
+      ; if tag was not there yet, add & set to 1
+      (setq zetteldeft--tag-list
+        (lax-plist-put zetteldeft--tag-list zdTag 1)))))
+#+end_src
 
 ** Gathering notes
 :PROPERTIES:
@@ -2035,7 +2067,7 @@ An overview of changes, in addition to those mentioned at the top of this docume
  - *18 Dec*: insert not yet included links with =zetteldeft-insert-list-links-missing=.
  - *15 Nov*: open link in other window with =zetteldeft-avy-file-search-ace-window=.
  - *13 Nov*: functions to create =graphviz= added.
- - *4 Nov*: =zetteldeft--get-all-tags= and =zetteldeft-tag-buffer= find all tags
+ - *4 Nov*: add =zetteldeft-tag-buffer= to find all tags
  - *21 Oct*: =zetteldeft= is now a package.
  - *10 Oct*: Insert contents of files with given search term with =zetteldeft-org-search-insert=.
  - *24 Sep*: Count the total number of words in your zetteldeft with =zetteldeft-count-words=.
