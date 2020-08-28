@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *20 Sep*: Add =zetteldeft-go-home=.
  - *19 Sep*: Throw error when generated IDs are not unique.
  - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
  - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
@@ -718,6 +719,33 @@ Based on =deft-find-file=.
             (deft-find-all-files-no-prefix))))
   (deft-find-file file))
 #+END_SRC
+
+**** =zetteldeft-go-home= to open a base note
+
+A Zettelkasten system has no fixed single hierarchy, but it is often convenient to maintain a base note, or a home note.
+Such a note can link to other notes that contain links related to a specific subtopic.
+
+Opening up the home note should be quick and easy.
+
+Let's first store the availability to store an ID.
+
+#+begin_src emacs-lisp :results silent
+(defvar zetteldeft-home-id nil
+  "String with ID of home note, used by `zetteldeft-go-home'.")
+#+end_src
+
+A function to open up this note is trivial.
+
+#+begin_src emacs-lisp :results silent
+(defun zetteldeft-go-home ()
+  "Move to a designated home note.
+Set `zetteldeft-home-id' to an ID string of your home note."
+  (interactive)
+  (if (stringp zetteldeft-home-id)
+      (zetteldeft-find-file
+        (zetteldeft--id-to-full-path zetteldeft-home-id))
+    (message "No home set. Provide a string to zetteldeft-home-id.")))
+#+end_src
 
 **** =zetteldeft-find-file-id-insert= inserts file id
 
@@ -1892,6 +1920,7 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
   (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
   (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d h") 'zetteldeft-go-home)
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
@@ -1950,6 +1979,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d c=     | =zetteldeft-search-current-id=           |
 | =C-c d f=     | =zetteldeft-follow-link=                 |
 | =C-c d F=     | =zetteldeft-avy-file-search-ace-window=  |
+| =C-c d h=     | =zetteldeft-go-home=                     |
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
@@ -1983,6 +2013,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dc" '(zetteldeft-search-current-id :wk "search current id")
   "df" '(zetteldeft-follow-link :wk "follow link")
   "dF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
+  "dh" '(zetteldeft-go-home :wk "go home")
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
