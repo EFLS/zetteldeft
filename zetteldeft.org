@@ -765,6 +765,51 @@ Based on =deft-find-file=.
                   zetteldeft-link-suffix)))
 #+END_SRC
 
+**** =zetteldeft-backlink-add= adds a backlink to note
+
+Adding a backlink to another note is a good way to create structure.
+
+For such a backlink, we need a prefix.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-backlink-prefix "# Backlink: "
+  "Prefix string included before a back link.
+Formatted as `org-mode' comment by default."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Include the prefix on a new line after the title, and add ID and title.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-backlink-add (file)
+  "Find deft file FILE and insert a backlink to it.
+Finds the title line, and adds `backlink-prefix' with
+ID and title on a new line."
+  (interactive (list
+    (completing-read "File to add backlink to: "
+      (deft-find-all-files-no-prefix))))
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward
+            (regexp-quote zetteldeft-title-prefix) nil t))
+    (forward-line)
+    (insert zetteldeft-backlink-prefix
+            (concat zetteldeft-link-indicator
+                    (zetteldeft--lift-id file)
+                    zetteldeft-link-suffix
+                    " "
+                    (zetteldeft--lift-file-title
+                      (concat deft-directory file)))
+            "\n"))
+  (message "Backlink added."))
+#+END_SRC
+
+Potential enhancements include:
+ - Check whether a backlink is already present and update it if so
+ - More control over placement of backlink (rather than directly below title)
+
 **** =zetteldeft-find-file-full-title-insert= inserts id and title
 
 Select file from minibuffer and insert its link, prepended by =§= (or =zetteldeft-link-indicator=).
@@ -871,17 +916,7 @@ A further extension includes both a link and a backlink:
 
 This obviously only works when the new note is branched out from within a Zetteldeft note (which is verified by =zetteldeft--check=).
 
-For such a backlink, we need a prefix.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-backlink-prefix "# Backlink: "
-  "Prefix string included before a back link.
-Formatted for `org-mode' by default."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-Store a link, generate one, and we're done.
+Store a link, generate a new one, and we're done.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
