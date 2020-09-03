@@ -510,10 +510,11 @@ Throws an error when either none or multiple files are found."
   (switch-to-buffer zetteldeft--tag-buffer-name)
   (erase-buffer)
   (let ((tagList (zetteldeft--get-all-tags)))
-    (dolist (zdTag (plist-get-keys tagList))
-      (insert (format "%s (%d) \n"
-                      zdTag
-                      (lax-plist-get tagList zdTag))))
+    (dolist (zdTag tagList)
+      (when (stringp zdTag)
+        (insert (format "%s (%d) \n"
+                        zdTag
+                        (lax-plist-get tagList zdTag)))))
     (unless (eq major-mode 'org-mode) (org-mode))
     (sort-lines nil (point-min) (point-max))))
 
