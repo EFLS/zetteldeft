@@ -771,25 +771,25 @@ First, let's make sure =emacs= knows where to find =evil-insert-state=.
 Now for the function itself.
 
 #+BEGIN_SRC emacs-lisp
-  ;;;###autoload
-  (defun zetteldeft-new-file (str &optional id)
-    "Create a new deft file.
-  Filename is `zetteldeft-id-format' appended by STR.
-  No file extension needed.
+;;;###autoload
+(defun zetteldeft-new-file (str &optional id)
+  "Create a new deft file.
 
-  A file title will be inserted, wrapped in
-  `zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
-  Filename (without extension) is added to the kill ring.
-  When `evil' is loaded, change to insert state."
-    (interactive (list (read-string "Note title: ")))
-    (let* ((zdId (or id
-                     (zetteldeft-generate-id str)))
-           (zdName (concat zdId zetteldeft-id-filename-separator str)))
-    (deft-new-file-named zdName)
-    (kill-new zdName)
-    (zetteldeft--insert-title str)
-    (save-buffer)
-    (when (featurep 'evil) (evil-insert-state))))
+The filename is a Zetteldeft ID, appended by STR. The ID will be
+generated, unles ID is provided.
+A file title will be inserted in the newly created file wrapped in
+`zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
+(without extension) is added to the kill ring. When `evil' is loaded,
+change to insert state."
+  (interactive (list (read-string "Note title: ")))
+  (let* ((zdId (or id
+                   (zetteldeft-generate-id str)))
+         (zdName (concat zdId zetteldeft-id-filename-separator str)))
+  (deft-new-file-named zdName)
+  (kill-new zdName)
+  (zetteldeft--insert-title str)
+  (save-buffer)
+  (when (featurep 'evil) (evil-insert-state))))
 #+END_SRC
 
 Note that the file is only actually created when =save-buffer= is called.
