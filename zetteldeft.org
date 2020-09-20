@@ -17,6 +17,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *19 Sep*: Throw error when generated IDs are not unique.
  - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
  - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
  - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
@@ -521,6 +522,10 @@ For good measure: I advise creating new notes in the =zetteldeft= system with =z
 Next up, a function to generate an ID string.
 By default, the above time-based format will be used, unless a custom ID generator function is specified: to override the way an ID is generated, point =zetteldeft-custom-id-function= to a custom function.
 
+The above function performs a rudimentory check to ensure that the generated ID is indeed available (i.e., not yet used in a filename).
+The current response to such a duplicate is to throw an error.
+With the default, time-based IDs, this happens when notes are created in quick succession.
+
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-generate-id (title &optional filename)
   "Generate and return a Zetteldeft ID.
@@ -536,7 +541,7 @@ that function is used and TITLE and FILENAME are passed to it."
       (error "Generated ID %s is not unique." id))))
 #+END_SRC
 
-The above function performs a rudimentory check to ensure that the generated ID is indeed available (i.e., not yet used in a filename).
+The check whether an ID is available is performed by a separate function.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--id-available-p (str)
