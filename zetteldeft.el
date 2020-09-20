@@ -165,10 +165,23 @@ function to see which placeholders can be used."
 (setq deft-new-file-format zetteldeft-id-format)
 
 (defun zetteldeft-generate-id (title &optional filename)
-  "Generate an ID using `zetteldeft-custom-id-function' or `zetteldeft-id-format'."
-  (if-let ((f zetteldeft-custom-id-function))
-      (funcall f title filename)
-    (format-time-string zetteldeft-id-format)))
+  "Generate and return a Zetteldeft ID.
+The ID is created using `zetteldeft-id-format', unless
+`zetteldeft-custom-id-function' is bound to a function, in which case
+that function is used and TITLE and FILENAME are passed to it."
+  (let ((id
+          (if-let ((f zetteldeft-custom-id-function))
+              (funcall f title filename)
+            (format-time-string zetteldeft-id-format))))
+    (if (zetteldeft--id-available-p id)
+        id
+      (error "Generated ID %s is not unique." id))))
+
+(defun zetteldeft--id-available-p (str)
+  "Return t only if provided string STR is unique among Zetteldeft filenames."
+  (let ((deft-filter-only-filenames t))
+    (deft-filter str t))
+  (eq 0 (length deft-current-files)))
 
 (defcustom zetteldeft-custom-id-function nil
   "User-defined function to generate an ID.
@@ -254,13 +267,13 @@ This is done with the regular expression stored in
 ;;;###autoload
 (defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
-Filename is `zetteldeft-id-format' appended by STR.
-No file extension needed.
 
-A file title will be inserted, wrapped in
-`zetteldeft-title-prefix' and `zetteldeft-title-suffix'.
-Filename (without extension) is added to the kill ring.
-When `evil' is loaded, change to insert state."
+The filename is a Zetteldeft ID, appended by STR. The ID will be
+generated, unles ID is provided.
+A file title will be inserted in the newly created file wrapped in
+`zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
+(without extension) is added to the kill ring. When `evil' is loaded,
+change to insert state."
   (interactive (list (read-string "Note title: ")))
   (let* ((zdId (or id
                    (zetteldeft-generate-id str)))
