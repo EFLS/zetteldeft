@@ -1964,6 +1964,8 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
   (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
   (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
+  (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
+  (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
   (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
 #+END_SRC
@@ -2023,6 +2025,8 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d o=     | =zetteldeft-find-file=                   |
 | =C-c d n=     | =zetteldeft-new-file=                    |
 | =C-c d N=     | =zetteldeft-new-file-and-link=           |
+| =C-c d B=     | =zetteldeft-new-file-and-backlink=       |
+| =C-c d b=     | =zetteldeft-backlink-add=                |
 | =C-c d r=     | =zetteldeft-file-rename=                 |
 | =C-c d x=     | =zetteldeft-count-words=                 |
 
@@ -2057,6 +2061,8 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "do" '(zetteldeft-find-file :wk "find file")
   "dn" '(zetteldeft-new-file :wk "new file")
   "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
+  "dB" '(zetteldeft-new-file-and-backlink :wk "new file & backlink")
+  "db" '(zetteldeft-backlink-add :wk "add backlink")
   "dr" '(zetteldeft-file-rename :wk "rename")
   "dx" '(zetteldeft-count-words :wk "count words"))
 #+END_SRC
