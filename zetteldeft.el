@@ -235,6 +235,18 @@ This is done with the regular expression stored in
             (deft-find-all-files-no-prefix))))
   (deft-find-file file))
 
+(defvar zetteldeft-home-id nil
+  "String with ID of home note, used by `zetteldeft-go-home'.")
+
+(defun zetteldeft-go-home ()
+  "Move to a designated home note.
+Set `zetteldeft-home-id' to an ID string of your home note."
+  (interactive)
+  (if (stringp zetteldeft-home-id)
+      (zetteldeft-find-file
+        (zetteldeft--id-to-full-path zetteldeft-home-id))
+    (message "No home set. Provide a string to zetteldeft-home-id.")))
+
 ;;;###autoload
 (defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
@@ -244,6 +256,35 @@ This is done with the regular expression stored in
   (insert (concat zetteldeft-link-indicator
                   (zetteldeft--lift-id file)
                   zetteldeft-link-suffix)))
+
+(defcustom zetteldeft-backlink-prefix "# Backlink: "
+  "Prefix string included before a back link.
+Formatted as `org-mode' comment by default."
+  :type 'string
+  :group 'zetteldeft)
+
+;;;###autoload
+(defun zetteldeft-backlink-add (file)
+  "Find deft file FILE and insert a backlink to it.
+Finds the title line, and adds `backlink-prefix' with
+ID and title on a new line."
+  (interactive (list
+    (completing-read "File to add backlink to: "
+      (deft-find-all-files-no-prefix))))
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward
+            (regexp-quote zetteldeft-title-prefix) nil t))
+    (forward-line)
+    (insert zetteldeft-backlink-prefix
+            (concat zetteldeft-link-indicator
+                    (zetteldeft--lift-id file)
+                    zetteldeft-link-suffix
+                    " "
+                    (zetteldeft--lift-file-title
+                      (concat deft-directory file)))
+            "\n"))
+  (message "Backlink added."))
 
 ;;;###autoload
 (defun zetteldeft-find-file-full-title-insert (file)
@@ -295,12 +336,6 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
             zetteldeft-link-suffix
             " " str)
     (zetteldeft-new-file str zdId)))
-
-(defcustom zetteldeft-backlink-prefix "# Backlink: "
-  "Prefix string included before a back link.
-Formatted for `org-mode' by default."
-  :type 'string
-  :group 'zetteldeft)
 
 ;;;###autoload
 (defun zetteldeft-new-file-and-backlink (str)
@@ -797,6 +832,7 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
   (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
   (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d h") 'zetteldeft-go-home)
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
@@ -805,6 +841,8 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
   (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
   (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
+  (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
+  (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
   (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
 
