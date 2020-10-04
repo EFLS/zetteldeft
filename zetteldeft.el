@@ -83,9 +83,7 @@ This can be
     `zettteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (link-id-re (concat zetteldeft-link-indicator
-                            zetteldeft-id-regex
-                            zetteldeft-link-suffix))
+        (link-id-re (zetteldeft-link-regex))
         (htag-re zetteldeft-tag-regex))
    (cond
     ((thing-at-point-looking-at link-brackets-re)
@@ -212,6 +210,13 @@ To disable, set to empty string rather than to nil."
   :type 'string
   :group 'zetteldeft
   :set 'zetteldeft--id-font-lock-setup)
+
+(defun zetteldeft--link-regex ()
+  "Return regex for a Zetteldeft link.
+Concat link indicator, id-regex, and link suffix."
+  (concat zetteldeft-link-indicator
+          zetteldeft-id-regex
+          zetteldeft-link-suffix))
 
 (defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
   "Regular expression for zetteldeft tags."
@@ -361,10 +366,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
   "Follows zetteldeft link to a file if point is on a link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
-  (if (thing-at-point-looking-at
-        (concat zetteldeft-link-indicator
-                zetteldeft-id-regex
-                zetteldeft-link-suffix))
+  (if (thing-at-point-looking-at (zetteldeft--link-regex))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
     (zetteldeft-avy-file-search)))
@@ -386,9 +388,7 @@ Links are found via `zetteldeft-link-indicator' and `zetteldeft-id-regex'.
 Open that file (in another window if OTHERWINDOW)."
   (interactive)
   (save-excursion
-    (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex
-                                   zetteldeft-link-suffix)))
+    (when (consp (avy-jump (zetteldeft--link-regex)))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)) otherWindow))))
 
@@ -402,9 +402,7 @@ When only one window is active, split it first.
 When more windows are active, select one via `ace-window'."
   (interactive)
   (save-excursion
-    (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex
-                                   zetteldeft-link-suffix)))
+    (when (consp (avy-jump (zetteldeft--link-regex)))
       (let ((ID (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))
         (when (eq 1 (length (window-list))) (split-window))
         (select-window (aw-select "Select window..."))
@@ -418,9 +416,7 @@ text search for the link ID instead of filenames only.
 Opens immediately if there is only one result."
   (interactive)
   (save-excursion
-    (when (consp (avy-jump (concat zetteldeft-link-indicator
-                                   zetteldeft-id-regex
-                                   zetteldeft-link-suffix)))
+    (when (consp (avy-jump (zetteldeft--link-regex)))
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
