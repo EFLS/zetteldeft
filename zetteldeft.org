@@ -1268,9 +1268,9 @@ kill ring."
     (message "%s" ID)))
 #+END_SRC
 
-**** =zetteldeft--id-to-full-path= returns title from ID
+**** =zetteldeft--id-to-full-path= returns path from ID
 
-Convert a zetteldeft ID into its full path.
+Convert a Zetteldeft ID into its full path.
 
 The ID should lead to only one file, obviously, so an error is thrown when this is not the case.
 
