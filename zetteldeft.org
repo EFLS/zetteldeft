@@ -947,8 +947,7 @@ Store a link, generate a new one, and we're done.
             zetteldeft-link-indicator
             ogId
             " "
-            (zetteldeft--lift-file-title
-              (zetteldeft--id-to-full-path ogId)))))
+            (zetteldeft--id-to-title ogId))))
 #+END_SRC
 
 *** Moving around with =avy=
@@ -1286,6 +1285,19 @@ Throws an error when either none or multiple files are found."
   (car deft-current-files))
 #+END_SRC
 
+**** =zetteldeft--id-to-title= gets title from ID
+
+Convert a Zetteldeft ID into its full path.
+
+The ID should lead to only one file, obviously, so an error is thrown when this is not the case.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--id-to-title (zdID)
+  "Turn a Zetteldeft ID into the title."
+  (zetteldeft--lift-file-title
+    (zetteldeft--id-to-full-path zdId)))
+#+END_SRC
+
 ** Listing all tags
 :PROPERTIES:
 :CUSTOM_ID: list-tags
@@ -1517,8 +1529,7 @@ zetteldeft directory."
                   zdID
                   zetteldeft-link-suffix
                   " "
-                  (zetteldeft--lift-file-title
-                    (zetteldeft--id-to-full-path zdID))
+                  (zetteldeft--id-to-title zdID)
                   "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
