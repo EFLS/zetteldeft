@@ -4,7 +4,6 @@
 #+date: 2018-2020
 #+OPTIONS: num:nil
 #+EXPORT_FILE_NAME: ./docs/index
-#+HTML_HEAD: <link rel='stylesheet' href='./static/style.css' type='text/css'/>
 
 * Introduction                                                       :ignore:
 

@@ -19,6 +19,8 @@ Let's use the power of =org-publish= to our advantage.
     :with-tags nil
     :with-toc nil
     :with-date nil
+  ; html head
+    :html-head-extra "<link rel='stylesheet' href='./static/style.css' type='text/css'/>"
   ; pre- and postamble
     :html-preamble ,(with-temp-buffer
                       (insert-file-contents 
