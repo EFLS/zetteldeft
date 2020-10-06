@@ -1294,7 +1294,7 @@ Convert a Zetteldeft ID into its full path.
 The ID should lead to only one file, obviously, so an error is thrown when this is not the case.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--id-to-title (zdID)
+(defun zetteldeft--id-to-title (zdId)
   "Turn a Zetteldeft ID into the title."
   (zetteldeft--lift-file-title
     (zetteldeft--id-to-full-path zdId)))

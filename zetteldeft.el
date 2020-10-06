@@ -545,7 +545,7 @@ Throws an error when multiple files are found."
     (user-error "ID Error. Multiple zetteldeft files found with ID %s" zdID))
   (car deft-current-files))
 
-(defun zetteldeft--id-to-title (zdID)
+(defun zetteldeft--id-to-title (zdId)
   "Turn a Zetteldeft ID into the title."
   (zetteldeft--lift-file-title
     (zetteldeft--id-to-full-path zdId)))
