@@ -346,7 +346,7 @@ This can be
     `zettteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
-        (link-id-re (zetteldeft-link-regex))
+        (link-id-re (zetteldeft--link-regex))
         (htag-re zetteldeft-tag-regex))
    (cond
     ((thing-at-point-looking-at link-brackets-re)
