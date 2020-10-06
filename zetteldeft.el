@@ -537,11 +537,12 @@ kill ring."
 
 (defun zetteldeft--id-to-full-path (zdID)
   "Return full path from given zetteldeft ID ZDID.
-Throws an error when either none or multiple files are found."
+Returns nil when no files are found.
+Throws an error when multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
-  (unless (eq (length deft-current-files) 1)
-    (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
+  (when (> (length deft-current-files) 1)
+    (user-error "ID Error. Multiple zetteldeft files found with ID %s" zdID))
   (car deft-current-files))
 
 (defun zetteldeft--id-to-title (zdID)
@@ -601,6 +602,44 @@ Increase counters as we go."
       ; if tag was not there yet, add & set to 1
       (setq zetteldeft--tag-list
         (lax-plist-put zetteldeft--tag-list zdTag 1)))))
+
+(defcustom zetteldeft-export-tmp-dir
+  (expand-file-name "zetteldeft/tmp/" user-emacs-directory)
+  "Temporary directory for Zetteldeft export")
+
+(defun zetteldeft--export-prepare-tmp-notes (&optional ignored)
+  "Copy Zetteldeft files and prepare for export."
+  (delete-directory zetteldeft-export-tmp-dir t t)
+  (make-directory zetteldeft-export-tmp-dir t)
+  (deft-refresh)
+  (message
+    "Zetteldeft preparing notes for export at %s"
+    zetteldeft-export-tmp-dir)
+  (dolist (file (deft-find-all-files))
+    (zetteldeft--export-prepare-file file))
+  (message "Zetteldeft notes copy finished."))
+
+(defun zetteldeft--export-prepare-file (zdFile)
+  "Prepare ZDFILE for export.
+Copy its contents to `zetteldeftd-export-tmp-dir' and replace links with Org
+file links. ZDFILE should be the path to the file."
+  (with-temp-file (expand-file-name
+                    (file-name-nondirectory zdFile)
+                    zetteldeft-export-tmp-dir)
+    (insert-file-contents zdFile)
+    (while (re-search-forward (zetteldeft--link-regex) nil t)
+      (let ((zdLink (match-string 0)))
+	(delete-region (point)
+		       (re-search-backward (zetteldeft--link-regex)))
+  (let ((filePath (or (zetteldeft--id-to-full-path
+                        (zetteldeft--lift-id zdLink))
+                      ; When ID doesn't return a file (a dead link)
+                      ;  use empty string
+                      "")))
+	(insert
+	  (org-make-link-string
+      (format "./%s" (file-name-nondirectory filePath))
+	    zdLink)))))))
 
 ;;;###autoload
 (defun zetteldeft-insert-list-links (zdSrch)
