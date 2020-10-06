@@ -358,8 +358,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
             zetteldeft-link-indicator
             ogId
             " "
-            (zetteldeft--lift-file-title
-              (zetteldeft--id-to-full-path ogId)))))
+            (zetteldeft--id-to-title ogId))))
 
 ;;;###autoload
 (defun zetteldeft-follow-link ()
@@ -545,6 +544,11 @@ Throws an error when either none or multiple files are found."
     (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
   (car deft-current-files))
 
+(defun zetteldeft--id-to-title (zdID)
+  "Turn a Zetteldeft ID into the title."
+  (zetteldeft--lift-file-title
+    (zetteldeft--id-to-full-path zdId)))
+
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
 ;;;###autoload
@@ -645,8 +649,7 @@ zetteldeft directory."
                   zdID
                   zetteldeft-link-suffix
                   " "
-                  (zetteldeft--lift-file-title
-                    (zetteldeft--id-to-full-path zdID))
+                  (zetteldeft--id-to-title zdID)
                   "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
