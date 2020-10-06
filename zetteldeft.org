@@ -1098,7 +1098,7 @@ whether it has `deft-directory' somewhere in its path."
     (user-error "Not in zetteldeft territory")))
 #+END_SRC
 
-**** =zetteldeft--current-id= retrieves currentn id
+**** =zetteldeft--current-id= retrieves current id
 
 Easy enough.
 
