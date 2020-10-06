@@ -1277,11 +1277,12 @@ The ID should lead to only one file, obviously, so an error is thrown when this 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--id-to-full-path (zdID)
   "Return full path from given zetteldeft ID ZDID.
-Throws an error when either none or multiple files are found."
+Returns nil when no files are found.
+Throws an error when multiple files are found."
   (let ((deft-filter-only-filenames t))
     (deft-filter zdID t))
-  (unless (eq (length deft-current-files) 1)
-    (user-error "ID Error. Either no or multiple zetteldeft files found with ID %s" zdID))
+  (when (> (length deft-current-files) 1)
+    (user-error "ID Error. Multiple zetteldeft files found with ID %s" zdID))
   (car deft-current-files))
 #+END_SRC
 
