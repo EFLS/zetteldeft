@@ -176,6 +176,8 @@ Or use =zetteldeft-insert-list-links-missing= if you only want to include those 
 
 Zetteldeft is not limited to Org-mode, but integrates well with source code blocks to, for example, automate generating the lists mentioned above.
 
+You can export your notes to HTML to read them outside of of Emacs, as explained [[file:zetteldeft.org::#export-setup][in the documentation]].
+
 With the help of =graphviz=, we can even draw graphical representations of links between notes.
 Check out =zetteldeft-org-graph-search= and =zetteldeft-org-graph-note= [[file:zetteldeft.org::#visuals][in the documentation]].
 It generates something like this:

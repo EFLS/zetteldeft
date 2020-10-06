@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *06 Oct*: Add export functionality.
  - *20 Sep*: Add =zetteldeft-go-home=.
  - *19 Sep*: Throw error when generated IDs are not unique.
  - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
@@ -1426,6 +1427,126 @@ If it is, increase its counter.
       ; if tag was not there yet, add & set to 1
       (setq zetteldeft--tag-list
         (lax-plist-put zetteldeft--tag-list zdTag 1)))))
+#+end_src
+
+** Exporting with Org-mode
+
+*WIP. Relies on Org features, but might work with Markdown.*
+
+Exporting notes proceeds in the following steps:
+ 1. Setup Org publish project with a =:prepare-function=.
+    See [[#export-setup]] for details.
+ 2. The prepare function takes care of the following:
+    1. Create a temporary directory =zetteldeft--export-tmp-dir=
+    2. Convert Zetteldeft links to file links for each file in Zetteldeft:
+       - Load contents in temporary buffer
+       - Replace Zetteldeft links with org-mode file links
+       - Save temporary buffer to file
+
+There are some drawbacks to this method, notably:
+ - Only works with Org-mode notes
+ - During step 2, an error will occur when an ID is not found.
+   This means that a single broken link will prevent exporting.
+
+In the publishing directory, any directory structure is flattened (as the above process loops over all files in Zetteldeft, including subdirectories).
+This shouldn't be a problem, though, as all files have unique names.
+
+*** Setting up an Org publish project
+:PROPERTIES:
+:CUSTOM_ID: export-setup
+:END:
+
+Exporting revolves around using Org-mode publishing features to export a project.
+
+The codeblock below is only an example, and should be set up by the user.
+
+It works as follows:
+ 1. The =:preparation-function zetteldeft--export-prepare-tmp-notes= prepares your notes in a temporary directory
+ 2. From this temporary directory, =zetteldeft-export-tmp-dir=, export notes to HTML.
+
+Make sure to configure the =:publishing-directory= according to your preferences.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-publish-project-alist
+  `("zetteldeft-notes"
+    :preparation-function zetteldeft--export-prepare-tmp-notes
+    :base-directory ,zetteldeft-export-tmp-dir
+    :publishing-directory "~/notes/Zetteldeft/"
+   ; publishing configuration
+    :base-extension "org"
+    :publishing-function org-html-publish-to-html
+   ; org config
+    :headline-levels 4
+    :with-tags nil
+    :with-toc nil
+    :with-date nil
+    :with-author nil
+   ; html config
+    :html-head-extra "<link rel='stylesheet' href='style.css' type='text/css'/>\n"
+    :html-postamble nil))
+#+END_SRC
+
+*** Temporary directory for export ready notes
+
+We need a temporary directory for the notes with converted links.
+By default, use a subfolder in =.emacs.d/= (or rather, the =user-emacs-directory=).
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-export-tmp-dir
+  (expand-file-name "zetteldeft/tmp/" user-emacs-directory)
+  "Temporary directory for Zetteldeft export")
+#+END_SRC
+
+*** Prepare temporary files for export
+
+Each file in Deft is copied to the temporary directory and Zetteldeft links are replaced with file links.
+
+First, prepare the temporary directory by deleting and recreating it.
+Also make the Deft cache is up to date.
+Then loop over each file, replace links, and copy it to the temporary directory.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--export-prepare-tmp-notes (&optional ignored)
+  "Copy Zetteldeft files and prepare for export."
+  (delete-directory zetteldeft-export-tmp-dir t t)
+  (make-directory zetteldeft-export-tmp-dir t)
+  (deft-refresh)
+  (message
+    "Zetteldeft preparing notes for export at %s"
+    zetteldeft-export-tmp-dir)
+  (dolist (file (deft-find-all-files))
+    (zetteldeft--export-prepare-file file))
+  (message "Zetteldeft notes copy finished."))
+#+END_SRC
+
+Replacing links is fairly straightforward:
+ 1. Find a Zetteldeft link
+ 2. Delete the existing link
+ 3. Retreive the filename to which it points
+ 4. Insert an Org-mode link to the filename
+
+#+begin_src emacs-lisp
+(defun zetteldeft--export-prepare-file (zdFile)
+  "Prepare ZDFILE for export.
+Copy its contents to `zetteldeftd-export-tmp-dir' and replace links with Org
+file links. ZDFILE should be the path to the file."
+  (with-temp-file (expand-file-name
+                    (file-name-nondirectory zdFile)
+                    zetteldeft-export-tmp-dir)
+    (insert-file-contents zdFile)
+    (while (re-search-forward (zetteldeft--link-regex) nil t)
+      (let ((zdLink (match-string 0)))
+	(delete-region (point)
+		       (re-search-backward (zetteldeft--link-regex)))
+  (let ((filePath (or (zetteldeft--id-to-full-path
+                        (zetteldeft--lift-id zdLink))
+                      ; When ID doesn't return a file (a dead link)
+                      ;  use empty string
+                      "")))
+	(insert
+	  (org-make-link-string
+      (format "./%s" (file-name-nondirectory filePath))
+	    zdLink)))))))
 #+end_src
 
 ** Gathering notes
