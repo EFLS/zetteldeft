@@ -1062,6 +1062,63 @@ Opens immediately if there is only one result."
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 #+END_SRC
 
+*** Finding dead links with =zetteldeft-dead-links-buffer=
+
+Over time, you might delete notes you no longer deem relevant, or that you have merged with other notes.
+Links to those notes are now dead.
+To prune dead links, we need to find them first.
+
+Finding all dead links works as follows:
+ 1. Find all links in all Zetteldeft notes.
+ 2. Check whether they have a valid destination, i.e. whether they appear in a filename.
+ 3. If they don't, add them to the list of dead links.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--list-dead-links ()
+  "Return a list with IDs in Zetteldeft notes that have no corresponding note."
+  (let ((dead-links '())
+        (deft-filter-only-filenames t))
+    (dolist (link (zetteldeft--list-all-links))
+      (deft-filter link t)
+      (when (eq 0 (length deft-current-files))
+        (unless (member link dead-links)
+           (push link dead-links))))
+   dead-links))
+#+end_src
+
+Show a buffer zith all dead Zetteldeft links and where they are found.
+Easy enough by constructing a couple of loops.
+
+First, the name of the buffer:
+
+#+begin_src emacs-lisp
+(defconst zetteldeft--dead-links-buffer-name "*zetteldeft-dead-links*")
+#+end_src
+
+Now for the function itself.
+
+#+begin_src emacs-lisp
+(defun zetteldeft-dead-links-buffer ()
+  "Show a buffer with all dead links in Zetteldeft."
+  (interactive)
+  (switch-to-buffer zetteldeft--dead-links-buffer-name)
+  (erase-buffer)
+  (message "Finding all dead Zetteldeft links...")
+  (let ((dead-links (zetteldeft--list-dead-links)))
+    (insert (format "# Found %d dead links\n" (length dead-links)))
+    (dolist (link dead-links)
+      (insert (format " - %s in: " link))
+      (deft-filter link t)
+      (dolist (source (deft-current-files))
+        (insert (format "%s%s%s "
+                        zetteldeft-link-indicator
+                        (zetteldeft--lift-id source)
+                        zetteldeft-link-suffix)))
+      (insert "\n")))
+  (unless (eq major-mode 'org-mode) (org-mode)))
+#+end_src
+
+
 *** Utility functions
 **** =zetteldeft-deft-new-search= starts a new deft search
 
@@ -1268,6 +1325,44 @@ kill ring."
     (kill-new ID)
     (message "%s" ID)))
 #+END_SRC
+
+**** =zetteldeft--extract-links= pulls links from a file
+
+Return a list of links found in a specified file.
+
+A minor bug here: this actually returns IDs rather than real Zetteldeft links.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--extract-links (deftFile)
+  "Find all links in DEFTFILE and return a list."
+  (let ((zdLinks (list)))
+    (with-temp-buffer
+      (insert-file-contents deftFile)
+      (while (re-search-forward zetteldeft-id-regex nil t)
+        (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
+          ;; Add found tag to zdLinks if it isn't there already
+          (unless (member foundTag zdLinks)
+            (push foundTag zdLinks)))
+        ;; Remove found tag from buffer
+        (delete-region (point) (re-search-backward zetteldeft-id-regex))))
+   zdLinks))
+#+END_SRC
+
+**** =zetteldeft--list-all-links= returns list of all links
+
+A function that returns a list of all links found in Zetteldeft notes.
+Relies on =zetteldeft--extract-links=.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--list-all-links ()
+  "Return a list with all IDs that appear in notes."
+  (let ((all-links '()))
+    (dolist (file deft-all-files)
+      (dolist (link (zetteldeft--extract-links file))
+        (unless (member link all-links)
+          (push link all-links))))
+    all-links))
+#+end_src
 
 **** =zetteldeft--id-to-full-path= returns path from ID
 
@@ -1946,26 +2041,6 @@ When called interactively, select a file from the completion interface.
 #+END_SRC
 
 *** Building blocks
-**** =zetteldeft--extract-links= pulls links from a file
-
-Very similar to the =zetteldeft--extract-tags= function, but returns links instead of storing them.
-
-#+BEGIN_SRC emacs-lisp
-(defun zetteldeft--extract-links (deftFile)
-  "Find all links in DEFTFILE and return a list."
-  (let ((zdLinks (list)))
-    (with-temp-buffer
-      (insert-file-contents deftFile)
-      (while (re-search-forward zetteldeft-id-regex nil t)
-        (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
-          ;; Add found tag to zdLinks if it isn't there already
-          (unless (member foundTag zdLinks)
-            (push foundTag zdLinks)))
-        ;; Remove found tag from buffer
-        (delete-region (point) (re-search-backward zetteldeft-id-regex))))
-   zdLinks))
-#+END_SRC
-
 **** =zetteldeft--graph-insert-links= inserts graphviz links
 
 Insert the sanitized ID from the file, followed by an arrow and all of the links.
