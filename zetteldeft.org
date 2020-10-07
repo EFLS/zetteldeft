@@ -16,16 +16,13 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
  - *06 Oct*: Add export functionality.
  - *20 Sep*: Add =zetteldeft-go-home=.
  - *19 Sep*: Throw error when generated IDs are not unique.
  - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
  - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
  - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
- - *08 July*: Add =ace-window= as top level requirement.
- - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
- - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
- - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
 
 Older changes are mentioned in the [[#changelog][changelog]] below.
 
@@ -2399,6 +2396,10 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 An overview of changes, in addition to those mentioned at the top of this document:
 
+ - *08 July*: Add =ace-window= as top level requirement.
+ - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
+ - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
+ - *13 May*: Modified default =zetteldeft-tag-regex= to include =[:alnum:]= and improve =zetteldeft--tag-format=.
  - *09 May*: Introduced =zetteldeft-link-suffix=, which is =""= by default.
  - *15 Apr*: Replace =avy-goto-char= with =avy-jump=. =avy= functions now work even when =zetteldeft-link-indicator= is =""=.
  - *05 Apr*: Add =zetteldeft-set-classic-keybindings= for convenience.
