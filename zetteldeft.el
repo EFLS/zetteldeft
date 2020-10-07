@@ -419,6 +419,38 @@ Opens immediately if there is only one result."
       (zetteldeft--search-global
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point))))))
 
+(defun zetteldeft--list-dead-links ()
+  "Return a list with IDs in Zetteldeft notes that have no corresponding note."
+  (let ((dead-links '())
+        (deft-filter-only-filenames t))
+    (dolist (link (zetteldeft--list-all-links))
+      (deft-filter link t)
+      (when (eq 0 (length deft-current-files))
+        (unless (member link dead-links)
+           (push link dead-links))))
+   dead-links))
+
+(defconst zetteldeft--dead-links-buffer-name "*zetteldeft-dead-links*")
+
+(defun zetteldeft-dead-links-buffer ()
+  "Show a buffer with all dead links in Zetteldeft."
+  (interactive)
+  (switch-to-buffer zetteldeft--dead-links-buffer-name)
+  (erase-buffer)
+  (message "Finding all dead Zetteldeft links...")
+  (let ((dead-links (zetteldeft--list-dead-links)))
+    (insert (format "# Found %d dead links\n" (length dead-links)))
+    (dolist (link dead-links)
+      (insert (format " - %s in: " link))
+      (deft-filter link t)
+      (dolist (source (deft-current-files))
+        (insert (format "%s%s%s "
+                        zetteldeft-link-indicator
+                        (zetteldeft--lift-id source)
+                        zetteldeft-link-suffix)))
+      (insert "\n")))
+  (unless (eq major-mode 'org-mode) (org-mode)))
+
 ;;;###autoload
 (defun zetteldeft-deft-new-search ()
   "Launch deft, clear filter and enter insert state."
@@ -534,6 +566,29 @@ kill ring."
                     zetteldeft-link-suffix)))
     (kill-new ID)
     (message "%s" ID)))
+
+(defun zetteldeft--extract-links (deftFile)
+  "Find all links in DEFTFILE and return a list."
+  (let ((zdLinks (list)))
+    (with-temp-buffer
+      (insert-file-contents deftFile)
+      (while (re-search-forward zetteldeft-id-regex nil t)
+        (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
+          ;; Add found tag to zdLinks if it isn't there already
+          (unless (member foundTag zdLinks)
+            (push foundTag zdLinks)))
+        ;; Remove found tag from buffer
+        (delete-region (point) (re-search-backward zetteldeft-id-regex))))
+   zdLinks))
+
+(defun zetteldeft--list-all-links ()
+  "Return a list with all IDs that appear in notes."
+  (let ((all-links '()))
+    (dolist (file deft-all-files)
+      (dolist (link (zetteldeft--extract-links file))
+        (unless (member link all-links)
+          (push link all-links))))
+    all-links))
 
 (defun zetteldeft--id-to-full-path (zdID)
   "Return full path from given zetteldeft ID ZDID.
@@ -790,20 +845,6 @@ STR should be the search the resulting notes of which should be included in the 
   (zetteldeft--graph-insert-additional-links)
   (zetteldeft--graph-insert-all-titles)
   (insert zetteldeft-graph-syntax-end))
-
-(defun zetteldeft--extract-links (deftFile)
-  "Find all links in DEFTFILE and return a list."
-  (let ((zdLinks (list)))
-    (with-temp-buffer
-      (insert-file-contents deftFile)
-      (while (re-search-forward zetteldeft-id-regex nil t)
-        (let ((foundTag (replace-regexp-in-string " " "" (match-string 0))))
-          ;; Add found tag to zdLinks if it isn't there already
-          (unless (member foundTag zdLinks)
-            (push foundTag zdLinks)))
-        ;; Remove found tag from buffer
-        (delete-region (point) (re-search-backward zetteldeft-id-regex))))
-   zdLinks))
 
 (defun zetteldeft--graph-insert-links (deftFile)
   "Insert links in DEFTFILE in dot graph syntax on a single line.
