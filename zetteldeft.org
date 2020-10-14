@@ -944,6 +944,7 @@ Store a link, generate a new one, and we're done.
     (insert zetteldeft-backlink-prefix
             zetteldeft-link-indicator
             ogId
+            zetteldeft-link-suffix
             " "
             (zetteldeft--id-to-title ogId))))
 #+END_SRC

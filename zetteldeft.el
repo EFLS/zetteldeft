@@ -357,6 +357,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
     (insert zetteldeft-backlink-prefix
             zetteldeft-link-indicator
             ogId
+            zetteldeft-link-suffix
             " "
             (zetteldeft--id-to-title ogId))))
 
