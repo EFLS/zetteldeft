@@ -288,6 +288,12 @@ To make sure that your Markdown notes start with correct title syntax, customize
 (setq zetteldeft-title-prefix "# ")
 #+end_src
 
+To use markdown list syntax, customize =zetteldeft-list-prefix=.
+
+#+begin_src emacs-lisp
+(setq zetteldeft-list-prefix "* ")
+#+end_src
+
 To highlight links you need to set up font-lock keywords for =markdown-mode=.
 
 #+begin_src emacs-lisp
