@@ -288,7 +288,7 @@ To make sure that your Markdown notes start with correct title syntax, customize
 (setq zetteldeft-title-prefix "# ")
 #+end_src
 
-To use markdown list syntax, customize =zetteldeft-list-prefix=.
+When using =zetteldeft-insert-list-links=, you might want to change a list entry to correct Markdown syntax, like so:
 
 #+begin_src emacs-lisp
 (setq zetteldeft-list-prefix "* ")
