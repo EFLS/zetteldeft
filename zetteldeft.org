@@ -1753,6 +1753,17 @@ zetteldeft directory."
 The final =dolist= contains some ugliness to make things work with =zetteldeft-link-suffix=, in order to get the note's title without the link in it.
 Might need to be fixed sometime.
 
+**** =zetteldeft-list-prefix= prefix variable for list items
+
+To define what a list entry looks like, let's create a customizeable string.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-list-prefix " - "
+  "Prefix for lists created with `zetteldeft-insert-list-links'
+and `zetteldeft-insert-list-links-missing'."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
 **** =zetteldeft--list-entry-file-link= includes a file link as list entry
 
 Inserts for given file a link id and title as a list entry.
@@ -1760,7 +1771,7 @@ Inserts for given file a link id and title as a list entry.
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - "
+  (insert zetteldeft-list-prefix
           zetteldeft-link-indicator
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix

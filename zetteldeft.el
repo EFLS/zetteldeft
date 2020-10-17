@@ -749,9 +749,15 @@ zetteldeft directory."
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
+(defcustom zetteldeft-list-prefix " - "
+  "Prefix for lists created with `zetteldeft-insert-list-links'
+and `zetteldeft-insert-list-links-missing'."
+  :type 'string
+  :group 'zetteldeft)
+
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - "
+  (insert zetteldeft-list-prefix
           zetteldeft-link-indicator
           (zetteldeft--lift-id (file-name-base zdFile))
           zetteldeft-link-suffix
