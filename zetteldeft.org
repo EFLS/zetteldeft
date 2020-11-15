@@ -751,6 +751,7 @@ Based on =deft-find-file=.
   (interactive
     (list (completing-read "Deft find file: "
             (deft-find-all-files-no-prefix))))
+  (zetteldeft--launch-deft)
   (deft-find-file file))
 #+END_SRC
 
@@ -914,6 +915,7 @@ change to insert state."
          (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
+  (zetteldeft--launch-deft)
   (deft-new-file-named zdName)
   (kill-new zdName)
   (zetteldeft--insert-title str)
@@ -1198,6 +1200,20 @@ whether it has `deft-directory' somewhere in its path."
             (file-truename (buffer-file-name)))
     (user-error "Not in zetteldeft territory")))
 #+END_SRC
+
+**** =zetteldeft--launch-deft= checks whether deft is loaded
+
+Zetteldeft expects the user to load Deft before using any of its functions.
+To assist with this, let's define a function that ensures Deft is loaded -- or, more accurately, that it has hashed the notes.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--launch-deft ()
+  "Load `deft' if it isn't already."
+  (unless deft-hash-contents
+    (require 'deft)
+    (deft-cache-initialize)
+    (deft-cache-update-all)))
+#+end_src
 
 **** =zetteldeft--current-id= retrieves current id
 

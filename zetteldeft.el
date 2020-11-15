@@ -250,6 +250,7 @@ This is done with the regular expression stored in
   (interactive
     (list (completing-read "Deft find file: "
             (deft-find-all-files-no-prefix))))
+  (zetteldeft--launch-deft)
   (deft-find-file file))
 
 (defvar zetteldeft-home-id nil
@@ -337,6 +338,7 @@ change to insert state."
          (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
+  (zetteldeft--launch-deft)
   (deft-new-file-named zdName)
   (kill-new zdName)
   (zetteldeft--insert-title str)
@@ -482,6 +484,13 @@ whether it has `deft-directory' somewhere in its path."
             (regexp-quote (file-truename deft-directory))
             (file-truename (buffer-file-name)))
     (user-error "Not in zetteldeft territory")))
+
+(defun zetteldeft--launch-deft ()
+  "Load `deft' if it isn't already."
+  (unless deft-hash-contents
+    (require 'deft)
+    (deft-cache-initialize)
+    (deft-cache-update-all)))
 
 (defun zetteldeft--current-id ()
   "Retrieve ID from current file."
