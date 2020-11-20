@@ -315,7 +315,7 @@ ID and title on a new line."
   "Create a new deft file.
 
 The filename is a Zetteldeft ID, appended by STR. The ID will be
-generated, unles ID is provided.
+generated unless ID is provided.
 A file title will be inserted in the newly created file wrapped in
 `zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
 (without extension) is added to the kill ring. When `evil' is loaded,
