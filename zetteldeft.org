@@ -2149,6 +2149,19 @@ Does this for all links stored in `zetteldeft--graph-links'."
       (zetteldeft--graph-insert-title oneLink))))
 #+END_SRC
 
+**** =zetteldeft-find-notes-tagged-with= finds notes with the given tag
+
+#+BEGIN_SRC emacs-lisp
+(require 'seq)
+(defun zetteldeft-find-notes-tagged-with (&optional str)
+  (interactive)
+  (let* ((tags (seq-sort 'string-lessp (seq-filter 'stringp (zetteldeft--get-all-tags))))
+         (search-term (if str
+                          str
+                        (completing-read "Tag to search for: " tags))))
+    (zetteldeft--search-global search-term t)))
+#+END_SRC
+
 ** Helper function to set keybindings
 :PROPERTIES:
 :CUSTOM_ID: kb-defaults
