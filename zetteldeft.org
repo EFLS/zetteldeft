@@ -429,12 +429,11 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 ;;;###autoload
 (defun zetteldeft-search-notes-tagged-with (&optional str)
   (interactive)
-         (search-term (if str
-                          str
-                        (completing-read "Tag to search for: " tags))))
   (let* ((tags (seq-sort 'string-lessp
                          (seq-filter 'stringp
                                      (zetteldeft--get-all-tags))))
+         (search-term (or str
+                          (completing-read "Tag to search for: " tags))))
     (zetteldeft--search-global search-term t)))
 #+END_SRC
 
