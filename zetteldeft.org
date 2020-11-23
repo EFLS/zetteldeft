@@ -249,6 +249,8 @@ Some declaration.
 (require 'thingatpt)
 
 (require 'ace-window)
+
+(require 'seq)
 #+END_SRC
 
 Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
@@ -414,6 +416,24 @@ The code searches for the given string and returns =deft-current-files=.
   (let ((deft-current-sort-method 'title))
     (deft-filter srch t)
     deft-current-files))
+#+END_SRC
+
+**** =zetteldeft-search-notes-tagged-with= finds notes with the chosen tag
+
+This function allows quickly searching for a specific tag.
+It prompts the user for a tag via completion and launches a search.
+
+This relies on =zetteldeft--get-all-tags=, which is also used to generate the tag buffer.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-search-notes-tagged-with (&optional str)
+  (interactive)
+  (let* ((tags (seq-sort 'string-lessp (seq-filter 'stringp (zetteldeft--get-all-tags))))
+         (search-term (if str
+                          str
+                        (completing-read "Tag to search for: " tags))))
+    (zetteldeft--search-global search-term t)))
 #+END_SRC
 
 *** IDs, links and tags
@@ -1115,7 +1135,6 @@ Now for the function itself.
       (insert "\n")))
   (unless (eq major-mode 'org-mode) (org-mode)))
 #+end_src
-
 
 *** Utility functions
 **** =zetteldeft-deft-new-search= starts a new deft search
@@ -2147,19 +2166,6 @@ Does this for all links stored in `zetteldeft--graph-links'."
     ;; Sometimes, a 'nil' list item is present. Ignore those.
     (when oneLink
       (zetteldeft--graph-insert-title oneLink))))
-#+END_SRC
-
-**** =zetteldeft-find-notes-tagged-with= finds notes with the given tag
-
-#+BEGIN_SRC emacs-lisp
-(require 'seq)
-(defun zetteldeft-find-notes-tagged-with (&optional str)
-  (interactive)
-  (let* ((tags (seq-sort 'string-lessp (seq-filter 'stringp (zetteldeft--get-all-tags))))
-         (search-term (if str
-                          str
-                        (completing-read "Tag to search for: " tags))))
-    (zetteldeft--search-global search-term t)))
 #+END_SRC
 
 ** Helper function to set keybindings
