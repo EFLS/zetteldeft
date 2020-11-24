@@ -420,7 +420,7 @@ The code searches for the given string and returns =deft-current-files=.
 
 **** =zetteldeft-search-notes-tagged-with= finds notes with the chosen tag
 
-This function allows quickly searching for a specific tag.
+This function allows the user to quickly search for a specific tag.
 It prompts the user for a tag via completion and launches a search.
 
 This relies on =zetteldeft--get-all-tags=, which is also used to generate the tag buffer.
