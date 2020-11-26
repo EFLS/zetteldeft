@@ -418,7 +418,7 @@ The code searches for the given string and returns =deft-current-files=.
     deft-current-files))
 #+END_SRC
 
-**** =zetteldeft-search-notes-tagged-with= finds notes with the chosen tag
+**** =zetteldeft-search-tag= finds notes with selected tag
 
 This function allows the user to quickly search for a specific tag.
 It prompts the user for a tag via completion and launches a search.
@@ -427,13 +427,12 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
-(defun zetteldeft-search-notes-tagged-with (&optional str)
+(defun zetteldeft-search-tag ()
   (interactive)
   (let* ((tags (seq-sort 'string-lessp
                          (seq-filter 'stringp
                                      (zetteldeft--get-all-tags))))
-         (search-term (or str
-                          (completing-read "Tag to search for: " tags))))
+         (search-term (completing-read "Tag to search for: " tags))))
     (zetteldeft--search-global search-term t)))
 #+END_SRC
 
