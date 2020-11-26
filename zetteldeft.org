@@ -249,6 +249,8 @@ Some declaration.
 (require 'thingatpt)
 
 (require 'ace-window)
+
+(require 'seq)
 #+END_SRC
 
 Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
@@ -414,6 +416,24 @@ The code searches for the given string and returns =deft-current-files=.
   (let ((deft-current-sort-method 'title))
     (deft-filter srch t)
     deft-current-files))
+#+END_SRC
+
+**** =zetteldeft-search-tag= finds notes with selected tag
+
+This function allows the user to quickly search for a specific tag.
+It prompts the user for a tag via completion and launches a search.
+
+This relies on =zetteldeft--get-all-tags=, which is also used to generate the tag buffer.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-search-tag ()
+  (interactive)
+  (let* ((tags (seq-sort 'string-lessp
+                         (seq-filter 'stringp
+                                     (zetteldeft--get-all-tags))))
+         (search-term (completing-read "Tag to search for: " tags))))
+    (zetteldeft--search-global search-term t)))
 #+END_SRC
 
 *** IDs, links and tags
@@ -1115,7 +1135,6 @@ Now for the function itself.
       (insert "\n")))
   (unless (eq major-mode 'org-mode) (org-mode)))
 #+end_src
-
 
 *** Utility functions
 **** =zetteldeft-deft-new-search= starts a new deft search
@@ -2179,6 +2198,7 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+  (global-set-key (kbd "C-c d /") 'zetteldeft-search-tag)
   (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
   (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
@@ -2240,6 +2260,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
+| =C-c d /=     | =zetteldeft-search-tag=                  |
 | =C-c d i=     | =zetteldeft-find-file-id-insert=         |
 | =C-c d I=     | =zetteldeft-find-file-full-title-insert= |
 | =C-c d o=     | =zetteldeft-find-file=                   |
@@ -2276,6 +2297,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
   "do" '(zetteldeft-find-file :wk "find file")
