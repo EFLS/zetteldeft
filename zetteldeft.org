@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
  - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
  - *06 Oct*: Add export functionality.
  - *20 Sep*: Add =zetteldeft-go-home=.
@@ -428,6 +429,7 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-search-tag ()
+  "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
   (let* ((tags (seq-sort 'string-lessp
                          (seq-filter 'stringp
@@ -435,6 +437,8 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
          (search-term (completing-read "Tag to search for: " tags))))
     (zetteldeft--search-global search-term t)))
 #+END_SRC
+
+As =zetteldeft--get-all-tags= parses the full set of files, this function might lag slightly on very big sets of notes.
 
 *** IDs, links and tags
 **** A note on nomenclature, IDs and links
