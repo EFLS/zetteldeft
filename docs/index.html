@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-10-06 Tue 11:30 -->
+<!-- 2020-11-26 Thu 22:20 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Introducing Zetteldeft</title>
@@ -38,7 +38,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -193,50 +193,26 @@
 </style>
 <link rel='stylesheet' href='./static/style.css' type='text/css'/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -362,7 +338,7 @@ And yes, you can change this link indicator or even disable it (and include a li
 </p>
 
 
-<figure>
+<figure id="org1c376d9">
 <img src="./img/screenshot.png" alt="screenshot.png">
 
 <figcaption><span class="figure-number">Figure 1: </span>A note with links. The note shown is part of <a href="https://github.com/efls/zd-tutorial">zd-tutorial</a></figcaption>
@@ -595,7 +571,7 @@ It generates something like this:
 </p>
 
 
-<figure>
+<figure id="org8ad8f5b">
 <img src="./img/zetteldeft-graph.jpg" alt="zetteldeft-graph.jpg">
 
 <figcaption><span class="figure-number">Figure 2: </span>Example of a graph generated with graphviz.</figcaption>
@@ -643,11 +619,11 @@ Let&rsquo;s start with a basic setup.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">use-package</span> <span style="color: #97365B;">deft</span>
-  <span style="color: #29838D;">:ensure</span> t
-  <span style="color: #29838D;">:custom</span>
-    (deft-extensions '(<span style="color: #4F894C;">"org"</span> <span style="color: #4F894C;">"md"</span> <span style="color: #4F894C;">"txt"</span>))
-    (deft-directory <span style="color: #4F894C;">"~/notes"</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">use-package</span> <span style="color: #81A1C1;">deft</span>
+  <span style="color: #81A1C1;">:ensure</span> t
+  <span style="color: #81A1C1;">:custom</span>
+    (deft-extensions '(<span style="color: #A3BE8C;">"org"</span> <span style="color: #A3BE8C;">"md"</span> <span style="color: #A3BE8C;">"txt"</span>))
+    (deft-directory <span style="color: #A3BE8C;">"~/notes"</span>)
     (deft-use-filename-as-title t))
 </pre>
 </div>
@@ -674,10 +650,10 @@ Let&rsquo;s start bare bones:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">use-package</span> <span style="color: #97365B;">zetteldeft</span>
-  <span style="color: #29838D;">:ensure</span> t
-  <span style="color: #29838D;">:after</span> deft
-  <span style="color: #29838D;">:config</span> (zetteldeft-set-classic-keybindings))
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">use-package</span> <span style="color: #81A1C1;">zetteldeft</span>
+  <span style="color: #81A1C1;">:ensure</span> t
+  <span style="color: #81A1C1;">:after</span> deft
+  <span style="color: #81A1C1;">:config</span> (zetteldeft-set-classic-keybindings))
 </pre>
 </div>
 
@@ -696,8 +672,8 @@ Locate <code>dotspacemacs-configuration-layers</code> in your <code>.spacemacs</
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq-default</span> dotspacemacs-configuration-layers
-  '((deft <span style="color: #29838D;">:variables</span> deft-zetteldeft t)))
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">setq-default</span> dotspacemacs-configuration-layers
+  '((deft <span style="color: #81A1C1;">:variables</span> deft-zetteldeft t)))
 </pre>
 </div>
 
@@ -728,7 +704,7 @@ There&rsquo;s more to Zetteldeft, and to its customization, but that&rsquo;s all
 </div>
 </div>
 
-<div id="outline-container-org5dcf512" class="outline-3">
+<div id="outline-container-markdown" class="outline-3">
 <h3 id="markdown">Using Zetteldeft with Markdown notes</h3>
 <div class="outline-text-3" id="text-markdown">
 <p>
@@ -743,7 +719,7 @@ Zetteldeft uses Deft to create new notes, so using <code>zetteldeft-new-file</co
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> deft-extensions '(<span style="color: #4F894C;">"md"</span> <span style="color: #4F894C;">"org"</span> <span style="color: #4F894C;">"txt"</span>))
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">setq</span> deft-extensions '(<span style="color: #A3BE8C;">"md"</span> <span style="color: #A3BE8C;">"org"</span> <span style="color: #A3BE8C;">"txt"</span>))
 </pre>
 </div>
 
@@ -753,8 +729,8 @@ This can be easily achieved by setting the <code>zetteldeft-link-indicator</code
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> zetteldeft-link-indicator <span style="color: #4F894C;">"[["</span>
-      zetteldeft-link-suffix <span style="color: #4F894C;">"]]"</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">setq</span> zetteldeft-link-indicator <span style="color: #A3BE8C;">"[["</span>
+      zetteldeft-link-suffix <span style="color: #A3BE8C;">"]]"</span>)
 </pre>
 </div>
 
@@ -763,7 +739,16 @@ To make sure that your Markdown notes start with correct title syntax, customize
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #3B6EA8;">setq</span> zetteldeft-title-prefix <span style="color: #4F894C;">"# "</span>)
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">setq</span> zetteldeft-title-prefix <span style="color: #A3BE8C;">"# "</span>)
+</pre>
+</div>
+
+<p>
+When using <code>zetteldeft-insert-list-links</code>, you might want to change a list entry to correct Markdown syntax, like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">setq</span> zetteldeft-list-prefix <span style="color: #A3BE8C;">"* "</span>)
 </pre>
 </div>
 
@@ -784,9 +769,9 @@ Alternatively, if you want to highlight the brackets as well, you need to escape
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(font-lock-add-keywords 'markdown-mode
-   `((,(concat <span style="color: #4F894C;">"\\[\\["</span>
+   `((,(concat <span style="color: #A3BE8C;">"\\[\\["</span>
                zetteldeft-id-regex
-               <span style="color: #4F894C;">"\\]\\]"</span>)
+               <span style="color: #A3BE8C;">"\\]\\]"</span>)
       . font-lock-warning-face)))
 </pre>
 </div>

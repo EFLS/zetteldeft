@@ -46,6 +46,8 @@
 
 (require 'ace-window)
 
+(require 'seq)
+
 (declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
@@ -125,6 +127,16 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
   (let ((deft-current-sort-method 'title))
     (deft-filter srch t)
     deft-current-files))
+
+;;;###autoload
+(defun zetteldeft-search-tag ()
+  "Prompt interactively for Zetteldeft tag and launch Deft search"
+  (interactive)
+  (let* ((tags (seq-sort 'string-lessp
+                         (seq-filter 'stringp
+                                     (zetteldeft--get-all-tags))))
+         (search-term (completing-read "Tag to search for: " tags))))
+    (zetteldeft--search-global search-term t)))
 
 (defun zetteldeft--id-font-lock-setup (var val)
   "Add font-lock highlighting for zetteldeft links.
@@ -922,6 +934,7 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+  (global-set-key (kbd "C-c d /") 'zetteldeft-search-tag)
   (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
   (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
