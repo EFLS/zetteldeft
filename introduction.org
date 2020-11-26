@@ -132,6 +132,7 @@ To quickly find out which notes *refer* to the current note, use =C-c d c= (whic
 
 To search a *tag*, hit =C-c d t= and select a highlighted tag, similar to how you follow a link.
 To generate a *list* of tags currently in your Zettelkasten, use =C-c d T=.
+Quickly launch a search for a tag of choice with =C-c d /=.
 
 There are many more functions, but these will be enough to get you started.
 
