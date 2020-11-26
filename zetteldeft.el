@@ -333,7 +333,8 @@ A file title will be inserted in the newly created file wrapped in
 (without extension) is added to the kill ring. When `evil' is loaded,
 change to insert state."
   (interactive (list (read-string "Note title: ")))
-  (let* ((zdId (or id
+  (let* ((deft-use-filename-as-title t)
+         (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
