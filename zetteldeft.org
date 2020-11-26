@@ -2198,6 +2198,7 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
+  (global-set-key (kbd "C-c d /") 'zetteldeft-search-tag)
   (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
   (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
@@ -2259,6 +2260,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
+| =C-c d /=     | =zetteldeft-search-tag=                  |
 | =C-c d i=     | =zetteldeft-find-file-id-insert=         |
 | =C-c d I=     | =zetteldeft-find-file-full-title-insert= |
 | =C-c d o=     | =zetteldeft-find-file=                   |
@@ -2295,6 +2297,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
   "do" '(zetteldeft-find-file :wk "find file")
