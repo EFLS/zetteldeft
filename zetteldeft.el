@@ -135,7 +135,7 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
   (let* ((tags (seq-sort 'string-lessp
                          (seq-filter 'stringp
                                      (zetteldeft--get-all-tags))))
-         (search-term (completing-read "Tag to search for: " tags))))
+         (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
 
 (defun zetteldeft--id-font-lock-setup (var val)
