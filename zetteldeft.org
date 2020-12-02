@@ -925,6 +925,26 @@ To bypass =deft-auto-populate-title-maybe= and prevent having two lines with tit
 
 Note that the file is only actually created when =save-buffer= is called.
 
+**** =zetteldeft-upsert= creates a new note or opens one that already exists
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-upsert (str)
+  (interactive (list (read-string "Note title: ")))
+  (let* ((try-again (format "Edit '%s' and try again" str))
+         (create-new-note (format "Create a new note with the title '%s'" str))
+         (all-choices (flatten-list (list create-new-note
+                                          try-again
+                                          (deft-find-all-files-no-prefix))))
+         (choice (completing-read "Choose: " all-choices :initial-input str :preselect 1)))
+    (progn (cond ((equal choice try-again)
+                  (let* ((new-str (read-string "Note title: " str)))
+                    (mw-zetteldeft-upsert new-str)))
+                 ((equal choice create-new-note)
+                  (zetteldeft-new-file str))
+                 (t (zetteldeft-find-file choice))))))
+#+END_SRC
+
 **** =zetteldeft-new-file-and-link= inserts generated id
 
 Similar to the previous function, but also insert a link to the newly created note.

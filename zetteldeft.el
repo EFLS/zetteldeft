@@ -344,6 +344,22 @@ change to insert state."
   (when (featurep 'evil) (evil-insert-state))))
 
 ;;;###autoload
+(defun zetteldeft-upsert (str)
+  (interactive (list (read-string "Note title: ")))
+  (let* ((try-again (format "Edit '%s' and try again" str))
+         (create-new-note (format "Create a new note with the title '%s'" str))
+         (all-choices (flatten-list (list create-new-note
+                                          try-again
+                                          (deft-find-all-files-no-prefix))))
+         (choice (completing-read "Choose: " all-choices :initial-input str :preselect 1)))
+    (progn (cond ((equal choice try-again)
+                  (let* ((new-str (read-string "Note title: " str)))
+                    (mw-zetteldeft-upsert new-str)))
+                 ((equal choice create-new-note)
+                  (zetteldeft-new-file str))
+                 (t (zetteldeft-find-file choice))))))
+
+;;;###autoload
 (defun zetteldeft-new-file-and-link (str)
   "Create a new note and insert a link to it.
 Similar to `zetteldeft-new-file', but insert a link to the new file."
