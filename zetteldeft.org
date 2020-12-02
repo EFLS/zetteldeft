@@ -2220,6 +2220,7 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
   (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
   (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d .") 'zetteldeft-browse)
   (global-set-key (kbd "C-c d h") 'zetteldeft-go-home)
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
@@ -2281,6 +2282,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d s=     | =zetteldeft-search-at-point=             |
 | =C-c d c=     | =zetteldeft-search-current-id=           |
 | =C-c d f=     | =zetteldeft-follow-link=                 |
+| =C-c d .=     | =zetteldeft-browse=                      |
 | =C-c d F=     | =zetteldeft-avy-file-search-ace-window=  |
 | =C-c d h=     | =zetteldeft-go-home=                     |
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
@@ -2319,6 +2321,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dc" '(zetteldeft-search-current-id :wk "search current id")
   "df" '(zetteldeft-follow-link :wk "follow link")
   "dF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
+  "d." '(zetteldeft-browse :wk "browse")
   "dh" '(zetteldeft-go-home :wk "go home")
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
