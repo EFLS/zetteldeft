@@ -343,7 +343,7 @@ change to insert state."
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
 
-(defun zetteldeft--list-upsert-choices (str)
+(defun zetteldeft--upsert-list-choices (str)
   (let* ((try-again (format "Edit '%s' and try again" str))
              (create-new-note (format "Create a new note with the title '%s'" str))
              (all-choices (flatten-list (list create-new-note
@@ -353,7 +353,7 @@ change to insert state."
       (list try-again create-new-note choice)))
 
 (defun zetteldeft--upsert (str find-file-func new-file-func)
-  (let* ((choices (zetteldeft--list-upsert-choices str))
+  (let* ((choices (zetteldeft--upsert-list-choices str))
          (try-again (first choices))
          (create-new-note (second choices))
          (choice (third choices)))

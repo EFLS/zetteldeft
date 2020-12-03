@@ -928,7 +928,7 @@ Note that the file is only actually created when =save-buffer= is called.
 **** =zetteldeft-upsert= creates a new note or opens one that already exists
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--list-upsert-choices (str)
+(defun zetteldeft--upsert-list-choices (str)
   (let* ((try-again (format "Edit '%s' and try again" str))
              (create-new-note (format "Create a new note with the title '%s'" str))
              (all-choices (flatten-list (list create-new-note
@@ -938,7 +938,7 @@ Note that the file is only actually created when =save-buffer= is called.
       (list try-again create-new-note choice)))
 
 (defun zetteldeft--upsert (str find-file-func new-file-func)
-  (let* ((choices (zetteldeft--list-upsert-choices str))
+  (let* ((choices (zetteldeft--upsert-list-choices str))
          (try-again (first choices))
          (create-new-note (second choices))
          (choice (third choices)))
