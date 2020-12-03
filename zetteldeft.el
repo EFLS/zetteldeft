@@ -352,14 +352,14 @@ change to insert state."
              (choice (ivy-read "Choose: " all-choices :initial-input str :preselect 1)))
       (list try-again create-new-note choice)))
 
-(defun zetteldeft--upsert (str find-file-func new-file-func)
+(defun zetteldeft--upsert (str find-file-func new-file-func calling-func)
   (let* ((choices (zetteldeft--upsert-list-choices str))
          (try-again (first choices))
          (create-new-note (second choices))
          (choice (third choices)))
     (progn (cond ((equal choice try-again)
                   (let* ((new-str (read-string "Note title: " str)))
-                    (mw-zetteldeft-upsert new-str)))
+                    (funcall calling-func new-str)))
                  ((equal choice create-new-note)
                   (funcall new-file-func str))
                  (t (funcall find-file-func choice))))))
@@ -367,7 +367,32 @@ change to insert state."
 ;;;###autoload
 (defun zetteldeft-upsert (str)
   (interactive (list (read-string "Note title: ")))
-  (zetteldeft--upsert str #'zetteldeft-find-file #'zetteldeft-new-file))
+  (zetteldeft--upsert str #'zetteldeft-find-file #'zetteldeft-new-file #'zetteldeft-upsert))
+
+(defun zetteldeft--upsert-insert-link (f)
+  (let* ((id (zetteldeft--lift-id f)))
+    (insert
+     (concat zetteldeft-link-indicator
+             (zetteldeft--lift-id f)
+             zetteldeft-link-suffix))))
+
+;;;###autoload
+(defun zetteldeft-upsert-and-link (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert
+   str
+   #'zetteldeft--upsert-insert-link
+   #'zetteldeft-new-file-and-link
+   #'zetteldeft-upsert-and-link))
+
+;;;###autoload
+(defun zetteldeft-upsert-and-backlink (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert
+   str
+   #'zetteldeft--upsert-insert-link
+   #'zetteldeft-new-file-and-backlink
+   #'zetteldeft-upsert-and-backlink))
 
 ;;;###autoload
 (defun zetteldeft-new-file-and-link (str)
