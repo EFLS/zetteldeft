@@ -928,21 +928,31 @@ Note that the file is only actually created when =save-buffer= is called.
 **** =zetteldeft-upsert= creates a new note or opens one that already exists
 
 #+BEGIN_SRC emacs-lisp
-;;;###autoload
-(defun zetteldeft-upsert (str)
-  (interactive (list (read-string "Note title: ")))
+(defun zetteldeft--list-upsert-choices (str)
   (let* ((try-again (format "Edit '%s' and try again" str))
-         (create-new-note (format "Create a new note with the title '%s'" str))
-         (all-choices (flatten-list (list create-new-note
-                                          try-again
-                                          (deft-find-all-files-no-prefix))))
-         (choice (completing-read "Choose: " all-choices :initial-input str :preselect 1)))
+             (create-new-note (format "Create a new note with the title '%s'" str))
+             (all-choices (flatten-list (list create-new-note
+                                              try-again
+                                              (deft-find-all-files-no-prefix))))
+             (choice (ivy-read "Choose: " all-choices :initial-input str :preselect 1)))
+      (list try-again create-new-note choice)))
+
+(defun zetteldeft--upsert (str find-file-func new-file-func)
+  (let* ((choices (zetteldeft--list-upsert-choices str))
+         (try-again (first choices))
+         (create-new-note (second choices))
+         (choice (third choices)))
     (progn (cond ((equal choice try-again)
                   (let* ((new-str (read-string "Note title: " str)))
                     (mw-zetteldeft-upsert new-str)))
                  ((equal choice create-new-note)
-                  (zetteldeft-new-file str))
-                 (t (zetteldeft-find-file choice))))))
+                  (funcall new-file-func str))
+                 (t (funcall find-file-func choice))))))
+
+;;;###autoload
+(defun zetteldeft-upsert (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert str #'zetteldeft-find-file #'zetteldeft-new-file))
 #+END_SRC
 
 **** =zetteldeft-new-file-and-link= inserts generated id
