@@ -385,6 +385,15 @@ Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
     (zetteldeft-avy-file-search)))
 
 ;;;###autoload
+(defun zetteldeft-browse ()
+  "Browse your notes with avy.
+Keep calling `zetteldeft-avy-file-search' in a loop."
+  (interactive)
+  (let ((avy-single-candidate-jump nil))
+    (while (zetteldeft-avy-file-search)
+      (message "Browsing in Zetteldeft!"))))
+
+;;;###autoload
 (defun zetteldeft-avy-tag-search ()
   "Call on avy to jump to a tag.
 Tags are filtered with `zetteldeft-tag-regex'."
@@ -931,6 +940,7 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d c") 'zetteldeft-search-current-id)
   (global-set-key (kbd "C-c d f") 'zetteldeft-follow-link)
   (global-set-key (kbd "C-c d F") 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd "C-c d .") 'zetteldeft-browse)
   (global-set-key (kbd "C-c d h") 'zetteldeft-go-home)
   (global-set-key (kbd "C-c d l") 'zetteldeft-avy-link-search)
   (global-set-key (kbd "C-c d t") 'zetteldeft-avy-tag-search)
