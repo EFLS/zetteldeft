@@ -553,16 +553,26 @@ When the file has no Zetteldeft ID, one is generated and included in the new nam
         (zetteldeft-update-title-in-file new-title)
         (deft-refresh)))))
 
+(defcustom zetteldeft-always-insert-title t
+  "When renaming a note, insert title if not already present."
+  :type 'boolean
+  :group 'zetteldeft)
+
 (defun zetteldeft-update-title-in-file (title)
-  "Update the title of the current file, if present.
-Does so by looking for `zetteldeft-title-prefix'.
-Replaces current title with TITLE."
+  "Update the title in the current note buffer to TITLE.
+This searches the buffer for `zetteldeft-title-prefix' and updates the current
+title, if present. If not present and `zetteldeft-always-insert-title' is set,
+this inserts a title line at the beginning of the buffer. Otherwise, no change
+is made."
   (save-excursion
     (let ((zetteldeft-title-suffix ""))
       (goto-char (point-min))
-      (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
-        (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title title)))))
+      (if (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+          (progn (delete-region (line-beginning-position) (line-end-position))
+                 (zetteldeft--insert-title title))
+        (when zetteldeft-always-insert-title
+          (zetteldeft--insert-title title)
+          (newline))))))
 
 ;;;###autoload
 (defun zetteldeft-count-words ()

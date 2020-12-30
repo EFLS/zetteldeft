@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
  - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
  - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
  - *06 Oct*: Add export functionality.
@@ -1306,22 +1307,40 @@ When the file has no Zetteldeft ID, one is generated and included in the new nam
         (deft-refresh)))))
 #+END_SRC
 
+When renaming a note, the title line will be updated, if present. If the note
+does not currently contain a title line, Zetteldeft will insert one if the
+following variable is set.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-always-insert-title t
+  "When renaming a note, insert title if not already present."
+  :type 'boolean
+  :group 'zetteldeft)
+#+END_SRC
+
 To update the title of the currently visited file, the following function is used.
-It simply looks for the =zetteldeft-title-prefix=, deletes that line, and replaced it with a new title line.
+It simply looks for the =zetteldeft-title-prefix=, deletes that line, and replaces it with a new title line.
+If no title is present and =zetteldeft-always-insert-title= is set, a new title
+line is inserted.
 
 A *limitation* of this workflow is that it will not work when the =zetteldeft-title-prefix= has a new line in it.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-update-title-in-file (title)
-  "Update the title of the current file, if present.
-Does so by looking for `zetteldeft-title-prefix'.
-Replaces current title with TITLE."
+  "Update the title in the current note buffer to TITLE.
+This searches the buffer for `zetteldeft-title-prefix' and updates the current
+title, if present. If not present and `zetteldeft-always-insert-title' is set,
+this inserts a title line at the beginning of the buffer. Otherwise, no change
+is made."
   (save-excursion
     (let ((zetteldeft-title-suffix ""))
       (goto-char (point-min))
-      (when (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
-        (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title title)))))
+      (if (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+          (progn (delete-region (line-beginning-position) (line-end-position))
+                 (zetteldeft--insert-title title))
+        (when zetteldeft-always-insert-title
+          (zetteldeft--insert-title title)
+          (newline))))))
 #+END_SRC
 
 **** =zetteldeft-count-words= counts total number of words
