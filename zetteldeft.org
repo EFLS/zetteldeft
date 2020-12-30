@@ -1311,8 +1311,8 @@ does not currently contain a title line, Zetteldeft will insert one if the
 following variable is set.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-always-insert-title nil
-  "When renaming a file, insert title if not already present."
+(defcustom zetteldeft-always-insert-title t
+  "When renaming a note, insert title if not already present."
   :type 'boolean
   :group 'zetteldeft)
 #+END_SRC

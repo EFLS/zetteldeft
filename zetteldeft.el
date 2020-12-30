@@ -553,8 +553,8 @@ When the file has no Zetteldeft ID, one is generated and included in the new nam
         (zetteldeft-update-title-in-file new-title)
         (deft-refresh)))))
 
-(defcustom zetteldeft-always-insert-title nil
-  "When renaming a file, insert title if not already present."
+(defcustom zetteldeft-always-insert-title t
+  "When renaming a note, insert title if not already present."
   :type 'boolean
   :group 'zetteldeft)
 
