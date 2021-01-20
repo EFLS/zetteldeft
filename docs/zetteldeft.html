@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-11-26 Thu 22:20 -->
+<!-- 2021-01-20 Wed 22:34 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -249,6 +249,7 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>30 Dec</b>: Renaming notes will now insert a title if there is none, thanks to jeffvalk</li>
 <li><b>26 Nov</b>: Add <code>zetteldeft-search-tag</code>, thanks to maw.</li>
 <li><b>07 Oct</b>: Add <code>zetteldeft-dead-links-buffer</code> to show dead links.</li>
 <li><b>06 Oct</b>: Add export functionality.</li>
@@ -785,9 +786,10 @@ In this section:
 <li><a href="#org12e71d7">2.2.5. Moving around with <code>avy</code></a>
 <ul>
 <li><a href="#org6a5cc3f">2.2.5.1. Following links with <code>zetteldeft-follow-link</code></a></li>
-<li><a href="#org4f69112">2.2.5.2. <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></a></li>
-<li><a href="#orge7c9d77">2.2.5.3. <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></a></li>
-<li><a href="#orgba565c6">2.2.5.4. <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></a></li>
+<li><a href="#org40f249f">2.2.5.2. Repeat following with <code>zetteldeft-browse</code></a></li>
+<li><a href="#org4f69112">2.2.5.3. <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></a></li>
+<li><a href="#orge7c9d77">2.2.5.4. <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></a></li>
+<li><a href="#orgba565c6">2.2.5.5. <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></a></li>
 </ul>
 </li>
 <li><a href="#org3aae2b4">2.2.6. Finding dead links with <code>zetteldeft-dead-links-buffer</code></a></li>
@@ -1029,7 +1031,7 @@ This relies on <code>zetteldeft--get-all-tags</code>, which is also used to gene
   (<span style="color: #81A1C1;">let*</span> ((tags (seq-sort 'string-lessp
                          (seq-filter 'stringp
                                      (zetteldeft--get-all-tags))))
-         (search-term (completing-read <span style="color: #A3BE8C;">"Tag to search for: "</span> tags))))
+         (search-term (completing-read <span style="color: #A3BE8C;">"Tag to search for: "</span> tags)))
     (zetteldeft--search-global search-term t)))
 </pre>
 </div>
@@ -1049,7 +1051,7 @@ As <code>zetteldeft--get-all-tags</code> parses the full set of files, this func
 <h5 id="id-links"><span class="section-number-5">2.2.2.1</span> A note on nomenclature, IDs and links</h5>
 <div class="outline-text-5" id="text-id-links">
 <p>
-In zetteldeft, the concepts of &lsquo;links&rsquo; and &lsquo;IDs&rsquo; have related meanings, but in the documentation they are not synonyms.
+In zetteldeft, the concepts of "links" and "IDs" have related meanings, but in the documentation they are not synonyms.
 </p>
 
 <p>
@@ -1723,7 +1725,8 @@ Now for the function itself.
 <span style="color: #78808f;">(without extension) is added to the kill ring. When `</span><span style="color: #81A1C1;">evil</span><span style="color: #78808f;">' is loaded,</span>
 <span style="color: #78808f;">change to insert state."</span>
   (<span style="color: #81A1C1;">interactive</span> (list (read-string <span style="color: #A3BE8C;">"Note title: "</span>)))
-  (<span style="color: #81A1C1;">let*</span> ((zdId (<span style="color: #81A1C1;">or</span> id
+  (<span style="color: #81A1C1;">let*</span> ((deft-use-filename-as-title t)
+         (zdId (<span style="color: #81A1C1;">or</span> id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
@@ -1733,6 +1736,10 @@ Now for the function itself.
   (<span style="color: #81A1C1;">when</span> (<span style="color: #81A1C1;">featurep</span> '<span style="color: #81A1C1;">evil</span>) (evil-insert-state))))
 </pre>
 </div>
+
+<p>
+To bypass <code>deft-auto-populate-title-maybe</code> and prevent having two lines with title matter, we need make sure <code>deft-use-filename-as-title</code> is set to t.
+</p>
 
 <p>
 Note that the file is only actually created when <code>save-buffer</code> is called.
@@ -1840,9 +1847,38 @@ When point is not in a link, call <code>avy</code> to jump to and open a selecte
 </div>
 </div>
 
-<div id="outline-container-org4f69112" class="outline-5">
-<h5 id="org4f69112"><span class="section-number-5">2.2.5.2</span> <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></h5>
+<div id="outline-container-org40f249f" class="outline-5">
+<h5 id="org40f249f"><span class="section-number-5">2.2.5.2</span> Repeat following with <code>zetteldeft-browse</code></h5>
 <div class="outline-text-5" id="text-2-2-5-2">
+<p>
+A function to conveniently browse notes: keep on jumping from note to note.
+</p>
+
+<p>
+Since <code>avy-jump</code> returns <code>t</code> after each succesful jump (and <code>zetteldeft-avy-file-search</code> passes this on), we can use it in a loop.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #6f7787;">;;;</span><span style="color: #6f7787;">###</span><span style="color: #EBCB8B;">autoload</span>
+(<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft-browse</span> ()
+  <span style="color: #78808f;">"Browse your notes with avy.</span>
+<span style="color: #78808f;">Keep calling `</span><span style="color: #81A1C1;">zetteldeft-avy-file-search</span><span style="color: #78808f;">' in a loop."</span>
+  (<span style="color: #81A1C1;">interactive</span>)
+  (<span style="color: #81A1C1;">let</span> ((avy-single-candidate-jump nil))
+    (<span style="color: #81A1C1;">while</span> (zetteldeft-avy-file-search)
+      (message <span style="color: #A3BE8C;">"Browsing in Zetteldeft!"</span>))))
+</pre>
+</div>
+
+<p>
+Setting <code>avy-single-candidate-jump</code> to nil ensures unexpected jumps when there&rsquo;s only one Zetteldeft link candidate on screen.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4f69112" class="outline-5">
+<h5 id="org4f69112"><span class="section-number-5">2.2.5.3</span> <code>zetteldeft-avy-tag-search</code> selects and searches tags with <code>avy</code></h5>
+<div class="outline-text-5" id="text-2-2-5-3">
 <p>
 Use avy to jump to a tag and search for it.
 </p>
@@ -1871,8 +1907,8 @@ Avy uses <code>zetteldeft-tag-regex</code> as a regular expression.
 </div>
 
 <div id="outline-container-orge7c9d77" class="outline-5">
-<h5 id="orge7c9d77"><span class="section-number-5">2.2.5.3</span> <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></h5>
-<div class="outline-text-5" id="text-2-2-5-3">
+<h5 id="orge7c9d77"><span class="section-number-5">2.2.5.4</span> <code>zetteldeft-avy-file-search</code> selects and follows links with <code>avy</code></h5>
+<div class="outline-text-5" id="text-2-2-5-4">
 <p>
 Use avy to jump to a link and find the corresponding file.
 Since the ID should be unique, there should be only one result.
@@ -1941,8 +1977,8 @@ When only one window is open, split it first.
 </div>
 
 <div id="outline-container-orgba565c6" class="outline-5">
-<h5 id="orgba565c6"><span class="section-number-5">2.2.5.4</span> <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></h5>
-<div class="outline-text-5" id="text-2-2-5-4">
+<h5 id="orgba565c6"><span class="section-number-5">2.2.5.5</span> <code>zetteldeft-avy-link-search</code> selects and searches links with <code>avy</code></h5>
+<div class="outline-text-5" id="text-2-2-5-5">
 <p>
 Use avy to jump to a link and search for its ID in deft.
 This means that each note containing this ID is found.
@@ -2239,8 +2275,24 @@ This means that <code>zetteldeft-file-rename</code> can be used to easily genera
 </div>
 
 <p>
+When renaming a note, the title line will be updated, if present. If the note
+does not currently contain a title line, Zetteldeft will insert one if the
+following variable is set.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defcustom</span> <span style="color: #D8DEE9;">zetteldeft-always-insert-title</span> t
+  <span style="color: #78808f;">"When renaming a note, insert title if not already present."</span>
+  <span style="color: #81A1C1;">:type</span> 'boolean
+  <span style="color: #81A1C1;">:group</span> 'zetteldeft)
+</pre>
+</div>
+
+<p>
 To update the title of the currently visited file, the following function is used.
-It simply looks for the <code>zetteldeft-title-prefix</code>, deletes that line, and replaced it with a new title line.
+It simply looks for the <code>zetteldeft-title-prefix</code>, deletes that line, and replaces it with a new title line.
+If no title is present and <code>zetteldeft-always-insert-title</code> is set, a new title
+line is inserted.
 </p>
 
 <p>
@@ -2249,15 +2301,20 @@ A <b>limitation</b> of this workflow is that it will not work when the <code>zet
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft-update-title-in-file</span> (title)
-  <span style="color: #78808f;">"Update the title of the current file, if present.</span>
-<span style="color: #78808f;">Does so by looking for `</span><span style="color: #81A1C1;">zetteldeft-title-prefix</span><span style="color: #78808f;">'.</span>
-<span style="color: #78808f;">Replaces current title with TITLE."</span>
+  <span style="color: #78808f;">"Update the title in the current note buffer to TITLE.</span>
+<span style="color: #78808f;">This searches the buffer for `</span><span style="color: #81A1C1;">zetteldeft-title-prefix</span><span style="color: #78808f;">' and updates the current</span>
+<span style="color: #78808f;">title, if present. If not present and `</span><span style="color: #81A1C1;">zetteldeft-always-insert-title</span><span style="color: #78808f;">' is set,</span>
+<span style="color: #78808f;">this inserts a title line at the beginning of the buffer. Otherwise, no change</span>
+<span style="color: #78808f;">is made."</span>
   (<span style="color: #81A1C1;">save-excursion</span>
     (<span style="color: #81A1C1;">let</span> ((zetteldeft-title-suffix <span style="color: #A3BE8C;">""</span>))
       (goto-char (point-min))
-      (<span style="color: #81A1C1;">when</span> (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
-        (delete-region (line-beginning-position) (line-end-position))
-        (zetteldeft--insert-title title)))))
+      (<span style="color: #81A1C1;">if</span> (re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+          (<span style="color: #81A1C1;">progn</span> (delete-region (line-beginning-position) (line-end-position))
+                 (zetteldeft--insert-title title))
+        (<span style="color: #81A1C1;">when</span> zetteldeft-always-insert-title
+          (zetteldeft--insert-title title)
+          (newline))))))
 </pre>
 </div>
 </div>
@@ -2794,7 +2851,7 @@ In this section:
 </p>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc2276cb">2.5.1. On &lsquo;gathering notes&rsquo;</a></li>
+<li><a href="#orgc2276cb">2.5.1. On "gathering notes"</a></li>
 <li><a href="#orgfb2e358">2.5.2. List of links</a>
 <ul>
 <li><a href="#org4d29b85">2.5.2.1. <code>zetteldeft-insert-list-links</code> generates list with tagged files</a></li>
@@ -2821,7 +2878,7 @@ In this section:
 </div>
 </div>
 <div id="outline-container-orgc2276cb" class="outline-4">
-<h4 id="orgc2276cb"><span class="section-number-4">2.5.1</span> On &lsquo;gathering notes&rsquo;</h4>
+<h4 id="orgc2276cb"><span class="section-number-4">2.5.1</span> On "gathering notes"</h4>
 <div class="outline-text-4" id="text-2-5-1">
 <p>
 Sometimes you want to easily gather all notes with a certain tag or search term.
@@ -3057,7 +3114,7 @@ All functions are documented below.
 <div class="outline-text-6" id="text-2-5-3-1-2">
 <p>
 You could, for example, add the following code to a document and execute (or evaluate) it from within <code>org-mode</code>.
-Add it under a &lsquo;comment&rsquo; type heading to prevent it from being exported itself, like so: <code>* COMMENT Code</code>.
+Add it under a "comment" type heading to prevent it from being exported itself, like so: <code>* COMMENT Code</code>.
 </p>
 
 <div class="org-src-container">
@@ -3298,7 +3355,7 @@ The resulting graph looks something like this:
 </p>
 
 
-<figure id="org7e395e6">
+<figure id="orgd6ca91f">
 <img src="./img/zetteldeft-graph.jpg" alt="zetteldeft-graph.jpg">
 
 </figure>
@@ -3615,6 +3672,7 @@ Other setups, for <code>evil</code> or <code>spacemacs</code>, are suggested in 
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d c"</span>) 'zetteldeft-search-current-id)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d f"</span>) 'zetteldeft-follow-link)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d F"</span>) 'zetteldeft-avy-file-search-ace-window)
+  (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d ."</span>) 'zetteldeft-browse)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d h"</span>) 'zetteldeft-go-home)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d l"</span>) 'zetteldeft-avy-link-search)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d t"</span>) 'zetteldeft-avy-tag-search)
@@ -3734,6 +3792,11 @@ Calling <code>zetteldeft-set-classic-keybindings</code> will set the following (
 </tr>
 
 <tr>
+<td class="org-left"><code>C-c d .</code></td>
+<td class="org-left"><code>zetteldeft-browse</code></td>
+</tr>
+
+<tr>
 <td class="org-left"><code>C-c d F</code></td>
 <td class="org-left"><code>zetteldeft-avy-file-search-ace-window</code></td>
 </tr>
@@ -3834,6 +3897,7 @@ It relies on <code>general.el</code> for modal editing with <code>evil</code> an
   <span style="color: #A3BE8C;">"dc"</span> '(zetteldeft-search-current-id <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"search current id"</span>)
   <span style="color: #A3BE8C;">"df"</span> '(zetteldeft-follow-link <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"follow link"</span>)
   <span style="color: #A3BE8C;">"dF"</span> '(zetteldeft-avy-file-search-ace-window <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"avy file other window"</span>)
+  <span style="color: #A3BE8C;">"d."</span> '(zetteldeft-browse <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"browse"</span>)
   <span style="color: #A3BE8C;">"dh"</span> '(zetteldeft-go-home <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"go home"</span>)
   <span style="color: #A3BE8C;">"dl"</span> '(zetteldeft-avy-link-search <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"avy link search"</span>)
   <span style="color: #A3BE8C;">"dt"</span> '(zetteldeft-avy-tag-search <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"avy tag search"</span>)

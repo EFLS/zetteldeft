@@ -14,18 +14,17 @@ In the spirit of Zettelkasten, Zetteldeft maintains a flat hierarchy at the leve
 The result is a free-form note taking system of linked notes and ideas.
 Or, as the original Zettelkasten creator Niklas Luhmann would call it: a partner in communication.[fn:lhcs]
 
-I've been maintaining this code for personal use since 2018,[fn:innp] and have been sharing its code on Github for a while now.
-So after all this time, it's high time for a proper introduction of this package.
-
-The text below introduces the package, but to get familiar with Zetteldeft from within Zetteldeft check out the =zd-tutorial= repository on [[https://github.com/EFLS/zd-tutorial][Github]].
+The text below introduces Zetteldeft, but even easier is the *tutorial*: get to know Zetteldeft from within Zetteldeft with =zd-tutorial= on [[https://github.com/EFLS/zd-tutorial][Github]].
 Installation instructions included.
 Clone it and get started!
 
-Just want source?
+Just want *source*?
 Take a look at this [[file:zetteldeft.org]["literate code"]], which contains both source and documentation,
 or simply refer to the [[https://github.com/efls/zetteldeft][Github repository]].
 
-For an introduction, please read on.
+I've been maintaining this code for personal use since 2018,[fn:innp] and have been sharing it on Github for a while now.
+It's high time for a proper introduction of this package.
+
 One last note: I hope to make this a living document, so expect changes and additions.
 And feel free to leave comments, for example via [[https://github.com/efls/zetteldeft][Github]], [[https://twitter.com/EFLS0][Twitter]], or (preferably) [[https://mastodon.social/@EFLS][Mastodon]].
 
