@@ -95,6 +95,22 @@ Installing and enabling =zetteldeft= with the default configuration is straightf
     Do this the =spacemacs= way, i.e. in =dotspacemacs/user-config=.
     Simply add =(setq ...)= there.
 
+*** =doom= installation
+
+Installing =zetteldeft= for =doom-emacs= is pretty simple.
+In =doom=, you can navigate to your config files by typing =SPC f p=.
+
+1. Within your =packages.el= file, add this line:
+   #+begin_src emacs-lisp :tangle no
+   (package! zetteldeft)
+   #+end_src
+
+2. Within =init.el= uncomment =deft= (found under =:ui=) by deleting the semicolons in front of it.
+
+   =avy= and =ace-window= are included by default with =doom=, so no need to install them.
+
+3. Refresh your =doom= session by typing =SPC h r r=, or by restarting emacs.
+
 *** Installing directly from source
 
 This package requires:
