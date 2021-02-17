@@ -845,13 +845,15 @@ and `zetteldeft-insert-list-links-missing'."
 
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert zetteldeft-list-prefix
-          zetteldeft-link-indicator
-          (zetteldeft--lift-id (file-name-base zdFile))
-          zetteldeft-link-suffix
-          " "
-          (zetteldeft--lift-file-title zdFile)
-          "\n"))
+  (let ((id (zetteldeft--lift-id (file-name-base zdFile))))
+    (insert zetteldeft-list-prefix)
+    (when id
+          (insert zetteldeft-link-indicator
+                  id
+                  zetteldeft-link-suffix
+                  " "))
+    (insert (zetteldeft--lift-file-title zdFile)
+            "\n")))
 
 ;;;###autoload
 (defun zetteldeft-org-search-include (zdSrch)
