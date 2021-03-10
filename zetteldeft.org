@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *11 Mar*: Add =zetteldeft-insert-tag=.
  - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
  - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
  - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
@@ -361,7 +362,7 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
  - a link matching `zetteldeft-link-indicator',
-    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
+    `zetteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
         (link-id-re (zetteldeft--link-regex))
@@ -448,9 +449,7 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 (defun zetteldeft-search-tag ()
   "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
-  (let* ((tags (seq-sort 'string-lessp
-                         (seq-filter 'stringp
-                                     (zetteldeft--get-all-tags))))
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
 #+END_SRC
@@ -753,6 +752,35 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
+
+**** =zetteldeft-tag-prefix= for insert tag
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-prefix "#"
+  "String prefix for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+**** =zetteldeft-insert-tag= for insert tag from minibuffer
+
+Select tag from the minibuffer and insert. Append =zetteldeft-tag-prefix=
+for new tags.
+
+Based on =zetteldeft--get-all-tags=.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-insert-tag ()
+  "Find and insert tag"
+  (interactive)
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
+         (search-term (completing-read "Tag to insert: " tags))
+         (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
+                  search-term
+                (concat zetteldeft-tag-prefix search-term))))
+    (insert tag)))
+#+END_SRC
 
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
@@ -1542,6 +1570,16 @@ Extracting tags with =zetteldeft--extract-tags=.
   zetteldeft--tag-list)
 #+END_SRC
 
+*** =zetteldeft--get-all-sorted-tags= lists all sorted tags
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--get-all-sorted-tags ()
+  "Return a sorted plist of all the tags found in zetteldeft files."
+  (seq-sort 'string-lessp
+            (seq-filter 'stringp
+                        (zetteldeft--get-all-tags))))
+#+END_SRC
+
 *** Tag extracting functions
 
 Some utility functions to achieve all of this.
@@ -1744,7 +1782,7 @@ There are three of them, each either taking a search term as argument or prompti
  3. =zetteldeft-org-search-insert= inserts the contents of all of these notes below their respective titles.
 
 More documentation can be found below.
-    
+
 *** List of links
 **** =zetteldeft-insert-list-links= generates list with tagged files
 
@@ -2042,7 +2080,7 @@ The resulting graph looks something like this:
 [[./img/zetteldeft-graph.jpg]]
 
 It's worth noting, again, that this is very provisional.
- 
+
 *** Customizable elements
 
 We begin by setting up some customizable parts: syntax that should go at the start and the end of the =org-mode= source blocks that will be generated.
@@ -2269,7 +2307,8 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
-  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
+  (global-set-key (kbd "C-c d #") 'zetteldeft-insert-tag))
 #+END_SRC
 
 ** End of package

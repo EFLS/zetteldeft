@@ -82,7 +82,7 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
  - a link matching `zetteldeft-link-indicator',
-    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
+    `zetteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
         (link-id-re (zetteldeft--link-regex))
@@ -132,9 +132,7 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
 (defun zetteldeft-search-tag ()
   "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
-  (let* ((tags (seq-sort 'string-lessp
-                         (seq-filter 'stringp
-                                     (zetteldeft--get-all-tags))))
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
 
@@ -243,6 +241,22 @@ This is done with the regular expression stored in
     (insert str)
     (when (re-search-forward zetteldeft-id-regex nil t -1)
       (match-string 0))))
+
+(defcustom zetteldeft-tag-prefix "#"
+  "String prefix for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+
+;;;###autoload
+(defun zetteldeft-insert-tag ()
+  "Find and insert tag"
+  (interactive)
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
+         (search-term (completing-read "Tag to insert: " tags))
+         (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
+                  search-term
+                (concat zetteldeft-tag-prefix search-term))))
+    (insert tag)))
 
 ;;;###autoload
 (defun zetteldeft-find-file (file)
@@ -665,6 +679,12 @@ Throws an error when multiple files are found."
     (zetteldeft--extract-tags deftFile))
   zetteldeft--tag-list)
 
+(defun zetteldeft--get-all-sorted-tags ()
+  "Return a sorted plist of all the tags found in zetteldeft files."
+  (seq-sort 'string-lessp
+            (seq-filter 'stringp
+                        (zetteldeft--get-all-tags))))
+
 (defun zetteldeft--tag-format ()
   "Adjust `zetteldeft-tag-regex' for more accurate results."
   (concat "\\(^\\|\s\\)" zetteldeft-tag-regex))
@@ -964,7 +984,8 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
-  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
+  (global-set-key (kbd "C-c d #") 'zetteldeft-insert-tag))
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here
