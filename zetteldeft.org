@@ -761,7 +761,7 @@ Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-tag-prefix "#"
-  "String prefix for when zetteldeft tags are inserted."
+  "String prefix when Zetteldeft tags are inserted."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
