@@ -766,21 +766,45 @@ Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-
   :group 'zetteldeft)
 #+END_SRC
 
-**** =zetteldeft-insert-tag= for insert tag from minibuffer
+**** =zetteldeft-tag-line-prefix= indicates where tags go
+
+A string indicating the line where newly added tags should go.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-line-prefix "# Tags "
+  "String that indicates which line contains tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+**** =zetteldeft-insert-tag= to insert tag from minibuffer
 
 Interactively select a tag to insert, or enter a new one.
+
+Tags are added to the end of the first line that starts with =zetteldeft-tag-line-prefix=.
+If no such line is found, the tag is added at point.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-insert-tag ()
-  "Find and insert tag"
+  "Select existing tag or enter new one to insert."
   (interactive)
   (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to insert: " tags))
          (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
                   search-term
-                (concat zetteldeft-tag-prefix search-term))))
-    (insert tag)))
+                (concat zetteldeft-tag-prefix search-term)))
+         (dest (save-excursion
+                 (goto-char (point-min))
+                 (re-search-forward zetteldeft-tag-line-prefix nil t))))
+    (if dest
+        (save-excursion 
+          (goto-char dest)
+          (end-of-line)
+          (insert " " tag))
+      (progn
+        (message "No tag line found. Inserting tag %s at point" tag)
+        (insert tag)))))
 #+END_SRC
 
 For new tags, make sure to prepend the =zetteldeft-tag-prefix= to the new string.
