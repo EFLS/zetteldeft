@@ -709,22 +709,6 @@ Concat link indicator, id-regex, and link suffix."
           zetteldeft-link-suffix))
 #+END_SRC
 
-**** =zetteldeft-tag-regex= for finding tags
-
-This regular expression indicates what tags can look like.
-
-By default, tags start with a =#= or =@= and contain least one or more lower case letters.
-Dashes are allowed.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
-  "Regular expression for zetteldeft tags."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-Note that this regular may trip over =#= symbols used in URLS.
-
 **** =zetteldeft--lift-id= filters the ID from a string
 
 Return the zetteldeft ID from any string.
@@ -752,6 +736,22 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
+
+**** =zetteldeft-tag-regex= for finding tags
+
+This regular expression indicates what tags can look like.
+
+By default, tags start with a =#= or =@= and contain least one or more lower case letters.
+Dashes are allowed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
+  "Regular expression for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Note that this regular may trip over =#= symbols used in URLS.
 
 **** =zetteldeft-tag-prefix= for inserting tag
 
