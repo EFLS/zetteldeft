@@ -16,7 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *11 Mar*: Add =zetteldeft-insert-tag=.
+ - *11 Mar*: Add =zetteldeft-insert-tag=, thanks to puzan
  - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
  - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
  - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
@@ -753,21 +753,22 @@ Here is a little test.
 #+RESULTS:
 : 2018-11-09-1934
 
-**** =zetteldeft-tag-prefix= for insert tag
+**** =zetteldeft-tag-prefix= for inserting tag
+
+Zetteldeft tags start with a =#= by default, but this can be customized.
+
+Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-insert-tag= -- it doesn't change which tags are /found/.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-tag-prefix "#"
-  "String prefix for zetteldeft tags."
+  "String prefix for when zetteldeft tags are inserted."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
 
 **** =zetteldeft-insert-tag= for insert tag from minibuffer
 
-Select tag from the minibuffer and insert. Append =zetteldeft-tag-prefix=
-for new tags.
-
-Based on =zetteldeft--get-all-tags=.
+Interactively select a tag to insert, or enter a new one.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
@@ -781,6 +782,8 @@ Based on =zetteldeft--get-all-tags=.
                 (concat zetteldeft-tag-prefix search-term))))
     (insert tag)))
 #+END_SRC
+
+For new tags, make sure to prepend the =zetteldeft-tag-prefix= to the new string.
 
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
@@ -1571,6 +1574,8 @@ Extracting tags with =zetteldeft--extract-tags=.
 #+END_SRC
 
 *** =zetteldeft--get-all-sorted-tags= lists all sorted tags
+
+An expansion of the previous function, which ensures found tags are sorted.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--get-all-sorted-tags ()
