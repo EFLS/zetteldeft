@@ -789,6 +789,7 @@ If no such line is found, the tag is added at point.
 (defun zetteldeft-insert-tag ()
   "Select existing tag or enter new one to insert."
   (interactive)
+  (zetteldeft--check)
   (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to insert: " tags))
          (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
@@ -803,7 +804,7 @@ If no such line is found, the tag is added at point.
           (end-of-line)
           (insert " " tag))
       (progn
-        (message "No tag line found. Inserting tag %s at point" tag)
+        (message "No tag line found. Is `zetteldeft-tag-line-prefix` configured? Inserting tag %s at point" tag)
         (insert tag)))))
 #+END_SRC
 
