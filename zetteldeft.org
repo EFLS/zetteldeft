@@ -769,10 +769,11 @@ Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-
 **** =zetteldeft-tag-line-prefix= indicates where tags go
 
 A string indicating the line where newly added tags should go.
+Tags are added at the end of the first line that matches this string.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-tag-line-prefix "# Tags "
-  "String that indicates which line contains tags."
+  "String used to find the line where tags in Zetteldeft files should go."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
@@ -787,7 +788,7 @@ If no such line is found, the tag is added at point.
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-tag-insert ()
-  "Select existing tag or enter new one to insert."
+  "Select existing tag or enter new one to insert in current Zetteldeft note."
   (interactive)
   (zetteldeft--check)
   (let* ((tags (zetteldeft--get-all-sorted-tags))
