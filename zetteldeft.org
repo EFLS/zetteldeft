@@ -2391,6 +2391,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d h=     | =zetteldeft-go-home=                     |
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
+| =C-c d #=     | =zetteldeft-tag-insert=                  |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
 | =C-c d /=     | =zetteldeft-search-tag=                  |
 | =C-c d i=     | =zetteldeft-find-file-id-insert=         |
@@ -2430,6 +2431,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "d#" '(zetteldeft-tag-insert :wk "insert tag")
   "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
