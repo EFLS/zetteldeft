@@ -456,7 +456,7 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 
 As =zetteldeft--get-all-tags= parses the full set of files, this function might lag slightly on very big sets of notes.
 
-*** IDs, links and tags
+*** IDs and links
 **** A note on nomenclature, IDs and links
 :PROPERTIES:
 :CUSTOM_ID: id-links
@@ -736,80 +736,6 @@ Here is a little test.
 
 #+RESULTS:
 : 2018-11-09-1934
-
-**** =zetteldeft-tag-regex= for finding tags
-
-This regular expression indicates what tags can look like.
-
-By default, tags start with a =#= or =@= and contain least one or more lower case letters.
-Dashes are allowed.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
-  "Regular expression for zetteldeft tags."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-Note that this regular may trip over =#= symbols used in URLS.
-
-**** =zetteldeft-tag-prefix= for inserting tag
-
-Zetteldeft tags start with a =#= by default, but this can be customized.
-
-Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-tag-insert= -- it doesn't change which tags are /found/.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-prefix "#"
-  "String prefix when Zetteldeft tags are inserted."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-**** =zetteldeft-tag-line-prefix= indicates where tags go
-
-A string indicating the line where newly added tags should go.
-Tags are added at the end of the first line that matches this string.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-line-prefix "# Tags "
-  "String used to find the line where tags in Zetteldeft files should go."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-**** =zetteldeft-tag-insert= to insert tag from minibuffer
-
-Interactively select a tag to insert, or enter a new one.
-
-Tags are added to the end of the first line that starts with =zetteldeft-tag-line-prefix=.
-If no such line is found, the tag is added at point.
-
-#+BEGIN_SRC emacs-lisp
-;;;###autoload
-(defun zetteldeft-tag-insert ()
-  "Select existing tag or enter new one to insert in current Zetteldeft note."
-  (interactive)
-  (zetteldeft--check)
-  (let* ((tags (zetteldeft--get-all-sorted-tags))
-         (search-term (completing-read "Tag to insert: " tags))
-         (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
-                  search-term
-                (concat zetteldeft-tag-prefix search-term)))
-         (dest (save-excursion
-                 (goto-char (point-min))
-                 (re-search-forward zetteldeft-tag-line-prefix nil t))))
-    (if dest
-        (save-excursion 
-          (goto-char dest)
-          (end-of-line)
-          (insert " " tag))
-      (progn
-        (message "No tag line found. Is `zetteldeft-tag-line-prefix` configured? Inserting tag %s at point" tag)
-        (insert tag)))))
-#+END_SRC
-
-For new tags, make sure to prepend the =zetteldeft-tag-prefix= to the new string.
 
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
@@ -1530,7 +1456,82 @@ The ID should lead to only one file, obviously, so an error is thrown when this 
     (zetteldeft--id-to-full-path zdId)))
 #+END_SRC
 
-** Listing all tags
+** Tags
+*** =zetteldeft-tag-regex= for finding tags
+
+This regular expression indicates what tags can look like.
+
+By default, tags start with a =#= or =@= and contain least one or more lower case letters.
+Dashes are allowed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
+  "Regular expression for zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Note that this regular may trip over =#= symbols used in URLS.
+
+*** =zetteldeft-tag-prefix= for inserting tag
+
+Zetteldeft tags start with a =#= by default, but this can be customized.
+
+Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-tag-insert= -- it doesn't change which tags are /found/.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-prefix "#"
+  "String prefix when Zetteldeft tags are inserted."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+*** =zetteldeft-tag-line-prefix= indicates where tags go
+
+A string indicating the line where newly added tags should go.
+Tags are added at the end of the first line that matches this string.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-line-prefix "# Tags "
+  "String used to find the line where tags in Zetteldeft files should go."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+*** =zetteldeft-tag-insert= to insert tag from minibuffer
+
+Interactively select a tag to insert, or enter a new one.
+
+Tags are added to the end of the first line that starts with =zetteldeft-tag-line-prefix=.
+If no such line is found, the tag is added at point.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-tag-insert ()
+  "Select existing tag or enter new one to insert in current Zetteldeft note."
+  (interactive)
+  (zetteldeft--check)
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
+         (search-term (completing-read "Tag to insert: " tags))
+         (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
+                  search-term
+                (concat zetteldeft-tag-prefix search-term)))
+         (dest (save-excursion
+                 (goto-char (point-min))
+                 (re-search-forward zetteldeft-tag-line-prefix nil t))))
+    (if dest
+        (save-excursion 
+          (goto-char dest)
+          (end-of-line)
+          (insert " " tag))
+      (progn
+        (message "No tag line found. Is `zetteldeft-tag-line-prefix` configured? Inserting tag %s at point" tag)
+        (insert tag)))))
+#+END_SRC
+
+For new tags, make sure to prepend the =zetteldeft-tag-prefix= to the new string.
+
+*** Listing all tags
 :PROPERTIES:
 :CUSTOM_ID: list-tags
 :END:
@@ -1539,7 +1540,7 @@ Let's display all tags in Zetteldeft.
 
 With =zetteldeft-tag-buffer= they are all gathered in a buffer, including how often they appear.
 
-*** =zetteldeft-tag-buffer= puts all tags in a buffer
+**** =zetteldeft-tag-buffer= puts all tags in a buffer
 
 The name of the buffer we'll be using:
 
@@ -1576,7 +1577,7 @@ It works like so:
 Note: the =zetteldeft--get-all-tags= returns a property list, with alternating tags (i.e., a string) and how often they appear (i.e., a number).
 To only act on the strings, we use a =when (stringp zdTag)=.
 
-*** =zetteldeft--get-all-tags= lists all tags
+**** =zetteldeft--get-all-tags= lists all tags
 
 First, we need a variable to store the tags in.
 
@@ -1599,7 +1600,7 @@ Extracting tags with =zetteldeft--extract-tags=.
   zetteldeft--tag-list)
 #+END_SRC
 
-*** =zetteldeft--get-all-sorted-tags= lists all sorted tags
+**** =zetteldeft--get-all-sorted-tags= lists all sorted tags
 
 An expansion of the previous function, which ensures found tags are sorted.
 
@@ -1611,11 +1612,11 @@ An expansion of the previous function, which ensures found tags are sorted.
                         (zetteldeft--get-all-tags))))
 #+END_SRC
 
-*** Tag extracting functions
+**** Tag extracting functions
 
 Some utility functions to achieve all of this.
 
-**** =zetteldeft--tag-format= adjusts the tag finding regex
+***** =zetteldeft--tag-format= adjusts the tag finding regex
 
 The regular expression used to filter out tags, =zetteldeft-tag-regex= works, but doesn't filter strictly enough.
 Hashtags used in URLs are also found, for example.
@@ -1631,7 +1632,7 @@ That's why we can make the existing regex more precise by stating that tags shou
 This means that search results now (could) include a space in front of the tag.
 These spaces are removed in the =zetteldeft--extract-tags= function, when adding the found tags to the tag buffer.
 
-**** =zetteldeft--extract-tags= from a file
+***** =zetteldeft--extract-tags= from a file
 
 To extract tags from a single file:
  1. Open a given file in a temporary buffer.
@@ -1653,7 +1654,7 @@ Increase counters as we go."
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 #+END_SRC
 
-**** =zetteldeft--tag-count= increases count of a tag in plist
+***** =zetteldeft--tag-count= increases count of a tag in plist
 
 Check if a provided tag is already in the tag property list.
 If it isn't add it and set counter to 1.
