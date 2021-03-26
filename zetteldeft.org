@@ -1492,7 +1492,7 @@ A string indicating the line where newly added tags should go.
 Tags are added at the end of the first line that matches this string.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-line-prefix "# Tags "
+(defcustom zetteldeft-tag-line-prefix "# Tags"
   "String used to find the line where tags in Zetteldeft files should go."
   :type 'string
   :group 'zetteldeft)
