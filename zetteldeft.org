@@ -751,7 +751,7 @@ Based on =deft-find-file=.
   (interactive
     (list (completing-read "Deft find file: "
             (deft-find-all-files-no-prefix))))
-  (zetteldeft--launch-deft)
+  (zetteldeft--ensure-deft)
   (deft-find-file file))
 #+END_SRC
 
@@ -915,7 +915,7 @@ change to insert state."
          (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
-  (zetteldeft--launch-deft)
+  (zetteldeft--ensure-deft)
   (deft-new-file-named zdName)
   (kill-new zdName)
   (zetteldeft--insert-title str)
@@ -1201,13 +1201,15 @@ whether it has `deft-directory' somewhere in its path."
     (user-error "Not in zetteldeft territory")))
 #+END_SRC
 
-**** =zetteldeft--launch-deft= checks whether deft is loaded
+**** =zetteldeft--ensure-deft= ensures deft is loaded
 
 Zetteldeft expects the user to load Deft before using any of its functions.
 To assist with this, let's define a function that ensures Deft is loaded -- or, more accurately, that it has hashed the notes.
 
+PROBLEM: Is called too late when function's interactive declaration calls on deft functions?
+
 #+begin_src emacs-lisp
-(defun zetteldeft--launch-deft ()
+(defun zetteldeft--ensure-deft ()
   "Load `deft' if it isn't already."
   (unless deft-hash-contents
     (require 'deft)
