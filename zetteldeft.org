@@ -1513,7 +1513,8 @@ It works like so:
                         zdTag
                         (lax-plist-get tagList zdTag)))))
     (unless (eq major-mode 'org-mode) (org-mode))
-    (sort-lines nil (point-min) (point-max))))
+    (sort-lines nil (point-min) (point-max))
+    (goto-char (point-min))))
 #+END_SRC
 
 Note: the =zetteldeft--get-all-tags= returns a property list, with alternating tags (i.e., a string) and how often they appear (i.e., a number).
