@@ -1498,38 +1498,54 @@ Tags are added at the end of the first line that matches this string.
   :group 'zetteldeft)
 #+END_SRC
 
+*** =zetteldeft-tag-insert-at-point= inserts tag here
+
+Insert a Zetteldeft tag at point.
+When called interactively, prompt user to select a tag from the list of existing tags (or enter a new tag).
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-tag-insert-at-point (tag)
+  "Insert TAG at point. Interactively, select an existing tag or provide new one."
+  (interactive (list (completing-read
+                        "Tag to insert: "
+                        (zetteldeft--get-all-sorted-tags))))
+  (unless (string-prefix-p zetteldeft-tag-prefix tag)
+    (insert zetteldeft-tag-prefix))
+  (insert tag))
+#+end_src
+
+The =unless= ensures that a newly entered tag includes the tag prefix.
+
 *** =zetteldeft-tag-insert= to insert tag from minibuffer
 
-Interactively select a tag to insert, or enter a new one.
+Append a Zetteldeft tag to the tag line (or, when the tag line isn't found, insert it at point).
+The tag line is the first line that starts with =zetteldeft-tag-line-prefix=.
+The user is prompted to select a tag from the list of existing tags, or enter a new one.
 
-Tags are added to the end of the first line that starts with =zetteldeft-tag-line-prefix=.
-If no such line is found, the tag is added at point.
+To always insert tag at point, set =zetteldeft-tag-line-prefix= to nil.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-tag-insert ()
-  "Select existing tag or enter new one to insert in current Zetteldeft note."
+  "Select existing tag or enter new one to insert in current Zetteldeft note.
+
+The tag is appended to the first line starting with `zetteldeft-tag-line-prefix'.
+If this variable is nil, or tag line is not found, insert tag at point."
   (interactive)
   (zetteldeft--check)
-  (let* ((tags (zetteldeft--get-all-sorted-tags))
-         (search-term (completing-read "Tag to insert: " tags))
-         (tag (if (string-prefix-p zetteldeft-tag-prefix search-term)
-                  search-term
-                (concat zetteldeft-tag-prefix search-term)))
-         (dest (save-excursion
-                 (goto-char (point-min))
-                 (re-search-forward zetteldeft-tag-line-prefix nil t))))
+  (let ((dest (when zetteldeft-tag-line-prefix
+                (save-excursion
+                  (goto-char (point-min))
+                  (re-search-forward zetteldeft-tag-line-prefix nil t)))))
     (if dest
         (save-excursion 
           (goto-char dest)
           (end-of-line)
-          (insert " " tag))
-      (progn
-        (message "No tag line found. Is `zetteldeft-tag-line-prefix` configured? Inserting tag %s at point" tag)
-        (insert tag)))))
+          (insert " ")
+          (call-interactively 'zetteldeft-tag-insert-at-point))
+      (call-interactively 'zetteldeft-tag-insert-at-point))))
 #+END_SRC
-
-For new tags, make sure to prepend the =zetteldeft-tag-prefix= to the new string.
 
 *** Listing all tags
 :PROPERTIES:
