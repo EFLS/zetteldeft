@@ -1457,16 +1457,24 @@ The ID should lead to only one file, obviously, so an error is thrown when this 
 #+END_SRC
 
 ** Tags
+*** A note on tags
+
+Tags are a way to quickly retrieve a subsection of notes.
+To quickly insert a tag, use =zetteldeft-tag-insert=: it will prompt for a tag to be added at the end of the first line that starts with =zetteldeft-tag-line-prefix=.
+If, however, this variable is set to =nil=, tags will be inserted at point.
+Want to insert a tag at point even with =zetteldeft-tag-line-prefix= configured?
+Use =zetteldeft-tag-insert-at-point=.
+
 *** =zetteldeft-tag-regex= for finding tags
 
-This regular expression indicates what tags can look like.
+This regular expression indicates what tags can look like so that they can be found.
 
 By default, tags start with a =#= or =@= and contain least one or more lower case letters.
 Dashes are allowed.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
-  "Regular expression for zetteldeft tags."
+  "Regular expression for finding Zetteldeft tags."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
@@ -1475,13 +1483,13 @@ Note that this regular may trip over =#= symbols used in URLS.
 
 *** =zetteldeft-tag-prefix= for inserting tag
 
-Zetteldeft tags start with a =#= by default, but this can be customized.
+Newly created Zetteldeft tags start with a =#= by default, but this can be customized.
 
 Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-tag-insert= -- it doesn't change which tags are /found/.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-tag-prefix "#"
-  "String prefix when Zetteldeft tags are inserted."
+  "String prefix used when inserting new Zetteldeft tags."
   :type 'string
   :group 'zetteldeft)
 #+END_SRC
@@ -1517,7 +1525,7 @@ When called interactively, prompt user to select a tag from the list of existing
 
 The =unless= ensures that a newly entered tag includes the tag prefix.
 
-*** =zetteldeft-tag-insert= to insert tag from minibuffer
+*** =zetteldeft-tag-insert= to insert tag at tag line
 
 Append a Zetteldeft tag to the tag line (or, when the tag line isn't found, insert it at point).
 The tag line is the first line that starts with =zetteldeft-tag-line-prefix=.
