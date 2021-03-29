@@ -82,7 +82,7 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
  - a link matching `zetteldeft-link-indicator',
-    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
+    `zetteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
         (link-id-re (zetteldeft--link-regex))
@@ -132,9 +132,7 @@ Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
 (defun zetteldeft-search-tag ()
   "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
-  (let* ((tags (seq-sort 'string-lessp
-                         (seq-filter 'stringp
-                                     (zetteldeft--get-all-tags))))
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
 
@@ -229,11 +227,6 @@ Concat link indicator, id-regex, and link suffix."
   (concat zetteldeft-link-indicator
           zetteldeft-id-regex
           zetteldeft-link-suffix))
-
-(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
-  "Regular expression for zetteldeft tags."
-  :type 'string
-  :group 'zetteldeft)
 
 (defun zetteldeft--lift-id (str)
   "Extract zetteldeft ID from STR.
@@ -638,6 +631,51 @@ Throws an error when multiple files are found."
   (zetteldeft--lift-file-title
     (zetteldeft--id-to-full-path zdId)))
 
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
+  "Regular expression for finding Zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+
+(defcustom zetteldeft-tag-prefix "#"
+  "String prefix used when inserting new Zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+
+(defcustom zetteldeft-tag-line-prefix "# Tags"
+  "String used to find the line where tags in Zetteldeft files should go."
+  :type 'string
+  :group 'zetteldeft)
+
+;;;###autoload
+(defun zetteldeft-tag-insert-at-point (tag)
+  "Insert TAG at point. Interactively, select an existing tag or provide new one."
+  (interactive (list (completing-read
+                        "Tag to insert: "
+                        (zetteldeft--get-all-sorted-tags))))
+  (unless (string-prefix-p zetteldeft-tag-prefix tag)
+    (insert zetteldeft-tag-prefix))
+  (insert tag))
+
+;;;###autoload
+(defun zetteldeft-tag-insert ()
+  "Select existing tag or enter new one to insert in current Zetteldeft note.
+
+The tag is appended to the first line starting with `zetteldeft-tag-line-prefix'.
+If this variable is nil, or tag line is not found, insert tag at point."
+  (interactive)
+  (zetteldeft--check)
+  (let ((dest (when zetteldeft-tag-line-prefix
+                (save-excursion
+                  (goto-char (point-min))
+                  (re-search-forward zetteldeft-tag-line-prefix nil t)))))
+    (if dest
+        (save-excursion 
+          (goto-char dest)
+          (end-of-line)
+          (insert " ")
+          (call-interactively 'zetteldeft-tag-insert-at-point))
+      (call-interactively 'zetteldeft-tag-insert-at-point))))
+
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
 ;;;###autoload
@@ -664,6 +702,12 @@ Throws an error when multiple files are found."
   (dolist (deftFile deft-all-files)
     (zetteldeft--extract-tags deftFile))
   zetteldeft--tag-list)
+
+(defun zetteldeft--get-all-sorted-tags ()
+  "Return a sorted plist of all the tags found in zetteldeft files."
+  (seq-sort 'string-lessp
+            (seq-filter 'stringp
+                        (zetteldeft--get-all-tags))))
 
 (defun zetteldeft--tag-format ()
   "Adjust `zetteldeft-tag-regex' for more accurate results."
@@ -964,7 +1008,8 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
-  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
+  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert))
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here

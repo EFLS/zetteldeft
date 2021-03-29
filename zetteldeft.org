@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *11 Mar*: Add =zetteldeft-tag-insert=, thanks to puzan
  - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
  - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
  - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
@@ -361,7 +362,7 @@ This can be
  - a link: a string between [[ brackets ]],
  - a tag matching `zetteldeft-tag-regex',
  - a link matching `zetteldeft-link-indicator',
-    `zettteldeft-id-regex' and `zetteldeft-link-suffix',
+    `zetteldeft-id-regex' and `zetteldeft-link-suffix',
  - or a word."
  (let* ((link-brackets-re "\\[\\[\\([^]]+\\)\\]\\]")
         (link-id-re (zetteldeft--link-regex))
@@ -448,16 +449,14 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 (defun zetteldeft-search-tag ()
   "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
-  (let* ((tags (seq-sort 'string-lessp
-                         (seq-filter 'stringp
-                                     (zetteldeft--get-all-tags))))
+  (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
 #+END_SRC
 
 As =zetteldeft--get-all-tags= parses the full set of files, this function might lag slightly on very big sets of notes.
 
-*** IDs, links and tags
+*** IDs and links
 **** A note on nomenclature, IDs and links
 :PROPERTIES:
 :CUSTOM_ID: id-links
@@ -709,22 +708,6 @@ Concat link indicator, id-regex, and link suffix."
           zetteldeft-id-regex
           zetteldeft-link-suffix))
 #+END_SRC
-
-**** =zetteldeft-tag-regex= for finding tags
-
-This regular expression indicates what tags can look like.
-
-By default, tags start with a =#= or =@= and contain least one or more lower case letters.
-Dashes are allowed.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
-  "Regular expression for zetteldeft tags."
-  :type 'string
-  :group 'zetteldeft)
-#+END_SRC
-
-Note that this regular may trip over =#= symbols used in URLS.
 
 **** =zetteldeft--lift-id= filters the ID from a string
 
@@ -1473,7 +1456,106 @@ The ID should lead to only one file, obviously, so an error is thrown when this 
     (zetteldeft--id-to-full-path zdId)))
 #+END_SRC
 
-** Listing all tags
+** Tags
+*** A note on tags
+
+Tags are a way to quickly retrieve a subsection of notes.
+To quickly insert a tag, use =zetteldeft-tag-insert=: it will prompt for a tag to be added at the end of the first line that starts with =zetteldeft-tag-line-prefix=.
+If, however, this variable is set to =nil=, tags will be inserted at point.
+Want to insert a tag at point even with =zetteldeft-tag-line-prefix= configured?
+Use =zetteldeft-tag-insert-at-point=.
+
+*** =zetteldeft-tag-regex= for finding tags
+
+This regular expression indicates what tags can look like so that they can be found.
+
+By default, tags start with a =#= or =@= and contain least one or more lower case letters.
+Dashes are allowed.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-regex "[#@][[:alnum:]_-]+"
+  "Regular expression for finding Zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+Note that this regular may trip over =#= symbols used in URLS.
+
+*** =zetteldeft-tag-prefix= for inserting tag
+
+Newly created Zetteldeft tags start with a =#= by default, but this can be customized.
+
+Note that this (currently) only affects how tags are /inserted/ via =zetteldeft-tag-insert= -- it doesn't change which tags are /found/.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-prefix "#"
+  "String prefix used when inserting new Zetteldeft tags."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+*** =zetteldeft-tag-line-prefix= indicates where tags go
+
+A string indicating the line where newly added tags should go.
+Tags are added at the end of the first line that matches this string.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-tag-line-prefix "# Tags"
+  "String used to find the line where tags in Zetteldeft files should go."
+  :type 'string
+  :group 'zetteldeft)
+#+END_SRC
+
+*** =zetteldeft-tag-insert-at-point= inserts tag here
+
+Insert a Zetteldeft tag at point.
+When called interactively, prompt user to select a tag from the list of existing tags (or enter a new tag).
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-tag-insert-at-point (tag)
+  "Insert TAG at point. Interactively, select an existing tag or provide new one."
+  (interactive (list (completing-read
+                        "Tag to insert: "
+                        (zetteldeft--get-all-sorted-tags))))
+  (unless (string-prefix-p zetteldeft-tag-prefix tag)
+    (insert zetteldeft-tag-prefix))
+  (insert tag))
+#+end_src
+
+The =unless= ensures that a newly entered tag includes the tag prefix.
+
+*** =zetteldeft-tag-insert= to insert tag at tag line
+
+Append a Zetteldeft tag to the tag line (or, when the tag line isn't found, insert it at point).
+The tag line is the first line that starts with =zetteldeft-tag-line-prefix=.
+The user is prompted to select a tag from the list of existing tags, or enter a new one.
+
+To always insert tag at point, set =zetteldeft-tag-line-prefix= to nil.
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun zetteldeft-tag-insert ()
+  "Select existing tag or enter new one to insert in current Zetteldeft note.
+
+The tag is appended to the first line starting with `zetteldeft-tag-line-prefix'.
+If this variable is nil, or tag line is not found, insert tag at point."
+  (interactive)
+  (zetteldeft--check)
+  (let ((dest (when zetteldeft-tag-line-prefix
+                (save-excursion
+                  (goto-char (point-min))
+                  (re-search-forward zetteldeft-tag-line-prefix nil t)))))
+    (if dest
+        (save-excursion 
+          (goto-char dest)
+          (end-of-line)
+          (insert " ")
+          (call-interactively 'zetteldeft-tag-insert-at-point))
+      (call-interactively 'zetteldeft-tag-insert-at-point))))
+#+END_SRC
+
+*** Listing all tags
 :PROPERTIES:
 :CUSTOM_ID: list-tags
 :END:
@@ -1482,7 +1564,7 @@ Let's display all tags in Zetteldeft.
 
 With =zetteldeft-tag-buffer= they are all gathered in a buffer, including how often they appear.
 
-*** =zetteldeft-tag-buffer= puts all tags in a buffer
+**** =zetteldeft-tag-buffer= puts all tags in a buffer
 
 The name of the buffer we'll be using:
 
@@ -1520,7 +1602,7 @@ It works like so:
 Note: the =zetteldeft--get-all-tags= returns a property list, with alternating tags (i.e., a string) and how often they appear (i.e., a number).
 To only act on the strings, we use a =when (stringp zdTag)=.
 
-*** =zetteldeft--get-all-tags= lists all tags
+**** =zetteldeft--get-all-tags= lists all tags
 
 First, we need a variable to store the tags in.
 
@@ -1543,11 +1625,23 @@ Extracting tags with =zetteldeft--extract-tags=.
   zetteldeft--tag-list)
 #+END_SRC
 
-*** Tag extracting functions
+**** =zetteldeft--get-all-sorted-tags= lists all sorted tags
+
+An expansion of the previous function, which ensures found tags are sorted.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--get-all-sorted-tags ()
+  "Return a sorted plist of all the tags found in zetteldeft files."
+  (seq-sort 'string-lessp
+            (seq-filter 'stringp
+                        (zetteldeft--get-all-tags))))
+#+END_SRC
+
+**** Tag extracting functions
 
 Some utility functions to achieve all of this.
 
-**** =zetteldeft--tag-format= adjusts the tag finding regex
+***** =zetteldeft--tag-format= adjusts the tag finding regex
 
 The regular expression used to filter out tags, =zetteldeft-tag-regex= works, but doesn't filter strictly enough.
 Hashtags used in URLs are also found, for example.
@@ -1563,7 +1657,7 @@ That's why we can make the existing regex more precise by stating that tags shou
 This means that search results now (could) include a space in front of the tag.
 These spaces are removed in the =zetteldeft--extract-tags= function, when adding the found tags to the tag buffer.
 
-**** =zetteldeft--extract-tags= from a file
+***** =zetteldeft--extract-tags= from a file
 
 To extract tags from a single file:
  1. Open a given file in a temporary buffer.
@@ -1585,7 +1679,7 @@ Increase counters as we go."
       (delete-region (point) (re-search-backward (zetteldeft--tag-format))))))
 #+END_SRC
 
-**** =zetteldeft--tag-count= increases count of a tag in plist
+***** =zetteldeft--tag-count= increases count of a tag in plist
 
 Check if a provided tag is already in the tag property list.
 If it isn't add it and set counter to 1.
@@ -1745,7 +1839,7 @@ There are three of them, each either taking a search term as argument or prompti
  3. =zetteldeft-org-search-insert= inserts the contents of all of these notes below their respective titles.
 
 More documentation can be found below.
-    
+
 *** List of links
 **** =zetteldeft-insert-list-links= generates list with tagged files
 
@@ -2043,7 +2137,7 @@ The resulting graph looks something like this:
 [[./img/zetteldeft-graph.jpg]]
 
 It's worth noting, again, that this is very provisional.
- 
+
 *** Customizable elements
 
 We begin by setting up some customizable parts: syntax that should go at the start and the end of the =org-mode= source blocks that will be generated.
@@ -2270,7 +2364,8 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
-  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words))
+  (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
+  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert))
 #+END_SRC
 
 ** End of package
@@ -2323,6 +2418,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d h=     | =zetteldeft-go-home=                     |
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
+| =C-c d #=     | =zetteldeft-tag-insert=                  |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
 | =C-c d /=     | =zetteldeft-search-tag=                  |
 | =C-c d i=     | =zetteldeft-find-file-id-insert=         |
@@ -2362,6 +2458,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "d#" '(zetteldeft-tag-insert :wk "insert tag")
   "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
