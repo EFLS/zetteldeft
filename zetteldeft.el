@@ -320,7 +320,7 @@ ID and title on a new line."
   "Create a new deft file.
 
 The filename is a Zetteldeft ID, appended by STR. The ID will be
-generated unless ID is provided.
+generated, unless ID is provided.
 A file title will be inserted in the newly created file wrapped in
 `zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
 (without extension) is added to the kill ring. When `evil' is loaded,
@@ -691,7 +691,8 @@ If this variable is nil, or tag line is not found, insert tag at point."
                         zdTag
                         (lax-plist-get tagList zdTag)))))
     (unless (eq major-mode 'org-mode) (org-mode))
-    (sort-lines nil (point-min) (point-max))))
+    (sort-lines nil (point-min) (point-max))
+    (goto-char (point-min))))
 
 (defvar zetteldeft--tag-list nil
   "A temporary property list to store all tags.")
