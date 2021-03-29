@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-11-26 Thu 22:20 -->
+<!-- 2021-03-29 Mon 22:21 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Introducing Zetteldeft</title>
@@ -50,7 +50,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -245,24 +245,23 @@ Or, as the original Zettelkasten creator Niklas Luhmann would call it: a partner
 </p>
 
 <p>
-I&rsquo;ve been maintaining this code for personal use since 2018,<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> and have been sharing its code on Github for a while now.
-So after all this time, it&rsquo;s high time for a proper introduction of this package.
-</p>
-
-<p>
-The text below introduces the package, but to get familiar with Zetteldeft from within Zetteldeft check out the <code>zd-tutorial</code> repository on <a href="https://github.com/EFLS/zd-tutorial">Github</a>.
+The text below introduces Zetteldeft, but even easier is the <b>tutorial</b>: get to know Zetteldeft from within Zetteldeft with <code>zd-tutorial</code> on <a href="https://github.com/EFLS/zd-tutorial">Github</a>.
 Installation instructions included.
 Clone it and get started!
 </p>
 
 <p>
-Just want source?
-Take a look at this <a href="zetteldeft.html">&lsquo;literate code&rsquo;</a>, which contains both source and documentation,
+Just want <b>source</b>?
+Take a look at this <a href="zetteldeft.html">"literate code"</a>, which contains both source and documentation,
 or simply refer to the <a href="https://github.com/efls/zetteldeft">Github repository</a>.
 </p>
 
 <p>
-For an introduction, please read on.
+I&rsquo;ve been maintaining this code for personal use since 2018,<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> and have been sharing it on Github for a while now.
+It&rsquo;s high time for a proper introduction of this package.
+</p>
+
+<p>
 One last note: I hope to make this a living document, so expect changes and additions.
 And feel free to leave comments, for example via <a href="https://github.com/efls/zetteldeft">Github</a>, <a href="https://twitter.com/EFLS0">Twitter</a>, or (preferably) <a href="https://mastodon.social/@EFLS">Mastodon</a>.
 </p>
@@ -338,7 +337,7 @@ And yes, you can change this link indicator or even disable it (and include a li
 </p>
 
 
-<figure id="org1c376d9">
+<figure id="orgb0514e1">
 <img src="./img/screenshot.png" alt="screenshot.png">
 
 <figcaption><span class="figure-number">Figure 1: </span>A note with links. The note shown is part of <a href="https://github.com/efls/zd-tutorial">zd-tutorial</a></figcaption>
@@ -359,7 +358,7 @@ Org-mode by default, but it really is formatting agnostic.
 </p>
 
 <p>
-A way to further organize your notes, is to use tags, indicated with a <code>#</code>.
+A way to further organize your notes, is to use tags, indicated with a <code>#</code> (or another string, it&rsquo;s all customizable).
 In my Zettelkasten, for example, I use <code>#zetteldeft</code> for all notes related to&#x2026;
 Well, you can guess.
 </p>
@@ -414,7 +413,9 @@ To quickly find out which notes <b>refer</b> to the current note, use <code>C-c 
 
 <p>
 To search a <b>tag</b>, hit <code>C-c d t</code> and select a highlighted tag, similar to how you follow a link.
+Easily insert tags with <code>C-c d #</code> and select one from the list (or enter a new one).
 To generate a <b>list</b> of tags currently in your Zettelkasten, use <code>C-c d T</code>.
+Quickly launch a search for a tag of choice with <code>C-c d /</code>.
 </p>
 
 <p>
@@ -503,6 +504,11 @@ Personally, I prefer vim style bindings behind a leader key, set up with general
 </tr>
 
 <tr>
+<td class="org-left"><code>C-c d #</code></td>
+<td class="org-left"><code>zetteldeft-tag-insert</code></td>
+</tr>
+
+<tr>
 <td class="org-left"><code>C-c d i</code></td>
 <td class="org-left"><code>zetteldeft-find-file-id-insert</code></td>
 </tr>
@@ -571,7 +577,7 @@ It generates something like this:
 </p>
 
 
-<figure id="org8ad8f5b">
+<figure id="org8dd258e">
 <img src="./img/zetteldeft-graph.jpg" alt="zetteldeft-graph.jpg">
 
 <figcaption><span class="figure-number">Figure 2: </span>Example of a graph generated with graphviz.</figcaption>
@@ -784,7 +790,7 @@ Alternatively, if you want to highlight the brackets as well, you need to escape
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
 Luhmann was first and foremost a social theorist who developed a unique systems theory.
-In one of his writings, he compares his Zettelkasten to a &lsquo;communicative system&rsquo;.
+In one of his writings, he compares his Zettelkasten to a "communicative system".
 Available here in English translation:
 <a href="http://luhmann.surge.sh/communicating-with-slip-boxes">http://luhmann.surge.sh/communicating-with-slip-boxes</a>.
 </p></div></div>

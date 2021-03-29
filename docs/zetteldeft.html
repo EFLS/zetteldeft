@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2021-01-20 Wed 22:34 -->
+<!-- 2021-03-29 Mon 22:21 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -50,7 +50,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -249,6 +249,7 @@ Read on for an introduction and some documentation.
 Latest additions:
 </p>
 <ul class="org-ul">
+<li><b>11 Mar</b>: Add <code>zetteldeft-tag-insert</code>, thanks to puzan</li>
 <li><b>30 Dec</b>: Renaming notes will now insert a title if there is none, thanks to jeffvalk</li>
 <li><b>26 Nov</b>: Add <code>zetteldeft-search-tag</code>, thanks to maw.</li>
 <li><b>07 Oct</b>: Add <code>zetteldeft-dead-links-buffer</code> to show dead links.</li>
@@ -281,7 +282,7 @@ Older changes are mentioned in the <a href="#changelog">changelog</a> below.
 <ul>
 <li><a href="#orgad8476c">2.1. Package preparation</a></li>
 <li><a href="#org22035aa">2.2. Basic <code>zetteldeft</code> functions</a></li>
-<li><a href="#list-tags">2.3. Listing all tags</a></li>
+<li><a href="#org71249d4">2.3. Tags</a></li>
 <li><a href="#orgf7634d9">2.4. Exporting with Org-mode</a></li>
 <li><a href="#gathering-notes">2.5. Gathering notes</a></li>
 <li><a href="#visuals">2.6. Creating visuals</a></li>
@@ -397,9 +398,39 @@ Simply add <code>(setq ...)</code> there.</li>
 </div>
 </div>
 
-<div id="outline-container-org23ebcc2" class="outline-4">
-<h4 id="org23ebcc2"><span class="section-number-4">1.2.3</span> Installing directly from source</h4>
+<div id="outline-container-org0ee60f9" class="outline-4">
+<h4 id="org0ee60f9"><span class="section-number-4">1.2.3</span> <code>doom</code> installation</h4>
 <div class="outline-text-4" id="text-1-2-3">
+<p>
+Installing <code>zetteldeft</code> for <code>doom-emacs</code> is pretty simple.
+In <code>doom</code>, you can navigate to your config files by typing <code>SPC f p</code>.
+</p>
+
+<ol class="org-ol">
+<li><p>
+Within your <code>packages.el</code> file, add this line:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(package! zetteldeft)
+</pre>
+</div></li>
+
+<li><p>
+Within <code>init.el</code> uncomment <code>deft</code> (found under <code>:ui</code>) by deleting the semicolons in front of it.
+</p>
+
+<p>
+<code>avy</code> and <code>ace-window</code> are included by default with <code>doom</code>, so no need to install them.
+</p></li>
+
+<li>Refresh your <code>doom</code> session by typing <code>SPC h r r</code>, or by restarting emacs.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org23ebcc2" class="outline-4">
+<h4 id="org23ebcc2"><span class="section-number-4">1.2.4</span> Installing directly from source</h4>
+<div class="outline-text-4" id="text-1-2-4">
 <p>
 This package requires:
 </p>
@@ -751,7 +782,7 @@ In this section:
 <li><a href="#org3e390ed">2.2.1.7. <code>zetteldeft-search-tag</code> finds notes with selected tag</a></li>
 </ul>
 </li>
-<li><a href="#org01acb1f">2.2.2. IDs, links and tags</a>
+<li><a href="#org7174833">2.2.2. IDs and links</a>
 <ul>
 <li><a href="#id-links">2.2.2.1. A note on nomenclature, IDs and links</a></li>
 <li><a href="#org557fdbd">2.2.2.2. Helper function <code>zetteldeft--id-font-lock-setup</code></a></li>
@@ -762,8 +793,7 @@ In this section:
 <li><a href="#orgb434e4f">2.2.2.7. <code>zetteldeft-link-indicator</code> prepends ID links</a></li>
 <li><a href="#orge35ef38">2.2.2.8. <code>zetteldeft-link-suffix</code> is appended to ID links</a></li>
 <li><a href="#org4d5634b">2.2.2.9. <code>zetteldeft--link-regex</code> returns regex for links</a></li>
-<li><a href="#org286971a">2.2.2.10. <code>zetteldeft-tag-regex</code> for finding tags</a></li>
-<li><a href="#org65df8d0">2.2.2.11. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
+<li><a href="#org65df8d0">2.2.2.10. <code>zetteldeft--lift-id</code> filters the ID from a string</a></li>
 </ul>
 </li>
 <li><a href="#org29233ad">2.2.3. Finding &amp; linking files from minibuffer</a>
@@ -907,7 +937,7 @@ Based on snippet suggested by <code>saf-dmitry</code> on deft&rsquo;s <a href="h
 <span style="color: #78808f;"> - a link: a string between [[ brackets ]],</span>
 <span style="color: #78808f;"> - a tag matching `</span><span style="color: #81A1C1;">zetteldeft-tag-regex</span><span style="color: #78808f;">',</span>
 <span style="color: #78808f;"> - a link matching `</span><span style="color: #81A1C1;">zetteldeft-link-indicator</span><span style="color: #78808f;">',</span>
-<span style="color: #78808f;">    `</span><span style="color: #81A1C1;">zettteldeft-id-regex</span><span style="color: #78808f;">' and `</span><span style="color: #81A1C1;">zetteldeft-link-suffix</span><span style="color: #78808f;">',</span>
+<span style="color: #78808f;">    `</span><span style="color: #81A1C1;">zetteldeft-id-regex</span><span style="color: #78808f;">' and `</span><span style="color: #81A1C1;">zetteldeft-link-suffix</span><span style="color: #78808f;">',</span>
 <span style="color: #78808f;"> - or a word."</span>
  (<span style="color: #81A1C1;">let*</span> ((link-brackets-re <span style="color: #A3BE8C;">"\\[\\[</span><span style="color: #81A1C1; font-weight: bold;">\\</span><span style="color: #81A1C1; font-weight: bold;">(</span><span style="color: #A3BE8C;">[</span><span style="color: #81A1C1; font-weight: bold;">^</span><span style="color: #A3BE8C;">]]+</span><span style="color: #81A1C1; font-weight: bold;">\\</span><span style="color: #81A1C1; font-weight: bold;">)</span><span style="color: #A3BE8C;">\\]\\]"</span>)
         (link-id-re (zetteldeft--link-regex))
@@ -1028,9 +1058,7 @@ This relies on <code>zetteldeft--get-all-tags</code>, which is also used to gene
 (<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft-search-tag</span> ()
   <span style="color: #78808f;">"Prompt interactively for Zetteldeft tag and launch Deft search"</span>
   (<span style="color: #81A1C1;">interactive</span>)
-  (<span style="color: #81A1C1;">let*</span> ((tags (seq-sort 'string-lessp
-                         (seq-filter 'stringp
-                                     (zetteldeft--get-all-tags))))
+  (<span style="color: #81A1C1;">let*</span> ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read <span style="color: #A3BE8C;">"Tag to search for: "</span> tags)))
     (zetteldeft--search-global search-term t)))
 </pre>
@@ -1043,8 +1071,8 @@ As <code>zetteldeft--get-all-tags</code> parses the full set of files, this func
 </div>
 </div>
 
-<div id="outline-container-org01acb1f" class="outline-4">
-<h4 id="org01acb1f"><span class="section-number-4">2.2.2</span> IDs, links and tags</h4>
+<div id="outline-container-org7174833" class="outline-4">
+<h4 id="org7174833"><span class="section-number-4">2.2.2</span> IDs and links</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
 <div id="outline-container-id-links" class="outline-5">
@@ -1404,35 +1432,9 @@ The following function returns such a string.
 </div>
 </div>
 
-<div id="outline-container-org286971a" class="outline-5">
-<h5 id="org286971a"><span class="section-number-5">2.2.2.10</span> <code>zetteldeft-tag-regex</code> for finding tags</h5>
-<div class="outline-text-5" id="text-2-2-2-10">
-<p>
-This regular expression indicates what tags can look like.
-</p>
-
-<p>
-By default, tags start with a <code>#</code> or <code>@</code> and contain least one or more lower case letters.
-Dashes are allowed.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defcustom</span> <span style="color: #D8DEE9;">zetteldeft-tag-regex</span> <span style="color: #A3BE8C;">"[#@][[:alnum:]_-]+"</span>
-  <span style="color: #78808f;">"Regular expression for zetteldeft tags."</span>
-  <span style="color: #81A1C1;">:type</span> 'string
-  <span style="color: #81A1C1;">:group</span> 'zetteldeft)
-</pre>
-</div>
-
-<p>
-Note that this regular may trip over <code>#</code> symbols used in URLS.
-</p>
-</div>
-</div>
-
 <div id="outline-container-org65df8d0" class="outline-5">
-<h5 id="org65df8d0"><span class="section-number-5">2.2.2.11</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
-<div class="outline-text-5" id="text-2-2-2-11">
+<h5 id="org65df8d0"><span class="section-number-5">2.2.2.10</span> <code>zetteldeft--lift-id</code> filters the ID from a string</h5>
+<div class="outline-text-5" id="text-2-2-2-10">
 <p>
 Return the zetteldeft ID from any string.
 </p>
@@ -1719,7 +1721,7 @@ Now for the function itself.
   <span style="color: #78808f;">"Create a new deft file.</span>
 
 <span style="color: #78808f;">The filename is a Zetteldeft ID, appended by STR. The ID will be</span>
-<span style="color: #78808f;">generated, unles ID is provided.</span>
+<span style="color: #78808f;">generated, unless ID is provided.</span>
 <span style="color: #78808f;">A file title will be inserted in the newly created file wrapped in</span>
 <span style="color: #78808f;">`</span><span style="color: #81A1C1;">zetteldeft-title-prefix</span><span style="color: #78808f;">' and `</span><span style="color: #81A1C1;">zetteldeft-title-suffix</span><span style="color: #78808f;">'. Filename</span>
 <span style="color: #78808f;">(without extension) is added to the kill ring. When `</span><span style="color: #81A1C1;">evil</span><span style="color: #78808f;">' is loaded,</span>
@@ -2482,9 +2484,156 @@ The ID should lead to only one file, obviously, so an error is thrown when this 
 </div>
 </div>
 
-<div id="outline-container-list-tags" class="outline-3">
-<h3 id="list-tags"><span class="section-number-3">2.3</span> Listing all tags</h3>
-<div class="outline-text-3" id="text-list-tags">
+<div id="outline-container-org71249d4" class="outline-3">
+<h3 id="org71249d4"><span class="section-number-3">2.3</span> Tags</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-org42b9d4f" class="outline-4">
+<h4 id="org42b9d4f"><span class="section-number-4">2.3.1</span> A note on tags</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+Tags are a way to quickly retrieve a subsection of notes.
+To quickly insert a tag, use <code>zetteldeft-tag-insert</code>: it will prompt for a tag to be added at the end of the first line that starts with <code>zetteldeft-tag-line-prefix</code>.
+If, however, this variable is set to <code>nil</code>, tags will be inserted at point.
+Want to insert a tag at point even with <code>zetteldeft-tag-line-prefix</code> configured?
+Use <code>zetteldeft-tag-insert-at-point</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org286971a" class="outline-4">
+<h4 id="org286971a"><span class="section-number-4">2.3.2</span> <code>zetteldeft-tag-regex</code> for finding tags</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+This regular expression indicates what tags can look like so that they can be found.
+</p>
+
+<p>
+By default, tags start with a <code>#</code> or <code>@</code> and contain least one or more lower case letters.
+Dashes are allowed.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defcustom</span> <span style="color: #D8DEE9;">zetteldeft-tag-regex</span> <span style="color: #A3BE8C;">"[#@][[:alnum:]_-]+"</span>
+  <span style="color: #78808f;">"Regular expression for finding Zetteldeft tags."</span>
+  <span style="color: #81A1C1;">:type</span> 'string
+  <span style="color: #81A1C1;">:group</span> 'zetteldeft)
+</pre>
+</div>
+
+<p>
+Note that this regular may trip over <code>#</code> symbols used in URLS.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org960ae75" class="outline-4">
+<h4 id="org960ae75"><span class="section-number-4">2.3.3</span> <code>zetteldeft-tag-prefix</code> for inserting tag</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+Newly created Zetteldeft tags start with a <code>#</code> by default, but this can be customized.
+</p>
+
+<p>
+Note that this (currently) only affects how tags are <i>inserted</i> via <code>zetteldeft-tag-insert</code> &#x2013; it doesn&rsquo;t change which tags are <i>found</i>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defcustom</span> <span style="color: #D8DEE9;">zetteldeft-tag-prefix</span> <span style="color: #A3BE8C;">"#"</span>
+  <span style="color: #78808f;">"String prefix used when inserting new Zetteldeft tags."</span>
+  <span style="color: #81A1C1;">:type</span> 'string
+  <span style="color: #81A1C1;">:group</span> 'zetteldeft)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd0cc6c3" class="outline-4">
+<h4 id="orgd0cc6c3"><span class="section-number-4">2.3.4</span> <code>zetteldeft-tag-line-prefix</code> indicates where tags go</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+A string indicating the line where newly added tags should go.
+Tags are added at the end of the first line that matches this string.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defcustom</span> <span style="color: #D8DEE9;">zetteldeft-tag-line-prefix</span> <span style="color: #A3BE8C;">"# Tags"</span>
+  <span style="color: #78808f;">"String used to find the line where tags in Zetteldeft files should go."</span>
+  <span style="color: #81A1C1;">:type</span> 'string
+  <span style="color: #81A1C1;">:group</span> 'zetteldeft)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org362b2a2" class="outline-4">
+<h4 id="org362b2a2"><span class="section-number-4">2.3.5</span> <code>zetteldeft-tag-insert-at-point</code> inserts tag here</h4>
+<div class="outline-text-4" id="text-2-3-5">
+<p>
+Insert a Zetteldeft tag at point.
+When called interactively, prompt user to select a tag from the list of existing tags (or enter a new tag).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #6f7787;">;;;</span><span style="color: #6f7787;">###</span><span style="color: #EBCB8B;">autoload</span>
+(<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft-tag-insert-at-point</span> (tag)
+  <span style="color: #78808f;">"Insert TAG at point. Interactively, select an existing tag or provide new one."</span>
+  (<span style="color: #81A1C1;">interactive</span> (list (completing-read
+                        <span style="color: #A3BE8C;">"Tag to insert: "</span>
+                        (zetteldeft--get-all-sorted-tags))))
+  (<span style="color: #81A1C1;">unless</span> (string-prefix-p zetteldeft-tag-prefix tag)
+    (insert zetteldeft-tag-prefix))
+  (insert tag))
+</pre>
+</div>
+
+<p>
+The <code>unless</code> ensures that a newly entered tag includes the tag prefix.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org438721d" class="outline-4">
+<h4 id="org438721d"><span class="section-number-4">2.3.6</span> <code>zetteldeft-tag-insert</code> to insert tag at tag line</h4>
+<div class="outline-text-4" id="text-2-3-6">
+<p>
+Append a Zetteldeft tag to the tag line (or, when the tag line isn&rsquo;t found, insert it at point).
+The tag line is the first line that starts with <code>zetteldeft-tag-line-prefix</code>.
+The user is prompted to select a tag from the list of existing tags, or enter a new one.
+</p>
+
+<p>
+To always insert tag at point, set <code>zetteldeft-tag-line-prefix</code> to nil.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #6f7787;">;;;</span><span style="color: #6f7787;">###</span><span style="color: #EBCB8B;">autoload</span>
+(<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft-tag-insert</span> ()
+  <span style="color: #78808f;">"Select existing tag or enter new one to insert in current Zetteldeft note.</span>
+
+<span style="color: #78808f;">The tag is appended to the first line starting with `</span><span style="color: #81A1C1;">zetteldeft-tag-line-prefix</span><span style="color: #78808f;">'.</span>
+<span style="color: #78808f;">If this variable is nil, or tag line is not found, insert tag at point."</span>
+  (<span style="color: #81A1C1;">interactive</span>)
+  (zetteldeft--check)
+  (<span style="color: #81A1C1;">let</span> ((dest (<span style="color: #81A1C1;">when</span> zetteldeft-tag-line-prefix
+                (<span style="color: #81A1C1;">save-excursion</span>
+                  (goto-char (point-min))
+                  (re-search-forward zetteldeft-tag-line-prefix nil t)))))
+    (<span style="color: #81A1C1;">if</span> dest
+        (<span style="color: #81A1C1;">save-excursion</span> 
+          (goto-char dest)
+          (end-of-line)
+          (insert <span style="color: #A3BE8C;">" "</span>)
+          (call-interactively 'zetteldeft-tag-insert-at-point))
+      (call-interactively 'zetteldeft-tag-insert-at-point))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-list-tags" class="outline-4">
+<h4 id="list-tags"><span class="section-number-4">2.3.7</span> Listing all tags</h4>
+<div class="outline-text-4" id="text-list-tags">
 <p>
 Let&rsquo;s display all tags in Zetteldeft.
 </p>
@@ -2494,9 +2643,9 @@ With <code>zetteldeft-tag-buffer</code> they are all gathered in a buffer, inclu
 </p>
 </div>
 
-<div id="outline-container-org29a54da" class="outline-4">
-<h4 id="org29a54da"><span class="section-number-4">2.3.1</span> <code>zetteldeft-tag-buffer</code> puts all tags in a buffer</h4>
-<div class="outline-text-4" id="text-2-3-1">
+<div id="outline-container-org29a54da" class="outline-5">
+<h5 id="org29a54da"><span class="section-number-5">2.3.7.1</span> <code>zetteldeft-tag-buffer</code> puts all tags in a buffer</h5>
+<div class="outline-text-5" id="text-2-3-7-1">
 <p>
 The name of the buffer we&rsquo;ll be using:
 </p>
@@ -2535,7 +2684,8 @@ This is what <code>zetteldeft--get-all-tags</code> achieves.</li>
                         zdTag
                         (lax-plist-get tagList zdTag)))))
     (<span style="color: #81A1C1;">unless</span> (eq major-mode 'org-mode) (org-mode))
-    (sort-lines nil (point-min) (point-max))))
+    (sort-lines nil (point-min) (point-max))
+    (goto-char (point-min))))
 </pre>
 </div>
 
@@ -2546,9 +2696,9 @@ To only act on the strings, we use a <code>when (stringp zdTag)</code>.
 </div>
 </div>
 
-<div id="outline-container-org71e73c0" class="outline-4">
-<h4 id="org71e73c0"><span class="section-number-4">2.3.2</span> <code>zetteldeft--get-all-tags</code> lists all tags</h4>
-<div class="outline-text-4" id="text-2-3-2">
+<div id="outline-container-org71e73c0" class="outline-5">
+<h5 id="org71e73c0"><span class="section-number-5">2.3.7.2</span> <code>zetteldeft--get-all-tags</code> lists all tags</h5>
+<div class="outline-text-5" id="text-2-3-7-2">
 <p>
 First, we need a variable to store the tags in.
 </p>
@@ -2580,17 +2730,35 @@ Extracting tags with <code>zetteldeft--extract-tags</code>.
 </div>
 </div>
 
-<div id="outline-container-orgad8229d" class="outline-4">
-<h4 id="orgad8229d"><span class="section-number-4">2.3.3</span> Tag extracting functions</h4>
-<div class="outline-text-4" id="text-2-3-3">
+<div id="outline-container-orgfea8830" class="outline-5">
+<h5 id="orgfea8830"><span class="section-number-5">2.3.7.3</span> <code>zetteldeft--get-all-sorted-tags</code> lists all sorted tags</h5>
+<div class="outline-text-5" id="text-2-3-7-3">
+<p>
+An expansion of the previous function, which ensures found tags are sorted.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #81A1C1;">defun</span> <span style="color: #8FBCBB;">zetteldeft--get-all-sorted-tags</span> ()
+  <span style="color: #78808f;">"Return a sorted plist of all the tags found in zetteldeft files."</span>
+  (seq-sort 'string-lessp
+            (seq-filter 'stringp
+                        (zetteldeft--get-all-tags))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgad8229d" class="outline-5">
+<h5 id="orgad8229d"><span class="section-number-5">2.3.7.4</span> Tag extracting functions</h5>
+<div class="outline-text-5" id="text-2-3-7-4">
 <p>
 Some utility functions to achieve all of this.
 </p>
 </div>
 
-<div id="outline-container-org08c3f77" class="outline-5">
-<h5 id="org08c3f77"><span class="section-number-5">2.3.3.1</span> <code>zetteldeft--tag-format</code> adjusts the tag finding regex</h5>
-<div class="outline-text-5" id="text-2-3-3-1">
+<ol class="org-ol">
+<li><a id="org08c3f77"></a><code>zetteldeft--tag-format</code> adjusts the tag finding regex<br>
+<div class="outline-text-6" id="text-2-3-7-4-1">
 <p>
 The regular expression used to filter out tags, <code>zetteldeft-tag-regex</code> works, but doesn&rsquo;t filter strictly enough.
 Hashtags used in URLs are also found, for example.
@@ -2612,11 +2780,10 @@ This means that search results now (could) include a space in front of the tag.
 These spaces are removed in the <code>zetteldeft--extract-tags</code> function, when adding the found tags to the tag buffer.
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-org3187a60" class="outline-5">
-<h5 id="org3187a60"><span class="section-number-5">2.3.3.2</span> <code>zetteldeft--extract-tags</code> from a file</h5>
-<div class="outline-text-5" id="text-2-3-3-2">
+<li><a id="org3187a60"></a><code>zetteldeft--extract-tags</code> from a file<br>
+<div class="outline-text-6" id="text-2-3-7-4-2">
 <p>
 To extract tags from a single file:
 </p>
@@ -2642,11 +2809,10 @@ To extract tags from a single file:
 </pre>
 </div>
 </div>
-</div>
+</li>
 
-<div id="outline-container-orgfbf5f66" class="outline-5">
-<h5 id="orgfbf5f66"><span class="section-number-5">2.3.3.3</span> <code>zetteldeft--tag-count</code> increases count of a tag in plist</h5>
-<div class="outline-text-5" id="text-2-3-3-3">
+<li><a id="orgfbf5f66"></a><code>zetteldeft--tag-count</code> increases count of a tag in plist<br>
+<div class="outline-text-6" id="text-2-3-7-4-3">
 <p>
 Check if a provided tag is already in the tag property list.
 If it isn&rsquo;t add it and set counter to 1.
@@ -2666,6 +2832,8 @@ If it is, increase its counter.
 </pre>
 </div>
 </div>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -3355,7 +3523,7 @@ The resulting graph looks something like this:
 </p>
 
 
-<figure id="orgd6ca91f">
+<figure id="org28689f1">
 <img src="./img/zetteldeft-graph.jpg" alt="zetteldeft-graph.jpg">
 
 </figure>
@@ -3686,7 +3854,8 @@ Other setups, for <code>evil</code> or <code>spacemacs</code>, are suggested in 
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d B"</span>) 'zetteldeft-new-file-and-backlink)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d b"</span>) 'zetteldeft-backlink-add)
   (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d r"</span>) 'zetteldeft-file-rename)
-  (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d x"</span>) 'zetteldeft-count-words))
+  (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d x"</span>) 'zetteldeft-count-words)
+  (global-set-key (kbd <span style="color: #A3BE8C;">"C-c d #"</span>) 'zetteldeft-tag-insert))
 </pre>
 </div>
 </div>
@@ -3817,6 +3986,11 @@ Calling <code>zetteldeft-set-classic-keybindings</code> will set the following (
 </tr>
 
 <tr>
+<td class="org-left"><code>C-c d #</code></td>
+<td class="org-left"><code>zetteldeft-tag-insert</code></td>
+</tr>
+
+<tr>
 <td class="org-left"><code>C-c d T</code></td>
 <td class="org-left"><code>zetteldeft-tag-buffer</code></td>
 </tr>
@@ -3902,6 +4076,7 @@ It relies on <code>general.el</code> for modal editing with <code>evil</code> an
   <span style="color: #A3BE8C;">"dl"</span> '(zetteldeft-avy-link-search <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"avy link search"</span>)
   <span style="color: #A3BE8C;">"dt"</span> '(zetteldeft-avy-tag-search <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"avy tag search"</span>)
   <span style="color: #A3BE8C;">"dT"</span> '(zetteldeft-tag-buffer <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"tag list"</span>)
+  <span style="color: #A3BE8C;">"d#"</span> '(zetteldeft-tag-insert <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"insert tag"</span>)
   <span style="color: #A3BE8C;">"d/"</span> '(zetteldeft-search-tag <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"search tag"</span>)
   <span style="color: #A3BE8C;">"di"</span> '(zetteldeft-find-file-id-insert <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"insert id"</span>)
   <span style="color: #A3BE8C;">"dI"</span> '(zetteldeft-find-file-full-title-insert <span style="color: #81A1C1;">:wk</span> <span style="color: #A3BE8C;">"insert full title"</span>)
