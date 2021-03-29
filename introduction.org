@@ -90,7 +90,7 @@ That's pretty much all there is to it, for the basics at least.
 All of this is done in plain text.
 Org-mode by default, but it really is formatting agnostic.
 
-A way to further organize your notes, is to use tags, indicated with a =#=.
+A way to further organize your notes, is to use tags, indicated with a =#= (or another string, it's all customizable).
 In my Zettelkasten, for example, I use =#zetteldeft= for all notes related to...
 Well, you can guess.
 
@@ -130,6 +130,7 @@ Or simply hit =C-c d D= to open Deft and start a full text search.
 To quickly find out which notes *refer* to the current note, use =C-c d c= (which is =zetteldeft-search-current-id=).
 
 To search a *tag*, hit =C-c d t= and select a highlighted tag, similar to how you follow a link.
+Easily insert tags with =C-c d #= and select one from the list (or enter a new one).
 To generate a *list* of tags currently in your Zettelkasten, use =C-c d T=.
 Quickly launch a search for a tag of choice with =C-c d /=.
 
@@ -157,6 +158,7 @@ Personally, I prefer vim style bindings behind a leader key, set up with general
 | =C-c d l= | =zetteldeft-avy-link-search=             |
 | =C-c d t= | =zetteldeft-avy-tag-search=              |
 | =C-c d T= | =zetteldeft-tag-buffer=                  |
+| =C-c d #= | =zetteldeft-tag-insert=                |
 | =C-c d i= | =zetteldeft-find-file-id-insert=         |
 | =C-c d I= | =zetteldeft-find-file-full-title-insert= |
 | =C-c d o= | =zetteldeft-find-file=                   |
