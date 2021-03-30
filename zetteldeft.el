@@ -1,6 +1,6 @@
 ;;; zetteldeft.el --- Turn deft into a zettelkasten system -*- lexical-binding: t -*-
 
-;; Copyright (C) 2018-2020  EFLS
+;; Copyright (C) 2018-2021  EFLS
 
 ;; Author: EFLS <Elias Storms>
 ;; URL: https://efls.github.io/zetteldeft/
