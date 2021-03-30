@@ -314,6 +314,7 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
   "Search via `deft' with `thing-at-point' as filter.
 Thing can be a double-bracketed link, a hashtag, or a word."
   (interactive)
+  (zetteldeft--ensure-deft)
   (let ((string (zetteldeft--get-thing-at-point)))
    (if string
        (zetteldeft--search-global string t)
@@ -339,6 +340,7 @@ Steps:
   "Search deft with the id of the current file as filter.
 Open if there is only one result."
   (interactive)
+  (zetteldeft--ensure-deft)
   (zetteldeft--search-global
     (zetteldeft--current-id) t))
 #+END_SRC
@@ -449,6 +451,7 @@ This relies on =zetteldeft--get-all-tags=, which is also used to generate the ta
 (defun zetteldeft-search-tag ()
   "Prompt interactively for Zetteldeft tag and launch Deft search"
   (interactive)
+  (zetteldeft--ensure-deft)
   (let* ((tags (zetteldeft--get-all-sorted-tags))
          (search-term (completing-read "Tag to search for: " tags)))
     (zetteldeft--search-global search-term t)))
@@ -775,6 +778,7 @@ A function to open up this note is trivial.
   "Move to a designated home note.
 Set `zetteldeft-home-id' to an ID string of your home note."
   (interactive)
+  (zetteldeft--ensure-deft)
   (if (stringp zetteldeft-home-id)
       (zetteldeft-find-file
         (zetteldeft--id-to-full-path zetteldeft-home-id))
@@ -857,6 +861,7 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
+  (zetteldeft--ensure-deft)
   (insert zetteldeft-link-indicator
           (zetteldeft--lift-id file)
           zetteldeft-link-suffix
@@ -989,6 +994,7 @@ When point is not in a link, call =avy= to jump to and open a selected link.
   "Follows zetteldeft link to a file if point is on a link.
 Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
   (interactive)
+  (zetteldeft--ensure-deft)
   (if (thing-at-point-looking-at (zetteldeft--link-regex))
       (zetteldeft--search-filename
         (zetteldeft--lift-id (zetteldeft--get-thing-at-point)))
@@ -1007,6 +1013,7 @@ Since =avy-jump= returns =t= after each succesful jump (and =zetteldeft-avy-file
   "Browse your notes with avy.
 Keep calling `zetteldeft-avy-file-search' in a loop."
   (interactive)
+  (zetteldeft--ensure-deft)
   (let ((avy-single-candidate-jump nil))
     (while (zetteldeft-avy-file-search)
       (message "Browsing in Zetteldeft!"))))
@@ -1176,6 +1183,21 @@ The following function launches deft, clears the filter and enters =evil-insert-
   (deft-filter-clear)
   (when (featurep 'evil) (evil-insert-state)))
 #+END_SRC
+
+**** =zetteldeft--ensure-deft= checks whether deft is loaded
+
+Zetteldeft expects Deft to be loaded for many of its functions to work.
+Let's include a function that ensures just that -- or, more accurately, that it has hashed the notes.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--ensure-deft ()
+  "Initialize the Deft cache if it isn't already."
+  (unless deft-hash-contents
+    (require 'deft)
+    (message "Launching Deft...")
+    (deft-cache-initialize)
+    (deft-cache-update-all)))
+#+end_src
 
 **** =zetteldeft--check= checks if file is part of zetteldeft
 
