@@ -101,6 +101,9 @@ This can be
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
   (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  ;; Switch to Deft window if buffer is currently visible
+  (when (deft-buffer-visible-p)
+    (select-window (deft-buffer-visible-p)))
   ;; Call deft search on the filter string
   (let ((deft-incremental-search t))
    (deft)

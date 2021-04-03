@@ -390,6 +390,9 @@ Based on snippet suggested by =saf-dmitry= on deft's [[https://github.com/jrblev
 If there is only one result, open that file (unless DNTOPN is true)."
   ;; Sanitize the filter string
   (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+  ;; Switch to Deft window if buffer is currently visible
+  (when (deft-buffer-visible-p)
+    (select-window (deft-buffer-visible-p)))
   ;; Call deft search on the filter string
   (let ((deft-incremental-search t))
    (deft)
@@ -399,6 +402,9 @@ If there is only one result, open that file (unless DNTOPN is true)."
    (when (eq (length deft-current-files) 1)
      (deft-open-file (car deft-current-files)))))
 #+END_SRC
+
+When doing a global search, the Deft buffer is shown.
+To prevent that the Deft buffer is shown in multiple windows, first switch to the relevant window if the Deft buffer is already visible somewhere.
 
 **** =zetteldeft--search-filename= for string
 
