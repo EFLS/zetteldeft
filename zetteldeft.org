@@ -1641,6 +1641,41 @@ If this variable is nil, or tag line is not found, insert tag at point."
       (call-interactively 'zetteldeft-tag-insert-at-point))))
 #+END_SRC
 
+*** =zetteldeft-tag-remove= to remove tag from current note
+
+Easily remove a tag from the currently visited note.
+Prompt for a tag via =completing-read= and remove the /first/ instance of it.
+
+Steps:
+ 1. Get tags in current buffer
+ 2. Select one of these tags
+ 3. Search buffer for tag string
+ 4. Delete first instance of found tag (including potential space before)
+
+#+begin_src emacs-lisp
+(defun zetteldeft-tag-remove ()
+  "Prompt for a tag to remove from the current Zetteldeft note.
+Only the first instance of the selected tag is removed."
+  (interactive)
+  (zetteldeft--check)
+  ; Extract tags of current file into `zetteldeft--tag-list'
+  (setq zetteldeft--tag-list (list))
+  (save-buffer)
+  (zetteldeft--extract-tags (buffer-file-name))
+  ; Select a tag from that list
+  (let* ((tag (completing-read
+                "Tag to remove: "
+                (seq-filter 'stringp zetteldeft--tag-list))))
+    ; Find and remove first instance of that tag
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward tag nil t)
+      (delete-region (point) (re-search-backward tag nil t))
+      ; remove potential empty space before tag
+      (backward-char)
+      (when (looking-at " ") (delete-char 1)))))
+#+end_src
+
 *** Listing all tags
 :PROPERTIES:
 :CUSTOM_ID: list-tags
@@ -2452,7 +2487,8 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
   (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
-  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert))
+  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert)
+  (global-set-key (kbd "C-c d $") 'zetteldeft-tag-remove))
 #+END_SRC
 
 ** End of package
@@ -2506,6 +2542,7 @@ Calling =zetteldeft-set-classic-keybindings= will set the following (see [[#kb-d
 | =C-c d l=     | =zetteldeft-avy-link-search=             |
 | =C-c d t=     | =zetteldeft-avy-tag-search=              |
 | =C-c d #=     | =zetteldeft-tag-insert=                  |
+| =C-c d $=     | =zetteldeft-tag-remove=                  |
 | =C-c d T=     | =zetteldeft-tag-buffer=                  |
 | =C-c d /=     | =zetteldeft-search-tag=                  |
 | =C-c d i=     | =zetteldeft-find-file-id-insert=         |
@@ -2546,6 +2583,7 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
   "dT" '(zetteldeft-tag-buffer :wk "tag list")
   "d#" '(zetteldeft-tag-insert :wk "insert tag")
+  "d$" '(zetteldeft-tag-remove :wk "remove tag")
   "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")

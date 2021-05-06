@@ -708,6 +708,28 @@ If this variable is nil, or tag line is not found, insert tag at point."
           (call-interactively 'zetteldeft-tag-insert-at-point))
       (call-interactively 'zetteldeft-tag-insert-at-point))))
 
+(defun zetteldeft-tag-remove ()
+  "Prompt for a tag to remove from the current Zetteldeft note.
+Only the first instance of the selected tag is removed."
+  (interactive)
+  (zetteldeft--check)
+  ; Extract tags of current file into `zetteldeft--tag-list'
+  (setq zetteldeft--tag-list (list))
+  (save-buffer)
+  (zetteldeft--extract-tags (buffer-file-name))
+  ; Select a tag from that list
+  (let* ((tag (completing-read
+                "Tag to remove: "
+                (seq-filter 'stringp zetteldeft--tag-list))))
+    ; Find and remove first instance of that tag
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward tag nil t)
+      (delete-region (point) (re-search-backward tag nil t))
+      ; remove potential empty space before tag
+      (backward-char)
+      (when (looking-at " ") (delete-char 1)))))
+
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
 ;;;###autoload
