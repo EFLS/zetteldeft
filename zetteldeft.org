@@ -1966,7 +1966,7 @@ and `zetteldeft-insert-list-links-missing'."
 Inserts for given file a link id and title as a list entry.
 
 Only attempt to insert the ID if one is found.
-When there isn't (for example when the filename somehow doesn't contain an ID, don't try to insert it or we'll get an error.
+When there isn't (for example when the filename somehow doesn't contain an ID), don't try to insert it or we'll get an error.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--list-entry-file-link (zdFile)
