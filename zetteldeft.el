@@ -318,23 +318,29 @@ ID and title on a new line."
 
 (declare-function evil-insert-state "evil")
 
+(defcustom zetteldeft-new-filename-to-kill-ring nil
+  "Add new filename to kill ring?"
+  :type 'boolean
+  :group 'zetteldeft)
+
 ;;;###autoload
 (defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
 
 The filename is a Zetteldeft ID, appended by STR. The ID will be
-generated, unless ID is provided.
-A file title will be inserted in the newly created file wrapped in
-`zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
-(without extension) is added to the kill ring. When `evil' is loaded,
-change to insert state."
+generated, unless ID is provided. A file title will be inserted in the
+newly created file wrapped in `zetteldeft-title-prefix' and
+`zetteldeft-title-suffix'. When `zetteldeft-new-filename-to-kill-ring'
+is non-nil, the filename (without extension) is added to the kill
+ring. When `evil' is loaded, change to insert state."
   (interactive (list (read-string "Note title: ")))
   (let* ((deft-use-filename-as-title t)
          (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
-  (kill-new zdName)
+  (when zetteldeft-new-filename-to-kill-ring
+    (kill-new zdName))
   (zetteldeft--insert-title str)
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
