@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *13 May*: Introduce & customize =zetteldeft--insert-link=
  - *11 Mar*: Add =zetteldeft-tag-insert=, thanks to puzan
  - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
  - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
@@ -743,6 +744,73 @@ Here is a little test.
 #+RESULTS:
 : 2018-11-09-1934
 
+**** =zetteldeft--insert-link= inserts a link to a note
+
+Inserts a link to a note.
+Requires an ID as argument and an optional title.
+
+To format the inserted link, customize the =zetteldeft-insert-link-function= variable.
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--insert-link (id &optional title)
+  "Insert a link to Zetteldeft note ID.
+If TITLE is included, use it as link text."
+  (interactive)
+  (funcall zetteldeft-insert-link-function id title))
+#+END_SRC
+
+**** =zetteldeft-insert-link-function= customizes formatting of links
+
+This variable points to the function used to insert links.
+It can be customized to use a different link format.
+
+To customize, point it to a custom function.
+The custom function should take two parameters:
+ - a required =id=: the note identifier
+ - an optional =title=: used as descriptive link text
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-insert-link-function
+           #'zetteldeft--insert-link-zd-style
+  "The function to use when inserting note links.
+
+Use either
+ - `zetteldeft--insert-link-zd-style' for Zetteldeft type links
+ - `zetteldeft--insert-link-org-style' for Org-mode zdlink: links
+ - A custom function that takes two arguments: an ID and an optional title."
+  :type 'function
+  :options '(zetteldeft--insert-link-zd-style
+             zetteldeft--insert-link-org-style)
+  :group 'zetteldeft)
+#+end_src
+
+The default function is =zetteldeft--insert-link-zd-style=, which inserts:
+ - the =zetteldeft-link-indicator= (=§= by default)
+ - the ID of the destination note
+ - the =zetteldeft-link-suffix= (nil by default)
+ - a space and the title (if provided)
+
+#+begin_src emacs-lisp
+(defun zetteldeft--insert-link-zd-style (id &optional title)
+  "Insert a Zetteldeft link to note with provided ID."
+  (insert zetteldeft-link-indicator
+          id
+          zetteldeft-link-suffix)
+  (when title (insert " " title)))
+#+END_SRC
+
+Alternatively, when using Org-mode style links, =zetteldeft--insert-link-org-style= can be used.
+It inserts a formatted Org-link with =zdlink:= type.
+When no title is provided, the link itself is used as a descriptor.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--insert-link-org-style (id &optional title)
+  "Insert a Zetteldeft link in Org-mode format as zdlink: type."
+  (if title
+      (insert "[[zdlink:" id "][" title "]")
+    (insert "[[zdlink:" id "]]")))
+#+end_src
+
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
 
@@ -789,7 +857,8 @@ Set `zetteldeft-home-id' to an ID string of your home note."
 
 **** =zetteldeft-find-file-id-insert= inserts file id
 
-Select file from minibuffer and insert its link, prepended by =§= (or =zetteldeft-link-indicator= to be precise).
+Select file from minibuffer and insert a link to it.
+Uses just the ID and doesn't include a title description.
 
 Based on =deft-find-file=.
 
@@ -800,9 +869,7 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator
-                  (zetteldeft--lift-id file)
-                  zetteldeft-link-suffix)))
+  (zetteldeft--insert-link (zetteldeft--lift-id file)))
 #+END_SRC
 
 **** =zetteldeft-backlink-add= adds a backlink to note
@@ -835,14 +902,11 @@ ID and title on a new line."
     (when (re-search-forward
             (regexp-quote zetteldeft-title-prefix) nil t))
     (forward-line)
-    (insert zetteldeft-backlink-prefix
-            (concat zetteldeft-link-indicator
-                    (zetteldeft--lift-id file)
-                    zetteldeft-link-suffix
-                    " "
-                    (zetteldeft--lift-file-title
-                      (concat deft-directory file)))
-            "\n"))
+    (insert zetteldeft-backlink-prefix)
+    (zetteldeft--insert-link
+      (zetteldeft--lift-id file)
+      (zetteldeft--lift-file-title (concat deft-directory file)))
+    (insert "\n"))
   (message "Backlink added."))
 #+END_SRC
 
@@ -852,7 +916,7 @@ Potential enhancements include:
 
 **** =zetteldeft-find-file-full-title-insert= inserts id and title
 
-Select file from minibuffer and insert its link, prepended by =§= (or =zetteldeft-link-indicator=).
+Select file from minibuffer and insert a link to it, including th enote's title as description.
 
 Based on =deft-find-file=.
 
@@ -863,11 +927,9 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert zetteldeft-link-indicator
-          (zetteldeft--lift-id file)
-          zetteldeft-link-suffix
-          " "
-          (zetteldeft--lift-file-title (concat deft-directory file))))
+  (zetteldeft--insert-link
+    (zetteldeft--lift-id file)
+    (zetteldeft--lift-file-title (concat deft-directory file))))
 #+END_SRC
 
 *** New file creation
@@ -954,10 +1016,9 @@ The generated ID is passed to =zetteldeft-new-file=.
 Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
   (let ((zdId (zetteldeft-generate-id str)))
-    (insert zetteldeft-link-indicator
-            zdId
-            zetteldeft-link-suffix
-            " " str)
+    (zetteldeft--insert-link
+      (zetteldeft--lift-id file)
+      str)
     (zetteldeft-new-file str zdId)))
 #+END_SRC
 
@@ -978,18 +1039,10 @@ Store a link, generate a new one, and we're done.
   (interactive (list (read-string "Note title: ")))
   (let ((ogId (zetteldeft--current-id))
         (zdId (zetteldeft-generate-id str)))
-    (insert zetteldeft-link-indicator
-            zdId
-            zetteldeft-link-suffix
-            " " str)
+    (zetteldeft--insert-link zdID str)
     (zetteldeft-new-file str zdId)
     (newline)
-    (insert zetteldeft-backlink-prefix
-            zetteldeft-link-indicator
-            ogId
-            zetteldeft-link-suffix
-            " "
-            (zetteldeft--id-to-title ogId))))
+    (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
 #+END_SRC
 
 *** Moving around with =avy=
@@ -1183,10 +1236,7 @@ Now for the function itself.
       (insert (format " - %s in: " link))
       (deft-filter link t)
       (dolist (source (deft-current-files))
-        (insert (format "%s%s%s "
-                        zetteldeft-link-indicator
-                        (zetteldeft--lift-id source)
-                        zetteldeft-link-suffix)))
+        (zetteldeft--insert-link (zetteldeft--lift-id source)))
       (insert "\n")))
   (unless (eq major-mode 'org-mode) (org-mode)))
 #+end_src
@@ -1946,13 +1996,9 @@ zetteldeft directory."
     ;; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
-          (insert " - "
-                  zetteldeft-link-indicator
-                  zdID
-                  zetteldeft-link-suffix
-                  " "
-                  (zetteldeft--id-to-title zdID)
-                  "\n"))
+          (insert " - ")
+          (zetteldeft--insert-link zdID (zetteldeft--id-to-title zdID))
+          (insert "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 #+END_SRC
