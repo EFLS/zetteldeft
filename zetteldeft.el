@@ -269,7 +269,7 @@ Use either
 (defun zetteldeft--insert-link-org-style (id &optional title)
   "Insert a Zetteldeft link in Org-mode format as zdlink: type."
   (if title
-      (insert "[[zdlink:" id "][" title "]")
+      (insert "[[zdlink:" id "][" title "]]")
     (insert "[[zdlink:" id "]]")))
 
 ;;;###autoload
