@@ -775,27 +775,27 @@ Note that for the best results, link descriptions should include a =zetteldeft-l
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-insert-link-function
-           #'zetteldeft--insert-link-zd-style
+           #'zetteldeft-insert-link-zd-style
   "The function to use when inserting note links.
 
 Use either
- - `zetteldeft--insert-link-zd-style' for Zetteldeft type links
- - `zetteldeft--insert-link-org-style' for Org-mode zdlink: links
+ - `zetteldeft-insert-link-zd-style' for Zetteldeft type links
+ - `zetteldeft-insert-link-org-style' for Org-mode zdlink: links
  - A custom function that takes two arguments: an ID and an optional title."
   :type 'function
-  :options '(zetteldeft--insert-link-zd-style
-             zetteldeft--insert-link-org-style)
+  :options '(zetteldeft-insert-link-zd-style
+             zetteldeft-insert-link-org-style)
   :group 'zetteldeft)
 #+end_src
 
-The default function is =zetteldeft--insert-link-zd-style=, which inserts:
+The default function is =zetteldeft-insert-link-zd-style=, which inserts:
  - the =zetteldeft-link-indicator= (=§= by default)
  - the ID of the destination note
  - the =zetteldeft-link-suffix= (nil by default)
  - a space and the title (if provided)
 
 #+begin_src emacs-lisp
-(defun zetteldeft--insert-link-zd-style (id &optional title)
+(defun zetteldeft-insert-link-zd-style (id &optional title)
   "Insert a Zetteldeft link to note with provided ID."
   (insert zetteldeft-link-indicator
           id
@@ -803,12 +803,12 @@ The default function is =zetteldeft--insert-link-zd-style=, which inserts:
   (when title (insert " " title)))
 #+END_SRC
 
-Alternatively, when using Org-mode style links, =zetteldeft--insert-link-org-style= can be used.
+Alternatively, when using Org-mode style links, =zetteldeft-insert-link-org-style= can be used.
 It inserts a formatted Org-link with =zdlink:= type.
 When no title is provided, the link itself is used as a descriptor.
 
 #+begin_src emacs-lisp
-(defun zetteldeft--insert-link-org-style (id &optional title)
+(defun zetteldeft-insert-link-org-style (id &optional title)
   "Insert a Zetteldeft link in Org-mode format as zdlink: type."
   (if title
       (insert "[[zdlink:" id "][" title "]]")

@@ -242,31 +242,33 @@ This is done with the regular expression stored in
 
 (defun zetteldeft--insert-link (id &optional title)
   "Insert a link to Zetteldeft note ID.
-If TITLE is included, use it as link text."
+If TITLE is included, use it as link text. To customize how inserted
+links are formatted, change the `zetteldeft-insert-link-function'
+variable."
   (interactive)
   (funcall zetteldeft-insert-link-function id title))
 
 (defcustom zetteldeft-insert-link-function
-           #'zetteldeft--insert-link-zd-style
+           #'zetteldeft-insert-link-zd-style
   "The function to use when inserting note links.
 
 Use either
- - `zetteldeft--insert-link-zd-style' for Zetteldeft type links
- - `zetteldeft--insert-link-org-style' for Org-mode zdlink: links
+ - `zetteldeft-insert-link-zd-style' for Zetteldeft type links
+ - `zetteldeft-insert-link-org-style' for Org-mode zdlink: links
  - A custom function that takes two arguments: an ID and an optional title."
   :type 'function
-  :options '(zetteldeft--insert-link-zd-style
-             zetteldeft--insert-link-org-style)
+  :options '(zetteldeft-insert-link-zd-style
+             zetteldeft-insert-link-org-style)
   :group 'zetteldeft)
 
-(defun zetteldeft--insert-link-zd-style (id &optional title)
+(defun zetteldeft-insert-link-zd-style (id &optional title)
   "Insert a Zetteldeft link to note with provided ID."
   (insert zetteldeft-link-indicator
           id
           zetteldeft-link-suffix)
   (when title (insert " " title)))
 
-(defun zetteldeft--insert-link-org-style (id &optional title)
+(defun zetteldeft-insert-link-org-style (id &optional title)
   "Insert a Zetteldeft link in Org-mode format as zdlink: type."
   (if title
       (insert "[[zdlink:" id "][" title "]]")
