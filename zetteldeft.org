@@ -754,7 +754,9 @@ To format the inserted link, customize the =zetteldeft-insert-link-function= var
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft--insert-link (id &optional title)
   "Insert a link to Zetteldeft note ID.
-If TITLE is included, use it as link text."
+If TITLE is included, use it as link text. To customize how inserted
+links are formatted, change the `zetteldeft-insert-link-function'
+variable."
   (interactive)
   (funcall zetteldeft-insert-link-function id title))
 #+END_SRC
@@ -764,10 +766,12 @@ If TITLE is included, use it as link text."
 This variable points to the function used to insert links.
 It can be customized to use a different link format.
 
-To customize, point it to a custom function.
+To customize beyond the options provided below, point this variable to a custom function.
 The custom function should take two parameters:
  - a required =id=: the note identifier
  - an optional =title=: used as descriptive link text
+
+Note that for the best results, link descriptions should include a =zetteldeft-link-indicator=, so that the =avy= functions for jumping to links will recognize the links provided.
 
 #+BEGIN_SRC emacs-lisp
 (defcustom zetteldeft-insert-link-function
