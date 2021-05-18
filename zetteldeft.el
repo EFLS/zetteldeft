@@ -240,6 +240,40 @@ This is done with the regular expression stored in
     (when (re-search-forward zetteldeft-id-regex nil t -1)
       (match-string 0))))
 
+(defun zetteldeft--insert-link (id &optional title)
+  "Insert a link to Zetteldeft note ID.
+If TITLE is included, use it as link text. To customize how inserted
+links are formatted, change the `zetteldeft-insert-link-function'
+variable."
+  (interactive)
+  (funcall zetteldeft-insert-link-function id title))
+
+(defcustom zetteldeft-insert-link-function
+           #'zetteldeft-insert-link-zd-style
+  "The function to use when inserting note links.
+
+Use either
+ - `zetteldeft-insert-link-zd-style' for Zetteldeft type links
+ - `zetteldeft-insert-link-org-style' for Org-mode zdlink: links
+ - A custom function that takes two arguments: an ID and an optional title."
+  :type 'function
+  :options '(zetteldeft-insert-link-zd-style
+             zetteldeft-insert-link-org-style)
+  :group 'zetteldeft)
+
+(defun zetteldeft-insert-link-zd-style (id &optional title)
+  "Insert a Zetteldeft link to note with provided ID."
+  (insert zetteldeft-link-indicator
+          id
+          zetteldeft-link-suffix)
+  (when title (insert " " title)))
+
+(defun zetteldeft-insert-link-org-style (id &optional title)
+  "Insert a Zetteldeft link in Org-mode format as zdlink: type."
+  (if title
+      (insert "[[zdlink:" id "][" title "]]")
+    (insert "[[zdlink:" id "]]")))
+
 ;;;###autoload
 (defun zetteldeft-find-file (file)
   "Open deft file FILE."
@@ -266,9 +300,7 @@ Set `zetteldeft-home-id' to an ID string of your home note."
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat zetteldeft-link-indicator
-                  (zetteldeft--lift-id file)
-                  zetteldeft-link-suffix)))
+  (zetteldeft--insert-link (zetteldeft--lift-id file)))
 
 (defcustom zetteldeft-backlink-prefix "# Backlink: "
   "Prefix string included before a back link.
@@ -289,14 +321,11 @@ ID and title on a new line."
     (when (re-search-forward
             (regexp-quote zetteldeft-title-prefix) nil t))
     (forward-line)
-    (insert zetteldeft-backlink-prefix
-            (concat zetteldeft-link-indicator
-                    (zetteldeft--lift-id file)
-                    zetteldeft-link-suffix
-                    " "
-                    (zetteldeft--lift-file-title
-                      (concat deft-directory file)))
-            "\n"))
+    (insert zetteldeft-backlink-prefix)
+    (zetteldeft--insert-link
+      (zetteldeft--lift-id file)
+      (zetteldeft--lift-file-title (concat deft-directory file)))
+    (insert "\n"))
   (message "Backlink added."))
 
 ;;;###autoload
@@ -305,11 +334,9 @@ ID and title on a new line."
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert zetteldeft-link-indicator
-          (zetteldeft--lift-id file)
-          zetteldeft-link-suffix
-          " "
-          (zetteldeft--lift-file-title (concat deft-directory file))))
+  (zetteldeft--insert-link
+    (zetteldeft--lift-id file)
+    (zetteldeft--lift-file-title (concat deft-directory file))))
 
 (defcustom zetteldeft-id-filename-separator " "
   "String to separate zetteldeft ID from filename."
@@ -318,23 +345,29 @@ ID and title on a new line."
 
 (declare-function evil-insert-state "evil")
 
+(defcustom zetteldeft-new-filename-to-kill-ring nil
+  "Add new filename to kill ring?"
+  :type 'boolean
+  :group 'zetteldeft)
+
 ;;;###autoload
 (defun zetteldeft-new-file (str &optional id)
   "Create a new deft file.
 
 The filename is a Zetteldeft ID, appended by STR. The ID will be
-generated, unless ID is provided.
-A file title will be inserted in the newly created file wrapped in
-`zetteldeft-title-prefix' and `zetteldeft-title-suffix'. Filename
-(without extension) is added to the kill ring. When `evil' is loaded,
-change to insert state."
+generated, unless ID is provided. A file title will be inserted in the
+newly created file wrapped in `zetteldeft-title-prefix' and
+`zetteldeft-title-suffix'. When `zetteldeft-new-filename-to-kill-ring'
+is non-nil, the filename (without extension) is added to the kill
+ring. When `evil' is loaded, change to insert state."
   (interactive (list (read-string "Note title: ")))
   (let* ((deft-use-filename-as-title t)
          (zdId (or id
                    (zetteldeft-generate-id str)))
          (zdName (concat zdId zetteldeft-id-filename-separator str)))
   (deft-new-file-named zdName)
-  (kill-new zdName)
+  (when zetteldeft-new-filename-to-kill-ring
+    (kill-new zdName))
   (zetteldeft--insert-title str)
   (save-buffer)
   (when (featurep 'evil) (evil-insert-state))))
@@ -345,10 +378,9 @@ change to insert state."
 Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
   (let ((zdId (zetteldeft-generate-id str)))
-    (insert zetteldeft-link-indicator
-            zdId
-            zetteldeft-link-suffix
-            " " str)
+    (zetteldeft--insert-link
+      (zetteldeft--lift-id file)
+      str)
     (zetteldeft-new-file str zdId)))
 
 ;;;###autoload
@@ -357,18 +389,10 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
   (let ((ogId (zetteldeft--current-id))
         (zdId (zetteldeft-generate-id str)))
-    (insert zetteldeft-link-indicator
-            zdId
-            zetteldeft-link-suffix
-            " " str)
+    (zetteldeft--insert-link zdID str)
     (zetteldeft-new-file str zdId)
     (newline)
-    (insert zetteldeft-backlink-prefix
-            zetteldeft-link-indicator
-            ogId
-            zetteldeft-link-suffix
-            " "
-            (zetteldeft--id-to-title ogId))))
+    (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
 
 ;;;###autoload
 (defun zetteldeft-follow-link ()
@@ -471,10 +495,7 @@ Opens immediately if there is only one result."
       (insert (format " - %s in: " link))
       (deft-filter link t)
       (dolist (source (deft-current-files))
-        (insert (format "%s%s%s "
-                        zetteldeft-link-indicator
-                        (zetteldeft--lift-id source)
-                        zetteldeft-link-suffix)))
+        (zetteldeft--insert-link (zetteldeft--lift-id source)))
       (insert "\n")))
   (unless (eq major-mode 'org-mode) (org-mode)))
 
@@ -687,6 +708,28 @@ If this variable is nil, or tag line is not found, insert tag at point."
           (call-interactively 'zetteldeft-tag-insert-at-point))
       (call-interactively 'zetteldeft-tag-insert-at-point))))
 
+(defun zetteldeft-tag-remove ()
+  "Prompt for a tag to remove from the current Zetteldeft note.
+Only the first instance of the selected tag is removed."
+  (interactive)
+  (zetteldeft--check)
+  ; Extract tags of current file into `zetteldeft--tag-list'
+  (setq zetteldeft--tag-list (list))
+  (save-buffer)
+  (zetteldeft--extract-tags (buffer-file-name))
+  ; Select a tag from that list
+  (let* ((tag (completing-read
+                "Tag to remove: "
+                (seq-filter 'stringp zetteldeft--tag-list))))
+    ; Find and remove first instance of that tag
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward tag nil t)
+      (delete-region (point) (re-search-backward tag nil t))
+      ; remove potential empty space before tag
+      (backward-char)
+      (when (looking-at " ") (delete-char 1)))))
+
 (defconst zetteldeft--tag-buffer-name "*zetteldeft-tag-buffer*")
 
 ;;;###autoload
@@ -827,13 +870,9 @@ zetteldeft directory."
     ;; finally find full title for each ID and insert it
     (if zdFinalIDs
         (dolist (zdID zdFinalIDs)
-          (insert " - "
-                  zetteldeft-link-indicator
-                  zdID
-                  zetteldeft-link-suffix
-                  " "
-                  (zetteldeft--id-to-title zdID)
-                  "\n"))
+          (insert " - ")
+          (zetteldeft--insert-link zdID (zetteldeft--id-to-title zdID))
+          (insert "\n"))
       ;; unless the list is empty, then insert a message
       (insert (format zetteldeft-list-links-missing-message zdSrch)))))
 
@@ -845,13 +884,15 @@ and `zetteldeft-insert-list-links-missing'."
 
 (defun zetteldeft--list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert zetteldeft-list-prefix
-          zetteldeft-link-indicator
-          (zetteldeft--lift-id (file-name-base zdFile))
-          zetteldeft-link-suffix
-          " "
-          (zetteldeft--lift-file-title zdFile)
-          "\n"))
+  (let ((id (zetteldeft--lift-id (file-name-base zdFile))))
+    (insert zetteldeft-list-prefix)
+    (when id
+          (insert zetteldeft-link-indicator
+                  id
+                  zetteldeft-link-suffix
+                  " "))
+    (insert (zetteldeft--lift-file-title zdFile)
+            "\n")))
 
 ;;;###autoload
 (defun zetteldeft-org-search-include (zdSrch)
