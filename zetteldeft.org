@@ -1452,46 +1452,7 @@ The inserted link format can be customized through the
       (yank)
       (save-buffer)
       (when (featurep 'evil) (evil-insert-state)))
-    (zetteldeft-insert-note-link note-filename title)))
-#+END_SRC
-
-**** =zetteldeft-insert-note-link= inserts a link to a note
-
-Inserts a link to a file with a title.
-
-The inserted link format can be customized through the
-=zetteldeft-insert-note-link-function= variable.
-
-#+BEGIN_SRC emacs-lisp
-(defun zetteldeft-insert-note-link (note title)
-  "Insert a link to NOTE with TITLE as its link text."
-  (interactive)
-  (funcall zetteldeft-insert-note-link-function note title))
-#+END_SRC
-
-**** =zetteldeft-insert-note-link-function= customizes how extracted links are formatted
-
-This is used by =zetteldeft-extract-region-to-note= to format inserted notes. It
-must be a function that takes two parameters:
-
-- ~note~  :: The note identifier.
-- ~title~ :: The title of the note.
-
-The default value is =zetteldeft-insert-note-link-with-prefix=, which inserts
-the prefix character followed by the note ID and its title.
-
-#+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-insert-note-link-function
-  #'zetteldeft-insert-note-link-with-prefix
-  "The function to use when inserting note links.")
-
-(defun zetteldeft-insert-note-link-with-prefix (note title)
-  "Insert a link to NOTE with TITLE."
-  (insert zetteldeft-link-indicator
-          (zetteldeft--lift-id note)
-          zetteldeft-link-suffix
-          " "
-          title))
+    (zetteldeft--insert-link (zetteldeft--lift-id note-filename) title)))
 #+END_SRC
 
 **** =zetteldeft-count-words= counts total number of words
