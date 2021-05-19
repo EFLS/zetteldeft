@@ -1062,19 +1062,16 @@ As with other link insertions, the format of this link can be customized through
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-extract-region-to-note (title)
   "Extract the marked region to a new note with TITLE."
-  (interactive (list (read-string "Note title: ")))
-  (let* ((deft-use-filename-as-title t)
-         (note-id (zetteldeft-generate-id title))
-         (note-filename (concat note-id zetteldeft-id-filename-separator title))
-         (note-text     (kill-region (region-beginning) (region-end))))
+  (interactive (list (if (not (use-region-p))
+                         (user-error "No region active.")
+                     (read-string "Note title: "))))
+  (let* ((id (zetteldeft-generate-id title))
+         (text (kill-region (region-beginning) (region-end))))
     (save-excursion
-      (deft-new-file-named note-filename)
-      (zetteldeft--insert-title title)
-      (insert "\n\n")
+      (zetteldeft-new-file title id)
       (yank)
-      (save-buffer)
-      (when (featurep 'evil) (evil-insert-state)))
-    (zetteldeft--insert-link (zetteldeft--lift-id note-filename) title)))
+      (save-buffer))
+    (zetteldeft--insert-link id title)))
 #+END_SRC
 
 *** Moving around with =avy=
