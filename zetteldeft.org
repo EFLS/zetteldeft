@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *19 May*: Add =zetteldeft-extract-region-to-note=, thanks to Sodaware
  - *13 May*: Introduce & customize =zetteldeft--insert-link=
  - *11 Mar*: Add =zetteldeft-tag-insert=, thanks to puzan
  - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
@@ -1049,17 +1050,14 @@ Store a link, generate a new one, and we're done.
     (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
 #+END_SRC
 
-**** =zetteldeft-extract-region-to-note= creates a new note from a region
+**** =zetteldeft-extract-region-to-note= creates new note from a region
 
-Highlight a region of an existing note and call
-=zetteldeft-extract-region-to-note= to extract the region into a new note.
+Highlight a region of an existing note and call =zetteldeft-extract-region-to-note= to extract the region into a new note.
 
-This function will prompt for a title. Once entered, a new note will be created
-with that title and the highlighted region as its content. The original
-highlighted region will be replaced with a link to this new note.
-
-The inserted link format can be customized through the
-=zetteldeft-insert-note-link-function= variable.
+This function will prompt for a title.
+Once entered, a new note is created with that title and the highlighted region as its content.
+The original highlighted region will be replaced with a link to this new note.
+As with other link insertions, the format of this link can be customized through the =zetteldeft-insert-note-link-function= variable.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-extract-region-to-note (title)
