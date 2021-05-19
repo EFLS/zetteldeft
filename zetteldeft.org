@@ -1057,7 +1057,7 @@ Highlight a region of an existing note and call =zetteldeft-extract-region-to-no
 This function will prompt for a title.
 Once entered, a new note is created with that title and the highlighted region as its content.
 The original highlighted region will be replaced with a link to this new note.
-As with other link insertions, the format of this link can be customized through the =zetteldeft-insert-note-link-function= variable.
+As with other link insertions, the format of this link can be customized through the =zetteldeft-insert-link-function= variable.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-extract-region-to-note (title)
