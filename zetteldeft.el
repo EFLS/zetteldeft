@@ -394,6 +394,19 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
     (newline)
     (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
 
+(defun zetteldeft-extract-region-to-note (title)
+  "Extract the marked region to a new note with TITLE."
+  (interactive (list (if (not (use-region-p))
+                         (user-error "No region active.")
+                     (read-string "Note title: "))))
+  (let* ((id (zetteldeft-generate-id title))
+         (text (kill-region (region-beginning) (region-end))))
+    (save-excursion
+      (zetteldeft-new-file title id)
+      (yank)
+      (save-buffer))
+    (zetteldeft--insert-link id title)))
+
 ;;;###autoload
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
