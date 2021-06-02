@@ -378,9 +378,7 @@ ring. When `evil' is loaded, change to insert state."
 Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
   (let ((zdId (zetteldeft-generate-id str)))
-    (zetteldeft--insert-link
-      (zetteldeft--lift-id file)
-      str)
+    (zetteldeft--insert-link zdId str)
     (zetteldeft-new-file str zdId)))
 
 ;;;###autoload
