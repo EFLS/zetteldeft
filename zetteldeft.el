@@ -308,6 +308,37 @@ Formatted as `org-mode' comment by default."
   :type 'string
   :group 'zetteldeft)
 
+(defcustom zetteldeft-backlink-location-function
+           #'zetteldeft-backlink-get-location
+ "Function to get location for new backlinks.
+The function should return a position in the current buffer.")
+
+(defun zetteldeft-backlink-get-location ()
+  "Default function that returns where a backlink should be added.
+
+This is the line below whichever is found first:
+ - existing backlink
+ - tag line
+ - title
+ - at top of file
+"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+      (cond
+        ((re-search-forward (regexp-quote zetteldeft-backlink-prefix) nil t)
+          (forward-line)
+          (point))
+        ((re-search-forward (regexp-quote zetteldeft-tag-line-prefix) nil t)
+          (forward-line)
+          (newline)
+          (point))
+        ((re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+          (forward-line)
+          (newline)
+          (point))
+        (t (point-min)))))
+
 ;;;###autoload
 (defun zetteldeft-backlink-add (file)
   "Find deft file FILE and insert a backlink to it.
@@ -317,10 +348,7 @@ ID and title on a new line."
     (completing-read "File to add backlink to: "
       (deft-find-all-files-no-prefix))))
   (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward
-            (regexp-quote zetteldeft-title-prefix) nil t))
-    (forward-line)
+    (goto-char (funcall zetteldeft-backlink-location-function))
     (insert zetteldeft-backlink-prefix)
     (zetteldeft--insert-link
       (zetteldeft--lift-id file)
@@ -1073,7 +1101,8 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d b") 'zetteldeft-backlink-add)
   (global-set-key (kbd "C-c d r") 'zetteldeft-file-rename)
   (global-set-key (kbd "C-c d x") 'zetteldeft-count-words)
-  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert))
+  (global-set-key (kbd "C-c d #") 'zetteldeft-tag-insert)
+  (global-set-key (kbd "C-c d $") 'zetteldeft-tag-remove))
 
 (provide 'zetteldeft)
 ;;; zetteldeft.el ends here
