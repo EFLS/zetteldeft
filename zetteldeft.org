@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
  - *19 May*: Add =zetteldeft-extract-region-to-note=, thanks to Sodaware
  - *13 May*: Introduce & customize =zetteldeft--insert-link=
  - *11 Mar*: Add =zetteldeft-tag-insert=, thanks to puzan
@@ -880,6 +881,7 @@ Based on =deft-find-file=.
 **** =zetteldeft-backlink-add= adds a backlink to note
 
 Adding a backlink to another note is a good way to create structure.
+A backlink is a single line with a prefix string followed by a link to a note and its title.
 
 For such a backlink, we need a prefix.
 
@@ -891,7 +893,55 @@ Formatted as `org-mode' comment by default."
   :group 'zetteldeft)
 #+END_SRC
 
-Include the prefix on a new line after the title, and add ID and title.
+We also need to figure out where backlinks should go.
+Let's configure a customizable function to move to the location they should be put in.
+
+#+begin_src emacs-lisp
+(defcustom zetteldeft-backlink-location-function
+           #'zetteldeft-backlink-get-location
+ "Function to get location for new backlinks.
+The function should return a position in the current buffer.")
+#+end_src
+
+This function should return a position in the current buffer that will then be called with =goto-char=.
+
+Now for the default function.
+It indicates backlinks should be included at one of the following, if they exist:
+ - below an existing backlink,
+ - below the tag line,
+ - below the title,
+ - at top of the file.
+
+#+begin_src emacs-lisp
+(defun zetteldeft-backlink-get-location ()
+  "Default function that returns where a backlink should be added.
+
+This is the line below whichever is found first:
+ - existing backlink
+ - tag line
+ - title
+ - at top of file
+"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+      (cond
+        ((re-search-forward (regexp-quote zetteldeft-backlink-prefix) nil t)
+          (forward-line)
+          (point))
+        ((re-search-forward (regexp-quote zetteldeft-tag-line-prefix) nil t)
+          (forward-line)
+          (newline)
+          (point))
+        ((re-search-forward (regexp-quote zetteldeft-title-prefix) nil t)
+          (forward-line)
+          (newline)
+          (point))
+        (t (point-min)))))
+#+end_src
+
+We use this function to figure out where backlinks should go.
+The backlink appears on a new line.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
@@ -903,10 +953,7 @@ ID and title on a new line."
     (completing-read "File to add backlink to: "
       (deft-find-all-files-no-prefix))))
   (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward
-            (regexp-quote zetteldeft-title-prefix) nil t))
-    (forward-line)
+    (goto-char (funcall zetteldeft-backlink-location-function))
     (insert zetteldeft-backlink-prefix)
     (zetteldeft--insert-link
       (zetteldeft--lift-id file)
@@ -914,10 +961,6 @@ ID and title on a new line."
     (insert "\n"))
   (message "Backlink added."))
 #+END_SRC
-
-Potential enhancements include:
- - Check whether a backlink is already present and update it if so
- - More control over placement of backlink (rather than directly below title)
 
 **** =zetteldeft-find-file-full-title-insert= inserts id and title
 
