@@ -1121,7 +1121,7 @@ Keep calling `zetteldeft-avy-file-search' in a loop."
       (message "Browsing in Zetteldeft!"))))
 #+end_src
 
-Setting =avy-single-candidate-jump= to nil ensures unexpected jumps when there's only one Zetteldeft link candidate on screen.
+Setting =avy-single-candidate-jump= to nil prevents unexpected jumps when there's only one Zetteldeft link candidate on screen.
 
 **** =zetteldeft-avy-tag-search= selects and searches tags with =avy=
 
