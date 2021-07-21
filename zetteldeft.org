@@ -1088,7 +1088,7 @@ Store a link, generate a new one, and we're done.
     (zetteldeft--insert-link zdId str)
     (zetteldeft-new-file str zdId)
     (newline)
-    (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
+    (zetteldeft--insert-link ogId (zetteldeft--id-to-title ogId))))
 #+END_SRC
 
 **** =zetteldeft-extract-region-to-note= creates new note from a region

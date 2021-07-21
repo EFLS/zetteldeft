@@ -418,7 +418,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
     (zetteldeft--insert-link zdId str)
     (zetteldeft-new-file str zdId)
     (newline)
-    (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
+    (zetteldeft--insert-link ogId (zetteldeft--id-to-title ogId))))
 
 (defun zetteldeft-extract-region-to-note (title)
   "Extract the marked region to a new note with TITLE."
