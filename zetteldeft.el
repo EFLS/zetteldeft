@@ -415,7 +415,7 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
   (interactive (list (read-string "Note title: ")))
   (let ((ogId (zetteldeft--current-id))
         (zdId (zetteldeft-generate-id str)))
-    (zetteldeft--insert-link zdID str)
+    (zetteldeft--insert-link zdId str)
     (zetteldeft-new-file str zdId)
     (newline)
     (zetteldeft--insert-link ogID (zetteldeft--id-to-title ogId))))
