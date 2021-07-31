@@ -436,7 +436,9 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
 ;;;###autoload
 (defun zetteldeft-follow-link ()
   "Follows zetteldeft link to a file if point is on a link.
-Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
+Uses Avy to prompt for a link to follow with `zetteldeft-avy-file-search'
+if it isn't. Variable `zetteldeft-follow-at-point' controls this last
+option: when nil, always use Avy."
   (interactive)
   (if (and zetteldeft-follow-at-point
            (thing-at-point-looking-at (zetteldeft--link-regex)))
@@ -447,7 +449,7 @@ Prompts for a link to follow with `zetteldeft-avy-file-search' if it isn't."
 (defcustom zetteldeft-follow-at-point t
   "Should `zetteldeft-follow-link' open link at point?
 When t, open note at point if point is on a link.
-When nil, always use avy."
+When nil, always use Avy."
   :type 'boolean
   :group 'zetteldeft)
 
