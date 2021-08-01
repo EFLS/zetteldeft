@@ -831,6 +831,116 @@ Increase counters as we go."
       (setq zetteldeft--tag-list
         (lax-plist-put zetteldeft--tag-list zdTag 1)))))
 
+;;;###autoload
+(defun zetteldeft-insert-list-links (string)
+  "Search for SEARCH-STRING and insert list of links to results."
+  (interactive (list (read-string "search string: ")))
+  (let ((result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name)))
+    (when this-file
+      (setq result-files (delete this-file result-files)))
+    (dolist (file result-files)
+      (zetteldeft--list-entry-file-link file))))
+
+(defcustom zetteldeft-list-links-missing-message
+  "   No missing links with search term =%s= found\n"
+  "Message to insert when no missing links are found.
+This is used by `zetteldeft-insert-list-links-missing'.
+%s will be replaced by the search term provided to
+this function."
+  :type 'string
+  :group 'zetteldeft)
+
+;;;###autoload
+(defun zetteldeft-insert-list-links-missing (string)
+  "Insert a list of links to all deft files with a search string ZDSRCH.
+In contrast to `zetteldeft-insert-list-links' only include links not
+yet present in the current file. Can only be called from a file in the
+zetteldeft directory."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft--check)
+  (let (this-id     ; ID of current file
+        current-ids ; IDs present in current buffer
+        found-ids   ; IDs of notes with search result
+        final-ids)  ; Final list of IDs for the list
+    ;; Gather list of IDs in current buffer
+    (setq current-ids (zetteldeft--extract-links (buffer-file-name)))
+    ;; Execute search and push found IDs to temporary list
+    (dolist (file (zetteldeft--get-file-list string))
+      (push (zetteldeft--lift-id file) found-ids))
+    ;; Keep only unique IDs on the final list
+    (dolist (id found-ids)
+      (unless (member id current-ids)
+        (push id final-ids)))
+    ;; Remove the ID of the current buffer from the final list
+    (setq this-id (zetteldeft--lift-id (file-name-base (buffer-file-name))))
+    (setq final-ids (delete this-id final-ids))
+    ;; Finally insert ID and title for each element on the list
+    (if final-ids
+        (dolist (id final-ids)
+          (zetteldeft--list-entry-file-link (zetteldeft--id-to-full-path id)))
+      ;; Unless the list is empty, then insert a message
+      (insert (format zetteldeft-list-links-missing-message string)))))
+
+(defcustom zetteldeft-list-prefix " - "
+  "Prefix for lists created with `zetteldeft-insert-list-links'
+and `zetteldeft-insert-list-links-missing'."
+  :type 'string
+  :group 'zetteldeft)
+
+(defun zetteldeft--list-entry-file-link (file)
+  "Insert ZDFILE as list entry."
+  (let ((id (zetteldeft--lift-id (file-name-base file))))
+    (insert zetteldeft-list-prefix)
+    (when id
+          (insert zetteldeft-link-indicator
+                  id
+                  zetteldeft-link-suffix
+                  " "))
+    (insert (zetteldeft--lift-file-title file)
+            "\n")))
+
+(defun zetteldeft-list-links (str &optional missing sort)
+  "Crude attempt to automate `zetteldeft-insert-list-links-missing'.
+Meant to be called from an Org source block.
+Replaces the list below the source block.
+When MISSING is t, use `zetteldeft-insert-list-links-missing'.
+When SORT is t, sort the list with most recent at top."
+  (save-excursion
+    (org-forward-element)
+    ; Delete any existing list
+    (when (org-in-item-p)
+      (delete-region (point) (org-end-of-item-list)))
+    ; New line & insert links
+    (if missing
+        (progn (save-buffer)
+               (deft-refresh)
+               (zetteldeft-insert-list-links-missing str))
+      (zetteldeft-insert-list-links str))
+    (when sort
+      (org-backward-element)
+      (org-sort-list t ?A))))
+
+(defun zetteldeft-insert-list-links-block (str)
+  "Prompt for a STR to search, and insert an org-mode
+source block that calls `zetteldeft-list-links'.
+Also include the list of links below the block.
+When called with a prefix, make use of the missing links
+functions."
+  (interactive
+    (list (read-string "Search: ")))
+  (newline)
+  (insert "#+BEGIN_SRC emacs-lisp :results silent\n"
+          "(zetteldeft-list-links \"" str"\"")
+  (when current-prefix-arg (insert " t"))
+  (insert ")\n"
+          "#+END_SRC\n\n")
+  (if current-prefix-arg
+      (progn (save-buffer)
+             (deft-refresh)
+             (zetteldeft-insert-list-links-missing str))
+    (zetteldeft-insert-list-links str)))
+
 (defcustom zetteldeft-export-tmp-dir
   (expand-file-name "zetteldeft/tmp/" user-emacs-directory)
   "Temporary directory for Zetteldeft export")
@@ -868,72 +978,6 @@ file links. ZDFILE should be the path to the file."
 	  (org-make-link-string
       (format "./%s" (file-name-nondirectory filePath))
 	    zdLink)))))))
-
-;;;###autoload
-(defun zetteldeft-insert-list-links (zdSrch)
-  "Search for ZDSRCH and insert a list of zetteldeft links to all results."
-  (interactive (list (read-string "search string: ")))
-  (let ((zdResults (zetteldeft--get-file-list zdSrch))
-        (zdThisNote (buffer-file-name)))
-    (when zdThisNote (setq zdResults (delete zdThisNote zdResults)))
-    (dolist (zdFile zdResults)
-      (zetteldeft--list-entry-file-link zdFile))))
-
-(defcustom zetteldeft-list-links-missing-message
-  "   No missing links with search term =%s= found\n"
-  "Message to insert when no missing links are found.
-This is used by `zetteldeft-insert-list-links-missing'.
-%s will be replaced by the search term provided to
-this function."
-  :type 'string
-  :group 'zetteldeft)
-
-;;;###autoload
-(defun zetteldeft-insert-list-links-missing (zdSrch)
-  "Insert a list of links to all deft files with a search string ZDSRCH.
-In contrast to `zetteldeft-insert-list-links' only include links not
-yet present in the current file. Can only be called from a file in the
-zetteldeft directory."
-  (interactive (list (read-string "search string: ")))
-  (zetteldeft--check)
-  (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
-    (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
-    ;; filter IDs from search results
-    (dolist (zdFile (zetteldeft--get-file-list zdSrch))
-      (push (zetteldeft--lift-id zdFile) zdFoundIDs))
-    ;; create new list with unique ids
-    (dolist (zdID zdFoundIDs)
-      (unless (member zdID zdCurrentIDs)
-        (push zdID zdFinalIDs)))
-    ;; remove the ID of the current buffer from said list
-    (setq zdThisID (zetteldeft--lift-id (file-name-base (buffer-file-name))))
-    (setq zdFinalIDs (delete zdThisID zdFinalIDs))
-    ;; finally find full title for each ID and insert it
-    (if zdFinalIDs
-        (dolist (zdID zdFinalIDs)
-          (insert " - ")
-          (zetteldeft--insert-link zdID (zetteldeft--id-to-title zdID))
-          (insert "\n"))
-      ;; unless the list is empty, then insert a message
-      (insert (format zetteldeft-list-links-missing-message zdSrch)))))
-
-(defcustom zetteldeft-list-prefix " - "
-  "Prefix for lists created with `zetteldeft-insert-list-links'
-and `zetteldeft-insert-list-links-missing'."
-  :type 'string
-  :group 'zetteldeft)
-
-(defun zetteldeft--list-entry-file-link (zdFile)
-  "Insert ZDFILE as list entry."
-  (let ((id (zetteldeft--lift-id (file-name-base zdFile))))
-    (insert zetteldeft-list-prefix)
-    (when id
-          (insert zetteldeft-link-indicator
-                  id
-                  zetteldeft-link-suffix
-                  " "))
-    (insert (zetteldeft--lift-file-title zdFile)
-            "\n")))
 
 ;;;###autoload
 (defun zetteldeft-org-search-include (zdSrch)
