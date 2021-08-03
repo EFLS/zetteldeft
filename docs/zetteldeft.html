@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2021-08-01 Sun 21:54 -->
+<!-- 2021-08-03 Tue 19:48 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zetteldeft</title>
@@ -254,15 +254,6 @@ Latest additions:
 <li><b>19 May</b>: Add <code>zetteldeft-extract-region-to-note</code>, thanks to Sodaware</li>
 <li><b>13 May</b>: Introduce &amp; customize <code>zetteldeft--insert-link</code></li>
 <li><b>11 Mar</b>: Add <code>zetteldeft-tag-insert</code>, thanks to puzan</li>
-<li><b>30 Dec</b>: Renaming notes will now insert a title if there is none, thanks to jeffvalk</li>
-<li><b>26 Nov</b>: Add <code>zetteldeft-search-tag</code>, thanks to maw.</li>
-<li><b>07 Oct</b>: Add <code>zetteldeft-dead-links-buffer</code> to show dead links.</li>
-<li><b>06 Oct</b>: Add export functionality.</li>
-<li><b>20 Sep</b>: Add <code>zetteldeft-go-home</code>.</li>
-<li><b>19 Sep</b>: Throw error when generated IDs are not unique.</li>
-<li><b>21 Aug</b>: Add <code>zetteldeft-new-file-and-backlink</code> to create new notes.</li>
-<li><b>20 Aug</b>: Update <code>zetteldeft-tag-buffer</code> to include tag frequency.</li>
-<li><b>23 July</b>: Add customizable <code>zetteldeft-custom-id-function</code> for ID generation.</li>
 </ul>
 
 <p>
@@ -3154,7 +3145,7 @@ To easily insert such a block, use <code>zetteldeft-insert-list-links-block</cod
 The resulting code looks something like this:
 </p>
 
-<pre class="example" id="org629b3cf">
+<pre class="example" id="org828da8d">
 #+BEGIN_SRC emacs-lisp :results silent
 (zetteldeft-list-links "#zd-tutorial")
 #+END_SRC
@@ -3923,7 +3914,7 @@ The resulting graph looks something like this:
 </p>
 
 
-<figure id="org0eba490">
+<figure id="orgafcbe79">
 <img src="./img/zetteldeft-graph.jpg" alt="zetteldeft-graph.jpg">
 
 </figure>
@@ -4757,6 +4748,15 @@ An overview of changes, in addition to those mentioned at the top of this docume
 </p>
 
 <ul class="org-ul">
+<li><b>30 Dec 2020</b>: Renaming notes will now insert a title if there is none, thanks to jeffvalk</li>
+<li><b>26 Nov</b>: Add <code>zetteldeft-search-tag</code>, thanks to maw.</li>
+<li><b>07 Oct</b>: Add <code>zetteldeft-dead-links-buffer</code> to show dead links.</li>
+<li><b>06 Oct</b>: Add export functionality.</li>
+<li><b>20 Sep</b>: Add <code>zetteldeft-go-home</code>.</li>
+<li><b>19 Sep</b>: Throw error when generated IDs are not unique.</li>
+<li><b>21 Aug</b>: Add <code>zetteldeft-new-file-and-backlink</code> to create new notes.</li>
+<li><b>20 Aug</b>: Update <code>zetteldeft-tag-buffer</code> to include tag frequency.</li>
+<li><b>23 July</b>: Add customizable <code>zetteldeft-custom-id-function</code> for ID generation.</li>
 <li><b>08 July</b>: Add <code>ace-window</code> as top level requirement.</li>
 <li><b>06 July</b>: Separate filename from title and respect <code>deft-file-naming-rules</code>, thanks to PR by natdash.</li>
 <li><b>04 June</b>: Change <code>zetteldeft-new-file-and-link</code> so that it doesn&rsquo;t generate an ID. Change <code>zetteldeft-new-file</code> so that it can take an ID (and drop the <i>EMPTY</i> option).</li>
