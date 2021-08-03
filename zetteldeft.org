@@ -16,20 +16,11 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *01 Aug*: Automated list of links with =zetteldeft-insert-list-links-block=
+ - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
  - *19 May*: Add =zetteldeft-extract-region-to-note=, thanks to Sodaware
  - *13 May*: Introduce & customize =zetteldeft--insert-link=
  - *11 Mar*: Add =zetteldeft-tag-insert=, thanks to puzan
- - *30 Dec*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
- - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
- - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
- - *06 Oct*: Add export functionality.
- - *20 Sep*: Add =zetteldeft-go-home=.
- - *19 Sep*: Throw error when generated IDs are not unique.
- - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
- - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
- - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
 
 Older changes are mentioned in the [[#changelog][changelog]] below.
 
@@ -1888,6 +1879,15 @@ If it is, increase its counter.
 #+end_src
 
 ** List of links
+:PROPERTIES:
+:CUSTOM_ID: list-links
+:END:
+:toc:
+
+In this section:
+#+TOC: headlines 2 local
+
+:end:
 *** A list of links
 
 Sometimes you want to easily gather all notes with a certain tag or search term.
@@ -2882,6 +2882,15 @@ Its original value was =\\([\n ]\\|^#\\+[[:upper:]_]+:.*$\\)=.
 
 An overview of changes, in addition to those mentioned at the top of this document:
 
+ - *30 Dec 2020*: Renaming notes will now insert a title if there is none, thanks to jeffvalk
+ - *26 Nov*: Add =zetteldeft-search-tag=, thanks to maw.
+ - *07 Oct*: Add =zetteldeft-dead-links-buffer= to show dead links.
+ - *06 Oct*: Add export functionality.
+ - *20 Sep*: Add =zetteldeft-go-home=.
+ - *19 Sep*: Throw error when generated IDs are not unique.
+ - *21 Aug*: Add =zetteldeft-new-file-and-backlink= to create new notes.
+ - *20 Aug*: Update =zetteldeft-tag-buffer= to include tag frequency.
+ - *23 July*: Add customizable =zetteldeft-custom-id-function= for ID generation.
  - *08 July*: Add =ace-window= as top level requirement.
  - *06 July*: Separate filename from title and respect =deft-file-naming-rules=, thanks to PR by natdash.
  - *04 June*: Change =zetteldeft-new-file-and-link= so that it doesn't generate an ID. Change =zetteldeft-new-file= so that it can take an ID (and drop the /EMPTY/ option).
