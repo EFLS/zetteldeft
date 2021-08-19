@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
  - *19 May*: Add =zetteldeft-extract-region-to-note=, thanks to Sodaware
@@ -1144,6 +1145,8 @@ When nil, always use Avy."
 **** Repeat following with =zetteldeft-browse=
 
 A function to conveniently browse notes: keep on jumping from note to note.
+Meanwhile use keys such as =.=, =<= and =>= to go to the home note, previous buffer or next buffer.
+All while you keep browsing and following links.
 
 Since =avy-jump= returns =t= after each succesful jump (and =zetteldeft-avy-file-search= passes this on), we can use it in a loop.
 
@@ -1153,12 +1156,62 @@ Since =avy-jump= returns =t= after each succesful jump (and =zetteldeft-avy-file
   "Browse your notes with avy.
 Keep calling `zetteldeft-avy-file-search' in a loop."
   (interactive)
-  (let ((avy-single-candidate-jump nil))
+  (let ((avy-single-candidate-jump nil)
+        (avy-handler-function 'zetteldeft--browse-avy-handler))
     (while (zetteldeft-avy-file-search)
-      (message "Browsing in Zetteldeft!"))))
+      (message "Browsing in Zetteldeft!   [.] home   [<] prev   [>] next"))))
 #+end_src
 
 Setting =avy-single-candidate-jump= to nil prevents unexpected jumps when there's only one Zetteldeft link candidate on screen.
+
+Now let's add some custom keys to the default =avy= setup.
+
+For reference, here are some notes on how =avy= works:
+- The variable =avy-dispatch-alist= lists actions of what to do when a key not on =avy-keys= is pressed during dispatch.
+  The provided action is what is executed once a candidate is finaly pressed.
+- The =avy-handler-default= function processes bad read keys.
+  Changed with the variable =avy-handler-function=.
+
+So, let's define a separate handler which is used in the browse function above.
+Based on the default handler function.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--browse-avy-handler (char)
+  "The default handler for a bad CHAR."
+  (let (dispatch)
+    (cond ((setq dispatch (assoc char avy-dispatch-alist))
+           (unless (eq avy-style 'words)
+             (setq avy-action (cdr dispatch)))
+           (throw 'done 'restart))
+          ((memq char avy-escape-chars)
+           ;; exit silently
+           (throw 'done 'abort))
+          ;; Go to home note
+          ((eq char ?.)
+           (zetteldeft-go-home)
+           (message "Brwosing to home note.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ;; Previous buffer
+          ((eq char ?<)
+           (previous-buffer)
+           (message "Browsing to previous buffer.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ((eq char ?>)
+           (next-buffer)
+           (message "Browsing to next buffer.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ((eq char ??)
+           (avy-show-dispatch-help)
+           (throw 'done 'restart))
+          ((mouse-event-p char)
+           (signal 'user-error (list "Mouse event not handled" char)))
+          (t
+           (message "No such candidate: %s, hit `C-g' to quit."
+                    (if (characterp char) (string char) char))))))
+#+end_src
 
 **** =zetteldeft-avy-tag-search= selects and searches tags with =avy=
 

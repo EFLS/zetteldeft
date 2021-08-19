@@ -458,9 +458,46 @@ When nil, always use Avy."
   "Browse your notes with avy.
 Keep calling `zetteldeft-avy-file-search' in a loop."
   (interactive)
-  (let ((avy-single-candidate-jump nil))
+  (let ((avy-single-candidate-jump nil)
+        (avy-handler-function 'zetteldeft--browse-avy-handler))
     (while (zetteldeft-avy-file-search)
-      (message "Browsing in Zetteldeft!"))))
+      (message "Browsing in Zetteldeft!   [.] home   [<] prev   [>] next"))))
+
+(defun zetteldeft--browse-avy-handler (char)
+  "The default handler for a bad CHAR."
+  (let (dispatch)
+    (cond ((setq dispatch (assoc char avy-dispatch-alist))
+           (unless (eq avy-style 'words)
+             (setq avy-action (cdr dispatch)))
+           (throw 'done 'restart))
+          ((memq char avy-escape-chars)
+           ;; exit silently
+           (throw 'done 'abort))
+          ;; Go to home note
+          ((eq char ?.)
+           (zetteldeft-go-home)
+           (message "Brwosing to home note.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ;; Previous buffer
+          ((eq char ?<)
+           (previous-buffer)
+           (message "Browsing to previous buffer.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ((eq char ?>)
+           (next-buffer)
+           (message "Browsing to next buffer.")
+           (zetteldeft-browse)
+           (throw 'done 'abort))
+          ((eq char ??)
+           (avy-show-dispatch-help)
+           (throw 'done 'restart))
+          ((mouse-event-p char)
+           (signal 'user-error (list "Mouse event not handled" char)))
+          (t
+           (message "No such candidate: %s, hit `C-g' to quit."
+                    (if (characterp char) (string char) char))))))
 
 ;;;###autoload
 (defun zetteldeft-avy-tag-search ()
