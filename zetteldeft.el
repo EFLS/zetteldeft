@@ -115,15 +115,19 @@ If there is only one result, open that file (unless DNTOPN is true)."
 
 (defun zetteldeft--search-filename (thisStr &optional otherWindow)
   "Search for deft files with string THISSTR in filename.
-Open if there is only one result (in another window if OTHERWINDOW is non-nil)."
+Open if there is only one result (in another window if OTHERWINDOW is non-nil).
+Return a message if no results are found."
   ;; Sanitize the filter string
   (setq thisStr (replace-regexp-in-string "[[:space:]\n]+" " " thisStr))
   ;; Call deft search on the filter string
   (let ((deft-filter-only-filenames t))
    (deft-filter thisStr t))
   ;; If there is a single match, open the file
-  (when (eq (length deft-current-files) 1)
-    (deft-open-file (car deft-current-files) otherWindow)))
+  (cond
+    ((eq (length deft-current-files) 1)
+     (deft-open-file (car deft-current-files) otherWindow))
+    ((eq (length deft-current-files) 0)
+     (message "No notes found with %s in name." thisStr))))
 
 (defun zetteldeft--get-file-list (srch)
   "Return a list of files with the search item SRCH."
