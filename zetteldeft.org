@@ -252,6 +252,8 @@ Some declaration.
 (require 'ace-window)
 
 (require 'seq)
+
+(require 'cl)
 #+END_SRC
 
 Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.

@@ -48,6 +48,8 @@
 
 (require 'seq)
 
+(require 'cl)
+
 (declare-function avy-jump "avy")
 (unless (fboundp 'avy-jump)
   (display-warning 'zetteldeft
