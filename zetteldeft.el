@@ -351,7 +351,7 @@ change to insert state."
              (all-choices (flatten-list (list create-new-note
                                               try-again
                                               (deft-find-all-files-no-prefix))))
-             (choice (completing-read "Choose: " all-choices :initial-input str :preselect 1)))
+             (choice (completing-read "Choose: " all-choices)))
       (list try-again create-new-note choice)))
 
 (defun zetteldeft--upsert (str find-file-func new-file-func calling-func)
