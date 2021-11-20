@@ -280,11 +280,19 @@ Use either
 
 ;;;###autoload
 (defun zetteldeft-find-file (file)
-  "Open deft file FILE."
+  "Open deft file FILE.
+When no completing match, create a new deft file using input as
+the title."
   (interactive
-    (list (completing-read "Deft find file: "
-            (deft-find-all-files-no-prefix))))
-  (deft-find-file file))
+   (list (completing-read "Deft find file: "
+                          (deft-find-all-files-no-prefix))))
+  (let* ((dir (expand-file-name deft-directory)))
+    (unless (string-match (concat "^" dir) file)
+      (setq file (concat dir "/" file)))
+    (if (file-exists-p file)
+        (deft-open-file file)
+      (if (y-or-n-p (format "Create new note with title \"%s\"?" (file-name-base file)))
+          (zetteldeft-new-file (file-name-base file))))))
 
 (defvar zetteldeft-home-id nil
   "String with ID of home note, used by `zetteldeft-go-home'.")
