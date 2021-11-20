@@ -185,18 +185,22 @@ The ID is created using `zetteldeft-id-format', unless
 `zetteldeft-custom-id-function' is bound to a function, in which case
 that function is used and TITLE and FILENAME are passed to it."
   (let ((id
-          (if-let ((f zetteldeft-custom-id-function))
-              (funcall f title filename)
-            (format-time-string zetteldeft-id-format))))
-    (if (zetteldeft--id-available-p id)
-        id
-      (error "Generated ID %s is not unique." id))))
+         (if-let ((f zetteldeft-custom-id-function))
+             (funcall f title filename)
+           (format-time-string zetteldeft-id-format)))
+        num)
+    (while (zetteldeft--id-unavailable-p id)
+      (progn
+        (string-match "\\([0-9]\\{2\\}$\\)" id)
+        (setq num (number-to-string (1+ (string-to-number (match-string 1 id)))))
+        (setq id (concat (replace-regexp-in-string "\\([0-9]\\{2\\}$\\)" "" id) num))))
+    id))
 
-(defun zetteldeft--id-available-p (str)
-  "Return t only if provided string STR is unique among Zetteldeft filenames."
+(defun zetteldeft--id-unavailable-p (str)
+  "Return t if provided string STR occurs among Zetteldeft filenames."
   (let ((deft-filter-only-filenames t))
     (deft-filter str t))
-  (eq 0 (length deft-current-files)))
+  (not (eq 0 (length deft-current-files))))
 
 (defcustom zetteldeft-custom-id-function nil
   "User-defined function to generate an ID.
