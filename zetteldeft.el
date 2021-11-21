@@ -306,6 +306,35 @@ Set `zetteldeft-home-id' to an ID string of your home note."
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link (zetteldeft--lift-id file)))
 
+(defun zetteldeft--full-search (string)
+  "Return list of deft files with STRING in full body of file."
+  (let ((result-files (zetteldeft--get-file-list string))
+         (this-file (buffer-file-name)))
+    (when this-file
+      (setq result-files (delete this-file result-files)))
+    (setq completions
+          (mapcar (lambda (file) (cons (file-name-base file) (file-name-nondirectory file))) result-files))
+    (cdr (assoc (completing-read (format "Files containing \"%s\": " string) completions) completions))))
+
+;;;###autoload
+(defun zetteldeft-full-search-id-insert (string)
+  "Insert ID of file from list of files containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-id-insert (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-full-title-insert (string)
+  "Insert title and ID of file from list of files containing
+STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-full-title-insert (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-find-file (string)
+  "Open file containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file (zetteldeft--full-search string)))
+
 (defcustom zetteldeft-backlink-prefix "# Backlink: "
   "Prefix string included before a back link.
 Formatted as `org-mode' comment by default."
