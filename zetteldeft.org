@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *14 Dec*: Update =zetteldeft-find-file= so that non-matching input can be used for new files
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
@@ -817,18 +818,29 @@ When no title is provided, the link itself is used as a descriptor.
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
 
-Select file from the deft folder from the minibuffer.
-
+Open a Zetteldeft note from the minibuffer by prompting the user for a filename.
 Based on =deft-find-file=.
+
+When there's no match to the entered search string, propose to create a new note using the string as a title.
 
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-find-file (file)
-  "Open deft file FILE."
+  "Open deft file FILE.
+When no completing match, prompt user to create a new deft file using
+input as the title."
   (interactive
-    (list (completing-read "Deft find file: "
-            (deft-find-all-files-no-prefix))))
-  (deft-find-file file))
+   (list (completing-read "Deft find file: "
+                          (deft-find-all-files-no-prefix))))
+  (let* ((dir (expand-file-name deft-directory)))
+    (unless (string-match (concat "^" dir) file)
+      (setq file (concat dir "/" file)))
+    (if (file-exists-p file)
+        (deft-open-file file)
+      (when (y-or-n-p (format
+                      "Create new note with title \"%s\"?"
+                      (file-name-base file)))
+          (zetteldeft-new-file (file-name-base file))))))
 #+END_SRC
 
 **** =zetteldeft-go-home= to open a base note
