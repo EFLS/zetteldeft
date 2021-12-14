@@ -291,7 +291,9 @@ the title."
       (setq file (concat dir "/" file)))
     (if (file-exists-p file)
         (deft-open-file file)
-      (if (y-or-n-p (format "Create new note with title \"%s\"?" (file-name-base file)))
+      (when (y-or-n-p (format
+                      "Create new note with title \"%s\"?"
+                      (file-name-base file)))
           (zetteldeft-new-file (file-name-base file))))))
 
 (defvar zetteldeft-home-id nil
