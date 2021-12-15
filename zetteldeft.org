@@ -16,7 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *14 Dec*: Update =zetteldeft-find-file= so that non-matching input can be used for new files
+ - *14 Dec*: Refine =zetteldeft-generate-id= to allow rapid ID creation (thanks to localauthor)
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
@@ -565,9 +565,8 @@ For good measure: I advise creating new notes in the =zetteldeft= system with =z
 Next up, a function to generate an ID string.
 By default, the above time-based format will be used, unless a custom ID generator function is specified: to override the way an ID is generated, point =zetteldeft-custom-id-function= to a custom function.
 
-The above function performs a rudimentory check to ensure that the generated ID is indeed available (i.e., not yet used in a filename).
-The current response to such a duplicate is to throw an error.
-With the default, time-based IDs, this happens when notes are created in quick succession.
+We need to ensure the generated ID is available (i.e., if the ID string is not already used in another filename).
+If it is, we simply increase its number by one.
 
 #+BEGIN_SRC emacs-lisp
 (defun zetteldeft-generate-id (title &optional filename)
@@ -576,22 +575,26 @@ The ID is created using `zetteldeft-id-format', unless
 `zetteldeft-custom-id-function' is bound to a function, in which case
 that function is used and TITLE and FILENAME are passed to it."
   (let ((id
-          (if-let ((f zetteldeft-custom-id-function))
-              (funcall f title filename)
-            (format-time-string zetteldeft-id-format))))
-    (if (zetteldeft--id-available-p id)
-        id
-      (error "Generated ID %s is not unique." id))))
+         (if-let ((f zetteldeft-custom-id-function))
+             (funcall f title filename)
+           (format-time-string zetteldeft-id-format)))
+        num)
+    (while (zetteldeft--id-unavailable-p id)
+      (progn
+        (string-match "\\([0-9]\\{2\\}$\\)" id)
+        (setq num (number-to-string (1+ (string-to-number (match-string 1 id)))))
+        (setq id (concat (replace-regexp-in-string "\\([0-9]\\{2\\}$\\)" "" id) num))))
+    id))
 #+END_SRC
 
-The check whether an ID is available is performed by a separate function.
+To achieve this, we need a check to ensure the ID is available.
 
 #+BEGIN_SRC emacs-lisp
-(defun zetteldeft--id-available-p (str)
-  "Return t only if provided string STR is unique among Zetteldeft filenames."
+(defun zetteldeft--id-unavailable-p (str)
+  "Return t if provided string STR occurs among Zetteldeft filenames."
   (let ((deft-filter-only-filenames t))
     (deft-filter str t))
-  (eq 0 (length deft-current-files)))
+  (not (eq 0 (length deft-current-files))))
 #+END_SRC
 
 **** =zetteldeft-custom-id-function= for fine-grained control over ID formatting
