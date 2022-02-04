@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *4 Feb 2022*: Add =-full-search-= versions of finding & linking functions, thanks to localauthor
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
@@ -976,6 +977,66 @@ Based on =deft-find-file=.
     (zetteldeft--lift-id file)
     (zetteldeft--lift-file-title (concat deft-directory file))))
 #+END_SRC
+
+*** Finding & linking with full text search
+
+The previous functions allow to search & link based on filename.
+Sometimes its more convenient to do these actions based on full text search.
+
+To achieve this, we first need a helper function that returns a list of files.
+
+The functions below have been contributed by Github user localauthor.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--full-search (string)
+  "Return list of deft files with STRING in full body of file."
+  (let ((result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name))
+        (completions))
+    (when this-file
+      (setq result-files (delete this-file result-files)))
+    (setq completions
+          (mapcar
+            (lambda (file)
+              (cons
+                (file-name-base file)
+                (file-name-nondirectory file)))
+            result-files))
+    (cdr
+      (assoc
+        (completing-read
+          (format "Files containing \"%s\": " string)
+          completions)
+        completions))))
+#+end_src
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-full-search-id-insert (string)
+  "Insert ID of file from list of files containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-id-insert
+    (zetteldeft--full-search string)))
+
+#+end_src
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-full-search-full-title-insert (string)
+  "Insert title and ID of file from list of files containing
+STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-full-title-insert
+    (zetteldeft--full-search string)))
+#+end_src
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-full-search-find-file (string)
+  "Open file containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file (zetteldeft--full-search string)))
+#+end_src
 
 *** New file creation
 **** =zetteldeft-id-filename-separator= separates id from rest of filename
