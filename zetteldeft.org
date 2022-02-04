@@ -975,7 +975,7 @@ Based on =deft-find-file=.
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link
     (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title (concat deft-directory file))))
+    (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
 #+END_SRC
 
 *** Finding & linking with full text search
