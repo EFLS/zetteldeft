@@ -308,13 +308,13 @@ Set `zetteldeft-home-id' to an ID string of your home note."
 
 (defun zetteldeft--full-search (string)
   "Return list of deft files with STRING in full body of file."
-  (let ((result-files (zetteldeft--get-file-list string))
-         (this-file (buffer-file-name)))
+  (let ((dir (expand-file-name deft-directory))
+        (result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name)))
     (when this-file
       (setq result-files (delete this-file result-files)))
-    (setq completions
-          (mapcar (lambda (file) (cons (file-name-base file) (file-name-nondirectory file))) result-files))
-    (cdr (assoc (completing-read (format "Files containing \"%s\": " string) completions) completions))))
+    (setq result-files (mapcar (lambda (f) (replace-regexp-in-string dir "" f)) result-files))
+    (completing-read (format "Files containing \"%s\": " string) result-files)))
 
 ;;;###autoload
 (defun zetteldeft-full-search-id-insert (string)
