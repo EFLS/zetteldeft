@@ -16,7 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *14 Dec*: Update =zetteldeft-find-file= so that non-matching input can be used for new files
+ - *31 Mar 2022*: Add =-full-search-= versions of finding & linking functions, thanks to localauthor
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
@@ -986,8 +986,59 @@ Based on =deft-find-file=.
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link
     (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title (concat deft-directory file))))
+    (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
 #+END_SRC
+
+*** Finding & linking from minibuffer with full text search
+
+The previous functions allow to search & link based on filename.
+Sometimes its more convenient to do these actions based on full text search.
+
+The functions below have been contributed by Github user localauthor.
+
+We first need a helper function that returns a list of files based on the query from the minibuffer.
+
+#+begin_src emacs-lisp
+(defun zetteldeft--full-search (string)
+  "Return list of deft files with STRING in full body of file."
+  (let ((dir (expand-file-name deft-directory))
+        (result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name)))
+    (when this-file
+      (setq result-files (delete this-file result-files)))
+    (setq result-files
+          (mapcar
+            (lambda (f) (replace-regexp-in-string dir "" f))
+            result-files))
+    (completing-read (format "Search files containing \"%s\": " string)
+                     result-files)))
+#+end_src
+
+This search function can then be used to insert links or open notes.
+We can use this to define three new functions: to open a file based on full text search, to insert an ID, or to insert the full title.
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun zetteldeft-full-search-id-insert (string)
+  "Insert ID of file from list of files containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-id-insert
+    (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-full-title-insert (string)
+  "Insert title and ID of file from list of files containing
+STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-full-title-insert
+    (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-find-file (string)
+  "Open file containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file (zetteldeft--full-search string)))
+#+end_src
 
 *** New file creation
 **** =zetteldeft-id-filename-separator= separates id from rest of filename
@@ -2711,8 +2762,11 @@ Other setups, for =evil= or =spacemacs=, are suggested in section [[#suggested-k
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
   (global-set-key (kbd "C-c d /") 'zetteldeft-search-tag)
   (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
+  (global-set-key (kbd "C-c d C-i") 'zetteldeft-full-search-id-insert)
   (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
+  (global-set-key (kbd "C-c d C-I") 'zetteldeft-full-search-full-title-insert)
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
+  (global-set-key (kbd "C-c d C-o") 'zetteldeft-full-search-find-file)
   (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
   (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
@@ -2820,8 +2874,11 @@ It relies on =general.el= for modal editing with =evil= and configures =deft= an
   "d$" '(zetteldeft-tag-remove :wk "remove tag")
   "d/" '(zetteldeft-search-tag :wk "search tag")
   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
+  "d C-i" '(zetteldeft-full-search-id-insert :wk "insert id full search")
   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
+  "d C-I" '(zetteldeft-full-search-full-title-insert :wk "insert title full search")
   "do" '(zetteldeft-find-file :wk "find file")
+  "d C-o" '(zetteldeft-full-search-find-file :wk "find full search")
   "dn" '(zetteldeft-new-file :wk "new file")
   "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
   "dB" '(zetteldeft-new-file-and-backlink :wk "new file & backlink")
