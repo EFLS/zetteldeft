@@ -306,35 +306,6 @@ Set `zetteldeft-home-id' to an ID string of your home note."
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link (zetteldeft--lift-id file)))
 
-(defun zetteldeft--full-search (string)
-  "Return list of deft files with STRING in full body of file."
-  (let ((dir (expand-file-name deft-directory))
-        (result-files (zetteldeft--get-file-list string))
-        (this-file (buffer-file-name)))
-    (when this-file
-      (setq result-files (delete this-file result-files)))
-    (setq result-files (mapcar (lambda (f) (replace-regexp-in-string dir "" f)) result-files))
-    (completing-read (format "Files containing \"%s\": " string) result-files)))
-
-;;;###autoload
-(defun zetteldeft-full-search-id-insert (string)
-  "Insert ID of file from list of files containing STRING."
-  (interactive (list (read-string "Search string: ")))
-  (zetteldeft-find-file-id-insert (zetteldeft--full-search string)))
-
-;;;###autoload
-(defun zetteldeft-full-search-full-title-insert (string)
-  "Insert title and ID of file from list of files containing
-STRING."
-  (interactive (list (read-string "Search string: ")))
-  (zetteldeft-find-file-full-title-insert (zetteldeft--full-search string)))
-
-;;;###autoload
-(defun zetteldeft-full-search-find-file (string)
-  "Open file containing STRING."
-  (interactive (list (read-string "Search string: ")))
-  (zetteldeft-find-file (zetteldeft--full-search string)))
-
 (defcustom zetteldeft-backlink-prefix "# Backlink: "
   "Prefix string included before a back link.
 Formatted as `org-mode' comment by default."
@@ -397,7 +368,42 @@ ID and title on a new line."
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link
     (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title (concat deft-directory file))))
+    (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
+
+(defun zetteldeft--full-search (string)
+  "Return list of deft files with STRING in full body of file."
+  (let ((dir (expand-file-name deft-directory))
+        (result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name)))
+    (when this-file
+      (setq result-files (delete this-file result-files)))
+    (setq result-files
+          (mapcar
+            (lambda (f) (replace-regexp-in-string dir "" f))
+            result-files))
+    (completing-read (format "Search files containing \"%s\": " string)
+                     result-files)))
+
+;;;###autoload
+(defun zetteldeft-full-search-id-insert (string)
+  "Insert ID of file from list of files containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-id-insert
+    (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-full-title-insert (string)
+  "Insert title and ID of file from list of files containing
+STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file-full-title-insert
+    (zetteldeft--full-search string)))
+
+;;;###autoload
+(defun zetteldeft-full-search-find-file (string)
+  "Open file containing STRING."
+  (interactive (list (read-string "Search string: ")))
+  (zetteldeft-find-file (zetteldeft--full-search string)))
 
 (defcustom zetteldeft-id-filename-separator " "
   "String to separate zetteldeft ID from filename."
@@ -1209,8 +1215,11 @@ Does this for all links stored in `zetteldeft--graph-links'."
   (global-set-key (kbd "C-c d T") 'zetteldeft-tag-buffer)
   (global-set-key (kbd "C-c d /") 'zetteldeft-search-tag)
   (global-set-key (kbd "C-c d i") 'zetteldeft-find-file-id-insert)
+  (global-set-key (kbd "C-c d C-i") 'zetteldeft-full-search-id-insert)
   (global-set-key (kbd "C-c d I") 'zetteldeft-find-file-full-title-insert)
+  (global-set-key (kbd "C-c d C-I") 'zetteldeft-full-search-full-title-insert)
   (global-set-key (kbd "C-c d o") 'zetteldeft-find-file)
+  (global-set-key (kbd "C-c d C-o") 'zetteldeft-full-search-find-file)
   (global-set-key (kbd "C-c d n") 'zetteldeft-new-file)
   (global-set-key (kbd "C-c d N") 'zetteldeft-new-file-and-link)
   (global-set-key (kbd "C-c d B") 'zetteldeft-new-file-and-backlink)
