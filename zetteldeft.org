@@ -978,14 +978,14 @@ Based on =deft-find-file=.
     (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
 #+END_SRC
 
-*** Finding & linking with full text search
+*** Finding & linking from minibuffer with full text search
 
 The previous functions allow to search & link based on filename.
 Sometimes its more convenient to do these actions based on full text search.
 
-To achieve this, we first need a helper function that returns a list of files.
-
 The functions below have been contributed by Github user localauthor.
+
+We first need a helper function that returns a list of files based on the query from the minibuffer.
 
 #+begin_src emacs-lisp
 (defun zetteldeft--full-search (string)
@@ -1010,6 +1010,9 @@ The functions below have been contributed by Github user localauthor.
         completions))))
 #+end_src
 
+This search function can then be used to insert links or open notes.
+We can use this to define three new functions: to open a file based on full text search, to insert an ID, or to insert the full title.
+
 #+begin_src emacs-lisp
 ;;;###autoload
 (defun zetteldeft-full-search-id-insert (string)
@@ -1018,9 +1021,6 @@ The functions below have been contributed by Github user localauthor.
   (zetteldeft-find-file-id-insert
     (zetteldeft--full-search string)))
 
-#+end_src
-
-#+begin_src emacs-lisp
 ;;;###autoload
 (defun zetteldeft-full-search-full-title-insert (string)
   "Insert title and ID of file from list of files containing
@@ -1028,9 +1028,7 @@ STRING."
   (interactive (list (read-string "Search string: ")))
   (zetteldeft-find-file-full-title-insert
     (zetteldeft--full-search string)))
-#+end_src
 
-#+begin_src emacs-lisp
 ;;;###autoload
 (defun zetteldeft-full-search-find-file (string)
   "Open file containing STRING."
