@@ -990,24 +990,17 @@ We first need a helper function that returns a list of files based on the query 
 #+begin_src emacs-lisp
 (defun zetteldeft--full-search (string)
   "Return list of deft files with STRING in full body of file."
-  (let ((result-files (zetteldeft--get-file-list string))
-        (this-file (buffer-file-name))
-        (completions))
+  (let ((dir (expand-file-name deft-directory))
+        (result-files (zetteldeft--get-file-list string))
+        (this-file (buffer-file-name)))
     (when this-file
       (setq result-files (delete this-file result-files)))
-    (setq completions
+    (setq result-files
           (mapcar
-            (lambda (file)
-              (cons
-                (file-name-base file)
-                (file-name-nondirectory file)))
+            (lambda (f) (replace-regexp-in-string dir "" f))
             result-files))
-    (cdr
-      (assoc
-        (completing-read
-          (format "Files containing \"%s\": " string)
-          completions)
-        completions))))
+    (completing-read (format "Search files containing \"%s\": " string)
+                     result-files)))
 #+end_src
 
 This search function can then be used to insert links or open notes.
