@@ -1185,7 +1185,9 @@ Otherwise, call =avy= to jump to and open a selected link.
 #+BEGIN_SRC emacs-lisp
 ;;;###autoload
 (defun zetteldeft-follow-link ()
-  "Follows zetteldeft link to a file if point is on a link.
+  "Use Avy to follow a link.
+
+Follows zetteldeft link to a file if point is on a link.
 Uses Avy to prompt for a link to follow with `zetteldeft-avy-file-search'
 if it isn't. Variable `zetteldeft-follow-at-point' controls this last
 option: when nil, always use Avy."
