@@ -16,7 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
- - *4 Feb 2022*: Add =-full-search-= versions of finding & linking functions, thanks to localauthor
+ - *31 Mar 2022*: Add =-full-search-= versions of finding & linking functions, thanks to localauthor
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
  - *13 Jul*: Where backlinks go is now customizable with =zetteldeft-backlink-location-function=
