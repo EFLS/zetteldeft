@@ -984,10 +984,10 @@ Based on =deft-find-file=.
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (zetteldeft--insert-link
-    (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title
-      (expand-file-name (file-name-nondirectory file) deft-directory))))
+  (let ((id (zetteldeft--lift-id file)))
+    (zetteldeft--insert-link
+      id
+      (zetteldeft--id-to-title id))))
 #+END_SRC
 
 *** Finding & linking from minibuffer with full text search

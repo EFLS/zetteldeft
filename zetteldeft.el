@@ -376,10 +376,10 @@ ID and title on a new line."
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (zetteldeft--insert-link
-    (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title
-      (expand-file-name (file-name-nondirectory file) deft-directory))))
+  (let ((id (zetteldeft--lift-id file)))
+    (zetteldeft--insert-link
+      id
+      (zetteldeft--id-to-title id))))
 
 (defun zetteldeft--full-search (string)
   "Return list of deft files with STRING in full body of file."
