@@ -973,7 +973,7 @@ ID and title on a new line."
 
 **** =zetteldeft-find-file-full-title-insert= inserts id and title
 
-Select file from minibuffer and insert a link to it, including th enote's title as description.
+Select file from minibuffer and insert a link to it, including the note's title as description.
 
 Based on =deft-find-file=.
 
@@ -986,7 +986,8 @@ Based on =deft-find-file=.
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link
     (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
+    (zetteldeft--lift-file-title
+      (expand-file-name (file-name-nondirectory file) deft-directory))))
 #+END_SRC
 
 *** Finding & linking from minibuffer with full text search
