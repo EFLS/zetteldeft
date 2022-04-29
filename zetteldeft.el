@@ -281,8 +281,8 @@ Use either
 ;;;###autoload
 (defun zetteldeft-find-file (file)
   "Open deft file FILE.
-When no completing match, create a new deft file using input as
-the title."
+When no completing match, prompt user to create a new deft file using
+input as the title."
   (interactive
    (list (completing-read "Deft find file: "
                           (deft-find-all-files-no-prefix))))
@@ -378,7 +378,8 @@ ID and title on a new line."
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link
     (zetteldeft--lift-id file)
-    (zetteldeft--lift-file-title (expand-file-name file deft-directory))))
+    (zetteldeft--lift-file-title
+      (expand-file-name (file-name-nondirectory file) deft-directory))))
 
 (defun zetteldeft--full-search (string)
   "Return list of deft files with STRING in full body of file."
@@ -484,7 +485,9 @@ Similar to `zetteldeft-new-file', but insert a link to the new file."
 
 ;;;###autoload
 (defun zetteldeft-follow-link ()
-  "Follows zetteldeft link to a file if point is on a link.
+  "Use Avy to follow a link.
+
+Follows zetteldeft link to a file if point is on a link.
 Uses Avy to prompt for a link to follow with `zetteldeft-avy-file-search'
 if it isn't. Variable `zetteldeft-follow-at-point' controls this last
 option: when nil, always use Avy."
