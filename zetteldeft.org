@@ -2297,6 +2297,8 @@ By default, use a subfolder in =.emacs.d/= (or rather, the =user-emacs-directory
 
 *** Prepare temporary files for export
 
+TO FIX: Issue when dir doesn't exist
+
 Each file in Deft is copied to the temporary directory and Zetteldeft links are replaced with file links.
 
 First, prepare the temporary directory by deleting and recreating it.
