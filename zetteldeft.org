@@ -805,7 +805,7 @@ The default function is =zetteldeft-insert-link-zd-style=, which inserts:
   (when title (insert " " title)))
 #+END_SRC
 
-Alternatively, when using Org-mode style links, =zetteldeft-insert-link-org-style= can be used.
+When using Org-mode style links, =zetteldeft-insert-link-org-style= can be used.
 It inserts a formatted Org-link with =zdlink:= type.
 When no title is provided, the link itself is used as a descriptor.
 
