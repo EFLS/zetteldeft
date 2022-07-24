@@ -815,6 +815,17 @@ When no title is provided, the link itself is used as a descriptor.
     (insert "[[zdlink:" id "]]")))
 #+end_src
 
+Finally, when using Markdown style links, =zetteldeft-insert-link-md-style=
+can be used.  It inserts a
+
+#+begin_src emacs-lisp
+(defun zetteldeft-insert-link-md-style (id &optional title)
+  "Insert a Zetteldeft link in Markdown link format"
+  (if title
+      (insert (format "[%s](%s%s)" title zetteldeft-link-indicator id))
+    (insert (format "[%s%s](%s%s)" zetteldeft-link-indicator id zetteldeft-link-indicator id))))
+#+end_src
+
 *** Finding & linking files from minibuffer
 **** =zetteldeft-find-file= opens file from minibuffer
 
