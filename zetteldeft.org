@@ -778,13 +778,15 @@ Note that for the best results, link descriptions should include a =zetteldeft-l
            #'zetteldeft-insert-link-zd-style
   "The function to use when inserting note links.
 
-Use either
+Use one of
  - `zetteldeft-insert-link-zd-style' for Zetteldeft type links
  - `zetteldeft-insert-link-org-style' for Org-mode zdlink: links
+ - `zetteldeft-insert-link-md-style' for Markdown style links
  - A custom function that takes two arguments: an ID and an optional title."
   :type 'function
   :options '(zetteldeft-insert-link-zd-style
-             zetteldeft-insert-link-org-style)
+             zetteldeft-insert-link-org-style
+             zetteldeft-insert-link-md-style)
   :group 'zetteldeft)
 #+end_src
 
