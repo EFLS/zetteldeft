@@ -524,6 +524,19 @@ Called when `zetteldeft-link-indicator' or
 
 Note that highlighting is not working in org comments.
 
+**** =zetteldeft-completing-read= to set a custom completing read function
+
+A function used for some autocompletion.  It must be a function that
+is compatible with =completing-read=, for example =ivy-read=.
+
+#+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-completing-read #'completing-read
+  "Function to use for completing reads; defaults to `completing-read'.
+Functions used here must be compatible with `completing-read'."
+  :type 'function
+  :group 'zetteldeft)
+#+END_SRC
+
 **** =zetteldeft-id-format= for generating time-based ID strings
 
 Format used to generate time-based IDs.
@@ -830,7 +843,7 @@ When there's no match to the entered search string, propose to create a new note
 When no completing match, prompt user to create a new deft file using
 input as the title."
   (interactive
-   (list (completing-read "Deft find file: "
+   (list (funcall zetteldeft-completing-read "Deft find file: "
                           (deft-find-all-files-no-prefix))))
   (let* ((dir (expand-file-name deft-directory)))
     (unless (string-match (concat "^" dir) file)
@@ -882,7 +895,7 @@ Based on =deft-find-file=.
 (defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
   (interactive (list
-    (completing-read "File to insert id from: "
+    (funcall zetteldeft-completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link (zetteldeft--lift-id file)))
 #+END_SRC
@@ -959,7 +972,7 @@ The backlink appears on a new line.
 Finds the title line, and adds `backlink-prefix' with
 ID and title on a new line."
   (interactive (list
-    (completing-read "File to add backlink to: "
+    (funcall zetteldeft-completing-read "File to add backlink to: "
       (deft-find-all-files-no-prefix))))
   (save-excursion
     (goto-char (funcall zetteldeft-backlink-location-function))
@@ -982,7 +995,7 @@ Based on =deft-find-file=.
 (defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
-    (completing-read "File to insert full title from: "
+    (funcall zetteldeft-completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
   (let ((id (zetteldeft--lift-id file)))
     (zetteldeft--insert-link
@@ -2621,7 +2634,7 @@ When called interactively, select a file from the completion interface.
 (defun zetteldeft-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
   (interactive (list
-    (completing-read "Note to start graph from: "
+    (funcall zetteldeft-completing-read "Note to start graph from: "
       (deft-find-all-files))))
   (setq zetteldeft--graph-links (list))
   (insert zetteldeft-graph-syntax-begin)
