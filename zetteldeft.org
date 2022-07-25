@@ -530,7 +530,7 @@ A function used for some autocompletion.  It must be a function that
 is compatible with =completing-read=, for example =ivy-read=.
 
 #+BEGIN_SRC emacs-lisp
-(defcustom zetteldeft-completing-read 'completing-read
+(defcustom zetteldeft-completing-read #'completing-read
   "Function to use for completing reads; defaults to `completing-read'.
 Functions used here must be compatible with `completing-read'."
   :type 'function
