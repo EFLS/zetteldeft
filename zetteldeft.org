@@ -895,7 +895,7 @@ Based on =deft-find-file=.
 (defun zetteldeft-find-file-id-insert (file)
   "Find deft file FILE and insert a link."
   (interactive (list
-    (zetteldeft-completing-read "File to insert id from: "
+    (funcall zetteldeft-completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
   (zetteldeft--insert-link (zetteldeft--lift-id file)))
 #+END_SRC
@@ -972,7 +972,7 @@ The backlink appears on a new line.
 Finds the title line, and adds `backlink-prefix' with
 ID and title on a new line."
   (interactive (list
-    (zetteldeft-completing-read "File to add backlink to: "
+    (funcall zetteldeft-completing-read "File to add backlink to: "
       (deft-find-all-files-no-prefix))))
   (save-excursion
     (goto-char (funcall zetteldeft-backlink-location-function))
@@ -995,7 +995,7 @@ Based on =deft-find-file=.
 (defun zetteldeft-find-file-full-title-insert (file)
   "Find deft file FILE and insert a link with title."
   (interactive (list
-    (zetteldeft-completing-read "File to insert full title from: "
+    (funcall zetteldeft-completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
   (let ((id (zetteldeft--lift-id file)))
     (zetteldeft--insert-link
@@ -2634,7 +2634,7 @@ When called interactively, select a file from the completion interface.
 (defun zetteldeft-org-graph-note (deftFile)
   "Create a graph starting from note DEFTFILE."
   (interactive (list
-    (zetteldeft-completing-read "Note to start graph from: "
+    (funcall zetteldeft-completing-read "Note to start graph from: "
       (deft-find-all-files))))
   (setq zetteldeft--graph-links (list))
   (insert zetteldeft-graph-syntax-begin)
