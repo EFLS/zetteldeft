@@ -1824,7 +1824,10 @@ To always insert tag at point, set =zetteldeft-tag-line-prefix= to nil.
   "Select existing tag or enter new one to insert in current Zetteldeft note.
 
 The tag is appended to the first line starting with `zetteldeft-tag-line-prefix'.
-If this variable is nil, or tag line is not found, insert tag at point."
+If this variable is nil, or tag line is not found, insert tag at point.
+
+With prefix, include a `zetteldeft-tag-base-indicator'.
+"
   (interactive)
   (zetteldeft--check)
   (let ((dest (when zetteldeft-tag-line-prefix
@@ -1836,6 +1839,7 @@ If this variable is nil, or tag line is not found, insert tag at point."
           (goto-char dest)
           (end-of-line)
           (insert " ")
+          (when current-prefix-arg (insert zetteldeft-tag-base-indicator))
           (call-interactively 'zetteldeft-tag-insert-at-point))
       (call-interactively 'zetteldeft-tag-insert-at-point))))
 #+END_SRC
