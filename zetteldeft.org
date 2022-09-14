@@ -1522,14 +1522,30 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
 
 **** =zetteldeft--lift-file-title= returns file title from path
 
-Returns the file title from a file, relying on Deft to do so, thus respecting Deft title rules.
+Returns the file title from a file.
+By default, =deft-parse-title= is used to do so, meaning Zetteldeft respects Deft title rules the user has configured.
+(Note that =deft-use-filename-as-title= will always be =nil=, see below.)
+
+For additional flexibility, the variable =zetteldeft-title-parsing-function= can be customized, but the function this points to should be compatible with =deft-parse-title=, meaning it should take two arguments (full path to the note and contents of the note).
 
 #+BEGIN_SRC emacs-lisp
+(defcustom zetteldeft-title-parsing-function #'deft-parse-title
+  "Function used to extract a title from a note; defaults to `deft-parse-title'.
+The function you use here must be compatible with `deft-parse-title': the
+first argument is the file's fully qualified path; the second is the contents
+of said file."
+  :type 'function
+  :group 'zetteldeft)
+#+end_src
+
+The =zetteldeft--lift-file-title= function itself then uses the customized function.
+
+#+begin_src emacs-lisp
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
   (let ((deft-use-filename-as-title nil))
-    (deft-parse-title
+    (funcall zetteldeft-title-parsing-function
       zdFile
       (with-temp-buffer
         (insert-file-contents zdFile)
