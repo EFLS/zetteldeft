@@ -676,11 +676,19 @@ Prepended by `zetteldeft-title-prefix' and appended by `zetteldeft-title-suffix'
     title
     zetteldeft-title-suffix))
 
+(defcustom zetteldeft-title-parsing-function #'deft-parse-title
+  "Function used to extract a title from a note; defaults to `deft-parse-title'.
+The function you use here must be compatible with `deft-parse-title': the
+first argument is the file's fully qualified path; the second is the contents
+of said file."
+  :type 'function
+  :group 'zetteldeft)
+
 (defun zetteldeft--lift-file-title (zdFile)
   "Return the title of a zetteldeft note.
 ZDFILE should be a full path to a note."
   (let ((deft-use-filename-as-title nil))
-    (deft-parse-title
+    (funcall zetteldeft-title-parsing-function
       zdFile
       (with-temp-buffer
         (insert-file-contents zdFile)
