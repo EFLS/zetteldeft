@@ -16,6 +16,7 @@ Check out the Github [[https://github.com/EFLS/zetteldeft][repository]] to get t
 Read on for an introduction and some documentation.
 
 Latest additions:
+ - *21 Sep 2022*: Add automated list links via Org Dynamic Blocks. See [[#list-links-dblock][documentation below]].
  - *31 Mar 2022*: Add =-full-search-= versions of finding & linking functions, thanks to localauthor
  - *19 Aug*: Update =zetteldeft-browse= to handle more keys
  - *01 Aug*: Automated [[#list-links][list of links]] with =zetteldeft-insert-list-links-block=
@@ -2242,6 +2243,68 @@ functions."
              (zetteldeft-insert-list-links-missing str))
     (zetteldeft-insert-list-links str)))
 #+END_SRC
+
+*** Semi-atuomated list of links with Org Dynamic Blocks
+:PROPERTIES:
+:CUSTOM_ID: list-links-dblock
+:END:
+
+Org-mode provides Dynamic Blocks, which can programmatically update their contents.
+Let's create a Dynamic Block called =zetteldeft-links=.
+
+It will look like this:
+
+#+begin_src
+#+BEGIN: zetteldeft-links :search "#zd-tutorial"
+
+#+END:
+#+end_src
+
+When activated (via =C-c C-c=), the contents between =#+BEGIN:= and =#+END:= will be replaced by the search results provided with =:search "<string>"=.
+
+Additional options are
+ - =:sort t= to sort the results (with most recent note at the top)
+ - =:missing-only t= to only include missing links
+
+The function below inserts such a Dynamic Block.
+
+#+begin_src emacs-lisp
+(defun zetteldeft-org-dblock-insert-links (string)
+  "Insert an Org Dynamic Block of the `zetteldeft-links' type.
+
+The Dynamic Block takes the following parameters:
+ - :search 'string', the search string
+ - :sort t, to sort the results
+ - :missing-only t, to only include missing links.
+"
+  (interactive
+    (list (read-string "Search: ")))
+  (org-create-dblock (list :name "zetteldeft-links" :search string))
+  (org-update-dblock))
+
+(org-dynamic-block-define "zetteldeft-links" 'zetteldeft-org-dblock-insert-links)
+#+end_src
+
+By including a =org-dynamic-block-define=, this dynamic block can now also be inserted via =org-dynamic-block-insert-dblock=.
+
+Next, we need a function that fills the dynamic block with search results.
+By using the =org-dblock-write:= format, Org knows how to compute the dynamic block (see the Org manual https://orgmode.org/manual/Dynamic-Blocks.html).
+
+Through the =plist= provided to the Org Dynamic Block we can include functionality to sort the links (with =:sort t=), and only include missing links (with =:missing-only t=).
+
+#+begin_src emacs-lisp
+(defun org-dblock-write:zetteldeft-links (params)
+  "Fill the zetteldeft search Org Dynamic Block with contents."
+  (let ((string (plist-get params :search))
+        (missing-only (plist-get params :missing-only))
+        (sort (plist-get params :sort)))
+    (if missing-only
+        (zetteldeft-insert-list-links-missing string)
+      (zetteldeft-insert-list-links string))
+    (when sort
+      (org-backward-element)
+      (org-sort-list t ?A))))
+#+end_src
 
 ** Exporting with Org-mode
 

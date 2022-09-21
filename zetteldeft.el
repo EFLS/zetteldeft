@@ -1038,6 +1038,27 @@ functions."
              (zetteldeft-insert-list-links-missing str))
     (zetteldeft-insert-list-links str)))
 
+(defun zetteldeft-org-dblock-insert-links (string)
+  "Insert an Org Dynamic Block of the `zetteldeft-links' type."
+  (interactive
+    (list (read-string "Search: ")))
+  (org-create-dblock (list :name "zetteldeft-links" :search string))
+  (org-update-dblock))
+
+(org-dynamic-block-define "zetteldeft-links" 'zetteldeft-org-dblock-insert-links)
+
+(defun org-dblock-write:zetteldeft-links (params)
+  "Fill the zetteldeft search Org Dynamic Block with contents."
+  (let ((string (plist-get params :search))
+        (missing-only (plist-get params :missing-only))
+        (sort (plist-get params :sort)))
+    (if missing-only
+        (zetteldeft-insert-list-links-missing string)
+      (zetteldeft-insert-list-links string))
+    (when sort
+      (org-backward-element)
+      (org-sort-list t ?A))))
+
 (defcustom zetteldeft-export-tmp-dir
   (expand-file-name "zetteldeft/tmp/" user-emacs-directory)
   "Temporary directory for Zetteldeft export")
