@@ -1379,7 +1379,7 @@ Opens immediately if there is only one result."
 *** Finding dead links with =zetteldeft-dead-links-buffer=
 
 Over time, you might delete notes you no longer deem relevant, or that you have merged with other notes.
-Links to those notes are now dead.
+Links to those notes are now dead (or rather: broken).
 To prune dead links, we need to find them first.
 
 Finding all dead links works as follows:
