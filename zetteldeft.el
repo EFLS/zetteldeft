@@ -1039,13 +1039,21 @@ functions."
     (zetteldeft-insert-list-links str)))
 
 (defun zetteldeft-org-dblock-insert-links (string)
-  "Insert an Org Dynamic Block of the `zetteldeft-links' type."
+  "Insert an Org Dynamic Block of the `zetteldeft-links' type.
+
+The Dynamic Block takes the following parameters:
+ - :search 'string', the search string
+ - :sort t, to sort the results
+ - :missing-only t, to only include missing links.
+"
   (interactive
     (list (read-string "Search: ")))
   (org-create-dblock (list :name "zetteldeft-links" :search string))
   (org-update-dblock))
 
-(org-dynamic-block-define "zetteldeft-links" 'zetteldeft-org-dblock-insert-links)
+(with-eval-after-load 'org-mode
+  (org-dynamic-block-define "zetteldeft-links"
+                            'zetteldeft-org-dblock-insert-links))
 
 (defun org-dblock-write:zetteldeft-links (params)
   "Fill the zetteldeft search Org Dynamic Block with contents."

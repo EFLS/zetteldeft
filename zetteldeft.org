@@ -2282,7 +2282,9 @@ The Dynamic Block takes the following parameters:
   (org-create-dblock (list :name "zetteldeft-links" :search string))
   (org-update-dblock))
 
-(org-dynamic-block-define "zetteldeft-links" 'zetteldeft-org-dblock-insert-links)
+(with-eval-after-load 'org-mode
+  (org-dynamic-block-define "zetteldeft-links"
+                            'zetteldeft-org-dblock-insert-links))
 #+end_src
 
 By including a =org-dynamic-block-define=, this dynamic block can now also be inserted via =org-dynamic-block-insert-dblock=.
