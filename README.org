@@ -4,6 +4,11 @@
 
 [[http://melpa.org/#/zetteldeft][file:http://melpa.org/packages/zetteldeft-badge.svg]]
 
+------
+*UPDATE 2023*: Zetteldeft is no longer in active development, as its main author is moving away from a note-taking system based on Deft towards one based on Denote.
+The Emacs package and this repository will remain available, but might no longer receive updates.
+------
+
 The =zetteldeft.org= file in this repository contains documented code for a set of functions for =emacs=, which aims to extend the =deft= package and turn it into a (very very) basic Zettelkasten note-taking system.
 
 The best way to get to know Zetteldeft, is from within Zetteldeft.

@@ -5,7 +5,9 @@
 #+OPTIONS: num:nil
 #+EXPORT_FILE_NAME: ./docs/index
 
-* Introduction                                                       :ignore:
+*NOTE* (Mar 2023): Zetteldeft is no longer under active development. The the code is functional and the package remains available, but I am currently exploring note-taking based on Denote rather than on Deft. Feel free to reach out (via Mastodon or email) if you want to exchange ideas.
+
+* Introduction                                                :ignore:
 
 Zetteldeft is an extension of the Deft package for Emacs.
 Building on Deft's search functionality, Zetteldeft provides a way to create and manage links between short notes.
