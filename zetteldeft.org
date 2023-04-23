@@ -779,13 +779,15 @@ Note that for the best results, link descriptions should include a =zetteldeft-l
            #'zetteldeft-insert-link-zd-style
   "The function to use when inserting note links.
 
-Use either
+Use one of
  - `zetteldeft-insert-link-zd-style' for Zetteldeft type links
  - `zetteldeft-insert-link-org-style' for Org-mode zdlink: links
+ - `zetteldeft-insert-link-md-style' for Markdown style links
  - A custom function that takes two arguments: an ID and an optional title."
   :type 'function
   :options '(zetteldeft-insert-link-zd-style
-             zetteldeft-insert-link-org-style)
+             zetteldeft-insert-link-org-style
+             zetteldeft-insert-link-md-style)
   :group 'zetteldeft)
 #+end_src
 
@@ -804,7 +806,7 @@ The default function is =zetteldeft-insert-link-zd-style=, which inserts:
   (when title (insert " " title)))
 #+END_SRC
 
-Alternatively, when using Org-mode style links, =zetteldeft-insert-link-org-style= can be used.
+When using Org-mode style links, =zetteldeft-insert-link-org-style= can be used.
 It inserts a formatted Org-link with =zdlink:= type.
 When no title is provided, the link itself is used as a descriptor.
 
@@ -814,6 +816,17 @@ When no title is provided, the link itself is used as a descriptor.
   (if title
       (insert "[[zdlink:" id "][" title "]]")
     (insert "[[zdlink:" id "]]")))
+#+end_src
+
+Finally, when using Markdown style links, =zetteldeft-insert-link-md-style=
+can be used.  It inserts a
+
+#+begin_src emacs-lisp
+(defun zetteldeft-insert-link-md-style (id &optional title)
+  "Insert a Zetteldeft link in Markdown link format"
+  (if title
+      (insert (format "[%s](%s%s)" title zetteldeft-link-indicator id))
+    (insert (format "[%s%s](%s%s)" zetteldeft-link-indicator id zetteldeft-link-indicator id))))
 #+end_src
 
 *** Finding & linking files from minibuffer
