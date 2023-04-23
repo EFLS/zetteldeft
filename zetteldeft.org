@@ -268,6 +268,8 @@ Some declaration.
 (require 'ace-window)
 
 (require 'seq)
+
+(require 'cl)
 #+END_SRC
 
 Since February 2019, the =avy= API changed and =avy--generic-jump= is replaced by =avy-jump=.
@@ -1112,6 +1114,61 @@ ring. When `evil' is loaded, change to insert state."
 To bypass =deft-auto-populate-title-maybe= and prevent having two lines with title matter, we need make sure =deft-use-filename-as-title= is set to t.
 
 Note that the file is only actually created when =save-buffer= is called.
+
+**** =zetteldeft-upsert= creates a new note or opens one that already exists
+
+#+BEGIN_SRC emacs-lisp
+(defun zetteldeft--upsert-list-choices (str)
+  (let* ((try-again (format "Edit '%s' and try again" str))
+             (create-new-note (format "Create a new note with the title '%s'" str))
+             (all-choices (flatten-list (list create-new-note
+                                              try-again
+                                              (deft-find-all-files-no-prefix))))
+             (choice (completing-read "Choose: " all-choices)))
+      (list try-again create-new-note choice)))
+
+(defun zetteldeft--upsert (str find-file-func new-file-func calling-func)
+  (let* ((choices (zetteldeft--upsert-list-choices str))
+         (try-again (first choices))
+         (create-new-note (second choices))
+         (choice (third choices)))
+    (progn (cond ((equal choice try-again)
+                  (let* ((new-str (read-string "Note title: " str)))
+                    (funcall calling-func new-str)))
+                 ((equal choice create-new-note)
+                  (funcall new-file-func str))
+                 (t (funcall find-file-func choice))))))
+
+;;;###autoload
+(defun zetteldeft-upsert (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert str #'zetteldeft-find-file #'zetteldeft-new-file #'zetteldeft-upsert))
+
+(defun zetteldeft--upsert-insert-link (f)
+  (let* ((id (zetteldeft--lift-id f)))
+    (insert
+     (concat zetteldeft-link-indicator
+             (zetteldeft--lift-id f)
+             zetteldeft-link-suffix))))
+
+;;;###autoload
+(defun zetteldeft-upsert-and-link (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert
+   str
+   #'zetteldeft--upsert-insert-link
+   #'zetteldeft-new-file-and-link
+   #'zetteldeft-upsert-and-link))
+
+;;;###autoload
+(defun zetteldeft-upsert-and-backlink (str)
+  (interactive (list (read-string "Note title: ")))
+  (zetteldeft--upsert
+   str
+   #'zetteldeft--upsert-insert-link
+   #'zetteldeft-new-file-and-backlink
+   #'zetteldeft-upsert-and-backlink))
+#+END_SRC
 
 **** =zetteldeft-new-file-and-link= inserts generated id
 
